@@ -157,6 +157,11 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                     <span style={{ fontSize: 10, fontWeight: 700, color: trend.color, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                       {s.sourceName}
                     </span>
+                    {s.isLive && (
+                      <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>
+                        LIVE
+                      </span>
+                    )}
                     <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>
                       {s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}
                     </span>
@@ -175,6 +180,16 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </div>
           ) : (
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8 }}>
+              {/* Macro drivers */}
+              {trend.macroContext && (
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>
+                    What's driving this
+                  </div>
+                  <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0 }}>{trend.macroContext}</p>
+                </div>
+              )}
+
               {/* Why it matters */}
               <div style={{ background: `${trend.color}0d`, border: `1px solid ${trend.color}25`, borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: trend.color, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>

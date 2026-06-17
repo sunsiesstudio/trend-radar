@@ -61,7 +61,7 @@ const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
 // ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number };
-type SignalNodeData = { id: string; title: string; color: string; source?: string };
+type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean };
 
 const SOURCE_ICON: Record<string, string> = {
   reddit: "●", arxiv: "◆", youtube: "▶", hackernews: "○", news: "·", manual: "·",
@@ -101,15 +101,23 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: SIG_W,
-      background: `${data.color}12`,
-      border: `1.5px solid ${data.color}55`,
+      background: data.isLive ? `${data.color}18` : `${data.color}12`,
+      border: `1.5px solid ${data.isLive ? data.color + "88" : data.color + "55"}`,
       borderRadius: blobFromId(data.id),
       padding: "8px 13px 8px 11px",
       display: "flex", alignItems: "flex-start", gap: 6,
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
       boxShadow: `0 2px 12px ${data.color}18`,
+      position: "relative",
     }}>
+      {data.isLive && (
+        <span style={{
+          position: "absolute", top: 5, right: 7,
+          width: 5, height: 5, borderRadius: "50%",
+          background: "#00c47a",
+        }} />
+      )}
       <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8, marginTop: 3 }}>
         {SOURCE_ICON[data.source ?? "news"] ?? "·"}
       </span>
@@ -146,7 +154,7 @@ function buildGraph(extraSignals: Signal[]): { nodes: Node[]; edges: Edge[] } {
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x: cx + ORBIT_R * Math.cos(angle) - SIG_W / 2, y: cy + ORBIT_R * Math.sin(angle) - SIG_H / 2 },
-        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source } as SignalNodeData,
+        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
@@ -200,33 +208,51 @@ export default function HomePage() {
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [showAdd,      setShowAdd]      = useState(false);
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
+  const [liveSignals, setLiveSignals] = useState<Signal[]>([]);
+  const [liveLoading, setLiveLoading] = useState(true);
   const [focusIdx,     setFocusIdx]     = useState(0);
   const swipeStart = useRef<number | null>(null);
 
-  const { nodes: initialNodes, edges: initialEdges } = useMemo(
-    () => buildGraph(extraSignals),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-  const [nodes] = useNodesState(initialNodes);
-  const [edges] = useEdgesState(initialEdges);
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      fetch("/api/live-signals")
+        .then((r) => r.json())
+        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
+        .catch(() => { if (!cancelled) setLiveLoading(false); });
+    };
+    load();
+    const timer = setInterval(load, 2 * 60 * 60 * 1000);
+    return () => { cancelled = true; clearInterval(timer); };
+  }, []);
+
+  const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
+  const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals), [allExtraSignals]);
+  const [nodes, setNodes] = useNodesState(graphNodes);
+  const [edges, setEdges] = useEdgesState(graphEdges);
+
+  useEffect(() => {
+    setNodes(graphNodes);
+    setEdges(graphEdges);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphNodes, graphEdges]);
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
       const trend = TRENDS.find((t) => t.id === node.id);
       if (trend) setActiveTrend(trend);
     } else if (node.type === "signalOrbit") {
-      const sig = [...SIGNALS, ...extraSignals].find((s) => s.id === node.id);
+      const sig = [...SIGNALS, ...extraSignals, ...liveSignals].find((s) => s.id === node.id);
       if (sig) setActiveSignal(sig);
     }
-  }, [extraSignals]);
+  }, [extraSignals, liveSignals]);
 
   const handleAddSignal = useCallback((s: Signal) => {
     setExtraSignals((prev) => [...prev, s]);
     setShowAdd(false);
   }, []);
 
-  const allSignals = useMemo(() => [...SIGNALS, ...extraSignals], [extraSignals]);
+  const allSignals = useMemo(() => [...SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
   const activeTrendForSignal = activeSignal ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
@@ -247,6 +273,12 @@ export default function HomePage() {
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
             {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
+            {liveSignals.length > 0 && (
+              <span style={{ color: "#00c47a", marginLeft: 6, fontWeight: 700 }}>
+                +{liveSignals.length} live
+              </span>
+            )}
+            {liveLoading && <span style={{ marginLeft: 6, opacity: 0.4 }}>●</span>}
           </span>
           <button
             onClick={() => setShowAdd(true)}
@@ -340,7 +372,7 @@ export default function HomePage() {
       {activeTrend && (
         <TrendDetailModal
           trend={activeTrend}
-          extraSignals={extraSignals}
+          extraSignals={allExtraSignals}
           onClose={() => setActiveTrend(null)}
           onSelectSignal={(s) => { setActiveTrend(null); setActiveSignal(s); }}
         />

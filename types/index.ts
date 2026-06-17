@@ -3,13 +3,14 @@ export interface Trend {
   name: string;
   description: string;
   color: string;
-  relevanceScore: number; // 0-100 → determines node size
+  relevanceScore: number;
   redditQuery: string;
   newsQuery: string;
-  position: { x: number; y: number }; // center of node
+  position: { x: number; y: number };
   whyRelevant: string;
   trajectory: string;
   nextSteps: string[];
+  macroContext: string;
 }
 
 export interface Signal {
@@ -21,8 +22,9 @@ export interface Signal {
   sourceName?: string;
   sourceUrl?: string;
   date?: string;
-  crossLinks?: string[]; // signal IDs from OTHER trends this connects to
-  // legacy fields (old canvas/feed/reports pages)
+  crossLinks?: string[];
+  isLive?: boolean;
+  // legacy fields
   why_emerging?: string;
   brand_relevance?: string;
   category?: string;

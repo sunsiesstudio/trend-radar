@@ -17,6 +17,7 @@ export const TRENDS: Trend[] = [
       "Test one AI-generated campaign concept with a controlled consumer group and measure recall vs. traditional creative",
       "Draft an AI ethics policy covering synthetic models, attribution, and data provenance before regulation forces your hand",
     ],
+    macroContext: "Three forces collided: post-pandemic cost pressure collapsed creative budgets forcing brands to find efficiency, GPU costs fell 10x making generative AI accessible to any studio, and Gen Z designers entered the workforce already AI-native. The result isn't a tool upgrade — it's a generational shift in who gets to be creative and what creative labour is worth.",
   },
   {
     id: "digital-identity",
@@ -34,6 +35,7 @@ export const TRENDS: Trend[] = [
       "Commission one digital-only drop to test virtual commerce mechanics without physical production risk",
       "Study how gaming fashion economics differ from physical — scarcity, resale, and community dynamics all work differently",
     ],
+    macroContext: "Two years of pandemic-enforced digital life accelerated a psychological shift that was already underway — online space started to feel as real as physical. Combined with Gen Z having grown up inside gaming worlds where avatar = self since age 8, and the economic reality that digital goods carry zero inventory risk and infinite margin, brands had no choice but to follow attention. The cultural shift came first; the commerce followed.",
   },
   {
     id: "ar-commerce",
@@ -51,6 +53,7 @@ export const TRENDS: Trend[] = [
       "Brief your wholesale buyers on virtual showroom capabilities — 40% already prefer virtual to physical visits",
       "Test AR-first product reveals in campaign launches to measure pre-purchase engagement",
     ],
+    macroContext: "Three separate forces converged: smartphones finally became powerful enough for real-time 3D AR in 2022, platforms commoditised AR distribution so brands didn't need to build it themselves, and post-pandemic consumers became genuinely uncomfortable with purchase uncertainty after a decade of rising return costs. AR didn't arrive because the tech was ready — it arrived because 38% return rates became existential for retail economics.",
   },
   {
     id: "biotech-beauty",
@@ -68,6 +71,7 @@ export const TRENDS: Trend[] = [
       "Commission an independent clinical study on a hero ingredient; peer-reviewed data is the new minimum for prestige credibility",
       "Map the regulatory status of your most innovative ingredients in key markets (EU, US, South Korea)",
     ],
+    macroContext: "The gut health revolution of the 2010s trained an entire consumer generation in microbiome literacy — they already understood 'good bacteria'. K-beauty's global spread introduced fermentation as a premium skincare concept. Post-pandemic, mental and physical health collapsed into a single priority. And regulatory pressure from the EU on efficacy claims forced brands to back science with evidence. Ingredient-literate consumers and regulation together are pulling beauty into biology.",
   },
   {
     id: "sustainable-materials",
@@ -85,6 +89,7 @@ export const TRENDS: Trend[] = [
       "Pilot one alternative material in a limited collection to test consumer response and supply chain viability",
       "Audit your supplier tier 2 and tier 3 data — most brands can't answer basic DPP questions about their own supply chains",
     ],
+    macroContext: "EU regulation is the primary force — the 2027 Digital Product Passport mandate turned sustainability from voluntary ethics into a legal compliance deadline. Secondary forces: Gen Z's documented willingness to pay a premium for environmental credibility, and post-pandemic supply chain trauma making brands rethink material origins for resilience reasons as much as sustainability ones. The market moved when the regulation gave it no alternative.",
   },
   {
     id: "3d-printing",
@@ -102,6 +107,7 @@ export const TRENDS: Trend[] = [
       "Explore IP ownership structure for your digital design files — this is the new product archive",
       "Connect with Zellerfeld, Stratasys, or EOS for a design collaboration conversation",
     ],
+    macroContext: "Supply chain collapse during the pandemic exposed the fragility of the 8,000-mile manufacturing model — brands learned that concentration kills. 3D printing offers geographic independence: print anywhere, ship nothing. Simultaneously, flexible polymer advances in 2022–23 finally solved the wearability problem that blocked fashion applications for a decade. Economic pressure and material science solved two different problems at the same time.",
   },
   {
     id: "wearables",
@@ -119,6 +125,7 @@ export const TRENDS: Trend[] = [
       "Identify 2–3 health sensor companies for a co-design conversation on embedding sensors in existing product lines",
       "Study the Ray-Ban Meta case study — the lesson is 'fashion-first, tech-second' and it's directly applicable",
     ],
+    macroContext: "Apple Watch normalised health data as a daily habit for 100M people before any fashion brand noticed. COVID made personal health metrics feel urgent and status-worthy simultaneously — a rare combination. And culturally, the shift from 'performance' identity to 'longevity' identity expanded the wearables audience from athletes to everyone. The aesthetic gap between medical device and luxury accessory is now the obvious white space.",
   },
   {
     id: "neurotech",
@@ -136,6 +143,7 @@ export const TRENDS: Trend[] = [
       "Monitor Neuralink and consumer BCI timelines quarterly — build an internal briefing document now",
       "Map the overlap between your customer's wellness routines and stress management — this is the entry point",
     ],
+    macroContext: "Pandemic anxiety created mass-market demand for stress management at scale that the wellness industry couldn't meet with existing products. The Calm and Headspace generation learned to think of mental health as something actively managed — not just something that happens. Meanwhile, biohacking culture shifted from fringe Reddit to mainstream with Huberman's 8M subscribers. Neurocosmetics is the inevitable product category at the collision of these two trends.",
   },
   {
     id: "spatial-computing",
@@ -153,6 +161,7 @@ export const TRENDS: Trend[] = [
       "Assign one person to monitor spatial platform developments and circulate a monthly briefing",
       "Brief your 3D/design team on the additional requirements for spatial content vs. standard e-commerce assets",
     ],
+    macroContext: "Apple's Vision Pro legitimised spatial computing as a serious platform — not another Google Glass. The deeper driver is B2B workflow adoption (architects, surgeons, engineers) building the infrastructure that will eventually serve consumers. And fashion has a specific structural advantage: the try-on use case is the killer app that justifies headset ownership for mainstream consumers. Fashion is the pull force that makes spatial computing worth buying.",
   },
   {
     id: "longevity",
@@ -170,6 +179,7 @@ export const TRENDS: Trend[] = [
       "Commission consumer research on how your customer thinks about ageing, health optimisation, and biological vs. chronological age",
       "Identify one longevity clinic group or community for a strategic partnership — these are the new luxury wellness channels",
     ],
+    macroContext: "The Ozempic/GLP-1 moment changed everything — not because of weight loss, but because it proved that biology could be intentionally modified for lifestyle benefits, and millions of ordinary people were willing to try. Combined with Bryan Johnson's viral $2M/year protocol making longevity aspirational rather than academic, and Huberman Lab creating a mass audience literate in the research, longevity became the dominant consumer health narrative of the late 2020s. The money followed the attention.",
   },
 ];
 
