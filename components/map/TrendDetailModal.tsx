@@ -26,6 +26,24 @@ ${trend.description}
 
 ---
 
+## Why This Matters Now
+
+${trend.whyRelevant}
+
+---
+
+## Where This Is Going
+
+${trend.trajectory}
+
+---
+
+## Strategic Next Steps
+
+${trend.nextSteps.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+
+---
+
 ## Signal Evidence (${signals.length} signals)
 
 ${signals.map((s) => `### ${s.title}
@@ -156,15 +174,59 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               ))}
             </div>
           ) : (
-            <div style={{ fontSize: 13, color: "#666", lineHeight: 1.8 }}>
-              {buildReport(trend, signals).split("\n").map((line, i) => {
-                if (line.startsWith("# ")) return <h2 key={i} className="serif" style={{ fontSize: 22, fontWeight: 400, color: "#1a1a1a", marginBottom: 8, marginTop: 0 }}>{line.slice(2)}</h2>;
-                if (line.startsWith("## ")) return <h3 key={i} style={{ fontSize: 11, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 24, marginBottom: 8, paddingTop: 16, borderTop: "1px solid #f0ede8" }}>{line.slice(3)}</h3>;
-                if (line.startsWith("### ")) return <h4 key={i} style={{ fontSize: 13, fontWeight: 600, color: "#333", marginTop: 16, marginBottom: 4 }}>{line.slice(4)}</h4>;
-                if (line.startsWith("---")) return <div key={i} style={{ borderTop: "1px solid #f0ede8", margin: "16px 0" }} />;
-                if (!line.trim()) return <div key={i} style={{ height: 4 }} />;
-                return <p key={i} style={{ margin: "2px 0" }}>{line}</p>;
-              })}
+            <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8 }}>
+              {/* Why it matters */}
+              <div style={{ background: `${trend.color}0d`, border: `1px solid ${trend.color}25`, borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: trend.color, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
+                  Why this matters now
+                </div>
+                <p style={{ fontSize: 13, color: "#333", lineHeight: 1.7, margin: 0 }}>{trend.whyRelevant}</p>
+              </div>
+
+              {/* Trajectory */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>
+                  Where this is going
+                </div>
+                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>{trend.trajectory}</p>
+              </div>
+
+              {/* Next steps */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+                  Strategic next steps
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {trend.nextSteps.map((step, i) => (
+                    <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                      <div style={{
+                        width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
+                        background: trend.color, color: "#fff",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 10, fontWeight: 800, marginTop: 1,
+                      }}>
+                        {i + 1}
+                      </div>
+                      <p style={{ fontSize: 13, color: "#444", lineHeight: 1.65, margin: 0 }}>{step}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Signal digest */}
+              <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 20 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+                  Signal evidence ({signals.length})
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {signals.map((s) => (
+                    <div key={s.id} style={{ fontSize: 12, color: "#666", lineHeight: 1.5, paddingLeft: 12, borderLeft: `2px solid ${trend.color}40` }}>
+                      <span style={{ fontWeight: 600, color: "#333" }}>{s.title}</span>
+                      {s.sourceName ? <span style={{ color: "#bbb" }}> — {s.sourceName}</span> : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
