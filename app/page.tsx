@@ -193,19 +193,6 @@ function FocusController({ trendId }: { trendId: string }) {
   return null;
 }
 
-// ─── Mobile detection ────────────────────────────────────────────────────────
-
-function useIsMobile() {
-  const [mobile, setMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  return mobile;
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
@@ -214,7 +201,6 @@ export default function HomePage() {
   const [showAdd,      setShowAdd]      = useState(false);
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
   const [focusIdx,     setFocusIdx]     = useState(0);
-  const isMobile = useIsMobile();
   const swipeStart = useRef<number | null>(null);
 
   const { nodes: initialNodes, edges: initialEdges } = useMemo(
@@ -245,7 +231,6 @@ export default function HomePage() {
 
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
   const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
-
   const focusTrend = TRENDS[focusIdx];
 
   return (
@@ -260,11 +245,9 @@ export default function HomePage() {
       }}>
         <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#111" }}>Trend Radar</span>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          {!isMobile && (
-            <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
-              {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
-            </span>
-          )}
+          <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
+            {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
+          </span>
           <button
             onClick={() => setShowAdd(true)}
             style={{ padding: "6px 16px", background: "#111", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
@@ -276,15 +259,15 @@ export default function HomePage() {
 
       {/* Canvas */}
       <div
-        style={{ position: "absolute", inset: 0, paddingTop: 52, paddingBottom: isMobile ? 80 : 0 }}
-        onTouchStart={isMobile ? (e) => { swipeStart.current = e.touches[0].clientX; } : undefined}
-        onTouchEnd={isMobile ? (e) => {
+        style={{ position: "absolute", inset: 0, paddingTop: 52, paddingBottom: 80 }}
+        onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
           if (swipeStart.current === null) return;
           const dx = e.changedTouches[0].clientX - swipeStart.current;
           if (dx < -50) next();
           else if (dx > 50) prev();
           swipeStart.current = null;
-        } : undefined}
+        }}
       >
         <ReactFlow
           nodes={nodes}
@@ -292,71 +275,67 @@ export default function HomePage() {
           nodeTypes={NODE_TYPES}
           onNodeClick={handleNodeClick}
           nodesDraggable={false}
-          fitView={!isMobile}
-          fitViewOptions={{ padding: 0.08 }}
           minZoom={0.06}
           maxZoom={2}
-          panOnDrag={!isMobile}
+          panOnDrag
           zoomOnPinch
-          zoomOnScroll={!isMobile}
+          zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
           style={{ background: "#fff" }}
         >
-          {isMobile && <FocusController trendId={focusTrend.id} />}
-          {!isMobile && <Controls position="bottom-right" showInteractive={false} style={{ bottom: 24, right: 16 }} />}
+          <FocusController trendId={focusTrend.id} />
         </ReactFlow>
       </div>
 
-      {/* Mobile nav bar */}
-      {isMobile && (
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
-          height: 80, padding: "0 16px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
-          borderTop: "1px solid rgba(0,0,0,0.07)",
-          gap: 12,
-        }}>
-          <button
-            onClick={prev}
-            disabled={focusIdx === 0}
-            style={{
-              width: 40, height: 40, borderRadius: "50%", border: "1.5px solid #e8e4de",
-              background: focusIdx === 0 ? "#f5f3ee" : "#fff",
-              fontSize: 18, color: focusIdx === 0 ? "#ccc" : "#333",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: focusIdx === 0 ? "default" : "pointer", flexShrink: 0,
-            }}
-          >‹</button>
+      {/* Nav bar */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
+        height: 80,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
+        borderTop: "1px solid rgba(0,0,0,0.07)",
+        padding: "0 24px", gap: 16,
+      }}>
+        <button
+          onClick={prev}
+          disabled={focusIdx === 0}
+          style={{
+            width: 44, height: 44, borderRadius: "50%",
+            border: "1.5px solid #e8e4de",
+            background: focusIdx === 0 ? "#f5f3ee" : "#fff",
+            fontSize: 20, color: focusIdx === 0 ? "#ccc" : "#333",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: focusIdx === 0 ? "default" : "pointer", flexShrink: 0,
+          }}
+        >‹</button>
 
-          <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{
-              display: "inline-block", width: 10, height: 10,
-              borderRadius: "50%", background: focusTrend.color,
-              marginBottom: 4,
-            }} />
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
-              {focusTrend.name}
-            </div>
-            <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
-              {focusIdx + 1} / {TRENDS.length}
-            </div>
+        <div style={{ flex: 1, textAlign: "center" }}>
+          <div style={{
+            display: "inline-block", width: 10, height: 10,
+            borderRadius: "50%", background: focusTrend.color, marginBottom: 5,
+          }} />
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+            {focusTrend.name}
           </div>
-
-          <button
-            onClick={next}
-            disabled={focusIdx === TRENDS.length - 1}
-            style={{
-              width: 40, height: 40, borderRadius: "50%", border: "1.5px solid #e8e4de",
-              background: focusIdx === TRENDS.length - 1 ? "#f5f3ee" : "#fff",
-              fontSize: 18, color: focusIdx === TRENDS.length - 1 ? "#ccc" : "#333",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: focusIdx === TRENDS.length - 1 ? "default" : "pointer", flexShrink: 0,
-            }}
-          >›</button>
+          <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
+            {focusIdx + 1} / {TRENDS.length}
+          </div>
         </div>
-      )}
+
+        <button
+          onClick={next}
+          disabled={focusIdx === TRENDS.length - 1}
+          style={{
+            width: 44, height: 44, borderRadius: "50%",
+            border: "1.5px solid #e8e4de",
+            background: focusIdx === TRENDS.length - 1 ? "#f5f3ee" : "#fff",
+            fontSize: 20, color: focusIdx === TRENDS.length - 1 ? "#ccc" : "#333",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: focusIdx === TRENDS.length - 1 ? "default" : "pointer", flexShrink: 0,
+          }}
+        >›</button>
+      </div>
 
       {activeTrend && (
         <TrendDetailModal
