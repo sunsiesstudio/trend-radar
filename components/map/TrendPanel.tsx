@@ -37,7 +37,7 @@ ${s.summary}
 
 ## Cross-Trend Connections
 
-${[...new Set(signals.flatMap((s) => s.crossLinks))].length > 0
+${[...new Set(signals.flatMap((s) => (s.crossLinks ?? [])))].length > 0
   ? "This trend connects to signals in adjacent categories — see canvas for full cross-connections."
   : "No cross-trend connections identified yet."}
 
@@ -49,7 +49,7 @@ ${[...new Set(signals.flatMap((s) => s.crossLinks))].length > 0
 export function TrendPanel({ trend, onClose, loading }: Props) {
   const [showFull, setShowFull] = useState(false);
   const signals = SIGNALS.filter((s) => s.trendId === trend.id);
-  const crossCount = new Set(signals.flatMap((s) => s.crossLinks)).size;
+  const crossCount = new Set(signals.flatMap((s) => (s.crossLinks ?? []))).size;
 
   const download = () => {
     const content = buildReport(trend, signals);
@@ -61,86 +61,147 @@ export function TrendPanel({ trend, onClose, loading }: Props) {
   };
 
   return (
-    <div className="fixed right-0 top-0 h-full w-[420px] bg-white border-l border-gray-100 shadow-2xl z-40 flex flex-col">
+    <div style={{
+      position: "fixed",
+      right: 0,
+      top: 0,
+      height: "100%",
+      width: 420,
+      backgroundColor: "#0e0e0e",
+      borderLeft: "1px solid #222",
+      boxShadow: "-32px 0 80px rgba(0,0,0,0.8)",
+      zIndex: 40,
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: "'DM Sans', sans-serif",
+    }}>
+      {/* Top color bar */}
+      <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44, transparent)`, flexShrink: 0 }} />
+
       {/* Header */}
-      <div className="px-6 py-5 border-b border-gray-100 flex-shrink-0" style={{ borderTop: `4px solid ${trend.color}` }}>
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h2 className="font-bold text-gray-900 text-base leading-snug">{trend.name}</h2>
-            {loading && <div className="text-xs text-gray-400 animate-pulse mt-1">Fetching live score…</div>}
-          <div className="flex items-center gap-2 mt-1.5">
-              <div className="h-1.5 rounded-full bg-gray-100 w-24 overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${trend.relevanceScore}%`, backgroundColor: trend.color }}
-                />
+      <div style={{ padding: "24px 28px 20px", borderBottom: "1px solid #1e1e1e", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div style={{ flex: 1 }}>
+            {loading && (
+              <div style={{ fontSize: 10, color: "#444", marginBottom: 8, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                Fetching live score…
               </div>
-              <span className="text-xs text-gray-400 font-medium">{trend.relevanceScore}% relevance</span>
+            )}
+            <h2 style={{
+              fontFamily: "'DM Serif Display', serif",
+              fontSize: 20,
+              fontWeight: 400,
+              color: "#f0ede8",
+              lineHeight: 1.2,
+              letterSpacing: "-0.02em",
+              marginBottom: 14,
+            }}>
+              {trend.name}
+            </h2>
+
+            {/* Relevance bar */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ flex: 1, height: 3, backgroundColor: "#1e1e1e", borderRadius: 2, overflow: "hidden" }}>
+                <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
+              </div>
+              <span style={{ fontSize: 11, color: "#555", fontWeight: 600, whiteSpace: "nowrap" }}>
+                {trend.relevanceScore}% cultural relevance
+              </span>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-300 hover:text-gray-600 text-xl leading-none mt-0.5">×</button>
+          <button
+            onClick={onClose}
+            style={{ color: "#333", fontSize: 22, lineHeight: 1, background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: 2 }}
+          >
+            ×
+          </button>
         </div>
-        <p className="text-sm text-gray-500 leading-relaxed mt-3">{trend.description}</p>
-        <div className="flex items-center gap-3 mt-3 text-xs text-gray-400">
+
+        <p style={{ fontSize: 13, color: "#666", lineHeight: 1.65, marginTop: 14 }}>
+          {trend.description}
+        </p>
+
+        <div style={{ display: "flex", gap: 16, marginTop: 14, fontSize: 11, color: "#444", fontWeight: 600 }}>
           <span>{signals.length} signals</span>
           {crossCount > 0 && <span>· {crossCount} cross-connections</span>}
         </div>
       </div>
 
-      {/* Signals list */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+      {/* Body */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "20px 28px" }}>
         {!showFull ? (
-          <>
-            {/* Summary view */}
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Signal evidence</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#333", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
+              Signal evidence
+            </div>
             {signals.map((s) => (
-              <div key={s.id} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-sm">{getSourceIcon(s.source)}</span>
-                  <span className="text-xs text-gray-400 font-medium">{s.sourceName}</span>
-                  <span className="text-xs text-gray-300 ml-auto">
+              <div key={s.id} style={{
+                backgroundColor: "#141414",
+                border: "1px solid #1e1e1e",
+                borderLeft: `3px solid ${trend.color}`,
+                borderRadius: 10,
+                padding: "12px 14px",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+                  <span style={{ fontSize: 11 }}>{getSourceIcon(s.source)}</span>
+                  <span style={{ fontSize: 9, color: trend.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em" }}>
+                    {s.sourceName}
+                  </span>
+                  <span style={{ marginLeft: "auto", fontSize: 9, color: "#333" }}>
                     {s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}
                   </span>
                 </div>
-                <div className="text-xs font-semibold text-gray-800 mb-1 leading-snug">{s.title}</div>
-                <div className="text-xs text-gray-500 leading-relaxed line-clamp-2">{s.summary}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#d0ccc8", lineHeight: 1.35, marginBottom: 5 }}>{s.title}</div>
+                <div style={{ fontSize: 11, color: "#555", lineHeight: 1.55 }}>{s.summary}</div>
                 {(s.crossLinks ?? []).length > 0 && (
-                  <div className="mt-2 text-xs text-indigo-400 font-medium">
+                  <div style={{ marginTop: 8, fontSize: 10, color: "#444", fontWeight: 600 }}>
                     ↔ {(s.crossLinks ?? []).length} cross-trend link{(s.crossLinks ?? []).length > 1 ? "s" : ""}
                   </div>
                 )}
               </div>
             ))}
-          </>
+          </div>
         ) : (
-          /* Full report view */
-          <div className="prose prose-sm max-w-none text-sm text-gray-700 leading-relaxed">
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Full report</div>
+          <div style={{ fontSize: 12, color: "#777", lineHeight: 1.8 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#333", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>
+              Full report
+            </div>
             {buildReport(trend, signals).split("\n").map((line, i) => {
-              if (line.startsWith("# ")) return <h2 key={i} className="text-base font-bold text-gray-900 mt-4 mb-1">{line.slice(2)}</h2>;
-              if (line.startsWith("## ")) return <h3 key={i} className="text-sm font-bold text-gray-800 mt-5 mb-2 pt-3 border-t border-gray-100">{line.slice(3)}</h3>;
-              if (line.startsWith("### ")) return <h4 key={i} className="text-xs font-bold text-gray-700 mt-3 mb-1">{line.slice(4)}</h4>;
-              if (line.startsWith("**") && line.endsWith("**")) return <p key={i} className="font-semibold text-gray-800 my-1 text-xs">{line.slice(2,-2)}</p>;
-              if (line.startsWith("---")) return <hr key={i} className="my-3 border-gray-100" />;
-              if (!line.trim()) return <div key={i} className="h-1" />;
-              return <p key={i} className="text-xs text-gray-600 my-1">{line}</p>;
+              if (line.startsWith("# ")) return <h2 key={i} style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8e4df", marginTop: 0, marginBottom: 8, fontWeight: 400 }}>{line.slice(2)}</h2>;
+              if (line.startsWith("## ")) return <h3 key={i} style={{ fontSize: 11, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 24, marginBottom: 10, paddingTop: 16, borderTop: "1px solid #1e1e1e" }}>{line.slice(3)}</h3>;
+              if (line.startsWith("### ")) return <h4 key={i} style={{ fontSize: 12, fontWeight: 600, color: "#aaa", marginTop: 16, marginBottom: 4 }}>{line.slice(4)}</h4>;
+              if (line.startsWith("---")) return <div key={i} style={{ borderTop: "1px solid #1e1e1e", margin: "16px 0" }} />;
+              if (!line.trim()) return <div key={i} style={{ height: 4 }} />;
+              return <p key={i} style={{ margin: "2px 0", fontSize: 12, color: "#666" }}>{line}</p>;
             })}
           </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-100 flex gap-2 flex-shrink-0">
+      <div style={{ padding: "16px 28px", borderTop: "1px solid #1a1a1a", display: "flex", gap: 10, flexShrink: 0 }}>
         <button
           onClick={() => setShowFull((v) => !v)}
-          className="flex-1 py-2.5 border border-gray-200 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          style={{
+            flex: 1, padding: "11px 0",
+            border: "1px solid #2a2a2a", borderRadius: 10,
+            fontSize: 12, fontWeight: 600, color: "#666",
+            background: "transparent", cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif",
+          }}
         >
           {showFull ? "← Summary" : "Full report"}
         </button>
         <button
           onClick={download}
-          className="flex-1 py-2.5 text-white rounded-xl text-xs font-semibold transition-colors"
-          style={{ backgroundColor: trend.color }}
+          style={{
+            flex: 1, padding: "11px 0",
+            border: "none", borderRadius: 10,
+            fontSize: 12, fontWeight: 700,
+            color: "#000", backgroundColor: trend.color,
+            cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+            boxShadow: `0 0 20px ${trend.color}55`,
+          }}
         >
           Export .md
         </button>

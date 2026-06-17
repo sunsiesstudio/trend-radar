@@ -1,40 +1,53 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: #f7f7f5;
-  --foreground: #0f0f0f;
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #f0ede8;
+  --muted: #666;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* React Flow overrides */
+/* React Flow canvas */
+.react-flow__renderer { background: #0a0a0a !important; }
+.react-flow__background { background: #0a0a0a !important; }
+
 .react-flow__edge-path {
-  stroke: #d1d5db;
   stroke-width: 1.5;
 }
 
 .react-flow__controls {
-  border: 1px solid #e5e7eb !important;
-  border-radius: 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
 }
-
 .react-flow__controls-button {
-  border-bottom: 1px solid #f3f4f6 !important;
-  background: white !important;
+  border-bottom: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  fill: #888 !important;
 }
+.react-flow__controls-button:hover { background: var(--surface2) !important; }
+.react-flow__controls-button svg { fill: #888; }
 
 .react-flow__minimap {
-  border-radius: 12px !important;
-  border: 1px solid #e5e7eb !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--border) !important;
   overflow: hidden;
+  background: var(--surface) !important;
 }
+.react-flow__minimap-mask { fill: rgba(0,0,0,0.6) !important; }
+
+.react-flow__attribution { display: none !important; }

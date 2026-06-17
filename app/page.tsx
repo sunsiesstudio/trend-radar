@@ -33,8 +33,8 @@ const nodeTypes = {
 const crossEdge = {
   type: "default",
   animated: true,
-  style: { stroke: "#d1d5db", strokeWidth: 1, strokeDasharray: "4 3" },
-  markerEnd: { type: MarkerType.ArrowClosed, width: 10, height: 10, color: "#d1d5db" },
+  style: { stroke: "#3a3a3a", strokeWidth: 1.5, strokeDasharray: "5 4" },
+  markerEnd: { type: MarkerType.ArrowClosed, width: 10, height: 10, color: "#3a3a3a" },
 };
 
 export default function ConceptMap() {
@@ -145,34 +145,50 @@ export default function ConceptMap() {
     : null;
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-[#f5f5f3] relative">
+    <div style={{ width: "100vw", height: "100vh", overflow: "hidden", backgroundColor: "#0a0a0a", position: "relative" }}>
       {/* Top bar */}
-      <div className="absolute top-0 left-0 right-0 h-12 bg-white/90 backdrop-blur border-b border-gray-100 flex items-center justify-between px-5 z-30">
-        <div className="flex items-center gap-3">
-          <span className="font-bold text-gray-900 tracking-tight text-sm">⚡ Trend Radar</span>
-          <span className="text-gray-200">·</span>
-          <span className="text-xs text-gray-400">
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: 52,
+        backgroundColor: "rgba(10,10,10,0.92)", backdropFilter: "blur(12px)",
+        borderBottom: "1px solid #1e1e1e",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 24px", zIndex: 30,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#f0ede8", letterSpacing: "-0.02em" }}>
+            Trend Radar
+          </span>
+          <span style={{ width: 1, height: 16, backgroundColor: "#2a2a2a" }} />
+          <span style={{ fontSize: 11, color: "#3a3a3a", fontWeight: 500 }}>
             {TRENDS.length} trends · {signals.length} signals
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-3 text-xs text-gray-400 mr-2">
-            <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full border-2 border-indigo-400 inline-block" />
-              Trend node (click for report)
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 10, color: "#333", fontWeight: 600, letterSpacing: "0.04em" }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#FF2D78", display: "inline-block" }} />
+              Click trend for report
             </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 bg-gray-200 rounded inline-block" />
-              Signal (click for detail)
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 8, height: 5, backgroundColor: "#1e1e1e", border: "1px solid #333", borderRadius: 2, display: "inline-block" }} />
+              Click signal for detail
             </span>
-            <span className="flex items-center gap-1.5">
-              <span className="border-t-2 border-dashed border-gray-300 w-5 inline-block" />
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 18, borderTop: "1.5px dashed #333", display: "inline-block" }} />
               Cross-trend link
             </span>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-semibold hover:bg-gray-700 transition-colors"
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "8px 16px",
+              backgroundColor: "#f0ede8", color: "#0a0a0a",
+              border: "none", borderRadius: 8,
+              fontSize: 11, fontWeight: 700, cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif",
+              letterSpacing: "0.02em",
+            }}
           >
             + Add signal
           </button>
@@ -180,7 +196,7 @@ export default function ConceptMap() {
       </div>
 
       {/* React Flow canvas */}
-      <div className="w-full h-full pt-12">
+      <div style={{ width: "100%", height: "100%", paddingTop: 52 }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -194,7 +210,7 @@ export default function ConceptMap() {
           maxZoom={1.8}
           onPaneClick={() => { setSelectedSignal(null); setSelectedTrend(null); }}
         >
-          <Background color="#e8e8e4" gap={30} size={1} />
+          <Background color="#1e1e1e" gap={32} size={1} />
           <Controls showInteractive={false} className="!bottom-6 !left-6 !top-auto" />
           <MiniMap
             nodeColor={(n) => {
