@@ -10,6 +10,7 @@ export interface Trend {
   whyRelevant: string;
   trajectory: string;
   nextSteps: string[];
+  macroContext?: string;
 }
 
 export interface Signal {
@@ -22,6 +23,7 @@ export interface Signal {
   sourceUrl?: string;
   date?: string;
   crossLinks?: string[]; // signal IDs from OTHER trends this connects to
+  isLive?: boolean;
   // legacy fields (old canvas/feed/reports pages)
   why_emerging?: string;
   brand_relevance?: string;

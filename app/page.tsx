@@ -58,10 +58,39 @@ const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
   "longevity":              { x: 1560, y: 1800 },
 };
 
+// ─── Seen-signal tracking (localStorage) ─────────────────────────────────────
+
+const SEEN_KEY = "tr-seen-v1";
+
+function loadSeen(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(SEEN_KEY);
+    return raw ? new Set(JSON.parse(raw) as string[]) : new Set();
+  } catch { return new Set(); }
+}
+
+function saveSeen(ids: Set<string>) {
+  try { localStorage.setItem(SEEN_KEY, JSON.stringify([...ids])); } catch {}
+}
+
+// ─── CSV export ───────────────────────────────────────────────────────────────
+
+function toCSV(headers: string[], rows: string[][]): string {
+  const esc = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  return [headers, ...rows].map((r) => r.map(esc).join(",")).join("\n");
+}
+
+function dlCSV(content: string, name: string) {
+  const url = URL.createObjectURL(new Blob(["﻿" + content], { type: "text/csv;charset=utf-8;" }));
+  Object.assign(document.createElement("a"), { href: url, download: name }).click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 // ─── Node types ───────────────────────────────────────────────────────────────
 
-type TrendNodeData = { id: string; name: string; color: string; score: number };
-type SignalNodeData = { id: string; title: string; color: string; source?: string };
+type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number };
+type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean };
 
 const SOURCE_ICON: Record<string, string> = {
   reddit: "●", arxiv: "◆", youtube: "▶", hackernews: "○", news: "·", manual: "·",
@@ -77,21 +106,36 @@ function blobFromId(id: string): string {
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const dark = !isLight(data.color);
   return (
-    <div style={{
-      width: CIRCLE_D, height: CIRCLE_D,
-      borderRadius: BLOB[data.id] ?? "50%",
-      background: data.color,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      textAlign: "center", padding: 22,
-      boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-      boxShadow: `0 6px 32px ${data.color}50`,
-    }}>
-      <div style={{ fontSize: 11, fontWeight: 800, color: dark ? "#fff" : "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
-        {data.name}
-      </div>
-      <div style={{ marginTop: 8, fontSize: 9, fontWeight: 700, color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.32)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
-        {data.score}%
+    <div style={{ position: "relative" }}>
+      {data.newCount > 0 && (
+        <div style={{
+          position: "absolute", top: -6, right: -6, zIndex: 2,
+          minWidth: 18, height: 18, borderRadius: 9,
+          background: "#FF2D78", color: "#fff",
+          fontSize: 9, fontWeight: 900, padding: "0 5px",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 1px 6px rgba(255,45,120,0.4)",
+          letterSpacing: "0.02em",
+        }}>
+          {data.newCount}
+        </div>
+      )}
+      <div style={{
+        width: CIRCLE_D, height: CIRCLE_D,
+        borderRadius: BLOB[data.id] ?? "50%",
+        background: data.color,
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        textAlign: "center", padding: 22,
+        boxSizing: "border-box", cursor: "pointer", userSelect: "none",
+        boxShadow: `0 6px 32px ${data.color}50`,
+      }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: dark ? "#fff" : "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
+          {data.name}
+        </div>
+        <div style={{ marginTop: 8, fontSize: 9, fontWeight: 700, color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.32)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+          {data.score}%
+        </div>
       </div>
     </div>
   );
@@ -101,15 +145,32 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: SIG_W,
-      background: `${data.color}12`,
-      border: `1.5px solid ${data.color}55`,
+      background: data.isLive ? `${data.color}18` : `${data.color}12`,
+      border: `1.5px solid ${data.isNew ? data.color + "99" : data.isLive ? data.color + "88" : data.color + "55"}`,
       borderRadius: blobFromId(data.id),
       padding: "8px 13px 8px 11px",
       display: "flex", alignItems: "flex-start", gap: 6,
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      boxShadow: `0 2px 12px ${data.color}18`,
+      boxShadow: data.isNew ? `0 2px 14px ${data.color}30` : `0 2px 12px ${data.color}18`,
+      position: "relative",
     }}>
+      {data.isNew && (
+        <span style={{
+          position: "absolute", top: -7, left: 8,
+          fontSize: 7, fontWeight: 900, color: "#fff",
+          background: "#FF2D78",
+          borderRadius: 3, padding: "1px 4px",
+          letterSpacing: "0.07em", lineHeight: 1.5,
+        }}>NEW</span>
+      )}
+      {data.isLive && (
+        <span style={{
+          position: "absolute", top: 5, right: 7,
+          width: 5, height: 5, borderRadius: "50%",
+          background: "#00c47a",
+        }} />
+      )}
       <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8, marginTop: 3 }}>
         {SOURCE_ICON[data.source ?? "news"] ?? "·"}
       </span>
@@ -124,29 +185,40 @@ const NODE_TYPES = { trendCircle: TrendCircleNode, signalOrbit: SignalOrbitNode 
 
 // ─── Build graph ──────────────────────────────────────────────────────────────
 
-function buildGraph(extraSignals: Signal[]): { nodes: Node[]; edges: Edge[] } {
+function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   const allSignals = [...SIGNALS, ...extraSignals];
 
   TRENDS.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
+    const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
+    const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
+
     nodes.push({
       id: trend.id, type: "trendCircle", position: pos,
-      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore } as TrendNodeData,
+      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount } as TrendNodeData,
     });
 
-    const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const total = trendSignals.length;
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
 
     trendSignals.forEach((sig, i) => {
-      const angle = -Math.PI / 2 + (i / total) * 2 * Math.PI;
+      // Organic blob orbit: vary angle and radius per signal via deterministic hash
+      let h = 0;
+      for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
+      const angleJitter = ((h & 0xff) / 255 - 0.5) * 0.7;
+      const rScale = 0.78 + ((h >> 8 & 0xff) / 255) * 0.44;
+      const baseAngle = -Math.PI / 2 + (i / total) * 2 * Math.PI;
+      const angle = baseAngle + angleJitter;
+      const r = ORBIT_R * rScale;
+      const isNew = !seenIds.has(sig.id);
+
       nodes.push({
         id: sig.id, type: "signalOrbit",
-        position: { x: cx + ORBIT_R * Math.cos(angle) - SIG_W / 2, y: cy + ORBIT_R * Math.sin(angle) - SIG_H / 2 },
-        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source } as SignalNodeData,
+        position: { x: cx + r * Math.cos(angle) - SIG_W / 2, y: cy + r * Math.sin(angle) - SIG_H / 2 },
+        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
@@ -200,34 +272,88 @@ export default function HomePage() {
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [showAdd,      setShowAdd]      = useState(false);
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
+  const [liveSignals, setLiveSignals] = useState<Signal[]>([]);
+  const [liveLoading, setLiveLoading] = useState(true);
   const [focusIdx,     setFocusIdx]     = useState(0);
+  // Seed seen IDs with all static signals on first visit so they don't show NEW
+  const [seenIds, setSeenIds] = useState<Set<string>>(() => {
+    const stored = loadSeen();
+    if (stored.size === 0) {
+      const initial = new Set(SIGNALS.map((s) => s.id));
+      saveSeen(initial);
+      return initial;
+    }
+    return stored;
+  });
   const swipeStart = useRef<number | null>(null);
 
-  const { nodes: initialNodes, edges: initialEdges } = useMemo(
-    () => buildGraph(extraSignals),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-  const [nodes] = useNodesState(initialNodes);
-  const [edges] = useEdgesState(initialEdges);
+  const markSeen = useCallback((ids: string[]) => {
+    setSeenIds((prev) => {
+      const next = new Set([...prev, ...ids]);
+      saveSeen(next);
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      fetch("/api/live-signals")
+        .then((r) => r.json())
+        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
+        .catch(() => { if (!cancelled) setLiveLoading(false); });
+    };
+    load();
+    const timer = setInterval(load, 2 * 60 * 60 * 1000);
+    return () => { cancelled = true; clearInterval(timer); };
+  }, []);
+
+  const allSignals = useMemo(() => [...SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
+  const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
+  const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds), [allExtraSignals, seenIds]);
+  const [nodes, setNodes] = useNodesState(graphNodes);
+  const [edges, setEdges] = useEdgesState(graphEdges);
+
+  useEffect(() => {
+    setNodes(graphNodes);
+    setEdges(graphEdges);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphNodes, graphEdges]);
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
       const trend = TRENDS.find((t) => t.id === node.id);
-      if (trend) setActiveTrend(trend);
+      if (trend) {
+        setActiveTrend(trend);
+        markSeen(allSignals.filter((s) => s.trendId === trend.id).map((s) => s.id));
+      }
     } else if (node.type === "signalOrbit") {
-      const sig = [...SIGNALS, ...extraSignals].find((s) => s.id === node.id);
-      if (sig) setActiveSignal(sig);
+      const sig = allSignals.find((s) => s.id === node.id);
+      if (sig) { setActiveSignal(sig); markSeen([sig.id]); }
     }
-  }, [extraSignals]);
+  }, [allSignals, markSeen]);
 
   const handleAddSignal = useCallback((s: Signal) => {
     setExtraSignals((prev) => [...prev, s]);
     setShowAdd(false);
   }, []);
 
-  const allSignals = useMemo(() => [...SIGNALS, ...extraSignals], [extraSignals]);
   const activeTrendForSignal = activeSignal ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null : null;
+
+  const exportCSV = useCallback(() => {
+    const date = new Date().toISOString().split("T")[0];
+    dlCSV(toCSV(
+      ["ID", "Name", "Description", "Color", "Relevance Score", "Why Relevant", "Macro Context", "Trajectory", "Next Steps"],
+      TRENDS.map((t) => [t.id, t.name, t.description, t.color, String(t.relevanceScore), t.whyRelevant, t.macroContext ?? "", t.trajectory, t.nextSteps.join(" | ")])
+    ), `trend-radar-trends-${date}.csv`);
+    setTimeout(() => dlCSV(toCSV(
+      ["Signal ID", "Trend ID", "Trend Name", "Title", "Summary", "Source", "Source Name", "URL", "Date", "Is Live"],
+      allSignals.map((s) => {
+        const t = TRENDS.find((x) => x.id === s.trendId);
+        return [s.id, s.trendId ?? "", t?.name ?? "", s.title, s.summary, s.source ?? "", s.sourceName ?? "", s.sourceUrl ?? "", s.date ?? "", s.isLive ? "yes" : "no"];
+      })
+    ), `trend-radar-signals-${date}.csv`), 400);
+  }, [allSignals]);
 
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
   const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
@@ -244,10 +370,22 @@ export default function HomePage() {
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
         <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#111" }}>Trend Radar</span>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
             {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
+            {liveSignals.length > 0 && (
+              <span style={{ color: "#00c47a", marginLeft: 6, fontWeight: 700 }}>
+                +{liveSignals.length} live
+              </span>
+            )}
+            {liveLoading && <span style={{ marginLeft: 6, opacity: 0.4 }}>●</span>}
           </span>
+          <button
+            onClick={exportCSV}
+            style={{ padding: "6px 14px", background: "#f5f3ee", color: "#555", border: "1px solid #e8e4de", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+          >
+            Export CSV
+          </button>
           <button
             onClick={() => setShowAdd(true)}
             style={{ padding: "6px 16px", background: "#111", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
@@ -340,7 +478,7 @@ export default function HomePage() {
       {activeTrend && (
         <TrendDetailModal
           trend={activeTrend}
-          extraSignals={extraSignals}
+          extraSignals={allExtraSignals}
           onClose={() => setActiveTrend(null)}
           onSelectSignal={(s) => { setActiveTrend(null); setActiveSignal(s); }}
         />
@@ -351,9 +489,7 @@ export default function HomePage() {
           signal={activeSignal}
           trendColor={activeTrendForSignal.color}
           trendName={activeTrendForSignal.name}
-          allSignals={allSignals}
           onClose={() => setActiveSignal(null)}
-          onSelectSignal={(s) => setActiveSignal(s)}
         />
       )}
 
