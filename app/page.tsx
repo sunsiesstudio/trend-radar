@@ -4,9 +4,7 @@ import { useState, useCallback, useMemo } from "react";
 import ReactFlow, {
   Node,
   Edge,
-  Background,
   Controls,
-  BackgroundVariant,
   NodeProps,
   useNodesState,
   useEdgesState,
@@ -15,50 +13,67 @@ import "reactflow/dist/style.css";
 
 import { TRENDS, SIGNALS } from "@/lib/trends";
 import { Trend, Signal } from "@/types";
-import { TrendShape } from "@/components/map/TrendShape";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 
-// ─── Layout constants ─────────────────────────────────────────────────────────
-const CARD_W = 200;
-const CARD_H = 248;
-const SIG_W = 190;
-const SIG_H = 52;
-const SIG_GAP = 7;
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const BG = "#060c1e";
+const BLOB_FILL = "rgba(80, 160, 255, 0.055)";
+const BLOB_BORDER = "rgba(120, 200, 255, 0.38)";
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+const CARD_W = 250;
+const CARD_H = 260;
+const SIG_W = 188;
+const SIG_H = 30;
+const SIG_GAP = 6;
 const SIG_BELOW = 18;
 
-// Trend grid positions — Row 1 / Row 2 / Row 3
+// Organic blob border-radius per trend — each blob is a different shape
+const BLOB_RADII: Record<string, string> = {
+  "ai-creativity":         "62% 38% 56% 44% / 46% 54% 46% 54%",
+  "digital-identity":      "48% 52% 38% 62% / 60% 40% 62% 38%",
+  "ar-commerce":           "55% 45% 62% 38% / 40% 60% 50% 50%",
+  "biotech-beauty":        "40% 60% 55% 45% / 54% 46% 42% 58%",
+  "sustainable-materials": "58% 42% 44% 56% / 48% 52% 60% 40%",
+  "3d-printing":           "44% 56% 60% 40% / 56% 44% 38% 62%",
+  "wearables":             "52% 48% 46% 54% / 38% 62% 54% 46%",
+  "neurotech":             "60% 40% 52% 48% / 44% 56% 62% 38%",
+  "spatial-computing":     "46% 54% 58% 42% / 60% 40% 46% 54%",
+  "longevity":             "54% 46% 40% 60% / 52% 48% 56% 44%",
+};
+
+// Trend positions — tighter organic cluster
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
-  "ai-creativity":          { x: 60,   y: 40  },
-  "digital-identity":       { x: 360,  y: 20  },
-  "ar-commerce":            { x: 660,  y: 40  },
+  "ai-creativity":          { x: 50,   y: 50  },
+  "digital-identity":       { x: 320,  y: 20  },
+  "ar-commerce":            { x: 580,  y: 65  },
 
-  "biotech-beauty":         { x: 60,   y: 650 },
-  "sustainable-materials":  { x: 360,  y: 630 },
-  "3d-printing":            { x: 660,  y: 650 },
-  "wearables":              { x: 960,  y: 635 },
+  "biotech-beauty":         { x: 80,   y: 400 },
+  "sustainable-materials":  { x: 355,  y: 370 },
+  "3d-printing":            { x: 610,  y: 415 },
+  "wearables":              { x: 870,  y: 280 },
 
-  "neurotech":              { x: 60,   y: 1260 },
-  "spatial-computing":      { x: 360,  y: 1240 },
-  "longevity":              { x: 660,  y: 1260 },
+  "neurotech":              { x: 120,  y: 760 },
+  "spatial-computing":      { x: 390,  y: 730 },
+  "longevity":              { x: 650,  y: 775 },
 };
 
-// Slight moodboard rotations per card
 const ROTATIONS: Record<string, number> = {
-  "ai-creativity": -1.4,
-  "digital-identity": 1.1,
-  "ar-commerce": -0.7,
-  "biotech-beauty": 1.8,
-  "sustainable-materials": -1.1,
-  "3d-printing": 1.4,
-  "wearables": -2.0,
-  "neurotech": 0.9,
-  "spatial-computing": -1.3,
-  "longevity": 1.2,
+  "ai-creativity": -1.2,
+  "digital-identity": 0.8,
+  "ar-commerce": -0.5,
+  "biotech-beauty": 1.4,
+  "sustainable-materials": -0.9,
+  "3d-printing": 1.1,
+  "wearables": -1.7,
+  "neurotech": 0.7,
+  "spatial-computing": -1.1,
+  "longevity": 1.0,
 };
 
-// ─── Custom node types ────────────────────────────────────────────────────────
+// ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = {
   trendId: string;
@@ -73,96 +88,135 @@ type SignalNodeData = {
   title: string;
   color: string;
   sourceName?: string;
-  date?: string;
   onClick: () => void;
 };
 
-function TrendCardNode({ data }: NodeProps<TrendNodeData>) {
+function TrendBlobNode({ data }: NodeProps<TrendNodeData>) {
+  const radii = BLOB_RADII[data.trendId] ?? "50%";
+
   return (
     <div
       onClick={data.onClick}
       style={{
         width: CARD_W,
-        background: "#fff",
-        borderRadius: 16,
-        boxShadow: "0 4px 20px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05)",
-        border: "1px solid #ece9e3",
-        overflow: "hidden",
+        height: CARD_H,
+        background: BLOB_FILL,
+        borderRadius: radii,
+        border: `1.5px solid ${BLOB_BORDER}`,
+        boxShadow: `0 0 32px rgba(80,200,255,0.28), 0 0 80px rgba(60,160,255,0.10), inset 0 0 60px rgba(80,200,255,0.04)`,
         cursor: "pointer",
         transform: `rotate(${data.rotation}deg)`,
-        transformOrigin: "center",
-        transition: "box-shadow 0.15s ease, transform 0.15s ease",
         userSelect: "none",
         WebkitUserSelect: "none",
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        padding: "24px 22px",
+        transition: "box-shadow 0.18s ease",
       }}
     >
-      {/* Color stripe top */}
-      <div style={{ height: 3, background: data.color }} />
-
-      {/* Shape art area */}
+      {/* Score watermark */}
       <div style={{
-        background: data.color + "0E",
-        padding: "22px 20px 16px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        position: "absolute",
+        bottom: -10,
+        right: 10,
+        fontSize: 96,
+        fontWeight: 900,
+        color: "rgba(100,200,255,0.06)",
+        lineHeight: 1,
+        letterSpacing: "-0.06em",
+        fontFamily: "monospace",
+        pointerEvents: "none",
+        userSelect: "none",
       }}>
-        <div style={{ width: 88, height: 88 }}>
-          <TrendShape trendId={data.trendId} color={data.color} />
-        </div>
+        {data.score}
       </div>
 
-      {/* Content area */}
-      <div style={{ padding: "12px 14px 16px", borderTop: "1px solid #f5f2ec" }}>
+      {/* Colour accent — glowing dot */}
+      <div style={{
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        background: data.color,
+        boxShadow: `0 0 10px ${data.color}, 0 0 22px ${data.color}88`,
+        flexShrink: 0,
+      }} />
+
+      {/* Trend name */}
+      <div style={{
+        fontSize: 14.5,
+        fontWeight: 600,
+        color: "rgba(210,235,255,0.88)",
+        lineHeight: 1.25,
+        letterSpacing: "-0.01em",
+        maxWidth: 190,
+      }}>
+        {data.name}
+      </div>
+
+      {/* Sci-fi data row */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+      }}>
         <div style={{
-          fontSize: 9, fontWeight: 700, color: data.color,
-          textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 7,
+          width: 24,
+          height: 1,
+          background: "rgba(100,200,255,0.35)",
+        }} />
+        <div style={{
+          fontSize: 9,
+          fontWeight: 600,
+          color: "rgba(100,200,255,0.5)",
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          fontFamily: "monospace",
         }}>
-          {data.score}% relevance
-        </div>
-        <div
-          className="serif"
-          style={{
-            fontSize: 13.5,
-            lineHeight: 1.28,
-            color: "#1a1a1a",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {data.name}
+          {data.score}%
         </div>
       </div>
     </div>
   );
 }
 
-function SignalCardNode({ data }: NodeProps<SignalNodeData>) {
+function SignalPillNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div
       onClick={data.onClick}
       style={{
         width: SIG_W,
-        background: "#fff",
-        border: "1px solid #ece9e3",
-        borderLeft: `3px solid ${data.color}`,
-        borderRadius: 8,
-        padding: "7px 10px 8px",
+        background: "rgba(80,160,255,0.06)",
+        borderRadius: 100,
+        border: "1px solid rgba(100,200,255,0.18)",
+        padding: "5px 13px",
         cursor: "pointer",
         userSelect: "none",
         WebkitUserSelect: "none",
-        boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
       }}
     >
-      <div style={{ fontSize: 9, color: "#bbb", fontWeight: 600, marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-        {data.sourceName} {data.date ? `· ${data.date}` : ""}
-      </div>
       <div style={{
-        fontSize: 11, fontWeight: 600, color: "#1a1a1a",
-        lineHeight: 1.35,
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: "vertical",
+        width: 4,
+        height: 4,
+        borderRadius: "50%",
+        background: data.color,
+        boxShadow: `0 0 6px ${data.color}`,
+        flexShrink: 0,
+      }} />
+      <div style={{
+        fontSize: 10,
+        fontWeight: 400,
+        color: "rgba(180,220,255,0.65)",
+        whiteSpace: "nowrap",
         overflow: "hidden",
+        textOverflow: "ellipsis",
+        letterSpacing: "0.005em",
       }}>
         {data.title}
       </div>
@@ -171,11 +225,11 @@ function SignalCardNode({ data }: NodeProps<SignalNodeData>) {
 }
 
 const NODE_TYPES = {
-  trendCard: TrendCardNode,
-  signalCard: SignalCardNode,
+  trendBlob: TrendBlobNode,
+  signalPill: SignalPillNode,
 };
 
-// ─── Build initial nodes & edges ──────────────────────────────────────────────
+// ─── Build graph ──────────────────────────────────────────────────────────────
 
 function buildGraph(
   extraSignals: Signal[],
@@ -184,17 +238,15 @@ function buildGraph(
 ): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
-
   const allSignals = [...SIGNALS, ...extraSignals];
 
   TRENDS.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
     const rot = ROTATIONS[trend.id] ?? 0;
 
-    // Trend card node
     nodes.push({
       id: trend.id,
-      type: "trendCard",
+      type: "trendBlob",
       position: pos,
       draggable: false,
       selectable: false,
@@ -208,7 +260,6 @@ function buildGraph(
       } as TrendNodeData,
     });
 
-    // Signal nodes — column below the trend card
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     trendSignals.forEach((sig, i) => {
       const sigX = pos.x + (CARD_W - SIG_W) / 2;
@@ -216,7 +267,7 @@ function buildGraph(
 
       nodes.push({
         id: sig.id,
-        type: "signalCard",
+        type: "signalPill",
         position: { x: sigX, y: sigY },
         draggable: false,
         selectable: false,
@@ -224,16 +275,12 @@ function buildGraph(
           title: sig.title,
           color: trend.color,
           sourceName: sig.sourceName,
-          date: sig.date
-            ? new Date(sig.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-            : undefined,
           onClick: () => onSignalClick(sig),
         } as SignalNodeData,
       });
     });
   });
 
-  // Cross-signal edges derived from crossLinks (deduplicated)
   const seenEdges = new Set<string>();
   allSignals.forEach((sig) => {
     (sig.crossLinks ?? []).forEach((targetId) => {
@@ -245,8 +292,7 @@ function buildGraph(
           source: sig.id,
           target: targetId,
           type: "straight",
-          style: { stroke: "#C8C3BA", strokeWidth: 1, strokeDasharray: "5 4" },
-          animated: false,
+          style: { stroke: "rgba(255,255,255,0.08)", strokeWidth: 1, strokeDasharray: "4 4" },
         });
       }
     });
@@ -255,7 +301,7 @@ function buildGraph(
   return { nodes, edges };
 }
 
-// ─── Main page ────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   const [activeTrend, setActiveTrend] = useState<Trend | null>(null);
@@ -278,40 +324,40 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div style={{
-      width: "100vw",
-      height: "100dvh",
-      position: "fixed",
-      inset: 0,
-      background: "#F5F2EC",
-    }}>
-      {/* Floating header */}
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: BG }}>
+      {/* Header */}
       <div style={{
         position: "absolute",
         top: 0, left: 0, right: 0,
         zIndex: 10,
-        padding: "0 16px",
+        padding: "0 20px",
         height: 52,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "rgba(245,242,236,0.88)",
-        backdropFilter: "blur(10px)",
-        borderBottom: "1px solid rgba(0,0,0,0.07)",
+        background: "rgba(6,12,30,0.85)",
+        backdropFilter: "blur(14px)",
+        borderBottom: "1px solid rgba(100,200,255,0.1)",
       }}>
-        <span className="serif" style={{ fontSize: 20, letterSpacing: "-0.03em", color: "#1a1a1a" }}>
+        <span style={{
+          fontSize: 16,
+          fontWeight: 700,
+          letterSpacing: "-0.03em",
+          color: "rgba(180,220,255,0.9)",
+        }}>
           Trend Radar
         </span>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#aaa" }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          <span style={{ fontSize: 11, color: "rgba(100,180,255,0.35)", letterSpacing: "0.04em", fontFamily: "monospace" }}>
             {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
           </span>
           <button
             onClick={() => setShowAdd(true)}
             style={{
-              padding: "7px 14px",
-              background: "#1a1a1a",
-              color: "#fff",
+              padding: "6px 16px",
+              background: "rgba(100,200,255,0.15)",
+              color: "rgba(180,230,255,0.9)",
+              border: "1px solid rgba(100,200,255,0.3)",
               border: "none",
               borderRadius: 20,
               fontSize: 12,
@@ -325,30 +371,23 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* React Flow canvas */}
+      {/* Canvas */}
       <div style={{ position: "absolute", inset: 0, paddingTop: 52 }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={NODE_TYPES}
           fitView
-          fitViewOptions={{ padding: 0.12 }}
-          minZoom={0.15}
+          fitViewOptions={{ padding: 0.1 }}
+          minZoom={0.12}
           maxZoom={2}
           panOnDrag
           zoomOnPinch
           zoomOnScroll
-          panOnScroll={false}
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#F5F2EC" }}
+          style={{ background: BG }}
         >
-          <Background
-            variant={BackgroundVariant.Dots}
-            gap={28}
-            size={1.2}
-            color="#D9D4CB"
-          />
           <Controls
             position="bottom-right"
             showInteractive={false}
@@ -357,7 +396,6 @@ export default function HomePage() {
         </ReactFlow>
       </div>
 
-      {/* Trend detail modal */}
       {activeTrend && (
         <TrendDetailModal
           trend={activeTrend}
@@ -367,7 +405,6 @@ export default function HomePage() {
         />
       )}
 
-      {/* Signal popup */}
       {activeSignal && (() => {
         const t = TRENDS.find((t) => t.id === activeSignal.trendId);
         return t ? (
@@ -380,7 +417,6 @@ export default function HomePage() {
         ) : null;
       })()}
 
-      {/* Add signal */}
       {showAdd && (
         <AddSignalModal
           onAdd={handleAddSignal}
