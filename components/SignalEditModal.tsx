@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Signal, SignalCategory, SignalStrength } from "@/types";
+import { Signal } from "@/types";
+type SignalCategory = string;
+type SignalStrength = "weak" | "emerging" | "strong";
 import { X } from "lucide-react";
 
 const CATEGORIES: SignalCategory[] = [
@@ -113,7 +115,7 @@ export function SignalEditModal({ signal, onSave, onDelete, onClose }: Props) {
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tags (comma separated)</label>
             <input
               className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={form.tags.join(", ")}
+              value={(form.tags ?? []).join(", ")}
               onChange={(e) => set("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))}
             />
           </div>

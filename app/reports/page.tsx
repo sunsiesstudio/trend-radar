@@ -33,7 +33,7 @@ We identified **${strong.length} confirmed strong trends**, **${emerging.length}
 | 🟡 Emerging | ${emerging.length} | Early signals with real momentum. Pilot now. |
 | 🔵 Weak | ${weak.length} | Future-facing. Monitor and position early. |
 
-**Categories covered:** ${categories.map((c) => c.replace(/-/g, " ")).join(", ")}
+**Categories covered:** ${categories.map((c) => (c ?? "other").replace(/-/g, " ")).join(", ")}
 
 ---
 
@@ -41,7 +41,7 @@ We identified **${strong.length} confirmed strong trends**, **${emerging.length}
 
 ${signals.map((s, i) => `### ${i + 1}. ${s.title}
 
-**Category:** ${s.category.replace(/-/g, " ")} · **Signal strength:** ${getStrengthLabel(s.strength)}
+**Category:** ${(s.category ?? "other").replace(/-/g, " ")} · **Signal strength:** ${getStrengthLabel(s.strength as "weak" | "emerging" | "strong" ?? "weak")}
 
 ${s.summary}
 
@@ -51,8 +51,8 @@ ${s.why_emerging}
 **Strategic relevance for brands**
 ${s.brand_relevance}
 
-${s.tags.length > 0 ? `*Tags: ${s.tags.map(t => `#${t}`).join(" ")}*` : ""}
-${s.sources.length > 0 ? `*Sources: ${s.sources.join(", ")}*` : ""}
+${(s.tags ?? []).length > 0 ? `*Tags: ${(s.tags ?? []).map(t => `#${t}`).join(" ")}*` : ""}
+${(s.sources ?? []).length > 0 ? `*Sources: ${(s.sources ?? []).join(", ")}*` : ""}
 `).join("\n---\n\n")}
 
 ---
@@ -120,8 +120,9 @@ export default function ReportsPage() {
   };
 
   const groupedSignals = MOCK_SIGNALS.reduce<Record<string, Signal[]>>((acc, s) => {
-    if (!acc[s.category]) acc[s.category] = [];
-    acc[s.category].push(s);
+    const cat = s.category ?? "other";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(s);
     return acc;
   }, {});
 

@@ -27,7 +27,7 @@ export function SignalNode({ data, selected }: NodeProps<SignalNodeData>) {
             className="text-xs font-semibold px-2 py-0.5 rounded-full text-white"
             style={{ backgroundColor: color }}
           >
-            {data.category.replace("-", " ")}
+            {(data.category ?? "other").replace("-", " ")}
           </span>
           <span
             className={`text-xs px-2 py-0.5 rounded-full font-medium border`}

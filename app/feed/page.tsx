@@ -23,7 +23,7 @@ export default function FeedPage() {
       !query ||
       s.title.toLowerCase().includes(q) ||
       s.summary.toLowerCase().includes(q) ||
-      s.tags.some((t) => t.toLowerCase().includes(q));
+      (s.tags ?? []).some((t) => t.toLowerCase().includes(q));
     const matchesCat = category === "all" || s.category === category;
     const matchesStrength = strength === "all" || s.strength === strength;
     return matchesQuery && matchesCat && matchesStrength;
@@ -130,14 +130,14 @@ function SignalCard({ signal }: { signal: Signal }) {
               className="text-xs font-medium px-2.5 py-0.5 rounded-full text-white"
               style={{ backgroundColor: color }}
             >
-              {signal.category.replace(/-/g, " ")}
+              {(signal.category ?? "other").replace(/-/g, " ")}
             </span>
             <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getStrengthBadgeStyle(signal.strength)}`}>
               {getStrengthLabel(signal.strength)}
             </span>
           </div>
           <span className="text-xs text-gray-300 shrink-0 mt-0.5">
-            {new Date(signal.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            {new Date(signal.created_at ?? signal.date ?? "").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </span>
         </div>
 
@@ -158,18 +158,18 @@ function SignalCard({ signal }: { signal: Signal }) {
               </div>
               <p className="text-sm text-gray-700 leading-relaxed">{signal.brand_relevance}</p>
             </div>
-            {signal.tags.length > 0 && (
+            {(signal.tags ?? []).length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {signal.tags.map((tag) => (
+                {(signal.tags ?? []).map((tag) => (
                   <span key={tag} className="text-xs bg-gray-50 text-gray-400 px-2.5 py-0.5 rounded-full border border-gray-100">
                     #{tag}
                   </span>
                 ))}
               </div>
             )}
-            {signal.sources.length > 0 && (
+            {(signal.sources ?? []).length > 0 && (
               <p className="text-xs text-gray-300">
-                Sources: {signal.sources.join(" · ")}
+                Sources: {(signal.sources ?? []).join(" · ")}
               </p>
             )}
           </div>

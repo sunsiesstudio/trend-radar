@@ -90,6 +90,11 @@ export default function CanvasPage() {
       const template = templateIndex !== undefined ? SIGNAL_TEMPLATES[templateIndex].defaults : {};
       const newSignal: Signal = {
         id,
+        trendId: "",
+        source: "manual",
+        sourceName: "Manual",
+        date: new Date().toISOString().slice(0, 10),
+        crossLinks: [],
         title: "New signal",
         summary: "",
         why_emerging: "",

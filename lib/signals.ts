@@ -366,8 +366,8 @@ export const SIGNAL_TEMPLATES = [
   },
 ];
 
-export function getSignalColor(category: Signal["category"]): string {
-  const colors: Record<Signal["category"], string> = {
+export function getSignalColor(category: Signal["category"] | undefined): string {
+  const colors: Record<string, string> = {
     ai: "#6366f1",
     "vr-ar": "#8b5cf6",
     wearables: "#ec4899",
@@ -379,17 +379,17 @@ export function getSignalColor(category: Signal["category"]): string {
     neurotech: "#f43f5e",
     other: "#6b7280",
   };
-  return colors[category];
+  return colors[category ?? "other"] ?? "#6b7280";
 }
 
-export function getStrengthLabel(strength: Signal["strength"]): string {
-  return { weak: "Weak signal", emerging: "Emerging", strong: "Strong" }[strength];
+export function getStrengthLabel(strength: Signal["strength"] | undefined): string {
+  return ({ weak: "Weak signal", emerging: "Emerging", strong: "Strong" } as Record<string, string>)[strength ?? "weak"] ?? "Weak signal";
 }
 
-export function getStrengthBadgeStyle(strength: Signal["strength"]): string {
-  return {
+export function getStrengthBadgeStyle(strength: Signal["strength"] | undefined): string {
+  return ({
     weak: "bg-gray-100 text-gray-600",
     emerging: "bg-amber-50 text-amber-700",
     strong: "bg-green-50 text-green-700",
-  }[strength];
+  } as Record<string, string>)[strength ?? "weak"] ?? "bg-gray-100 text-gray-600";
 }
