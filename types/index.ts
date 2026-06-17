@@ -29,6 +29,7 @@ export interface Signal {
   created_at?: string;
   updated_at?: string;
   manual?: boolean;
+  image?: string;
   position?: { x: number; y: number };
 }
 

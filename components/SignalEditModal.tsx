@@ -119,6 +119,23 @@ export function SignalEditModal({ signal, onSave, onDelete, onClose }: Props) {
               onChange={(e) => set("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))}
             />
           </div>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Image URL</label>
+            {form.image && (
+              <img
+                src={form.image}
+                alt=""
+                className="mt-2 w-full h-32 object-cover rounded-lg border border-gray-100"
+              />
+            )}
+            <input
+              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="https://…"
+              value={form.image ?? ""}
+              onChange={(e) => set("image", e.target.value || undefined)}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between p-6 border-t bg-gray-50 rounded-b-2xl">

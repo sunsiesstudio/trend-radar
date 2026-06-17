@@ -17,6 +17,7 @@ function nodeRotation(id: string): number {
 export function SignalNode({ data, selected }: NodeProps<SignalNodeData>) {
   const color = getSignalColor(data.category);
   const rotation = useMemo(() => nodeRotation(data.id), [data.id]);
+  const hasImage = Boolean(data.image);
 
   return (
     <div
@@ -32,52 +33,77 @@ export function SignalNode({ data, selected }: NodeProps<SignalNodeData>) {
           : "2px 4px 14px rgba(0,0,0,0.14), 1px 1px 3px rgba(0,0,0,0.07)",
         transition: "box-shadow 0.15s ease",
         position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Masking tape */}
+      {/* Masking tape — overlaps the top edge */}
       <div
         style={{
           position: "absolute",
-          top: -12,
+          top: -11,
           left: "50%",
           transform: "translateX(-50%) rotate(-1.5deg)",
           width: 52,
           height: 22,
-          background: "rgba(255, 248, 155, 0.58)",
+          background: "rgba(255, 248, 155, 0.60)",
           border: "0.5px solid rgba(200, 185, 95, 0.35)",
           borderRadius: 1,
-          zIndex: 1,
+          zIndex: 10,
           pointerEvents: "none",
         }}
       />
 
-      {/* Category color bar */}
-      <div style={{ height: 3, background: color, borderRadius: "2px 2px 0 0" }} />
-
       <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
 
-      <div style={{ padding: "12px 13px 13px" }}>
-        <div
-          style={{
-            fontSize: 8,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.11em",
-            color,
-            marginBottom: 7,
-          }}
-        >
-          {(data.category ?? "other").replace(/-/g, " ")}
+      {/* Image */}
+      {hasImage && (
+        <div style={{ height: 128, overflow: "hidden", flexShrink: 0 }}>
+          <img
+            src={data.image}
+            alt=""
+            draggable={false}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+              userSelect: "none",
+            }}
+          />
+        </div>
+      )}
+
+      {/* Category color strip */}
+      <div style={{ height: 3, background: color, flexShrink: 0 }} />
+
+      <div style={{ padding: "11px 13px 13px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.11em",
+              color,
+            }}
+          >
+            {(data.category ?? "other").replace(/-/g, " ")}
+          </div>
+          {data.updated_at && (
+            <span style={{ fontSize: 8, color: "#b0b0b0", fontWeight: 500, letterSpacing: "0.03em" }}>
+              {new Date(data.updated_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" })}
+            </span>
+          )}
         </div>
 
         <h3
           style={{
             margin: 0,
-            marginBottom: 8,
+            marginBottom: 7,
             fontSize: 13,
             fontWeight: 800,
             color: "#111",
-            lineHeight: 1.32,
+            lineHeight: 1.3,
           }}
         >
           {data.title}
@@ -90,7 +116,7 @@ export function SignalNode({ data, selected }: NodeProps<SignalNodeData>) {
             color: "#5a5a5a",
             lineHeight: 1.55,
             display: "-webkit-box",
-            WebkitLineClamp: 3,
+            WebkitLineClamp: hasImage ? 2 : 3,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
@@ -98,7 +124,7 @@ export function SignalNode({ data, selected }: NodeProps<SignalNodeData>) {
           {data.summary}
         </p>
 
-        <div style={{ marginTop: 11, display: "flex", alignItems: "center", gap: 5 }}>
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 5 }}>
           <div
             style={{
               width: 5,
