@@ -17,11 +17,25 @@ import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
-const CIRCLE_D    = 160;   // trend circle diameter
-const ORBIT_R     = 220;   // orbit radius (center-to-center)
-const SIG_W       = 154;   // signal pill width
-const SIG_H       = 44;    // signal pill height
+// ─── Layout constants ─────────────────────────────────────────────────────────
+const CIRCLE_D = 164;
+const ORBIT_R  = 230;
+const SIG_W    = 158;
+const SIG_H    = 44;
+
+// Organic blob shapes per trend (CSS 8-value border-radius)
+const BLOB: Record<string, string> = {
+  "ai-creativity":         "65% 35% 40% 60% / 55% 45% 55% 45%",
+  "digital-identity":      "45% 55% 65% 35% / 35% 65% 45% 55%",
+  "ar-commerce":           "55% 45% 35% 65% / 65% 35% 55% 45%",
+  "biotech-beauty":        "40% 60% 55% 45% / 60% 40% 35% 65%",
+  "sustainable-materials": "70% 30% 45% 55% / 45% 55% 65% 35%",
+  "3d-printing":           "35% 65% 60% 40% / 55% 45% 40% 60%",
+  "wearables":             "50% 50% 40% 60% / 65% 35% 50% 50%",
+  "neurotech":             "60% 40% 50% 50% / 40% 60% 35% 65%",
+  "spatial-computing":     "45% 55% 70% 30% / 50% 50% 45% 55%",
+  "longevity":             "55% 45% 45% 55% / 70% 30% 60% 40%",
+};
 
 function isLight(hex: string) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -30,25 +44,26 @@ function isLight(hex: string) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 140;
 }
 
-// Trends spaced 750 px apart so orbiting signals never clash
+// Trends spaced widely so orbiting signals never overlap
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
   "ai-creativity":          { x: 80,   y: 80   },
-  "digital-identity":       { x: 800,  y: 60   },
-  "ar-commerce":            { x: 1520, y: 80   },
+  "digital-identity":       { x: 820,  y: 60   },
+  "ar-commerce":            { x: 1560, y: 80   },
 
-  "biotech-beauty":         { x: 120,  y: 920  },
-  "sustainable-materials":  { x: 840,  y: 900  },
-  "3d-printing":            { x: 1560, y: 920  },
-  "wearables":              { x: 2280, y: 880  },
+  "biotech-beauty":         { x: 120,  y: 940  },
+  "sustainable-materials":  { x: 860,  y: 920  },
+  "3d-printing":            { x: 1600, y: 940  },
+  "wearables":              { x: 2340, y: 900  },
 
-  "neurotech":              { x: 80,   y: 1760 },
-  "spatial-computing":      { x: 800,  y: 1740 },
-  "longevity":              { x: 1520, y: 1760 },
+  "neurotech":              { x: 80,   y: 1800 },
+  "spatial-computing":      { x: 820,  y: 1780 },
+  "longevity":              { x: 1560, y: 1800 },
 };
 
-// ─── Node components ──────────────────────────────────────────────────────────
+// ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = {
+  id: string;
   name: string;
   color: string;
   score: number;
@@ -58,33 +73,44 @@ type TrendNodeData = {
 type SignalNodeData = {
   title: string;
   color: string;
+  source?: string;
   onClick: () => void;
+};
+
+const SOURCE_ICON: Record<string, string> = {
+  reddit: "●",
+  arxiv: "◆",
+  youtube: "▶",
+  hackernews: "○",
+  news: "·",
+  manual: "·",
 };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const dark = !isLight(data.color);
+  const blobR = BLOB[data.id] ?? "50%";
   return (
     <div
       onClick={data.onClick}
       style={{
         width: CIRCLE_D,
         height: CIRCLE_D,
-        borderRadius: "50%",
+        borderRadius: blobR,
         background: data.color,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: 20,
+        padding: 22,
         boxSizing: "border-box",
         cursor: "pointer",
         userSelect: "none",
-        boxShadow: `0 4px 24px ${data.color}55`,
+        boxShadow: `0 6px 32px ${data.color}50`,
       }}
     >
       <div style={{
-        fontSize: 11.5,
+        fontSize: 11,
         fontWeight: 800,
         color: dark ? "#fff" : "#111",
         lineHeight: 1.22,
@@ -96,7 +122,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         marginTop: 8,
         fontSize: 9,
         fontWeight: 700,
-        color: dark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.38)",
+        color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.32)",
         letterSpacing: "0.09em",
         textTransform: "uppercase",
         fontFamily: "monospace",
@@ -108,30 +134,25 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 }
 
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
+  const icon = SOURCE_ICON[data.source ?? "news"] ?? "·";
   return (
     <div
       onClick={data.onClick}
       style={{
         width: SIG_W,
-        background: `${data.color}12`,
+        background: `${data.color}10`,
         border: `1.5px solid ${data.color}`,
         borderRadius: 100,
-        padding: "6px 12px 6px 8px",
+        padding: "6px 12px 6px 10px",
         display: "flex",
         alignItems: "center",
-        gap: 7,
+        gap: 6,
         cursor: "pointer",
         userSelect: "none",
         boxSizing: "border-box",
       }}
     >
-      <div style={{
-        width: 7,
-        height: 7,
-        borderRadius: "50%",
-        background: data.color,
-        flexShrink: 0,
-      }} />
+      <span style={{ fontSize: 7, color: data.color, flexShrink: 0 }}>{icon}</span>
       <div style={{
         fontSize: 9.5,
         fontWeight: 600,
@@ -150,8 +171,8 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
 }
 
 const NODE_TYPES = {
-  trendCircle:  TrendCircleNode,
-  signalOrbit:  SignalOrbitNode,
+  trendCircle: TrendCircleNode,
+  signalOrbit: SignalOrbitNode,
 };
 
 // ─── Build graph ──────────────────────────────────────────────────────────────
@@ -168,7 +189,6 @@ function buildGraph(
   TRENDS.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
 
-    // Trend circle
     nodes.push({
       id: trend.id,
       type: "trendCircle",
@@ -176,6 +196,7 @@ function buildGraph(
       draggable: false,
       selectable: false,
       data: {
+        id: trend.id,
         name: trend.name,
         color: trend.color,
         score: trend.relevanceScore,
@@ -183,46 +204,41 @@ function buildGraph(
       } as TrendNodeData,
     });
 
-    // Signals orbit radially around the trend circle
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const total = trendSignals.length;
-    const trendCX = pos.x + CIRCLE_D / 2;
-    const trendCY = pos.y + CIRCLE_D / 2;
+    const cx = pos.x + CIRCLE_D / 2;
+    const cy = pos.y + CIRCLE_D / 2;
 
     trendSignals.forEach((sig, i) => {
-      // Distribute evenly around the circle, starting at the top
       const angle = -Math.PI / 2 + (i / total) * 2 * Math.PI;
-      const orbitX = trendCX + ORBIT_R * Math.cos(angle);
-      const orbitY = trendCY + ORBIT_R * Math.sin(angle);
+      const ox = cx + ORBIT_R * Math.cos(angle);
+      const oy = cy + ORBIT_R * Math.sin(angle);
 
       nodes.push({
         id: sig.id,
         type: "signalOrbit",
-        position: {
-          x: orbitX - SIG_W / 2,
-          y: orbitY - SIG_H / 2,
-        },
+        position: { x: ox - SIG_W / 2, y: oy - SIG_H / 2 },
         draggable: false,
         selectable: false,
         data: {
           title: sig.title,
           color: trend.color,
+          source: sig.source,
           onClick: () => onSignalClick(sig),
         } as SignalNodeData,
       });
 
-      // Spoke from trend circle to signal
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`,
         source: trend.id,
         target: sig.id,
         type: "straight",
-        style: { stroke: trend.color, strokeWidth: 1.4, opacity: 0.4 },
+        style: { stroke: trend.color, strokeWidth: 1.2, opacity: 0.3 },
       });
     });
   });
 
-  // Cross-signal links
+  // Cross-signal dashed links
   const seen = new Set<string>();
   allSignals.forEach((sig) => {
     (sig.crossLinks ?? []).forEach((targetId) => {
@@ -243,7 +259,7 @@ function buildGraph(
   return { nodes, edges };
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   const [activeTrend,  setActiveTrend]  = useState<Trend | null>(null);
@@ -265,26 +281,20 @@ export default function HomePage() {
     setShowAdd(false);
   }, []);
 
+  const allSignals = useMemo(() => [...SIGNALS, ...extraSignals], [extraSignals]);
+
+  const activeTrendForSignal = activeSignal
+    ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null
+    : null;
+
   return (
-    <div style={{
-      width: "100vw",
-      height: "100dvh",
-      position: "fixed",
-      inset: 0,
-      background: "#fff",
-    }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#fff" }}>
       {/* Header */}
       <div style={{
-        position: "absolute",
-        top: 0, left: 0, right: 0,
-        zIndex: 10,
-        height: 52,
-        padding: "0 20px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        background: "rgba(255,255,255,0.9)",
-        backdropFilter: "blur(12px)",
+        position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
+        height: 52, padding: "0 20px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
         <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#111" }}>
@@ -297,14 +307,8 @@ export default function HomePage() {
           <button
             onClick={() => setShowAdd(true)}
             style={{
-              padding: "6px 16px",
-              background: "#111",
-              color: "#fff",
-              border: "none",
-              borderRadius: 20,
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
+              padding: "6px 16px", background: "#111", color: "#fff",
+              border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
             }}
           >
             + Signal
@@ -320,7 +324,7 @@ export default function HomePage() {
           nodeTypes={NODE_TYPES}
           fitView
           fitViewOptions={{ padding: 0.08 }}
-          minZoom={0.08}
+          minZoom={0.06}
           maxZoom={2}
           panOnDrag
           zoomOnPinch
@@ -329,11 +333,7 @@ export default function HomePage() {
           proOptions={{ hideAttribution: true }}
           style={{ background: "#fff" }}
         >
-          <Controls
-            position="bottom-right"
-            showInteractive={false}
-            style={{ bottom: 24, right: 16 }}
-          />
+          <Controls position="bottom-right" showInteractive={false} style={{ bottom: 24, right: 16 }} />
         </ReactFlow>
       </div>
 
@@ -342,21 +342,20 @@ export default function HomePage() {
           trend={activeTrend}
           extraSignals={extraSignals}
           onClose={() => setActiveTrend(null)}
-          onSelectSignal={(s) => setActiveSignal(s)}
+          onSelectSignal={(s) => { setActiveTrend(null); setActiveSignal(s); }}
         />
       )}
 
-      {activeSignal && (() => {
-        const t = TRENDS.find((t) => t.id === activeSignal.trendId);
-        return t ? (
-          <SignalPopup
-            signal={activeSignal}
-            trendColor={t.color}
-            trendName={t.name}
-            onClose={() => setActiveSignal(null)}
-          />
-        ) : null;
-      })()}
+      {activeSignal && activeTrendForSignal && (
+        <SignalPopup
+          signal={activeSignal}
+          trendColor={activeTrendForSignal.color}
+          trendName={activeTrendForSignal.name}
+          allSignals={allSignals}
+          onClose={() => setActiveSignal(null)}
+          onSelectSignal={(s) => setActiveSignal(s)}
+        />
+      )}
 
       {showAdd && (
         <AddSignalModal

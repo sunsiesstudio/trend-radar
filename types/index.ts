@@ -7,6 +7,8 @@ export interface Trend {
   redditQuery: string;
   newsQuery: string;
   position: { x: number; y: number }; // center of node
+  whyRelevant: string;
+  nextSteps: string[];
 }
 
 export interface Signal {
