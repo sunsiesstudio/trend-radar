@@ -17,13 +17,11 @@ import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
-const BG = "#ffffff";
-const CIRCLE_D = 150;   // trend circle diameter
-const SIG_W    = 188;
-const SIG_H    = 38;
-const SIG_GAP  = 7;
-const SIG_BELOW = 20;
+// ─── Layout ───────────────────────────────────────────────────────────────────
+const CIRCLE_D    = 160;   // trend circle diameter
+const ORBIT_R     = 220;   // orbit radius (center-to-center)
+const SIG_W       = 154;   // signal pill width
+const SIG_H       = 44;    // signal pill height
 
 function isLight(hex: string) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -32,26 +30,25 @@ function isLight(hex: string) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 140;
 }
 
-// ─── Trend positions ──────────────────────────────────────────────────────────
+// Trends spaced 750 px apart so orbiting signals never clash
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
-  "ai-creativity":          { x: 50,   y: 40   },
-  "digital-identity":       { x: 310,  y: 20   },
-  "ar-commerce":            { x: 570,  y: 50   },
+  "ai-creativity":          { x: 80,   y: 80   },
+  "digital-identity":       { x: 800,  y: 60   },
+  "ar-commerce":            { x: 1520, y: 80   },
 
-  "biotech-beauty":         { x: 70,   y: 640  },
-  "sustainable-materials":  { x: 330,  y: 615  },
-  "3d-printing":            { x: 590,  y: 645  },
-  "wearables":              { x: 850,  y: 510  },
+  "biotech-beauty":         { x: 120,  y: 920  },
+  "sustainable-materials":  { x: 840,  y: 900  },
+  "3d-printing":            { x: 1560, y: 920  },
+  "wearables":              { x: 2280, y: 880  },
 
-  "neurotech":              { x: 90,   y: 1240 },
-  "spatial-computing":      { x: 350,  y: 1215 },
-  "longevity":              { x: 610,  y: 1250 },
+  "neurotech":              { x: 80,   y: 1760 },
+  "spatial-computing":      { x: 800,  y: 1740 },
+  "longevity":              { x: 1520, y: 1760 },
 };
 
-// ─── Node types ───────────────────────────────────────────────────────────────
+// ─── Node components ──────────────────────────────────────────────────────────
 
 type TrendNodeData = {
-  trendId: string;
   name: string;
   color: string;
   score: number;
@@ -61,14 +58,11 @@ type TrendNodeData = {
 type SignalNodeData = {
   title: string;
   color: string;
-  sourceName?: string;
   onClick: () => void;
 };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const textColor = isLight(data.color) ? "#111" : "#fff";
-  const subColor  = isLight(data.color) ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.55)";
-
+  const dark = !isLight(data.color);
   return (
     <div
       onClick={data.onClick}
@@ -81,30 +75,30 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        textAlign: "center",
+        padding: 20,
+        boxSizing: "border-box",
         cursor: "pointer",
         userSelect: "none",
-        textAlign: "center",
-        padding: 18,
-        boxSizing: "border-box",
-        boxShadow: `0 2px 16px ${data.color}55`,
+        boxShadow: `0 4px 24px ${data.color}55`,
       }}
     >
       <div style={{
         fontSize: 11.5,
         fontWeight: 800,
-        color: textColor,
-        lineHeight: 1.2,
+        color: dark ? "#fff" : "#111",
+        lineHeight: 1.22,
         letterSpacing: "-0.01em",
       }}>
         {data.name}
       </div>
       <div style={{
-        marginTop: 7,
+        marginTop: 8,
         fontSize: 9,
         fontWeight: 700,
-        color: subColor,
+        color: dark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.38)",
+        letterSpacing: "0.09em",
         textTransform: "uppercase",
-        letterSpacing: "0.1em",
         fontFamily: "monospace",
       }}>
         {data.score}%
@@ -113,33 +107,36 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   );
 }
 
-function SignalDotNode({ data }: NodeProps<SignalNodeData>) {
+function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div
       onClick={data.onClick}
       style={{
         width: SIG_W,
+        background: `${data.color}12`,
+        border: `1.5px solid ${data.color}`,
+        borderRadius: 100,
+        padding: "6px 12px 6px 8px",
         display: "flex",
-        alignItems: "flex-start",
-        gap: 9,
+        alignItems: "center",
+        gap: 7,
         cursor: "pointer",
         userSelect: "none",
-        padding: "2px 0",
+        boxSizing: "border-box",
       }}
     >
       <div style={{
-        width: 9,
-        height: 9,
+        width: 7,
+        height: 7,
         borderRadius: "50%",
         background: data.color,
         flexShrink: 0,
-        marginTop: 3,
       }} />
       <div style={{
-        fontSize: 10.5,
-        fontWeight: 500,
-        color: "#1a1a1a",
-        lineHeight: 1.38,
+        fontSize: 9.5,
+        fontWeight: 600,
+        color: "#111",
+        lineHeight: 1.32,
         display: "-webkit-box",
         WebkitLineClamp: 2,
         WebkitBoxOrient: "vertical",
@@ -153,8 +150,8 @@ function SignalDotNode({ data }: NodeProps<SignalNodeData>) {
 }
 
 const NODE_TYPES = {
-  trendCircle: TrendCircleNode,
-  signalDot:   SignalDotNode,
+  trendCircle:  TrendCircleNode,
+  signalOrbit:  SignalOrbitNode,
 };
 
 // ─── Build graph ──────────────────────────────────────────────────────────────
@@ -179,7 +176,6 @@ function buildGraph(
       draggable: false,
       selectable: false,
       data: {
-        trendId: trend.id,
         name: trend.name,
         color: trend.color,
         score: trend.relevanceScore,
@@ -187,50 +183,58 @@ function buildGraph(
       } as TrendNodeData,
     });
 
-    // Signal dots — centered column below circle
+    // Signals orbit radially around the trend circle
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
+    const total = trendSignals.length;
+    const trendCX = pos.x + CIRCLE_D / 2;
+    const trendCY = pos.y + CIRCLE_D / 2;
+
     trendSignals.forEach((sig, i) => {
-      const sigX = pos.x + (CIRCLE_D - SIG_W) / 2;
-      const sigY = pos.y + CIRCLE_D + SIG_BELOW + i * (SIG_H + SIG_GAP);
+      // Distribute evenly around the circle, starting at the top
+      const angle = -Math.PI / 2 + (i / total) * 2 * Math.PI;
+      const orbitX = trendCX + ORBIT_R * Math.cos(angle);
+      const orbitY = trendCY + ORBIT_R * Math.sin(angle);
 
       nodes.push({
         id: sig.id,
-        type: "signalDot",
-        position: { x: sigX, y: sigY },
+        type: "signalOrbit",
+        position: {
+          x: orbitX - SIG_W / 2,
+          y: orbitY - SIG_H / 2,
+        },
         draggable: false,
         selectable: false,
         data: {
           title: sig.title,
           color: trend.color,
-          sourceName: sig.sourceName,
           onClick: () => onSignalClick(sig),
         } as SignalNodeData,
       });
 
-      // Connecting line: trend circle → signal dot
+      // Spoke from trend circle to signal
       edges.push({
-        id: `link-${trend.id}-${sig.id}`,
+        id: `spoke-${trend.id}-${sig.id}`,
         source: trend.id,
         target: sig.id,
         type: "straight",
-        style: { stroke: trend.color, strokeWidth: 1.2, opacity: 0.35 },
+        style: { stroke: trend.color, strokeWidth: 1.4, opacity: 0.4 },
       });
     });
   });
 
-  // Cross-signal dashed edges
-  const seenEdges = new Set<string>();
+  // Cross-signal links
+  const seen = new Set<string>();
   allSignals.forEach((sig) => {
     (sig.crossLinks ?? []).forEach((targetId) => {
       const key = [sig.id, targetId].sort().join("--");
-      if (!seenEdges.has(key)) {
-        seenEdges.add(key);
+      if (!seen.has(key)) {
+        seen.add(key);
         edges.push({
           id: `cross-${key}`,
           source: sig.id,
           target: targetId,
           type: "straight",
-          style: { stroke: "#aaa", strokeWidth: 1, strokeDasharray: "4 4", opacity: 0.5 },
+          style: { stroke: "#ccc", strokeWidth: 1, strokeDasharray: "4 4" },
         });
       }
     });
@@ -242,9 +246,9 @@ function buildGraph(
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const [activeTrend, setActiveTrend]   = useState<Trend | null>(null);
+  const [activeTrend,  setActiveTrend]  = useState<Trend | null>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
-  const [showAdd, setShowAdd]           = useState(false);
+  const [showAdd,      setShowAdd]      = useState(false);
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
 
   const { nodes: initialNodes, edges: initialEdges } = useMemo(
@@ -267,34 +271,27 @@ export default function HomePage() {
       height: "100dvh",
       position: "fixed",
       inset: 0,
-      background: BG,
-      // Subtle horizontal staff lines — nod to the musical score reference
-      backgroundImage: "repeating-linear-gradient(to bottom, transparent, transparent 39px, rgba(0,0,0,0.04) 40px)",
+      background: "#fff",
     }}>
       {/* Header */}
       <div style={{
         position: "absolute",
         top: 0, left: 0, right: 0,
         zIndex: 10,
-        padding: "0 20px",
         height: 52,
+        padding: "0 20px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "rgba(255,255,255,0.88)",
+        background: "rgba(255,255,255,0.9)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
-        <span style={{
-          fontSize: 15,
-          fontWeight: 800,
-          letterSpacing: "-0.03em",
-          color: "#111",
-        }}>
+        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#111" }}>
           Trend Radar
         </span>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.02em", fontFamily: "monospace" }}>
+          <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
             {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
           </span>
           <button
@@ -308,7 +305,6 @@ export default function HomePage() {
               fontSize: 12,
               fontWeight: 700,
               cursor: "pointer",
-              letterSpacing: "0.01em",
             }}
           >
             + Signal
@@ -323,15 +319,15 @@ export default function HomePage() {
           edges={edges}
           nodeTypes={NODE_TYPES}
           fitView
-          fitViewOptions={{ padding: 0.1 }}
-          minZoom={0.1}
+          fitViewOptions={{ padding: 0.08 }}
+          minZoom={0.08}
           maxZoom={2}
           panOnDrag
           zoomOnPinch
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "transparent" }}
+          style={{ background: "#fff" }}
         >
           <Controls
             position="bottom-right"
