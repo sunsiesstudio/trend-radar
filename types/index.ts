@@ -8,6 +8,7 @@ export interface Trend {
   newsQuery: string;
   position: { x: number; y: number }; // center of node
   whyRelevant: string;
+  trajectory: string;
   nextSteps: string[];
 }
 

@@ -5,7 +5,6 @@
 
 html, body {
   height: 100%;
-  /* prevent page-level scroll competing with canvas pan */
   overflow: hidden;
   overscroll-behavior: none;
   touch-action: none;
@@ -24,6 +23,10 @@ body {
 .react-flow__renderer { background: transparent !important; }
 .react-flow__background { background: transparent !important; }
 .react-flow__attribution { display: none !important; }
+
+/* Suppress selection highlight — nodes are interactive but not visually selectable */
+.react-flow__node.selected > div { outline: none !important; }
+.react-flow__nodesselection { display: none !important; }
 
 .react-flow__edge-path { stroke: #D4CFC7; stroke-width: 1.5; }
 .react-flow__edge.selected .react-flow__edge-path { stroke: #aaa; }
