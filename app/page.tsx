@@ -8,7 +8,6 @@ import ReactFlow, {
   NodeProps,
   useNodesState,
   useEdgesState,
-  NodeMouseHandler,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -68,6 +67,7 @@ type TrendNodeData = {
   name: string;
   color: string;
   score: number;
+  onClick: () => void;
 };
 
 type SignalNodeData = {
@@ -75,6 +75,7 @@ type SignalNodeData = {
   title: string;
   color: string;
   source?: string;
+  onClick: () => void;
 };
 
 const SOURCE_ICON: Record<string, string> = {
@@ -99,6 +100,8 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const blobR = BLOB[data.id] ?? "50%";
   return (
     <div
+      onPointerDown={(e) => e.stopPropagation()}
+      onClick={data.onClick}
       style={{
         width: CIRCLE_D,
         height: CIRCLE_D,
@@ -145,15 +148,16 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   const blobR = blobFromId(data.id);
   return (
     <div
+      onPointerDown={(e) => e.stopPropagation()}
+      onClick={data.onClick}
       style={{
         width: SIG_W,
-        minHeight: SIG_H,
         background: `${data.color}12`,
         border: `1.5px solid ${data.color}55`,
         borderRadius: blobR,
         padding: "8px 13px 8px 11px",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         gap: 6,
         cursor: "pointer",
         userSelect: "none",
@@ -161,16 +165,12 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
         boxShadow: `0 2px 12px ${data.color}18`,
       }}
     >
-      <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8 }}>{icon}</span>
+      <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8, marginTop: 3 }}>{icon}</span>
       <div style={{
         fontSize: 9.5,
         fontWeight: 600,
         color: "#1a1a1a",
-        lineHeight: 1.38,
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: "vertical",
-        overflow: "hidden",
+        lineHeight: 1.42,
         letterSpacing: "-0.01em",
       }}>
         {data.title}
@@ -188,6 +188,8 @@ const NODE_TYPES = {
 
 function buildGraph(
   extraSignals: Signal[],
+  onTrendClick: (t: Trend) => void,
+  onSignalClick: (s: Signal) => void,
 ): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
@@ -207,6 +209,7 @@ function buildGraph(
         name: trend.name,
         color: trend.color,
         score: trend.relevanceScore,
+        onClick: () => onTrendClick(trend),
       } as TrendNodeData,
     });
 
@@ -231,6 +234,7 @@ function buildGraph(
           title: sig.title,
           color: trend.color,
           source: sig.source,
+          onClick: () => onSignalClick(sig),
         } as SignalNodeData,
       });
 
@@ -274,20 +278,10 @@ export default function HomePage() {
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
 
   const { nodes: initialNodes, edges: initialEdges } = useMemo(
-    () => buildGraph(extraSignals),
+    () => buildGraph(extraSignals, setActiveTrend, setActiveSignal),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
-  const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
-    if (node.type === "trendCircle") {
-      const trend = TRENDS.find((t) => t.id === node.id);
-      if (trend) setActiveTrend(trend);
-    } else if (node.type === "signalOrbit") {
-      const sig = [...SIGNALS, ...extraSignals].find((s) => s.id === node.id);
-      if (sig) setActiveSignal(sig);
-    }
-  }, [extraSignals]);
 
   const [nodes] = useNodesState(initialNodes);
   const [edges] = useEdgesState(initialEdges);
@@ -338,7 +332,6 @@ export default function HomePage() {
           nodes={nodes}
           edges={edges}
           nodeTypes={NODE_TYPES}
-          onNodeClick={handleNodeClick}
           fitView
           fitViewOptions={{ padding: 0.08 }}
           minZoom={0.06}
