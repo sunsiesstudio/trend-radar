@@ -1,11 +1,10 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+@import "tailwindcss";
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
-  /* prevent page-level scroll competing with canvas pan */
   overflow: hidden;
   overscroll-behavior: none;
   touch-action: none;
@@ -24,6 +23,10 @@ body {
 .react-flow__renderer { background: transparent !important; }
 .react-flow__background { background: transparent !important; }
 .react-flow__attribution { display: none !important; }
+
+/* Suppress selection highlight — nodes are interactive but not visually selectable */
+.react-flow__node.selected > div { outline: none !important; }
+.react-flow__nodesselection { display: none !important; }
 
 .react-flow__edge-path { stroke: #D4CFC7; stroke-width: 1.5; }
 .react-flow__edge.selected .react-flow__edge-path { stroke: #aaa; }
