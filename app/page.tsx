@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -9,6 +9,7 @@ import ReactFlow, {
   NodeMouseHandler,
   useNodesState,
   useEdgesState,
+  useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -77,19 +78,13 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const dark = !isLight(data.color);
   return (
     <div style={{
-      width: CIRCLE_D,
-      height: CIRCLE_D,
+      width: CIRCLE_D, height: CIRCLE_D,
       borderRadius: BLOB[data.id] ?? "50%",
       background: data.color,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-      padding: 22,
-      boxSizing: "border-box",
-      cursor: "pointer",
-      userSelect: "none",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      textAlign: "center", padding: 22,
+      boxSizing: "border-box", cursor: "pointer", userSelect: "none",
       boxShadow: `0 6px 32px ${data.color}50`,
     }}>
       <div style={{ fontSize: 11, fontWeight: 800, color: dark ? "#fff" : "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
@@ -103,7 +98,6 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 }
 
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
-  const icon = SOURCE_ICON[data.source ?? "news"] ?? "·";
   return (
     <div style={{
       width: SIG_W,
@@ -111,15 +105,14 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
       border: `1.5px solid ${data.color}55`,
       borderRadius: blobFromId(data.id),
       padding: "8px 13px 8px 11px",
-      display: "flex",
-      alignItems: "flex-start",
-      gap: 6,
-      cursor: "pointer",
-      userSelect: "none",
+      display: "flex", alignItems: "flex-start", gap: 6,
+      cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
       boxShadow: `0 2px 12px ${data.color}18`,
     }}>
-      <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8, marginTop: 3 }}>{icon}</span>
+      <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8, marginTop: 3 }}>
+        {SOURCE_ICON[data.source ?? "news"] ?? "·"}
+      </span>
       <div style={{ fontSize: 9.5, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.42, letterSpacing: "-0.01em" }}>
         {data.title}
       </div>
@@ -127,10 +120,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   );
 }
 
-const NODE_TYPES = {
-  trendCircle: TrendCircleNode,
-  signalOrbit: SignalOrbitNode,
-};
+const NODE_TYPES = { trendCircle: TrendCircleNode, signalOrbit: SignalOrbitNode };
 
 // ─── Build graph ──────────────────────────────────────────────────────────────
 
@@ -141,12 +131,8 @@ function buildGraph(extraSignals: Signal[]): { nodes: Node[]; edges: Edge[] } {
 
   TRENDS.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
-
-    // No draggable/selectable props — leaves defaults so hasPointerEvents stays true
     nodes.push({
-      id: trend.id,
-      type: "trendCircle",
-      position: pos,
+      id: trend.id, type: "trendCircle", position: pos,
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore } as TrendNodeData,
     });
 
@@ -157,21 +143,13 @@ function buildGraph(extraSignals: Signal[]): { nodes: Node[]; edges: Edge[] } {
 
     trendSignals.forEach((sig, i) => {
       const angle = -Math.PI / 2 + (i / total) * 2 * Math.PI;
-      const ox = cx + ORBIT_R * Math.cos(angle);
-      const oy = cy + ORBIT_R * Math.sin(angle);
-
       nodes.push({
-        id: sig.id,
-        type: "signalOrbit",
-        position: { x: ox - SIG_W / 2, y: oy - SIG_H / 2 },
+        id: sig.id, type: "signalOrbit",
+        position: { x: cx + ORBIT_R * Math.cos(angle) - SIG_W / 2, y: cy + ORBIT_R * Math.sin(angle) - SIG_H / 2 },
         data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source } as SignalNodeData,
       });
-
       edges.push({
-        id: `spoke-${trend.id}-${sig.id}`,
-        source: trend.id,
-        target: sig.id,
-        type: "straight",
+        id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
         style: { stroke: trend.color, strokeWidth: 1.2, opacity: 0.3 },
       });
     });
@@ -191,6 +169,43 @@ function buildGraph(extraSignals: Signal[]): { nodes: Node[]; edges: Edge[] } {
   return { nodes, edges };
 }
 
+// ─── Mobile: focus one trend cluster ─────────────────────────────────────────
+
+function FocusController({ trendId }: { trendId: string }) {
+  const { fitBounds } = useReactFlow();
+  const first = useRef(true);
+
+  useEffect(() => {
+    const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
+    const pad = 48;
+    fitBounds(
+      {
+        x: pos.x - ORBIT_R - SIG_W / 2 - pad,
+        y: pos.y - ORBIT_R - SIG_H - pad,
+        width:  CIRCLE_D + 2 * (ORBIT_R + SIG_W / 2) + pad * 2,
+        height: CIRCLE_D + 2 * (ORBIT_R + SIG_H)     + pad * 2,
+      },
+      { duration: first.current ? 0 : 420 },
+    );
+    first.current = false;
+  }, [trendId, fitBounds]);
+
+  return null;
+}
+
+// ─── Mobile detection ────────────────────────────────────────────────────────
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return mobile;
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
@@ -198,13 +213,15 @@ export default function HomePage() {
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [showAdd,      setShowAdd]      = useState(false);
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
+  const [focusIdx,     setFocusIdx]     = useState(0);
+  const isMobile = useIsMobile();
+  const swipeStart = useRef<number | null>(null);
 
   const { nodes: initialNodes, edges: initialEdges } = useMemo(
     () => buildGraph(extraSignals),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
   const [nodes] = useNodesState(initialNodes);
   const [edges] = useEdgesState(initialEdges);
 
@@ -224,13 +241,16 @@ export default function HomePage() {
   }, []);
 
   const allSignals = useMemo(() => [...SIGNALS, ...extraSignals], [extraSignals]);
+  const activeTrendForSignal = activeSignal ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
-  const activeTrendForSignal = activeSignal
-    ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null
-    : null;
+  const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
+  const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
+
+  const focusTrend = TRENDS[focusIdx];
 
   return (
     <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#fff" }}>
+      {/* Header */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
         height: 52, padding: "0 20px",
@@ -240,9 +260,11 @@ export default function HomePage() {
       }}>
         <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#111" }}>Trend Radar</span>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
-            {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
-          </span>
+          {!isMobile && (
+            <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
+              {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
+            </span>
+          )}
           <button
             onClick={() => setShowAdd(true)}
             style={{ padding: "6px 16px", background: "#111", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
@@ -252,27 +274,89 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", inset: 0, paddingTop: 52 }}>
+      {/* Canvas */}
+      <div
+        style={{ position: "absolute", inset: 0, paddingTop: 52, paddingBottom: isMobile ? 80 : 0 }}
+        onTouchStart={isMobile ? (e) => { swipeStart.current = e.touches[0].clientX; } : undefined}
+        onTouchEnd={isMobile ? (e) => {
+          if (swipeStart.current === null) return;
+          const dx = e.changedTouches[0].clientX - swipeStart.current;
+          if (dx < -50) next();
+          else if (dx > 50) prev();
+          swipeStart.current = null;
+        } : undefined}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={NODE_TYPES}
           onNodeClick={handleNodeClick}
           nodesDraggable={false}
-          fitView
+          fitView={!isMobile}
           fitViewOptions={{ padding: 0.08 }}
           minZoom={0.06}
           maxZoom={2}
-          panOnDrag
+          panOnDrag={!isMobile}
           zoomOnPinch
-          zoomOnScroll
+          zoomOnScroll={!isMobile}
           preventScrolling
           proOptions={{ hideAttribution: true }}
           style={{ background: "#fff" }}
         >
-          <Controls position="bottom-right" showInteractive={false} style={{ bottom: 24, right: 16 }} />
+          {isMobile && <FocusController trendId={focusTrend.id} />}
+          {!isMobile && <Controls position="bottom-right" showInteractive={false} style={{ bottom: 24, right: 16 }} />}
         </ReactFlow>
       </div>
+
+      {/* Mobile nav bar */}
+      {isMobile && (
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
+          height: 80, padding: "0 16px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
+          borderTop: "1px solid rgba(0,0,0,0.07)",
+          gap: 12,
+        }}>
+          <button
+            onClick={prev}
+            disabled={focusIdx === 0}
+            style={{
+              width: 40, height: 40, borderRadius: "50%", border: "1.5px solid #e8e4de",
+              background: focusIdx === 0 ? "#f5f3ee" : "#fff",
+              fontSize: 18, color: focusIdx === 0 ? "#ccc" : "#333",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: focusIdx === 0 ? "default" : "pointer", flexShrink: 0,
+            }}
+          >‹</button>
+
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <div style={{
+              display: "inline-block", width: 10, height: 10,
+              borderRadius: "50%", background: focusTrend.color,
+              marginBottom: 4,
+            }} />
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+              {focusTrend.name}
+            </div>
+            <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
+              {focusIdx + 1} / {TRENDS.length}
+            </div>
+          </div>
+
+          <button
+            onClick={next}
+            disabled={focusIdx === TRENDS.length - 1}
+            style={{
+              width: 40, height: 40, borderRadius: "50%", border: "1.5px solid #e8e4de",
+              background: focusIdx === TRENDS.length - 1 ? "#f5f3ee" : "#fff",
+              fontSize: 18, color: focusIdx === TRENDS.length - 1 ? "#ccc" : "#333",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: focusIdx === TRENDS.length - 1 ? "default" : "pointer", flexShrink: 0,
+            }}
+          >›</button>
+        </div>
+      )}
 
       {activeTrend && (
         <TrendDetailModal
@@ -294,12 +378,7 @@ export default function HomePage() {
         />
       )}
 
-      {showAdd && (
-        <AddSignalModal
-          onAdd={handleAddSignal}
-          onClose={() => setShowAdd(false)}
-        />
-      )}
+      {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} />}
     </div>
   );
 }
