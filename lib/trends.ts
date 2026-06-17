@@ -141,6 +141,62 @@ export const SIGNALS: Signal[] = [
     source: "news", sourceName: "WWD",
     date: "2026-05-08", crossLinks: ["did-s3"],
   },
+  {
+    id: "ai-s6", trendId: "ai-creativity",
+    title: "Sora video generation enters fashion film",
+    summary: "OpenAI's Sora is being used by independent directors to produce fashion short films at near-zero budget. A Vogue-published film was entirely AI-generated.",
+    source: "news", sourceName: "Vogue",
+    date: "2026-05-30", crossLinks: [],
+  },
+  {
+    id: "ai-s7", trendId: "ai-creativity",
+    title: "Adobe Firefly: textile pattern generation",
+    summary: "Fashion studios are using Firefly's vector generation to produce print patterns in bulk. Hundreds of colourways in an afternoon — what took weeks now takes hours.",
+    source: "hackernews", sourceName: "Hacker News",
+    date: "2026-06-09", crossLinks: ["ai-s3"],
+  },
+  {
+    id: "ai-s8", trendId: "ai-creativity",
+    title: "Designers sue AI companies over style theft",
+    summary: "A coalition of 200 independent fashion designers filed a class action suit against Stability AI for training on their work without consent. Landmark case.",
+    source: "news", sourceName: "The Guardian",
+    date: "2026-06-11", crossLinks: [],
+  },
+  {
+    id: "ai-s9", trendId: "ai-creativity",
+    title: "AI colourway sampling cuts cost 70%",
+    summary: "Brands using AI to generate and approve colourways virtually before physical sampling report 70% cost savings. Physical strike-offs are becoming the exception.",
+    source: "news", sourceName: "Business of Fashion",
+    date: "2026-05-03", crossLinks: ["sus-s3"],
+  },
+  {
+    id: "ai-s10", trendId: "ai-creativity",
+    title: "Gen Z designers AI-native from day one",
+    summary: "Fashion school students at Parsons and CSM are submitting AI-generated portfolios. Educators split on whether to embrace or ban — but the generation has decided.",
+    source: "reddit", sourceName: "r/fashiondesign",
+    date: "2026-06-13", crossLinks: ["ai-s4"],
+  },
+  {
+    id: "ai-s11", trendId: "ai-creativity",
+    title: "Copilot for tech packs: CLO 3D + GPT",
+    summary: "CLO 3D's AI assistant can auto-generate construction notes, BOM, and tolerances from a 3D garment. The technical designer role is being redefined.",
+    source: "hackernews", sourceName: "Hacker News",
+    date: "2026-04-17", crossLinks: [],
+  },
+  {
+    id: "ai-s12", trendId: "ai-creativity",
+    title: "AI fashion Instagram accounts hit 10M followers",
+    summary: "AI-only fashion accounts (no human creators) are amassing huge followings. @AIRunway and @NeuralCouture generate daily AI looks that outperform human creators.",
+    source: "reddit", sourceName: "r/artificial",
+    date: "2026-06-02", crossLinks: ["did-s5"],
+  },
+  {
+    id: "ai-s13", trendId: "ai-creativity",
+    title: "Midjourney v7 hits photorealistic fashion",
+    summary: "Midjourney v7's fabric simulation is photorealistic enough to fool buyers. Returns from AI-generated product imagery are being reported for the first time.",
+    source: "news", sourceName: "Wired",
+    date: "2026-06-14", crossLinks: [],
+  },
 
   // Digital Identity
   {
@@ -177,6 +233,20 @@ export const SIGNALS: Signal[] = [
     summary: "YouTube's fit-check video format — 2B+ views — is spawning a virtual variant where creators style their digital avatars and rate digital-only outfits.",
     source: "youtube", sourceName: "YouTube Trends",
     date: "2026-06-05", crossLinks: ["arc-s2"],
+  },
+  {
+    id: "did-s6", trendId: "digital-identity",
+    title: "Roblox fashion creator economy: $100M paid out",
+    summary: "Roblox has paid fashion creators $100M in UGC earnings. Teen designers are running real fashion businesses inside games — a generation learning commerce through play.",
+    source: "news", sourceName: "Bloomberg",
+    date: "2026-05-26", crossLinks: ["spc-s1"],
+  },
+  {
+    id: "did-s7", trendId: "digital-identity",
+    title: "Digital fashion NFTs: quiet comeback",
+    summary: "After 2022 collapse, digital fashion NFTs are returning with utility hooks — exclusive access, physical twins, and brand loyalty programmes attached.",
+    source: "reddit", sourceName: "r/web3fashion",
+    date: "2026-05-19", crossLinks: [],
   },
 
   // AR/VR Commerce
@@ -215,6 +285,27 @@ export const SIGNALS: Signal[] = [
     source: "news", sourceName: "WWD",
     date: "2026-05-25", crossLinks: ["spc-s2"],
   },
+  {
+    id: "arc-s6", trendId: "ar-commerce",
+    title: "Pinterest AR try-on rolls out to 300M users",
+    summary: "Pinterest's AR try-on for jewellery, sunglasses and now clothing has 300M monthly users. Discovery-to-purchase in a single AR session is now possible.",
+    source: "news", sourceName: "TechCrunch",
+    date: "2026-06-06", crossLinks: ["did-s5"],
+  },
+  {
+    id: "arc-s7", trendId: "ar-commerce",
+    title: "Returns halved by AR — Zalando case study",
+    summary: "Zalando's internal data shows AR-previewed items return at 18% vs 38% industry average. The ROI case for AR is now indisputable.",
+    source: "news", sourceName: "Vogue Business",
+    date: "2026-04-20", crossLinks: [],
+  },
+  {
+    id: "arc-s8", trendId: "ar-commerce",
+    title: "IKEA Place model adopted by fashion startups",
+    summary: "IKEA Place's 'see it in your home' model is being cloned for fashion: 'see it on your body' AR integrations are arriving in 50+ DTC brands via SDK.",
+    source: "hackernews", sourceName: "Hacker News",
+    date: "2026-05-07", crossLinks: [],
+  },
 
   // Biotech Beauty
   {
@@ -252,6 +343,41 @@ export const SIGNALS: Signal[] = [
     source: "news", sourceName: "Allure",
     date: "2026-05-11", crossLinks: ["neu-s2", "lon-s3"],
   },
+  {
+    id: "bio-s6", trendId: "biotech-beauty",
+    title: "Lab-grown collagen bypasses animal farming",
+    summary: "Biotech startups (Modern Meadow, Geltor) are producing collagen via fermentation — identical to bovine but animal-free. High-end brands already formulating with it.",
+    source: "arxiv", sourceName: "arXiv",
+    date: "2026-04-01", crossLinks: ["lon-s2"],
+  },
+  {
+    id: "bio-s7", trendId: "biotech-beauty",
+    title: "Exosome therapy crossing into consumer beauty",
+    summary: "Exosomes — cell-derived vesicles from stem cell research — are appearing in $400+ serums. Backed by clinical data, but regulatory grey zone is narrowing.",
+    source: "news", sourceName: "Allure",
+    date: "2026-05-24", crossLinks: ["lon-s2"],
+  },
+  {
+    id: "bio-s8", trendId: "biotech-beauty",
+    title: "Postbiotics: the ingredient after probiotics",
+    summary: "Postbiotics (metabolic byproducts of probiotics) are the emerging hero ingredient. More stable than live cultures, with stronger clinical backing.",
+    source: "reddit", sourceName: "r/SkincareAddiction",
+    date: "2026-06-08", crossLinks: ["bio-s3"],
+  },
+  {
+    id: "bio-s9", trendId: "biotech-beauty",
+    title: "CRISPR in fragrance: custom scent molecules",
+    summary: "Biotech company Ginkgo Bioworks is using synthetic biology to design novel fragrance molecules impossible to source naturally. Luxury perfumers are first adopters.",
+    source: "arxiv", sourceName: "arXiv",
+    date: "2026-03-18", crossLinks: ["sus-s1"],
+  },
+  {
+    id: "bio-s10", trendId: "biotech-beauty",
+    title: "Reddit: r/DIYBeauty meets biohacking",
+    summary: "DIY skincare community is now cross-pollinating with biohacking — users attempting to source peptides, retinoids, and growth factors directly. Safety concerns rising.",
+    source: "reddit", sourceName: "r/DIYBeauty",
+    date: "2026-05-18", crossLinks: ["neu-s4"],
+  },
 
   // Sustainable Materials
   {
@@ -288,6 +414,34 @@ export const SIGNALS: Signal[] = [
     summary: "Channels explaining biomaterials and sustainable chemistry are exploding — Material Matters has 2M subscribers, signalling consumer hunger for materials literacy.",
     source: "youtube", sourceName: "YouTube",
     date: "2026-05-24", crossLinks: [],
+  },
+  {
+    id: "sus-s6", trendId: "sustainable-materials",
+    title: "Piñatex in Nike and H&M mainline collections",
+    summary: "Ananas Anam's Piñatex (pineapple leaf leather) has moved from niche to Nike mainline. First 100K unit run sold out, triggering rapid capacity expansion.",
+    source: "news", sourceName: "Fast Company",
+    date: "2026-05-05", crossLinks: [],
+  },
+  {
+    id: "sus-s7", trendId: "sustainable-materials",
+    title: "Recycled ocean plastic: Econyl enters luxury",
+    summary: "Prada Re-Nylon and Econyl's regenerated nylon from ocean plastic is entering Gucci and Valentino collections. Premium sustainability is losing its contradiction.",
+    source: "news", sourceName: "Dezeen",
+    date: "2026-04-26", crossLinks: ["sus-s3"],
+  },
+  {
+    id: "sus-s8", trendId: "sustainable-materials",
+    title: "Carbon-negative dyeing: Colorifix raises $30M",
+    summary: "Colorifix's biological dyeing process uses 50x less water and is carbon-negative. Post-Series B with Adidas and M&S as pilots.",
+    source: "news", sourceName: "Business of Fashion",
+    date: "2026-06-03", crossLinks: [],
+  },
+  {
+    id: "sus-s9", trendId: "sustainable-materials",
+    title: "EU textile regulation: mandatory material passports",
+    summary: "EU Digital Product Passport regulation now mandates material traceability for all fashion items sold in Europe from 2027. Brands scrambling to comply.",
+    source: "news", sourceName: "WWD",
+    date: "2026-05-28", crossLinks: ["sus-s3", "sus-s4"],
   },
 
   // 3D Printing
@@ -363,6 +517,48 @@ export const SIGNALS: Signal[] = [
     source: "news", sourceName: "Bloomberg",
     date: "2026-05-09", crossLinks: ["lon-s1"],
   },
+  {
+    id: "wear-s6", trendId: "wearables",
+    title: "Ray-Ban Meta glasses: fashion beats function",
+    summary: "Ray-Ban Meta's success is less about AI and more about aesthetics — they look like sunglasses. The lesson: wearable tech must be fashion first.",
+    source: "news", sourceName: "Wired",
+    date: "2026-04-15", crossLinks: ["did-s1"],
+  },
+  {
+    id: "wear-s7", trendId: "wearables",
+    title: "UV tracking patches: Neutrogena x L'Oréal race",
+    summary: "UV monitoring skin patches are becoming fashion accessories. Branded patch covers from suncare companies signal a new wearable-beauty product category.",
+    source: "news", sourceName: "Allure",
+    date: "2026-05-20", crossLinks: ["bio-s7"],
+  },
+  {
+    id: "wear-s8", trendId: "wearables",
+    title: "Period health wearables enter mainstream",
+    summary: "Menstrual cycle health tracking wearables (Emmaline, Tempdrop) are growing 200% YoY. Femtech is the fastest growing wearable category.",
+    source: "news", sourceName: "TechCrunch",
+    date: "2026-06-01", crossLinks: ["lon-s3"],
+  },
+  {
+    id: "wear-s9", trendId: "wearables",
+    title: "Sleep tech: Eight Sleep and Hatch redefine bedtime",
+    summary: "Sleep optimisation devices are becoming lifestyle status symbols. Eight Sleep's Pod Pro at $3K+ is a new luxury category — from bedroom to fashion editorials.",
+    source: "youtube", sourceName: "YouTube",
+    date: "2026-05-13", crossLinks: ["lon-s2"],
+  },
+  {
+    id: "wear-s10", trendId: "wearables",
+    title: "NFC chips embedded in luxury authentication",
+    summary: "LVMH and Kering are embedding NFC chips in stitching for provenance verification. The chip is also a loyalty key — new owner registration unlocks brand experiences.",
+    source: "hackernews", sourceName: "Hacker News",
+    date: "2026-04-28", crossLinks: ["did-s7"],
+  },
+  {
+    id: "wear-s11", trendId: "wearables",
+    title: "Reddit: wearable aesthetics > wearable data",
+    summary: "r/wearables discussion: users say they'd sacrifice 20% of features for better design. The data that doesn't get worn is worthless.",
+    source: "reddit", sourceName: "r/wearables",
+    date: "2026-06-12", crossLinks: [],
+  },
 
   // Neurotech
   {
@@ -437,6 +633,27 @@ export const SIGNALS: Signal[] = [
     source: "reddit", sourceName: "r/VisionPro",
     date: "2026-06-09", crossLinks: [],
   },
+  {
+    id: "spc-s6", trendId: "spatial-computing",
+    title: "Samsung Galaxy XR: Vision Pro competitor drops price",
+    summary: "Samsung's Android XR headset at $999 opens spatial computing to a broader audience. Fashion brands must now design for two competing spatial platforms.",
+    source: "news", sourceName: "TechCrunch",
+    date: "2026-05-29", crossLinks: ["arc-s2"],
+  },
+  {
+    id: "spc-s7", trendId: "spatial-computing",
+    title: "Decentraland Fashion Week 2026: 2M attendees",
+    summary: "Decentraland's 2026 Fashion Week drew 2M virtual attendees. Valentino and Diesel hosted spatial shows. The format is maturing from gimmick to genuine channel.",
+    source: "news", sourceName: "Vogue Business",
+    date: "2026-03-25", crossLinks: ["did-s2", "spc-s1"],
+  },
+  {
+    id: "spc-s8", trendId: "spatial-computing",
+    title: "Spatial audio fashion shows: new format emerges",
+    summary: "Dolby Atmos spatial audio is being layered onto fashion show recordings for Vision Pro — creating immersive front-row experiences post-show.",
+    source: "youtube", sourceName: "YouTube",
+    date: "2026-04-30", crossLinks: [],
+  },
 
   // Longevity
   {
@@ -473,6 +690,62 @@ export const SIGNALS: Signal[] = [
     summary: "Andrew Huberman, Peter Attia, and Rhonda Patrick have collectively surpassed traditional fitness creators in views. Longevity content is the new wellness genre.",
     source: "youtube", sourceName: "YouTube",
     date: "2026-05-13", crossLinks: [],
+  },
+  {
+    id: "lon-s6", trendId: "longevity",
+    title: "Rapamycin prescriptions surge among 35–50 cohort",
+    summary: "Off-label rapamycin prescriptions for longevity are up 400% in US longevity clinics. A prescription drug is becoming a lifestyle supplement.",
+    source: "arxiv", sourceName: "arXiv",
+    date: "2026-04-07", crossLinks: ["lon-s3"],
+  },
+  {
+    id: "lon-s7", trendId: "longevity",
+    title: "Epigenetic clocks: TruDiagnostic goes consumer",
+    summary: "Biological age tests (TruAge, Elysium Index) are now available DTC for $200. Consumers are tracking biological vs chronological age — a new metric for wellness brands.",
+    source: "news", sourceName: "Bloomberg",
+    date: "2026-05-01", crossLinks: ["wear-s1"],
+  },
+  {
+    id: "lon-s8", trendId: "longevity",
+    title: "Cold plunge culture goes mass-market",
+    summary: "Plunge and Polar Monkeys have sold 500K cold plunge tubs. From biohacker niche to suburban backyard staple. Recovery culture is the new fitness culture.",
+    source: "youtube", sourceName: "YouTube",
+    date: "2026-05-19", crossLinks: ["neu-s1"],
+  },
+  {
+    id: "lon-s9", trendId: "longevity",
+    title: "VO2 max as the new status flex",
+    summary: "VO2 max scores are being shared on social media as health status signals. Apple Watch adding VO2 max to watch faces. Fitness data is the new luxury flex.",
+    source: "reddit", sourceName: "r/longevity",
+    date: "2026-06-08", crossLinks: ["wear-s4"],
+  },
+  {
+    id: "lon-s10", trendId: "longevity",
+    title: "Ingestible collagen: $8B category by 2027",
+    summary: "Beauty-from-within collagen supplements are the fastest-growing beauty category. Brands like Vital Proteins (now Nestlé) signal that food is the new skincare.",
+    source: "news", sourceName: "Business of Fashion",
+    date: "2026-04-23", crossLinks: ["bio-s6"],
+  },
+  {
+    id: "lon-s11", trendId: "longevity",
+    title: "NAD+ drip bars opening in fashion capitals",
+    summary: "IV therapy and NAD+ drip bars are opening next to concept stores in Milan, NYC, and Seoul. Luxury wellness experiences are becoming part of fashion retail neighbourhoods.",
+    source: "news", sourceName: "Vogue",
+    date: "2026-05-08", crossLinks: ["lon-s3"],
+  },
+  {
+    id: "lon-s12", trendId: "longevity",
+    title: "Anti-ageing skincare: retinol replacement race",
+    summary: "Bakuchiol, HPR, and retinaldehyde are competing to replace retinol. The skincare industry is in active ingredient upheaval — whoever wins gets a decade of market share.",
+    source: "news", sourceName: "Allure",
+    date: "2026-06-05", crossLinks: ["bio-s7"],
+  },
+  {
+    id: "lon-s13", trendId: "longevity",
+    title: "Centenarian lifestyle content: 300M views/month",
+    summary: "Content following the daily routines of 100+ year-olds is exploding. Okinawan diet, Sardinian movement patterns, and Seventh-Day Adventist habits are mainstream.",
+    source: "youtube", sourceName: "YouTube",
+    date: "2026-06-01", crossLinks: [],
   },
 ];
 
