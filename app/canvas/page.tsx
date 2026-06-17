@@ -9,17 +9,16 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   Connection,
-  Edge,
   Node,
   ReactFlowInstance,
+  MarkerType,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
 import { Signal } from "@/types";
-import { MOCK_SIGNALS, getSignalColor } from "@/lib/signals";
+import { MOCK_SIGNALS, SIGNAL_EDGES, SIGNAL_TEMPLATES, getSignalColor } from "@/lib/signals";
 import { SignalNode } from "@/components/SignalNode";
 import { SignalEditModal } from "@/components/SignalEditModal";
-import { Plus, FileText, Zap } from "lucide-react";
 
 const nodeTypes = { signal: SignalNode };
 
@@ -32,20 +31,31 @@ function signalToNode(signal: Signal, onEdit: (s: Signal) => void): Node {
   };
 }
 
+const defaultEdgeStyle = {
+  markerEnd: { type: MarkerType.ArrowClosed, width: 12, height: 12, color: "#d1d5db" },
+  style: { stroke: "#d1d5db", strokeWidth: 1.5 },
+  labelStyle: { fontSize: 10, fill: "#9ca3af" },
+  labelBgStyle: { fill: "#f9fafb", fillOpacity: 0.9 },
+};
+
 export default function CanvasPage() {
   const [signals, setSignals] = useState<Signal[]>(MOCK_SIGNALS);
   const [editingSignal, setEditingSignal] = useState<Signal | null>(null);
   const [generatingReport, setGeneratingReport] = useState(false);
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(
     MOCK_SIGNALS.map((s) => signalToNode(s, setEditingSignal))
   );
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(
+    SIGNAL_EDGES.map((e) => ({ ...e, ...defaultEdgeStyle }))
+  );
 
   const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    (connection: Connection) =>
+      setEdges((eds) => addEdge({ ...connection, ...defaultEdgeStyle }, eds)),
     [setEdges]
   );
 
@@ -71,69 +81,98 @@ export default function CanvasPage() {
     [setNodes]
   );
 
-  const addSignal = useCallback(() => {
-    const id = crypto.randomUUID();
-    const position = rfInstance
-      ? rfInstance.screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
-      : { x: 300, y: 300 };
-    const newSignal: Signal = {
-      id,
-      title: "New signal",
-      summary: "Describe what this signal is about.",
-      why_emerging: "Why is this gaining momentum?",
-      brand_relevance: "What does this mean for brands?",
-      category: "other",
-      strength: "weak",
-      sources: [],
-      tags: [],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      manual: true,
-      position,
-    };
-    setSignals((prev) => [...prev, newSignal]);
-    setNodes((nds) => [...nds, signalToNode(newSignal, setEditingSignal)]);
-    setEditingSignal(newSignal);
-  }, [rfInstance, setNodes]);
+  const addSignal = useCallback(
+    (templateIndex?: number) => {
+      const id = crypto.randomUUID();
+      const position = rfInstance
+        ? rfInstance.screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
+        : { x: 300, y: 300 };
+      const template = templateIndex !== undefined ? SIGNAL_TEMPLATES[templateIndex].defaults : {};
+      const newSignal: Signal = {
+        id,
+        title: "New signal",
+        summary: "",
+        why_emerging: "",
+        brand_relevance: "",
+        category: "other",
+        strength: "weak",
+        sources: [],
+        tags: [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        manual: true,
+        position,
+        ...template,
+      };
+      setSignals((prev) => [...prev, newSignal]);
+      setNodes((nds) => [...nds, signalToNode(newSignal, setEditingSignal)]);
+      setEditingSignal(newSignal);
+      setShowTemplates(false);
+    },
+    [rfInstance, setNodes]
+  );
 
   const generateReport = useCallback(() => {
     setGeneratingReport(true);
     setTimeout(() => {
       setGeneratingReport(false);
       window.location.href = "/reports?from=canvas";
-    }, 1200);
+    }, 800);
   }, []);
 
   return (
-    <div className="w-full h-screen bg-gray-50 flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       {/* Toolbar */}
-      <div className="h-14 bg-white border-b flex items-center justify-between px-6 shrink-0 z-10">
-        <div className="flex items-center gap-2">
-          <Zap size={18} className="text-indigo-600" />
-          <span className="font-bold text-gray-900">Signal Canvas</span>
-          <span className="ml-2 text-xs text-gray-400">{signals.length} signals</span>
-        </div>
+      <div className="h-14 bg-white border-b border-gray-100 flex items-center justify-between px-5 shrink-0 z-10">
         <div className="flex items-center gap-3">
-          <button
-            onClick={addSignal}
-            className="flex items-center gap-2 px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 font-medium"
-          >
-            <Plus size={15} />
-            Add signal
-          </button>
+          <span className="font-bold text-gray-900 text-sm">Signal Canvas</span>
+          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+            {signals.length} signals
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <button
+              onClick={() => setShowTemplates((v) => !v)}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 font-medium text-gray-700"
+            >
+              + Add signal
+            </button>
+            {showTemplates && (
+              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-100 rounded-xl shadow-lg w-52 z-50 overflow-hidden">
+                <div className="px-3 py-2 text-xs text-gray-400 font-medium border-b border-gray-100">
+                  Choose template
+                </div>
+                {SIGNAL_TEMPLATES.map((t, i) => (
+                  <button
+                    key={i}
+                    onClick={() => addSignal(i)}
+                    className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    {t.label}
+                  </button>
+                ))}
+                <button
+                  onClick={() => addSignal()}
+                  className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-t border-gray-100"
+                >
+                  Blank signal
+                </button>
+              </div>
+            )}
+          </div>
           <button
             onClick={generateReport}
             disabled={generatingReport}
-            className="flex items-center gap-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium disabled:opacity-60"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs bg-gray-900 text-white rounded-lg hover:bg-gray-700 font-medium disabled:opacity-60"
           >
-            <FileText size={15} />
             {generatingReport ? "Generating…" : "Generate report"}
           </button>
         </div>
       </div>
 
       {/* Canvas */}
-      <div className="flex-1" ref={reactFlowWrapper}>
+      <div className="flex-1 bg-[#f7f7f5]" ref={wrapperRef}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -143,13 +182,17 @@ export default function CanvasPage() {
           onInit={setRfInstance}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.2 }}
+          fitViewOptions={{ padding: 0.15 }}
+          minZoom={0.2}
+          maxZoom={1.5}
         >
-          <Background color="#e5e7eb" gap={24} />
-          <Controls />
+          <Background color="#e5e7eb" gap={28} size={1} />
+          <Controls showInteractive={false} />
           <MiniMap
             nodeColor={(n) => getSignalColor((n.data as Signal).category)}
             className="!bg-white !border !border-gray-200 !rounded-xl"
+            zoomable
+            pannable
           />
         </ReactFlow>
       </div>

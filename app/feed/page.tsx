@@ -2,68 +2,113 @@
 
 import { useState } from "react";
 import { Signal } from "@/types";
-import { MOCK_SIGNALS, getSignalColor, getStrengthLabel } from "@/lib/signals";
-import { Search, Filter } from "lucide-react";
+import { MOCK_SIGNALS, getSignalColor, getStrengthLabel, getStrengthBadgeStyle } from "@/lib/signals";
+import { LiveFeed } from "./LiveFeed";
 
-const CATEGORIES = ["all", "ai", "vr-ar", "wearables", "biotech", "3d-printing", "robotics", "materials", "spatial-computing", "neurotech", "other"];
+const CATEGORIES = [
+  "all", "ai", "vr-ar", "wearables", "biotech", "3d-printing",
+  "robotics", "materials", "spatial-computing", "neurotech", "other"
+];
+const STRENGTHS = ["all", "weak", "emerging", "strong"];
 
 export default function FeedPage() {
+  const [tab, setTab] = useState<"curated" | "live">("curated");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [strength, setStrength] = useState("all");
 
   const filtered = MOCK_SIGNALS.filter((s) => {
+    const q = query.toLowerCase();
     const matchesQuery =
       !query ||
-      s.title.toLowerCase().includes(query.toLowerCase()) ||
-      s.summary.toLowerCase().includes(query.toLowerCase()) ||
-      s.tags.some((t) => t.toLowerCase().includes(query.toLowerCase()));
+      s.title.toLowerCase().includes(q) ||
+      s.summary.toLowerCase().includes(q) ||
+      s.tags.some((t) => t.toLowerCase().includes(q));
     const matchesCat = category === "all" || s.category === category;
-    return matchesQuery && matchesCat;
+    const matchesStrength = strength === "all" || s.strength === strength;
+    return matchesQuery && matchesCat && matchesStrength;
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Signal Feed</h1>
-        <p className="text-sm text-gray-500 mb-8">
-          Emerging signals across technology, culture, and industry — updated continuously.
+    <div className="max-w-3xl mx-auto px-8 py-10">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1 tracking-tight">Signal Feed</h1>
+        <p className="text-sm text-gray-400">
+          {MOCK_SIGNALS.length} curated signals + live sources across emerging tech, culture, and industry.
         </p>
+      </div>
 
-        {/* Search + filter */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
-          <div className="relative flex-1">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              className="w-full border bg-white rounded-lg pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Search signals…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-          <div className="relative">
-            <Filter size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <select
-              className="border bg-white rounded-lg pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c === "all" ? "All categories" : c.replace("-", " ")}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+      {/* Tabs */}
+      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit mb-6">
+        {(["curated", "live"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              tab === t ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            {t === "curated" ? "Curated signals" : "🔴 Live feed"}
+          </button>
+        ))}
+      </div>
 
-        {/* Signal cards */}
-        <div className="space-y-4">
-          {filtered.map((signal) => (
-            <SignalCard key={signal.id} signal={signal} />
-          ))}
-          {filtered.length === 0 && (
-            <div className="text-center py-20 text-gray-400 text-sm">No signals match your search.</div>
-          )}
+      {tab === "live" && <LiveFeed />}
+      {tab === "curated" && <>
+
+      {/* Filters */}
+      <div className="flex flex-col gap-3 mb-8">
+        <input
+          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 placeholder:text-gray-400"
+          placeholder="Search signals, tags, topics…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-1.5 flex-wrap">
+            {STRENGTHS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setStrength(s)}
+                className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all border ${
+                  strength === s
+                    ? "bg-gray-900 text-white border-gray-900"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                {s === "all" ? "All strengths" : s}
+              </button>
+            ))}
+          </div>
+          <select
+            className="ml-auto bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-600"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c === "all" ? "All categories" : c.replace(/-/g, " ")}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
+
+      <div className="text-xs text-gray-400 mb-4 font-medium">
+        {filtered.length} signal{filtered.length !== 1 ? "s" : ""}
+      </div>
+
+      <div className="space-y-3">
+        {filtered.map((signal) => (
+          <SignalCard key={signal.id} signal={signal} />
+        ))}
+        {filtered.length === 0 && (
+          <div className="text-center py-20 text-gray-400 text-sm">
+            No signals match your filters.
+          </div>
+        )}
+      </div>
+      </>}
     </div>
   );
 }
@@ -74,52 +119,58 @@ function SignalCard({ signal }: { signal: Signal }) {
 
   return (
     <div
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-white rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all cursor-pointer"
       onClick={() => setExpanded((e) => !e)}
+      style={{ borderLeftWidth: 3, borderLeftColor: color }}
     >
       <div className="p-5">
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-start justify-between gap-3 mb-2.5">
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white"
+              className="text-xs font-medium px-2.5 py-0.5 rounded-full text-white"
               style={{ backgroundColor: color }}
             >
-              {signal.category.replace("-", " ")}
+              {signal.category.replace(/-/g, " ")}
             </span>
-            <span
-              className="text-xs font-medium px-2.5 py-0.5 rounded-full border"
-              style={{ color, borderColor: color }}
-            >
+            <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getStrengthBadgeStyle(signal.strength)}`}>
               {getStrengthLabel(signal.strength)}
             </span>
           </div>
-          <span className="text-xs text-gray-400 shrink-0">
+          <span className="text-xs text-gray-300 shrink-0 mt-0.5">
             {new Date(signal.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </span>
         </div>
 
-        <h2 className="font-bold text-gray-900 mb-2">{signal.title}</h2>
-        <p className="text-sm text-gray-600 leading-relaxed">{signal.summary}</p>
+        <h2 className="font-bold text-gray-900 mb-2 text-sm leading-snug">{signal.title}</h2>
+        <p className="text-sm text-gray-500 leading-relaxed">{signal.summary}</p>
 
         {expanded && (
-          <div className="mt-4 space-y-3 border-t pt-4">
+          <div className="mt-5 space-y-4 border-t border-gray-100 pt-4">
             <div>
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Why it&apos;s emerging</span>
-              <p className="text-sm text-gray-700 mt-1">{signal.why_emerging}</p>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">
+                Why it&apos;s emerging
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">{signal.why_emerging}</p>
             </div>
             <div>
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Brand relevance</span>
-              <p className="text-sm text-gray-700 mt-1">{signal.brand_relevance}</p>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">
+                Brand relevance
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">{signal.brand_relevance}</p>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {signal.tags.map((tag) => (
-                <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full">
-                  #{tag}
-                </span>
-              ))}
-            </div>
+            {signal.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {signal.tags.map((tag) => (
+                  <span key={tag} className="text-xs bg-gray-50 text-gray-400 px-2.5 py-0.5 rounded-full border border-gray-100">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
             {signal.sources.length > 0 && (
-              <p className="text-xs text-gray-400">Sources: {signal.sources.join(", ")}</p>
+              <p className="text-xs text-gray-300">
+                Sources: {signal.sources.join(" · ")}
+              </p>
             )}
           </div>
         )}
