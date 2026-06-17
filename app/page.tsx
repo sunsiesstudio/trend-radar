@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -95,13 +95,33 @@ function blobFromId(id: string): string {
   return `${v(0)}% ${100 - v(0)}% ${v(5)}% ${100 - v(5)}% / ${v(10)}% ${v(15)}% ${100 - v(15)}% ${100 - v(10)}%`;
 }
 
+function useTapHandlers(onTap: () => void) {
+  const start = useRef<{ x: number; y: number } | null>(null);
+  return {
+    onTouchStart: (e: React.TouchEvent) => {
+      e.stopPropagation();
+      const t = e.touches[0];
+      start.current = { x: t.clientX, y: t.clientY };
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      e.stopPropagation();
+      if (!start.current) return;
+      const t = e.changedTouches[0];
+      const moved = Math.hypot(t.clientX - start.current.x, t.clientY - start.current.y);
+      if (moved < 8) { e.preventDefault(); onTap(); }
+      start.current = null;
+    },
+    onClick: onTap,
+  };
+}
+
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const dark = !isLight(data.color);
   const blobR = BLOB[data.id] ?? "50%";
+  const tap = useTapHandlers(data.onClick);
   return (
     <div
-      onPointerDown={(e) => e.stopPropagation()}
-      onClick={data.onClick}
+      {...tap}
       style={{
         width: CIRCLE_D,
         height: CIRCLE_D,
@@ -146,10 +166,10 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   const icon = SOURCE_ICON[data.source ?? "news"] ?? "·";
   const blobR = blobFromId(data.id);
+  const tap = useTapHandlers(data.onClick);
   return (
     <div
-      onPointerDown={(e) => e.stopPropagation()}
-      onClick={data.onClick}
+      {...tap}
       style={{
         width: SIG_W,
         background: `${data.color}12`,
