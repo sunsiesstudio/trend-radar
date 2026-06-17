@@ -3,8 +3,16 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html, body {
+  height: 100%;
+  /* prevent page-level scroll competing with canvas pan */
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
 body {
-  background: #F7F5F0;
+  background: #F5F2EC;
   color: #1a1a1a;
   font-family: 'DM Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -12,7 +20,31 @@ body {
 
 .serif { font-family: 'DM Serif Display', Georgia, serif; }
 
-/* scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+/* React Flow */
+.react-flow__renderer { background: transparent !important; }
+.react-flow__background { background: transparent !important; }
+.react-flow__attribution { display: none !important; }
+
+.react-flow__edge-path { stroke: #D4CFC7; stroke-width: 1.5; }
+.react-flow__edge.selected .react-flow__edge-path { stroke: #aaa; }
+
+.react-flow__controls {
+  border: 1px solid #E0DBD3 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+  background: white !important;
+}
+.react-flow__controls-button {
+  border-bottom: 1px solid #f0ede8 !important;
+  background: white !important;
+}
+.react-flow__controls-button svg { fill: #999; }
+.react-flow__controls-button:hover { background: #faf9f6 !important; }
+
+.react-flow__minimap {
+  border-radius: 12px !important;
+  border: 1px solid #E0DBD3 !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
