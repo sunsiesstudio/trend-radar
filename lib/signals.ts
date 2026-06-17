@@ -14,7 +14,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "ai", "design", "creative", "generative"],
     created_at: "2026-05-01T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 80, y: 80 },
+    position: { x: 60, y: 70 },
   },
   {
     id: "ai-2",
@@ -28,7 +28,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "ai", "personalisation", "retail"],
     created_at: "2026-05-10T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 280, y: 60 },
+    position: { x: 310, y: 28 },
   },
   {
     id: "ai-3",
@@ -42,7 +42,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "ai", "marketing", "models", "virtual"],
     created_at: "2026-04-15T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 480, y: 80 },
+    position: { x: 210, y: 230 },
   },
 
   // VR/AR
@@ -58,7 +58,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "ar", "retail", "digital", "ecommerce"],
     created_at: "2026-04-01T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 700, y: 80 },
+    position: { x: 570, y: 55 },
   },
   {
     id: "ar-2",
@@ -72,7 +72,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "vr", "runway", "experience", "luxury"],
     created_at: "2026-05-05T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 900, y: 80 },
+    position: { x: 790, y: 30 },
   },
 
   // Wearables
@@ -88,7 +88,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["wellness", "jewellery", "health", "wearables", "luxury"],
     created_at: "2026-03-20T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 80, y: 300 },
+    position: { x: 130, y: 370 },
   },
   {
     id: "wear-2",
@@ -102,7 +102,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "emotion", "e-textiles", "innovation", "wearables"],
     created_at: "2026-05-18T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 280, y: 300 },
+    position: { x: 390, y: 310 },
   },
 
   // Biotech
@@ -118,7 +118,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["beauty", "biotech", "ethics", "skincare", "testing"],
     created_at: "2026-04-20T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 480, y: 300 },
+    position: { x: 620, y: 340 },
   },
   {
     id: "bio-2",
@@ -132,7 +132,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["beauty", "skincare", "microbiome", "science", "wellness"],
     created_at: "2026-05-12T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 680, y: 300 },
+    position: { x: 860, y: 280 },
   },
   {
     id: "bio-3",
@@ -146,7 +146,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "materials", "sustainability", "leather", "biotech"],
     created_at: "2026-04-08T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 880, y: 300 },
+    position: { x: 1070, y: 320 },
   },
 
   // 3D Printing
@@ -162,7 +162,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "sustainability", "manufacturing", "footwear", "3d"],
     created_at: "2026-03-15T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 80, y: 520 },
+    position: { x: 80, y: 590 },
   },
   {
     id: "3d-2",
@@ -176,7 +176,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["beauty", "personalisation", "3d", "innovation", "retail"],
     created_at: "2026-05-20T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 280, y: 520 },
+    position: { x: 330, y: 630 },
   },
 
   // Robotics
@@ -192,7 +192,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["retail", "logistics", "robotics", "luxury", "operations"],
     created_at: "2026-04-01T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 480, y: 520 },
+    position: { x: 580, y: 570 },
   },
 
   // Materials
@@ -208,7 +208,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["textiles", "innovation", "materials", "smart", "fashion"],
     created_at: "2026-05-15T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 680, y: 520 },
+    position: { x: 840, y: 610 },
   },
   {
     id: "mat-2",
@@ -222,7 +222,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["sustainability", "materials", "fashion", "climate", "innovation"],
     created_at: "2026-04-25T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 880, y: 520 },
+    position: { x: 1080, y: 570 },
   },
 
   // Spatial Computing
@@ -238,7 +238,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["fashion", "digital", "nft", "gaming", "virtual", "gen-z"],
     created_at: "2026-05-01T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 80, y: 740 },
+    position: { x: 60, y: 840 },
   },
   {
     id: "spatial-2",
@@ -252,7 +252,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["retail", "spatial", "vr", "commerce", "luxury"],
     created_at: "2026-05-08T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 280, y: 740 },
+    position: { x: 310, y: 800 },
   },
 
   // Neurotech
@@ -268,7 +268,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["beauty", "wellness", "neuroscience", "innovation", "skincare"],
     created_at: "2026-05-22T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 480, y: 740 },
+    position: { x: 570, y: 860 },
   },
   {
     id: "neuro-2",
@@ -282,7 +282,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["neurotech", "bci", "future", "technology", "lifestyle"],
     created_at: "2026-05-30T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 680, y: 740 },
+    position: { x: 820, y: 820 },
   },
 
   // Other / Cultural
@@ -298,7 +298,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["wellness", "longevity", "beauty", "health", "lifestyle", "culture"],
     created_at: "2026-04-10T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 880, y: 740 },
+    position: { x: 1090, y: 800 },
   },
   {
     id: "cult-2",
@@ -312,7 +312,7 @@ export const MOCK_SIGNALS: Signal[] = [
     tags: ["culture", "aesthetics", "sustainability", "fashion", "design"],
     created_at: "2026-05-14T00:00:00Z",
     updated_at: "2026-06-01T00:00:00Z",
-    position: { x: 80, y: 960 },
+    position: { x: 190, y: 1070 },
   },
 ];
 

@@ -4,14 +4,12 @@ import { useState, useCallback, useRef } from "react";
 import ReactFlow, {
   Background,
   Controls,
-  MiniMap,
   addEdge,
   useNodesState,
   useEdgesState,
   Connection,
   Node,
   ReactFlowInstance,
-  MarkerType,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -32,10 +30,9 @@ function signalToNode(signal: Signal, onEdit: (s: Signal) => void): Node {
 }
 
 const defaultEdgeStyle = {
-  markerEnd: { type: MarkerType.ArrowClosed, width: 12, height: 12, color: "#d1d5db" },
-  style: { stroke: "#d1d5db", strokeWidth: 1.5 },
-  labelStyle: { fontSize: 10, fill: "#9ca3af" },
-  labelBgStyle: { fill: "#f9fafb", fillOpacity: 0.9 },
+  style: { stroke: "#c0b0a0", strokeWidth: 1.1 },
+  labelStyle: { fontSize: 9, fill: "#9a8a7a" },
+  labelBgStyle: { fill: "#ede8df", fillOpacity: 0.88 },
 };
 
 export default function CanvasPage() {
@@ -177,7 +174,7 @@ export default function CanvasPage() {
       </div>
 
       {/* Canvas */}
-      <div className="flex-1 bg-[#f7f7f5]" ref={wrapperRef}>
+      <div className="flex-1 bg-[#ede8df]" ref={wrapperRef}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -187,18 +184,12 @@ export default function CanvasPage() {
           onInit={setRfInstance}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.15 }}
-          minZoom={0.2}
+          fitViewOptions={{ padding: 0.18 }}
+          minZoom={0.15}
           maxZoom={1.5}
         >
-          <Background color="#e5e7eb" gap={28} size={1} />
+          <Background color="#d4cabd" gap={40} size={0.8} />
           <Controls showInteractive={false} />
-          <MiniMap
-            nodeColor={(n) => getSignalColor((n.data as Signal).category)}
-            className="!bg-white !border !border-gray-200 !rounded-xl"
-            zoomable
-            pannable
-          />
         </ReactFlow>
       </div>
 
