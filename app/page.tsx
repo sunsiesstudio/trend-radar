@@ -494,7 +494,7 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(visibleTrends.length - 1, i + 1));
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{
         flexShrink: 0, zIndex: 10,
@@ -752,7 +752,7 @@ export default function HomePage() {
 
       {/* Nav bar */}
       <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
+        flexShrink: 0, zIndex: 10,
         height: 80,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
