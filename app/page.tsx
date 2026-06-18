@@ -167,7 +167,6 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
   const edges: Edge[] = [];
   const allSignals = [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals];
 
-  const GOLDEN_ANGLE = 2.399963;
   const GAP = 5;
   // 16 evenly-spaced angle probes per radius level (22.5° steps around full circle)
   const N_ANGLES = 16;
@@ -196,16 +195,20 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    const MAX_R = d / 2 + 160;
+    const MAX_R = d / 2 + 250;
 
     // Local list for this cluster only — used when building nodes/edges below.
     const placements: P[] = [];
 
-    trendSignals.forEach((sig, i) => {
+    trendSignals.forEach((sig, _i) => {
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
-      const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
-      const baseAngle = i * GOLDEN_ANGLE + jitter;
+      let h2 = 0;
+      for (let k = 0; k < sig.id.length; k++) h2 = (h2 * 37 + sig.id.charCodeAt(k) * 17) >>> 0;
+      // Fully hash-derived angle — each signal lands in a unique, organic direction
+      const baseAngle = ((h & 0xffffff) / 0x1000000) * Math.PI * 2;
+      // Random start radius — signals scatter at different distances from the blob
+      const startR = d / 2 + GAP + ((h2 & 0xff) / 255) * (MAX_R * 0.55);
       const charsPerLine = Math.ceil(sig.title.length / 4);
       const w = Math.max(90, Math.min(165, Math.round(charsPerLine * 5.8) + 20));
       // Height from text wrapping so text never overflows the blob
@@ -248,9 +251,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
         return false;
       };
 
-      // Pass 1: within MAX_R, respect all blob clearances
-      placed = tryPlace(d / 2 + GAP, MAX_R, true);
-      // Pass 2: beyond MAX_R if needed (no global blob check — keeps cluster together visually)
+      // Start at the random radius, then fill in closer if needed
+      placed = tryPlace(startR, MAX_R, true);
+      if (!placed) placed = tryPlace(d / 2 + GAP, startR, true);
       if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
 
       const entry: P = { sig, w, h: sigH, fillAlpha, borderAlpha, isNew: !seenIds.has(sig.id), x, y };

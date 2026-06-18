@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   try {
     const msg = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [
         {
           role: "user",
@@ -53,27 +53,14 @@ Return ONLY valid JSON (no markdown, no explanation), in this exact shape:
       "brand_relevance": "1-2 sentences on strategic relevance for brands.",
       "relevanceScore": 55,
       "signals": [
-        {
-          "id": "signal-id-1",
-          "title": "Specific signal title (real-sounding news/research headline)",
-          "summary": "2-3 sentence summary of what this signal means and why it matters.",
-          "source": "news",
-          "sourceName": "Publication name"
-        },
-        {
-          "id": "signal-id-2",
-          "title": "Another signal headline",
-          "summary": "Summary.",
-          "source": "reddit",
-          "sourceName": "r/subreddit"
-        },
-        {
-          "id": "signal-id-3",
-          "title": "Third signal headline",
-          "summary": "Summary.",
-          "source": "news",
-          "sourceName": "Publication name"
-        }
+        { "id": "signal-id-1", "title": "Headline 1", "summary": "Summary.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-2", "title": "Headline 2", "summary": "Summary.", "source": "reddit", "sourceName": "r/subreddit" },
+        { "id": "signal-id-3", "title": "Headline 3", "summary": "Summary.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-4", "title": "Headline 4", "summary": "Summary.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-5", "title": "Headline 5", "summary": "Summary.", "source": "reddit", "sourceName": "r/subreddit" },
+        { "id": "signal-id-6", "title": "Headline 6", "summary": "Summary.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-7", "title": "Headline 7", "summary": "Summary.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-8", "title": "Headline 8", "summary": "Summary.", "source": "reddit", "sourceName": "r/subreddit" }
       ]
     }
   ]
@@ -83,7 +70,7 @@ Rules:
 - IDs must be unique slugs starting with "${topic.toLowerCase().replace(/\s+/g, "-")}-"
 - Do NOT use these existing IDs: ${existingTrendIds.join(", ") || "none"}
 - relevanceScore between 52 and 81
-- signals array must have exactly 3 items per trend
+- signals array must have exactly 8 items per trend — mix of news and reddit sources, specific real-sounding headlines
 - Keep descriptions tight and analytically sharp, like a strategic brief
 - Focus on intersections between emerging technology and the cultural/consumer dimension of "${topic}"`,
         },
