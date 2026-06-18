@@ -78,19 +78,6 @@ function saveSeen(ids: Set<string>) {
   try { localStorage.setItem(SEEN_KEY, JSON.stringify([...ids])); } catch {}
 }
 
-// ─── CSV export ───────────────────────────────────────────────────────────────
-
-function toCSV(headers: string[], rows: string[][]): string {
-  const esc = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  return [headers, ...rows].map((r) => r.map(esc).join(",")).join("\n");
-}
-
-function dlCSV(content: string, name: string) {
-  const url = URL.createObjectURL(new Blob(["﻿" + content], { type: "text/csv;charset=utf-8;" }));
-  Object.assign(document.createElement("a"), { href: url, download: name }).click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
 // ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number };
@@ -421,21 +408,6 @@ export default function HomePage() {
 
   const activeTrendForSignal = activeSignal ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
-  const exportCSV = useCallback(() => {
-    const date = new Date().toISOString().split("T")[0];
-    dlCSV(toCSV(
-      ["ID", "Name", "Description", "Color", "Relevance Score", "Why Relevant", "Macro Context", "Trajectory", "Next Steps"],
-      TRENDS.map((t) => [t.id, t.name, t.description, t.color, String(t.relevanceScore), t.whyRelevant, t.macroContext ?? "", t.trajectory, t.nextSteps.join(" | ")])
-    ), `trend-radar-trends-${date}.csv`);
-    setTimeout(() => dlCSV(toCSV(
-      ["Signal ID", "Trend ID", "Trend Name", "Title", "Summary", "Source", "Source Name", "URL", "Date", "Is Live"],
-      allSignals.map((s) => {
-        const t = TRENDS.find((x) => x.id === s.trendId);
-        return [s.id, s.trendId ?? "", t?.name ?? "", s.title, s.summary, s.source ?? "", s.sourceName ?? "", s.sourceUrl ?? "", s.date ?? "", s.isLive ? "yes" : "no"];
-      })
-    ), `trend-radar-signals-${date}.csv`), 400);
-  }, [allSignals]);
-
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
   const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
   const focusTrend = TRENDS[focusIdx];
@@ -467,12 +439,11 @@ export default function HomePage() {
           >
             <span className={liveLoading ? "spin" : ""}>↻</span>
           </button>
-          <button
-            onClick={exportCSV}
-            style={{ padding: "6px 14px", background: "#f5f3ee", color: "#555", border: "1px solid #e8e4de", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-          >
-            Export CSV
-          </button>
+          {updatedLabel && (
+            <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
+              {updatedLabel}
+            </span>
+          )}
           <button
             onClick={() => setShowAdd(true)}
             style={{ padding: "6px 16px", background: "#000", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
