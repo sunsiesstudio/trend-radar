@@ -90,13 +90,17 @@ function dlCSV(content: string, name: string) {
 // ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number };
-type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean };
+type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number };
 
 function blobFromId(id: string): string {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  const v = (n: number) => 15 + (((h >> n) & 0x3f) % 71);
-  return `${v(0)}% ${100 - v(0)}% ${v(6)}% ${100 - v(6)}% / ${v(12)}% ${v(18)}% ${100 - v(18)}% ${100 - v(12)}%`;
+  // Two independent hashes → 8 fully uncorrelated corner values
+  let h1 = 0, h2 = 0;
+  for (let i = 0; i < id.length; i++) {
+    h1 = (h1 * 31 + id.charCodeAt(i)) >>> 0;
+    h2 = (h2 * 37 + id.charCodeAt(i) * 17) >>> 0;
+  }
+  const v = (h: number, n: number) => 6 + (((h >>> n) & 0x7f) % 84);
+  return `${v(h1,0)}% ${v(h1,7)}% ${v(h1,14)}% ${v(h1,21)}% / ${v(h2,0)}% ${v(h2,7)}% ${v(h2,14)}% ${v(h2,21)}%`;
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
@@ -140,12 +144,12 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
-      width: SIG_W,
+      width: data.w,
       background: data.isLive ? `${data.color}18` : `${data.color}12`,
       border: `1.5px solid ${data.isNew ? data.color + "99" : data.isLive ? data.color + "88" : data.color + "55"}`,
       borderRadius: blobFromId(data.id),
-      padding: "8px 13px 8px 11px",
-      display: "flex", alignItems: "flex-start", gap: 6,
+      padding: "9px 14px",
+      display: "flex", alignItems: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
       boxShadow: data.isNew ? `0 2px 14px ${data.color}30` : `0 2px 12px ${data.color}18`,
@@ -198,20 +202,21 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
     const cy = pos.y + CIRCLE_D / 2;
 
     trendSignals.forEach((sig, i) => {
-      // Organic blob orbit: vary angle and radius per signal via deterministic hash
+      // Golden angle scatter: avoids any circular pattern, signals feel "free"
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
-      const angleJitter = ((h & 0xff) / 255 - 0.5) * 0.7;
-      const rScale = 0.78 + ((h >> 8 & 0xff) / 255) * 0.44;
-      const baseAngle = -Math.PI / 2 + (i / total) * 2 * Math.PI;
-      const angle = baseAngle + angleJitter;
-      const r = ORBIT_R * rScale;
+      const GOLDEN_ANGLE = 2.399963; // 137.5° in radians
+      const angleNoise = ((h & 0x1ff) / 512 - 0.5) * 2.0; // ±1.0 rad extra jitter
+      const angle = i * GOLDEN_ANGLE + angleNoise;
+      const minR = CIRCLE_D * 0.6 + 90;
+      const r = minR + ((h >> 10 & 0xff) / 255) * (ORBIT_R * 0.9);
+      const w = 96 + ((h >> 20 & 0x1f) % 60); // 96–156px per signal
       const isNew = !seenIds.has(sig.id);
 
       nodes.push({
         id: sig.id, type: "signalOrbit",
-        position: { x: cx + r * Math.cos(angle) - SIG_W / 2, y: cy + r * Math.sin(angle) - SIG_H / 2 },
-        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew } as SignalNodeData,
+        position: { x: cx + r * Math.cos(angle) - w / 2, y: cy + r * Math.sin(angle) - SIG_H / 2 },
+        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
