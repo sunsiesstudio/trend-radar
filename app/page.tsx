@@ -38,25 +38,27 @@ const BLOB: Record<string, string> = {
   "longevity":             "55% 45% 45% 55% / 70% 30% 60% 40%",
 };
 
-function hexToRgb(hex: string) {
-  return {
-    r: parseInt(hex.slice(1, 3), 16),
-    g: parseInt(hex.slice(3, 5), 16),
-    b: parseInt(hex.slice(5, 7), 16),
-  };
+function isLight(hex: string) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return r * 0.299 + g * 0.587 + b * 0.114 > 155;
 }
 
+// Organic composition — clusters packed so signal zones nearly touch.
+// Positions are top-left of a CIRCLE_D×CIRCLE_D anchor; actual blob
+// centres sit at pos + CIRCLE_D/2.
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
-  "ai-creativity":          { x: 80,   y: 80   },
-  "digital-identity":       { x: 820,  y: 60   },
-  "ar-commerce":            { x: 1560, y: 80   },
-  "biotech-beauty":         { x: 120,  y: 940  },
-  "sustainable-materials":  { x: 860,  y: 920  },
-  "3d-printing":            { x: 1600, y: 940  },
-  "wearables":              { x: 2340, y: 900  },
-  "neurotech":              { x: 80,   y: 1800 },
-  "spatial-computing":      { x: 820,  y: 1780 },
-  "longevity":              { x: 1560, y: 1800 },
+  "ai-creativity":          { x: 368,  y: 338  },
+  "longevity":              { x: 1118, y: 318  },
+  "wearables":              { x: 1818, y: 518  },
+  "ar-commerce":            { x: 1518, y: 68   },
+  "digital-identity":       { x: 818,  y: 718  },
+  "biotech-beauty":         { x: 618,  y: 1118 },
+  "sustainable-materials":  { x: 1368, y: 1218 },
+  "neurotech":              { x: 118,  y: 1018 },
+  "spatial-computing":      { x: 418,  y: 1618 },
+  "3d-printing":            { x: 1718, y: 1618 },
 };
 
 // ─── Seen-signal tracking (localStorage) ─────────────────────────────────────
@@ -106,69 +108,9 @@ function blobFromId(id: string): string {
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const size = data.d;
-    const dpr = typeof window !== "undefined" ? (window.devicePixelRatio || 1) : 1;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = `${size}px`;
-    canvas.style.height = `${size}px`;
-    const ctx = canvas.getContext("2d")!;
-    ctx.scale(dpr, dpr);
-
-    const cx = size / 2, cy = size / 2, baseR = size / 2 - 1;
-
-    // Deterministic wobble seed per trend
-    let hv = 0;
-    for (let i = 0; i < data.id.length; i++) hv = (hv * 31 + data.id.charCodeAt(i)) >>> 0;
-    const hf = hv / 0xffffffff;
-
-    const wobblyPath = (radius: number, seed: number) => {
-      const pts = 80;
-      ctx.beginPath();
-      for (let i = 0; i <= pts; i++) {
-        const a = (i / pts) * Math.PI * 2;
-        const w = 1
-          + Math.sin(a * 3 + seed) * 0.055
-          + Math.sin(a * 7 + seed * 1.7) * 0.028
-          + Math.sin(a * 13 + seed * 0.9) * 0.012;
-        const rx = cx + radius * w * Math.cos(a);
-        const ry = cy + radius * w * Math.sin(a);
-        if (i === 0) ctx.moveTo(rx, ry); else ctx.lineTo(rx, ry);
-      }
-      ctx.closePath();
-    };
-
-    const { r, g, b } = hexToRgb(data.color);
-
-    // Clip everything to the outer blob shape
-    wobblyPath(baseR, hf * 8);
-    ctx.save();
-    ctx.clip();
-
-    // Very light tinted background (pale wash of the trend color)
-    ctx.fillStyle = `rgba(${Math.min(255,r+95)},${Math.min(255,g+92)},${Math.min(255,b+88)},0.95)`;
-    ctx.fillRect(0, 0, size, size);
-
-    // Dense contour strokes — topographic / IMG_0449 style
-    const NUM_CONTOURS = 20;
-    for (let i = 0; i <= NUM_CONTOURS; i++) {
-      const ratio = (1 - i / (NUM_CONTOURS + 2)) * 0.97;
-      wobblyPath(baseR * ratio, hf * 8 + i * 0.68);
-      ctx.strokeStyle = `rgba(${r},${g},${b},0.52)`;
-      ctx.lineWidth = 1.1;
-      ctx.stroke();
-    }
-
-    ctx.restore();
-  }, [data.d, data.color, data.id]);
-
+  const light = isLight(data.color);
   return (
-    <div style={{ position: "relative", width: data.d, height: data.d, cursor: "pointer", userSelect: "none" }}>
+    <div style={{ position: "relative" }}>
       {data.newCount > 0 && (
         <div style={{
           position: "absolute", top: -6, right: -6, zIndex: 2,
@@ -182,17 +124,20 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
           {data.newCount}
         </div>
       )}
-      <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, display: "block" }} />
       <div style={{
-        position: "absolute", inset: 0,
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-        textAlign: "center", padding: 22, boxSizing: "border-box",
-        pointerEvents: "none",
+        width: data.d, height: data.d,
+        borderRadius: BLOB[data.id] ?? "50%",
+        background: data.color,
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        textAlign: "center", padding: 22,
+        boxSizing: "border-box", cursor: "pointer", userSelect: "none",
+        boxShadow: `0 6px 32px ${data.color}55`,
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: light ? "#111" : "#fff", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: "rgba(0,0,0,0.45)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: light ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.6)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
           {data.score}%
         </div>
       </div>
