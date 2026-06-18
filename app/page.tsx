@@ -315,7 +315,7 @@ function FocusController({ trendId }: { trendId: string }) {
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
     const pad = 24;
-    const viewR = 460; // ringR(max≈270) + nudge(≈60) + w/2(85) ≈ 415
+    const viewR = 300;
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
