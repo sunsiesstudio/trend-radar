@@ -45,20 +45,20 @@ function isLight(hex: string) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 155;
 }
 
-// Cluster centres spaced ≥600 px apart so each cluster's signal zone
-// fits without crossing into a neighbour's territory.
+// Cluster centres spaced ≥800 px apart so each cluster's signal zone
+// (MAX_R = d/2+320) fits without crossing into a neighbour's territory.
 // pos = top-left of CIRCLE_D×CIRCLE_D anchor; centre = pos + CIRCLE_D/2.
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
-  "ai-creativity":          { x: 418,  y: 368  },
-  "longevity":              { x: 1118, y: 268  },
-  "wearables":              { x: 1868, y: 568  },
-  "ar-commerce":            { x: 2318, y: 118  },
-  "digital-identity":       { x: 868,  y: 918  },
-  "biotech-beauty":         { x: 218,  y: 1018 },
-  "sustainable-materials":  { x: 1518, y: 1118 },
-  "neurotech":              { x: 18,   y: 1618 },
-  "spatial-computing":      { x: 618,  y: 1618 },
-  "3d-printing":            { x: 2018, y: 1618 },
+  "ai-creativity":          { x: 418,  y: 318  },
+  "longevity":              { x: 1318, y: 318  },
+  "ar-commerce":            { x: 2218, y: 318  },
+  "biotech-beauty":         { x: 18,   y: 1218 },
+  "digital-identity":       { x: 868,  y: 1218 },
+  "sustainable-materials":  { x: 1668, y: 1218 },
+  "wearables":              { x: 2518, y: 1218 },
+  "neurotech":              { x: 218,  y: 2118 },
+  "spatial-computing":      { x: 1018, y: 2118 },
+  "3d-printing":            { x: 1918, y: 2118 },
 };
 
 // ─── Seen-signal tracking (localStorage) ─────────────────────────────────────
@@ -93,7 +93,7 @@ function dlCSV(content: string, name: string) {
 // ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number };
-type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; fillAlpha: string };
+type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; h: number; fillAlpha: string };
 
 function blobFromId(id: string): string {
   // Two independent hashes → 8 fully uncorrelated corner values
@@ -149,7 +149,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: data.w,
-      height: data.w,
+      height: data.h,
       background: `${data.color}12`,
       border: `1.8px solid ${data.color}`,
       borderRadius: blobFromId(data.id),
@@ -197,7 +197,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
   const GAP = 8;
   // Try primary angle first, then rotate ±23°, ±45°, ±68°, ±90° before giving up
   const ANGLE_OFFSETS = [0, 0.4, -0.4, 0.79, -0.79, 1.18, -1.18, 1.57, -1.57];
-  type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
+  type P = { sig: Signal; w: number; h: number; fillAlpha: string; isNew: boolean; x: number; y: number };
   type Blob = { cx: number; cy: number; r: number };
 
   // All trend blobs — signals from every cluster must avoid these globally.
@@ -219,9 +219,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    // Signals may not travel more than 260 px from the blob edge — keeps
+    // Signals may not travel more than 320 px from the blob edge — keeps
     // each cluster's signals within its own territory.
-    const MAX_R = d / 2 + 260;
+    const MAX_R = d / 2 + 320;
 
     // Collision list: only this cluster's already-placed signals.
     // Different clusters are separated enough that cross-cluster signal
@@ -235,10 +235,18 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const baseAngle = i * GOLDEN_ANGLE + jitter;
       const charsPerLine = Math.ceil(sig.title.length / 4);
       const w = Math.max(90, Math.min(170, Math.round(charsPerLine * 5.8) + 20));
+      // Compute height from text wrapping so text never overflows the blob
+      const innerW = w - 16;
+      const estCharsPerLine = Math.max(1, Math.floor(innerW / 6.0));
+      const estLines = Math.ceil(sig.title.length / estCharsPerLine);
+      const sigH = Math.round(Math.max(w * 0.75, estLines * 13.5 + 20));
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
-      let x = cx - w / 2, y = cy - w / 2;
+      // Fallback: place just outside the blob edge along baseAngle (never at center)
+      const fallbackR = d / 2 + GAP + Math.max(w, sigH) / 2 + 10;
+      let x = cx + fallbackR * Math.cos(baseAngle) - w / 2;
+      let y = cy + fallbackR * Math.sin(baseAngle) - sigH / 2;
       let placed = false;
 
       for (const dAngle of ANGLE_OFFSETS) {
@@ -246,14 +254,14 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
         const angle = baseAngle + dAngle;
         for (let r = d / 2 + GAP; r <= MAX_R; r += 4) {
           const tx = cx + r * Math.cos(angle) - w / 2;
-          const ty = cy + r * Math.sin(angle) - w / 2;
-          const ncx = tx + w / 2, ncy = ty + w / 2;
+          const ty = cy + r * Math.sin(angle) - sigH / 2;
+          const ncx = tx + w / 2, ncy = ty + sigH / 2;
 
           // Must clear ALL trend blobs
           let clearBlobs = true;
           for (const blob of allBlobs) {
             const nearX = Math.max(tx, Math.min(blob.cx, tx + w));
-            const nearY = Math.max(ty, Math.min(blob.cy, ty + w));
+            const nearY = Math.max(ty, Math.min(blob.cy, ty + sigH));
             if (Math.hypot(nearX - blob.cx, nearY - blob.cy) < blob.r + GAP) { clearBlobs = false; break; }
           }
           if (!clearBlobs) continue;
@@ -262,7 +270,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
           let clearNodes = true;
           for (const p of placements) {
             if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
-                Math.abs(ncy - (p.y + p.w / 2)) < (w + p.w) / 2 + GAP) { clearNodes = false; break; }
+                Math.abs(ncy - (p.y + p.h / 2)) < (sigH + p.h) / 2 + GAP) { clearNodes = false; break; }
           }
           if (!clearNodes) continue;
 
@@ -270,14 +278,14 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
         }
       }
 
-      placements.push({ sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
+      placements.push({ sig, w, h: sigH, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
     });
 
-    placements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
+    placements.forEach(({ sig, w, h, fillAlpha, isNew, x, y }) => {
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x, y },
-        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w, fillAlpha } as SignalNodeData,
+        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w, h, fillAlpha } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
