@@ -9,7 +9,7 @@ export const RISO_PALETTE = {
   darkGreen:   "#53A373",
 };
 
-export const RADAR_OVERVIEW = "Augmented Radar maps where emerging technology collides with fashion, beauty, and lifestyle — the territory tracked each week in the Augmented Rarity newsletter. Culture and tech don't move in parallel; they pull on each other constantly. Add or remove topics below to reshape the board around what you're watching.";
+export const RADAR_OVERVIEW = "Augmented Radar tracks emerging technology as its core signal — then maps how it collides with the topics you care about. Fashion, beauty, lifestyle, gaming, wellness: every trend on this board is a place where new tech is reshaping a cultural category. Use the filters below to focus the board on the intersections most relevant to you.";
 
 export const TRENDS: Trend[] = [
   {
