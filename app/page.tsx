@@ -149,35 +149,30 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: data.w,
-      height: data.h,
-      background: `${data.color}12`,
-      border: `1.8px solid ${data.color}`,
-      borderRadius: blobFromId(data.id),
-      padding: "8px",
+      height: data.w,
+      background: `${data.color}${data.fillAlpha}`,
+      border: `1.5px solid ${data.color}cc`,
+      borderRadius: "50%",
+      padding: "14px",
       display: "flex", alignItems: "center", justifyContent: "center",
       textAlign: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      boxShadow: data.isNew ? `0 3px 20px ${data.color}60` : `0 2px 12px ${data.color}35`,
+      overflow: "hidden",
+      boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
       position: "relative",
     }}>
       {data.isNew && (
         <span style={{
-          position: "absolute", top: -7, left: 8,
-          fontSize: 7, fontWeight: 900, color: "#fff",
+          position: "absolute", top: 6, left: "50%", transform: "translateX(-50%)",
+          fontSize: 6, fontWeight: 900, color: "#fff",
           background: "#FF2D78",
           borderRadius: 3, padding: "1px 4px",
           letterSpacing: "0.07em", lineHeight: 1.5,
+          whiteSpace: "nowrap",
         }}>NEW</span>
       )}
-      {data.isLive && (
-        <span style={{
-          position: "absolute", top: 5, right: 7,
-          width: 5, height: 5, borderRadius: "50%",
-          background: "#00c47a",
-        }} />
-      )}
-      <div style={{ fontSize: 10, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, letterSpacing: "-0.01em" }}>
+      <div style={{ fontSize: 9, fontWeight: 700, color: "#111", lineHeight: 1.3, letterSpacing: "-0.01em" }}>
         {data.title}
       </div>
     </div>
@@ -194,7 +189,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
   const allSignals = [...SIGNALS, ...extraSignals];
 
   const GOLDEN_ANGLE = 2.399963;
-  const GAP = 8;
+  const GAP = 4;
   // Try primary angle first, then rotate ±23°, ±45°, ±68°, ±90° before giving up
   const ANGLE_OFFSETS = [0, 0.4, -0.4, 0.79, -0.79, 1.18, -1.18, 1.57, -1.57];
   type P = { sig: Signal; w: number; h: number; fillAlpha: string; isNew: boolean; x: number; y: number };
@@ -233,14 +228,12 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
       const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
       const baseAngle = i * GOLDEN_ANGLE + jitter;
-      const charsPerLine = Math.ceil(sig.title.length / 4);
-      const w = Math.max(90, Math.min(170, Math.round(charsPerLine * 5.8) + 20));
-      // Compute height from text wrapping so text never overflows the blob
-      const innerW = w - 16;
-      const estCharsPerLine = Math.max(1, Math.floor(innerW / 6.0));
-      const estLines = Math.ceil(sig.title.length / estCharsPerLine);
-      const sigH = Math.round(Math.max(w * 0.75, estLines * 13.5 + 20));
-      const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
+      // Circle diameter: scale with title length so text fits inside
+      // At 9px font, ~6px/char, effective text band ≈ 65% of diameter
+      const w = Math.max(120, Math.min(175, Math.round(sig.title.length * 2.4) + 38));
+      const sigH = w; // perfect circle
+      // Watercolor fill: vary opacity 33-67% per signal
+      const alphaByte = 0x55 + ((h >> 14 & 0x7f) % 0x55);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
       // Fallback: place just outside the blob edge along baseAngle (never at center)
@@ -289,7 +282,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
-        style: { stroke: trend.color, strokeWidth: 2, opacity: 0.55 },
+        style: { stroke: trend.color, strokeWidth: 1, opacity: 0.18 },
       });
     });
   });
@@ -300,7 +293,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const key = [sig.id, targetId].sort().join("--");
       if (!seen.has(key)) {
         seen.add(key);
-        edges.push({ id: `cross-${key}`, source: sig.id, target: targetId, type: "straight", style: { stroke: "#ccc", strokeWidth: 1, strokeDasharray: "4 4" } });
+        edges.push({ id: `cross-${key}`, source: sig.id, target: targetId, type: "straight", style: { stroke: "#bbb", strokeWidth: 0.8, strokeDasharray: "3 5", opacity: 0.35 } });
       }
     });
   });
@@ -430,7 +423,7 @@ export default function HomePage() {
   const focusTrend = TRENDS[focusIdx];
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#f5ece8" }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff" }}>
       {/* Header */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
@@ -490,7 +483,7 @@ export default function HomePage() {
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#f5ece8" }}
+          style={{ background: "#ffffff" }}
         >
           <FocusController trendId={focusTrend.id} />
         </ReactFlow>
