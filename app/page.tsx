@@ -193,16 +193,26 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
   const edges: Edge[] = [];
   const allSignals = [...SIGNALS, ...extraSignals];
 
+  const GOLDEN_ANGLE = 2.399963;
+  const GAP = 8;
+  type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
+  type Blob = { cx: number; cy: number; r: number };
+
+  // Global registries — signals and trend blobs from ALL clusters checked together.
+  const allPlacements: P[] = [];
+  const allBlobs: Blob[] = [];
+
   TRENDS.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
-    // Diameter scales with relevance: 48→130px, 88→200px
     const d = Math.round(75 + (trend.relevanceScore / 100) * 140);
 
-    // Keep cluster center fixed regardless of node size
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
+
+    // Register trend blob so signals from other clusters avoid it too
+    allBlobs.push({ cx, cy, r: d / 2 });
 
     nodes.push({
       id: trend.id, type: "trendCircle",
@@ -210,12 +220,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    // Start every signal just outside the blob — only push outward on actual overlap.
-    // Produces a tight multi-ring flower instead of one large sparse ring.
-    const GOLDEN_ANGLE = 2.399963;
-    const GAP = 8;
-    type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
-    const placements: P[] = [];
+    const clusterPlacements: P[] = [];
 
     trendSignals.forEach((sig, i) => {
       let h = 0;
@@ -227,28 +232,36 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
-      let r = d / 2 + GAP; // start tight against the blob
+      let r = d / 2 + GAP;
       let x = 0, y = 0;
-      for (let step = 0; step < 300; step++, r += 4) {
+      for (let step = 0; step < 500; step++, r += 4) {
         x = cx + r * Math.cos(angle) - w / 2;
         y = cy + r * Math.sin(angle) - w / 2;
         const ncx = x + w / 2, ncy = y + w / 2;
-        // Check clearance from trend blob (nearest point of rect to circle center)
-        const nearX = Math.max(x, Math.min(cx, x + w));
-        const nearY = Math.max(y, Math.min(cy, y + w));
-        const clearBlob = Math.hypot(nearX - cx, nearY - cy) >= d / 2 + GAP;
-        // AABB check against all prior nodes (correct for square nodes, no false-clear at diagonals)
+
+        // Clear ALL trend blobs (own + neighbours)
+        let clearBlobs = true;
+        for (const blob of allBlobs) {
+          const nearX = Math.max(x, Math.min(blob.cx, x + w));
+          const nearY = Math.max(y, Math.min(blob.cy, y + w));
+          if (Math.hypot(nearX - blob.cx, nearY - blob.cy) < blob.r + GAP) { clearBlobs = false; break; }
+        }
+
+        // Clear ALL placed signals (own cluster + previous clusters)
         let clearNodes = true;
-        for (const p of placements) {
+        for (const p of allPlacements) {
           if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
               Math.abs(ncy - (p.y + p.w / 2)) < (w + p.w) / 2 + GAP) { clearNodes = false; break; }
         }
-        if (clearBlob && clearNodes) break;
+
+        if (clearBlobs && clearNodes) break;
       }
-      placements.push({ sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
+      const placement = { sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y };
+      clusterPlacements.push(placement);
+      allPlacements.push(placement);
     });
 
-    placements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
+    clusterPlacements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x, y },
