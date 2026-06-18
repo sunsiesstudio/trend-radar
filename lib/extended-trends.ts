@@ -15,16 +15,16 @@ export const TOPIC_COLORS: Record<string, string> = {
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
-  fashion:        "Fashion is honestly where tech shows up on your body first. AI is doing the moodboard in an afternoon, AR is making the changing room optional, and digital outfits are making physical clothes just one layer of who you are.",
-  beauty:         "Beauty is where biotech got really interesting. Microbiome science, longevity chemistry, and neurocosmetics are rewriting what a skincare product even is, and who gets to make one.",
-  lifestyle:      "Lifestyle is where technology disappears into habit. Wearables, spatial interfaces, and digital identity are becoming invisible infrastructure for how people actually live and show up.",
-  gaming:         "Gaming is basically a live test for how attention and scarcity work. Drop mechanics, NPC aesthetics, and virtual status objects are teaching a whole generation new rules about what desire looks like.",
-  wellness:       "Wellness has fully industrialised. Cold exposure, cortisol management, and biometric feedback are product categories now. The body as an optimisation project is a massive market and it is only getting bigger.",
-  "food-tech":    "Precision nutrition and functional food are merging with lifestyle aesthetics. Adaptogens, nootropics, and personalised microbiome plans are becoming part of the visible, curated self.",
-  "mental-health":"Mental health language has entered mainstream product and brand design. Dopamine loops, therapeutic aesthetics, and nervous system regulation are now product briefs, not just clinical concepts.",
-  sustainability: "Sustainability is becoming table stakes rather than a USP. The real frontier now is material provenance, digital product passports, and circular business models that actually close the loop.",
-  tech:           "Technology is the current running underneath every trend here. The question is never whether tech is involved. It is which tech becomes invisible fastest, disappearing into behaviour and culture.",
-  health:         "Consumer health is dissolving the boundary between medical and lifestyle. At-home diagnostics, biometric wearables, and longevity clinics are putting information in your hands that used to sit behind a doctor's appointment.",
+  fashion:        "Fashion is where tech shows up on your body first. AI is already doing the moodboard in an afternoon, AR is making the fitting room optional, and your avatar outfit now matters as much as your real one.",
+  beauty:         "Beauty is basically where biotech gets really interesting. Microbiome science, fermented actives, exosome serums. The lab is the new beauty counter and the brands that understand biology are winning.",
+  lifestyle:      "Lifestyle is where tech disappears into habit. Wearables, spatial interfaces, digital identity: all becoming invisible infrastructure for how people actually live and show up.",
+  gaming:         "Gaming is a live test for how attention and scarcity work. Drop mechanics, NPC aesthetics, virtual status objects: a whole generation learning new rules for what desire looks like.",
+  wellness:       "Wellness has fully industrialised. Cold exposure, cortisol management, biometric feedback: all product categories now. The body as an optimisation project is a massive market and it is only getting bigger.",
+  "food-tech":    "Precision nutrition and functional food are becoming lifestyle accessories. Adaptogens, nootropics, personalised microbiome plans: part of the curated, visible self now.",
+  "mental-health":"Mental health language has crossed into mainstream product design. Dopamine loops, therapeutic aesthetics, nervous system regulation: product briefs now, not just clinical concepts.",
+  sustainability: "Sustainability is table stakes, not a USP. The frontier is material provenance, digital product passports, and circular models that actually close the loop.",
+  tech:           "Tech is the thread underneath every trend on this board. The question is never whether it is involved. It is which tech becomes invisible fastest, disappearing into behaviour and culture.",
+  health:         "Consumer health is dissolving the boundary between medical and lifestyle. At-home diagnostics, biometric wearables, longevity clinics: information that used to sit behind a doctor's appointment, now in your hands.",
 };
 
 // Normalise user input to a canonical topic key

@@ -679,7 +679,7 @@ export default function HomePage() {
             </div>
 
             <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, margin: "12px 0 16px" }}>
-              Every trend here is a place where something new is genuinely happening at the intersection of tech and the topics you are tracking.
+              {RADAR_OVERVIEW}
             </p>
 
             {/* Per-topic descriptions */}
