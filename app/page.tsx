@@ -349,6 +349,19 @@ function FocusController({ trendId, trendPos }: { trendId: string; trendPos: { x
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const chromeRef = useRef<HTMLDivElement>(null);
+  const [chromeH,  setChromeH]  = useState(158);
+
+  useEffect(() => {
+    const el = chromeRef.current;
+    if (!el) return;
+    const update = () => setChromeH(el.offsetHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const [activeTrend,   setActiveTrend]   = useState<Trend | null>(null);
   const [activeSignal,  setActiveSignal]  = useState<Signal | null>(null);
   const [showAdd,       setShowAdd]       = useState(false);
@@ -494,10 +507,11 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(visibleTrends.length - 1, i + 1));
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column" }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff", overflow: "hidden" }}>
+      {/* Chrome wrapper — measured so the canvas padding always tracks it */}
+      <div ref={chromeRef} style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}>
       {/* Header */}
       <div style={{
-        flexShrink: 0, zIndex: 10,
         height: 52, padding: "0 20px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
@@ -526,7 +540,6 @@ export default function HomePage() {
 
       {/* Topics bar */}
       <div style={{
-        flexShrink: 0, zIndex: 9,
         height: 44, padding: "0 14px",
         display: "flex", alignItems: "center", gap: 6,
         overflowX: "auto", WebkitOverflowScrolling: "touch",
@@ -628,7 +641,6 @@ export default function HomePage() {
         onClick={() => setSummaryOpen(true)}
         role="button"
         style={{
-          flexShrink: 0, zIndex: 9,
           padding: "10px 12px 10px 20px",
           background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
           borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -643,6 +655,7 @@ export default function HomePage() {
           ↓
         </span>
       </div>
+      </div>{/* end chrome wrapper */}
 
       {/* Summary expanded overlay */}
       {summaryOpen && (
@@ -718,9 +731,9 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Canvas */}
+      {/* Canvas — full screen behind chrome; paddingTop tracks measured chrome height */}
       <div
-        style={{ flex: 1, minHeight: 0, position: "relative" }}
+        style={{ position: "absolute", inset: 0, paddingTop: chromeH, paddingBottom: 80 }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;
@@ -743,7 +756,7 @@ export default function HomePage() {
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#ffffff", position: "absolute", inset: 0 }}
+          style={{ background: "#ffffff" }}
         >
           <BoardController fitViewRef={fitViewRef} />
           {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
@@ -752,7 +765,7 @@ export default function HomePage() {
 
       {/* Nav bar */}
       <div style={{
-        flexShrink: 0, zIndex: 10,
+        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
         height: 80,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
