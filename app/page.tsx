@@ -398,7 +398,11 @@ export default function HomePage() {
 
   const allTrends = useMemo(() => [...TRENDS, ...appliedDynamicTrends], [appliedDynamicTrends]);
   const visibleTrends = useMemo(() =>
-    allTrends.filter(t => !t.topics?.length || t.topics.some(tp => appliedTopics.includes(tp))),
+    allTrends.filter(t =>
+      TRENDS.some(s => s.id === t.id) ||          // base trends always show
+      !t.topics?.length ||
+      t.topics.some(tp => appliedTopics.includes(tp))
+    ),
     [allTrends, appliedTopics]
   );
 
