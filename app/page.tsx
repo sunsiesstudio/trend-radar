@@ -195,6 +195,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
 
   // All trend blobs — signals from every cluster must avoid these globally.
   const allBlobs: Blob[] = [];
+  // All placed signals across every cluster — prevents cross-cluster overlap
+  // when clusters are close together.
+  const allSignalPlacements: P[] = [];
 
   TRENDS.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
@@ -212,13 +215,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    // Signals may not travel more than 320 px from the blob edge — keeps
-    // each cluster's signals within its own territory.
     const MAX_R = d / 2 + 320;
 
-    // Collision list: only this cluster's already-placed signals.
-    // Different clusters are separated enough that cross-cluster signal
-    // overlap can't happen within MAX_R.
+    // Local list for this cluster only — used when building nodes/edges below.
     const placements: P[] = [];
 
     trendSignals.forEach((sig, i) => {
@@ -238,7 +237,8 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
       // Radius-first search: expand outward, probe N_ANGLES directions at each ring.
-      // This guarantees the closest valid spot and never drops a signal on top of another.
+      // Checks against allSignalPlacements (global) so signals from different
+      // clusters never overlap each other.
       let x = cx, y = cy, placed = false;
 
       const tryPlace = (rMin: number, rMax: number, checkBlobs: boolean): boolean => {
@@ -258,7 +258,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
               if (!ok) continue;
             }
             let clearNodes = true;
-            for (const p of placements) {
+            for (const p of allSignalPlacements) {
               if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
                   Math.abs(ncy - (p.y + p.h / 2)) < (sigH + p.h) / 2 + GAP) { clearNodes = false; break; }
             }
@@ -273,7 +273,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       // Pass 2: beyond MAX_R if needed (no global blob check — keeps cluster together visually)
       if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
 
-      placements.push({ sig, w, h: sigH, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
+      const entry: P = { sig, w, h: sigH, fillAlpha, isNew: !seenIds.has(sig.id), x, y };
+      placements.push(entry);
+      allSignalPlacements.push(entry);
     });
 
     placements.forEach(({ sig, w, h, fillAlpha, isNew, x, y }) => {
