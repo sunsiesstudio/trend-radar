@@ -475,11 +475,6 @@ export default function HomePage() {
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
           {RADAR_OVERVIEW}
         </p>
-        {updatedLabel && (
-          <span style={{ fontSize: 9.5, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>
-            {updatedLabel}
-          </span>
-        )}
       </div>
 
       {/* Canvas */}
@@ -546,6 +541,11 @@ export default function HomePage() {
           <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
             {focusIdx + 1} / {TRENDS.length}
           </div>
+          {updatedLabel && (
+            <div style={{ fontSize: 9, color: "#ccc", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+              {updatedLabel}
+            </div>
+          )}
         </div>
 
         <button
