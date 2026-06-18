@@ -15,14 +15,14 @@ export const TOPIC_COLORS: Record<string, string> = {
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
-  fashion:        "Fashion is where tech shows up on your body first. AI is already doing the moodboard in an afternoon, AR is making the fitting room optional, and your avatar outfit now matters as much as your real one.",
-  beauty:         "Beauty is basically where biotech gets really interesting. Microbiome science, fermented actives, exosome serums. The lab is the new beauty counter and the brands that understand biology are winning.",
-  lifestyle:      "Lifestyle is where tech disappears into habit. Wearables, spatial interfaces, digital identity: all becoming invisible infrastructure for how people actually live and show up.",
-  gaming:         "Gaming is a live test for how attention and scarcity work. Drop mechanics, NPC aesthetics, virtual status objects: a whole generation learning new rules for what desire looks like.",
+  fashion:        "Fashion is where tech shows up on your body first. AI is already doing the moodboard in an afternoon. AR is making the fitting room optional. And your avatar outfit now matters as much as your real one.",
+  beauty:         "Beauty is where biotech gets genuinely interesting. Microbiome science, fermented actives, exosome serums: the lab is the new beauty counter. The brands that understand biology are winning.",
+  lifestyle:      "Lifestyle is where tech disappears into habit. Wearables, spatial interfaces, digital identity: all becoming invisible infrastructure for how people actually live. Most people don't notice until it's already normal.",
+  gaming:         "Gaming is a live test for how attention and scarcity work. Drop mechanics, NPC aesthetics, virtual status objects: a whole generation learning new rules for desire. The rest of retail is paying attention.",
   wellness:       "Wellness has fully industrialised. Cold exposure, cortisol management, biometric feedback: all product categories now. The body as an optimisation project is a massive market and it is only getting bigger.",
-  "food-tech":    "Precision nutrition and functional food are becoming lifestyle accessories. Adaptogens, nootropics, personalised microbiome plans: part of the curated, visible self now.",
+  "food-tech":    "Functional food is becoming a lifestyle prop. Adaptogens, nootropics, personalised microbiome plans: part of the visible, curated self now. What you carry says as much as what you wear.",
   "mental-health":"Mental health language has crossed into mainstream product design. Dopamine loops, therapeutic aesthetics, nervous system regulation: product briefs now, not just clinical concepts.",
-  sustainability: "Sustainability is table stakes, not a USP. The frontier is material provenance, digital product passports, and circular models that actually close the loop.",
+  sustainability: "Sustainability is table stakes, not a USP anymore. The frontier is material provenance, digital product passports, and circular models that actually close the loop. The EU is forcing the pace.",
   tech:           "Tech is the thread underneath every trend on this board. The question is never whether it is involved. It is which tech becomes invisible fastest, disappearing into behaviour and culture.",
   health:         "Consumer health is dissolving the boundary between medical and lifestyle. At-home diagnostics, biometric wearables, longevity clinics: information that used to sit behind a doctor's appointment, now in your hands.",
 };

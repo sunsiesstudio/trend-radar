@@ -9,7 +9,7 @@ export const RISO_PALETTE = {
   darkGreen:   "#53A373",
 };
 
-export const RADAR_OVERVIEW = "Augmented Radar tracks where new tech is actually changing things in fashion, beauty, lifestyle and beyond. Every trend here is a real signal, not just a trending topic. Add topics below to focus the board on what matters to you.";
+export const RADAR_OVERVIEW = "Augmented Radar maps where new tech is genuinely changing things in fashion, beauty and culture. Not just what's trending. What's actually shifting. Add topics to focus the board on what matters to you.";
 
 export const TRENDS: Trend[] = [
   {
