@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import ReactFlow, {
   Node,
   Edge,
   Controls,
   NodeProps,
   NodeMouseHandler,
-  useNodesState,
-  useEdgesState,
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
@@ -310,6 +308,14 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
 
 // ─── Mobile: focus one trend cluster ─────────────────────────────────────────
 
+function BoardController({ fitViewRef }: { fitViewRef: React.MutableRefObject<(() => void) | null> }) {
+  const { fitView } = useReactFlow();
+  useEffect(() => {
+    fitViewRef.current = () => fitView({ duration: 420, padding: 0.18 });
+  }, [fitView, fitViewRef]);
+  return null;
+}
+
 function FocusController({ trendId }: { trendId: string }) {
   const { fitBounds } = useReactFlow();
   const first = useRef(true);
@@ -396,14 +402,7 @@ export default function HomePage() {
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends), [allExtraSignals, seenIds, visibleTrends]);
-  const [nodes, setNodes] = useNodesState(graphNodes);
-  const [edges, setEdges] = useEdgesState(graphEdges);
-
-  useEffect(() => {
-    setNodes(graphNodes);
-    setEdges(graphEdges);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graphNodes, graphEdges]);
+  const fitViewRef = useRef<(() => void) | null>(null);
 
   const addTopic = useCallback((raw: string) => {
     const key = normaliseTopicKey(raw);
@@ -547,7 +546,11 @@ export default function HomePage() {
         )}
         {hasPendingChanges && (
           <button
-            onClick={() => { setAppliedTopics(activeTopics); setAppliedDynamicTrends(dynamicTrends); }}
+            onClick={() => {
+              setAppliedTopics(activeTopics);
+              setAppliedDynamicTrends(dynamicTrends);
+              setTimeout(() => fitViewRef.current?.(), 80);
+            }}
             style={{
               flexShrink: 0, height: 28, padding: "0 14px",
               border: "none", borderRadius: 20,
@@ -668,8 +671,8 @@ export default function HomePage() {
         }}
       >
         <ReactFlow
-          nodes={nodes}
-          edges={edges}
+          nodes={graphNodes}
+          edges={graphEdges}
           nodeTypes={NODE_TYPES}
           onNodeClick={handleNodeClick}
           nodesDraggable={false}
@@ -682,6 +685,7 @@ export default function HomePage() {
           proOptions={{ hideAttribution: true }}
           style={{ background: "#ffffff" }}
         >
+          <BoardController fitViewRef={fitViewRef} />
           <FocusController trendId={focusTrend.id} />
         </ReactFlow>
       </div>
