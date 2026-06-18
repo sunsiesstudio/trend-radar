@@ -349,6 +349,8 @@ export default function HomePage() {
   const [summaryOpen,   setSummaryOpen]   = useState(false);
   const [activeTopics,  setActiveTopics]  = useState<string[]>(["fashion", "beauty", "lifestyle"]);
   const [dynamicTrends, setDynamicTrends] = useState<Trend[]>([]);
+  const [appliedTopics,       setAppliedTopics]       = useState<string[]>(["fashion", "beauty", "lifestyle"]);
+  const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [addingTopic,   setAddingTopic]   = useState(false);
   const [topicInput,    setTopicInput]    = useState("");
   // Seed seen IDs with all static signals on first visit so they don't show NEW
@@ -381,10 +383,14 @@ export default function HomePage() {
     return () => { cancelled = true; };
   }, []);
 
-  const allTrends = useMemo(() => [...TRENDS, ...dynamicTrends], [dynamicTrends]);
+  const allTrends = useMemo(() => [...TRENDS, ...appliedDynamicTrends], [appliedDynamicTrends]);
   const visibleTrends = useMemo(() =>
-    allTrends.filter(t => !t.topics?.length || t.topics.some(tp => activeTopics.includes(tp))),
-    [allTrends, activeTopics]
+    allTrends.filter(t => !t.topics?.length || t.topics.some(tp => appliedTopics.includes(tp))),
+    [allTrends, appliedTopics]
+  );
+  const hasPendingChanges = useMemo(() =>
+    JSON.stringify([...activeTopics].sort()) !== JSON.stringify([...appliedTopics].sort()),
+    [activeTopics, appliedTopics]
   );
 
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
@@ -537,6 +543,22 @@ export default function HomePage() {
             }}
           >
             <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> topic
+          </button>
+        )}
+        {hasPendingChanges && (
+          <button
+            onClick={() => { setAppliedTopics(activeTopics); setAppliedDynamicTrends(dynamicTrends); }}
+            style={{
+              flexShrink: 0, height: 28, padding: "0 14px",
+              border: "none", borderRadius: 20,
+              fontSize: 11, fontWeight: 700, color: "#fff",
+              background: "#111", cursor: "pointer",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              display: "flex", alignItems: "center", gap: 4,
+              marginLeft: 4,
+            }}
+          >
+            Update board
           </button>
         )}
       </div>
