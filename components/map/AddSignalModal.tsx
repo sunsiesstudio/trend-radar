@@ -11,17 +11,18 @@ interface Props {
 }
 
 export function AddSignalModal({ onAdd, onClose, defaultTrendId }: Props) {
-  const [trendId, setTrendId] = useState(defaultTrendId ?? TRENDS[0].id);
-  const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
+  const [trendId, setTrendId]       = useState(defaultTrendId ?? TRENDS[0].id);
+  const [title, setTitle]           = useState("");
+  const [summary, setSummary]       = useState("");
   const [sourceName, setSourceName] = useState("");
-  const [sourceUrl, setSourceUrl] = useState("");
-  const [source, setSource] = useState<Signal["source"]>("manual");
+  const [sourceUrl, setSourceUrl]   = useState("");
+  const [source, setSource]         = useState<Signal["source"]>("manual");
 
   const trend = TRENDS.find((t) => t.id === trendId)!;
+  const canSubmit = title.trim().length > 0 && summary.trim().length > 0;
 
   const submit = () => {
-    if (!title.trim() || !summary.trim()) return;
+    if (!canSubmit) return;
     onAdd({
       id: crypto.randomUUID(),
       trendId,
@@ -36,79 +37,158 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId }: Props) {
     onClose();
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%", backgroundColor: "#faf9f6",
-    border: "1px solid #e8e4de", borderRadius: 10,
-    padding: "11px 14px", fontSize: 14, color: "#1a1a1a",
-    fontFamily: "'DM Sans', sans-serif", outline: "none",
-  };
-
-  const label = (text: string) => (
-    <div style={{ fontSize: 10, fontWeight: 700, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{text}</div>
+  const field = (label: string, children: React.ReactNode) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        {label}
+      </div>
+      {children}
+    </div>
   );
 
+  const inputBase: React.CSSProperties = {
+    width: "100%",
+    backgroundColor: "#f8f8f8",
+    border: "1.5px solid #ebebeb",
+    borderRadius: 12,
+    padding: "13px 15px",
+    fontSize: 15,
+    color: "#000",
+    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+    outline: "none",
+    appearance: "none",
+    WebkitAppearance: "none",
+    boxSizing: "border-box",
+    minHeight: 48,
+  };
+
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)" }} onClick={onClose}>
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)" }}
+      onClick={onClose}
+    >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ backgroundColor: "#fff", borderRadius: "20px 20px 0 0", width: "100%", maxWidth: 680, maxHeight: "90vh", overflow: "auto", boxShadow: "0 -8px 60px rgba(0,0,0,0.12)" }}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: "20px 20px 0 0",
+          width: "100%",
+          maxWidth: 680,
+          /* flex column so body scrolls and footer stays fixed above keyboard */
+          display: "flex",
+          flexDirection: "column",
+          maxHeight: "90svh",
+          boxShadow: "0 -8px 60px rgba(0,0,0,0.14)",
+        }}
       >
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)` }} />
+        {/* Color stripe */}
+        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0, borderRadius: "20px 20px 0 0" }} />
 
-        <div style={{ padding: "20px 24px 12px", borderBottom: "1px solid #f0ede8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 className="serif" style={{ fontSize: 22, fontWeight: 400, color: "#1a1a1a" }}>Add signal</h2>
-          <button onClick={onClose} style={{ fontSize: 24, color: "#ccc", background: "none", border: "none", cursor: "pointer" }}>×</button>
+        {/* Header — fixed, never scrolls away */}
+        <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f0f0", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+            Add signal
+          </h2>
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 18, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>×</button>
         </div>
 
-        <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
-          <div>
-            {label("Add to trend")}
-            <select value={trendId} onChange={(e) => setTrendId(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+        {/* Body — scrolls independently */}
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 16 } as React.CSSProperties}>
+
+          {field("Add to trend",
+            <select
+              value={trendId}
+              onChange={(e) => setTrendId(e.target.value)}
+              style={{ ...inputBase, cursor: "pointer" }}
+            >
               {TRENDS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
-          </div>
+          )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <div>
-              {label("Source type")}
-              <select value={source} onChange={(e) => setSource(e.target.value as Signal["source"])} style={{ ...inputStyle, cursor: "pointer" }}>
-                {["manual", "reddit", "news", "youtube", "arxiv", "hackernews"].map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div>
-              {label("Source name")}
-              <input style={inputStyle} placeholder="e.g. Wired, r/fashion…" value={sourceName} onChange={(e) => setSourceName(e.target.value)} />
-            </div>
-          </div>
+          {field("Title *",
+            <input
+              style={inputBase}
+              placeholder="What is this signal?"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              autoCapitalize="sentences"
+            />
+          )}
 
-          <div>
-            {label("Title")}
-            <input style={inputStyle} placeholder="What is this signal?" value={title} onChange={(e) => setTitle(e.target.value)} autoFocus />
-          </div>
+          {field("Summary *",
+            <textarea
+              style={{ ...inputBase, resize: "none", lineHeight: 1.55 }}
+              rows={4}
+              placeholder="Why does this matter? What does it signal?"
+              value={summary}
+              onChange={(e) => setSummary(e.target.value)}
+              autoCapitalize="sentences"
+            />
+          )}
 
-          <div>
-            {label("Summary")}
-            <textarea style={{ ...inputStyle, resize: "none" }} rows={4} placeholder="Why does this matter? What does it signal?" value={summary} onChange={(e) => setSummary(e.target.value)} />
-          </div>
+          {field("Source name",
+            <input
+              style={inputBase}
+              placeholder="e.g. Wired, r/fashion, NYT…"
+              value={sourceName}
+              onChange={(e) => setSourceName(e.target.value)}
+              autoCapitalize="words"
+            />
+          )}
 
-          <div>
-            {label("Source URL (optional)")}
-            <input style={inputStyle} placeholder="https://…" value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} />
-          </div>
+          {field("Source type",
+            <select
+              value={source}
+              onChange={(e) => setSource(e.target.value as Signal["source"])}
+              style={{ ...inputBase, cursor: "pointer" }}
+            >
+              {["manual", "reddit", "news", "youtube", "arxiv", "hackernews"].map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          )}
+
+          {field("Source URL (optional)",
+            <input
+              style={inputBase}
+              placeholder="https://…"
+              value={sourceUrl}
+              onChange={(e) => setSourceUrl(e.target.value)}
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+            />
+          )}
+
+          {/* Extra bottom breathing room so last field clears the footer */}
+          <div style={{ height: 8 }} />
         </div>
 
-        <div style={{ padding: "0 24px 32px", display: "flex", gap: 10 }}>
-          <button onClick={onClose} style={{ flex: 1, padding: "13px 0", border: "1px solid #e8e4de", borderRadius: 14, fontSize: 13, fontWeight: 600, color: "#aaa", background: "#fff", cursor: "pointer" }}>
+        {/* Footer — stays above keyboard */}
+        <div style={{
+          padding: "12px 20px",
+          paddingBottom: "max(20px, env(safe-area-inset-bottom, 20px))",
+          borderTop: "1px solid #f0f0f0",
+          flexShrink: 0,
+          display: "flex",
+          gap: 10,
+          background: "#fff",
+        }}>
+          <button
+            onClick={onClose}
+            style={{ flex: 1, padding: "14px 0", border: "1.5px solid #ebebeb", borderRadius: 14, fontSize: 14, fontWeight: 600, color: "#999", background: "#fff", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+          >
             Cancel
           </button>
           <button
             onClick={submit}
-            disabled={!title.trim() || !summary.trim()}
+            disabled={!canSubmit}
             style={{
-              flex: 2, padding: "13px 0", border: "none", borderRadius: 14,
-              fontSize: 13, fontWeight: 700, cursor: title.trim() && summary.trim() ? "pointer" : "not-allowed",
-              opacity: title.trim() && summary.trim() ? 1 : 0.35,
+              flex: 2, padding: "14px 0", border: "none", borderRadius: 14,
+              fontSize: 14, fontWeight: 700, cursor: canSubmit ? "pointer" : "default",
+              opacity: canSubmit ? 1 : 0.3,
               backgroundColor: trend.color, color: "#fff",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             }}
           >
             Add signal
