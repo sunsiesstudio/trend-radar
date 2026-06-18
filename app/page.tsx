@@ -230,13 +230,17 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
         x = cx + r * Math.cos(angle) - w / 2;
         y = cy + r * Math.sin(angle) - w / 2;
         const ncx = x + w / 2, ncy = y + w / 2;
-        let clear = true;
+        // Check clearance from trend blob (nearest point of rect to circle center)
+        const nearX = Math.max(x, Math.min(cx, x + w));
+        const nearY = Math.max(y, Math.min(cy, y + w));
+        const clearBlob = Math.hypot(nearX - cx, nearY - cy) >= d / 2 + GAP;
+        // AABB check against all prior nodes (correct for square nodes, no false-clear at diagonals)
+        let clearNodes = true;
         for (const p of placements) {
-          const dx = ncx - (p.x + p.w / 2);
-          const dy = ncy - (p.y + p.w / 2);
-          if (Math.sqrt(dx * dx + dy * dy) < (w + p.w) / 2 + GAP) { clear = false; break; }
+          if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
+              Math.abs(ncy - (p.y + p.w / 2)) < (w + p.w) / 2 + GAP) { clearNodes = false; break; }
         }
-        if (clear) break;
+        if (clearBlob && clearNodes) break;
       }
       placements.push({ sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
     });
