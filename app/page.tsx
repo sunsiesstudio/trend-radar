@@ -146,7 +146,8 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: data.w,
-      height: data.w,
+      minHeight: data.w,
+      height: "auto",
       background: `${data.color}${data.fillAlpha}`,
       border: "none",
       borderRadius: blobFromId(data.id),
@@ -174,11 +175,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
           background: "#00c47a",
         }} />
       )}
-      <div style={{
-        fontSize: 9, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.3,
-        letterSpacing: "-0.01em", overflow: "hidden",
-        display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical",
-      }}>
+      <div style={{ fontSize: 10, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, letterSpacing: "-0.01em" }}>
         {data.title}
       </div>
     </div>
@@ -213,12 +210,12 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
 
     // Nodes are square blobs — w = height. Pack them in a ring like cells around a nucleus.
     const GOLDEN_ANGLE = 2.399963;
-    const GAP = 6;   // tight gap like the reference image
-    const AVG_SZ = 78;
+    const GAP = 8;
+    const AVG_SZ = 96;
     const N = trendSignals.length;
     const ringR = Math.max(
-      d / 2 + AVG_SZ / 2 + GAP,           // must clear the blob
-      (N * (AVG_SZ + GAP)) / (2 * Math.PI) // circumference fit
+      d / 2 + AVG_SZ / 2 + GAP,
+      (N * (AVG_SZ + GAP)) / (2 * Math.PI)
     );
     type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
     const placements: P[] = [];
@@ -228,7 +225,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
       const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
       const angle = i * GOLDEN_ANGLE + jitter;
-      const w = 68 + ((h >> 20 & 0x1f) % 22); // 68–90px square
+      const w = 84 + ((h >> 20 & 0x1f) % 28); // 84–112px — wider for full text
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
@@ -285,7 +282,7 @@ function FocusController({ trendId }: { trendId: string }) {
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
     const pad = 24;
-    const viewR = 300; // ringR(max≈176) + nudge(≈50) + w/2(45) ≈ 271
+    const viewR = 360; // ringR(max≈215) + nudge(≈60) + w/2(56) ≈ 331
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
