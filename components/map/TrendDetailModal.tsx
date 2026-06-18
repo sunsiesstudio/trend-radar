@@ -147,7 +147,7 @@ ${trend.macroContext ? `
 </div>
 
 <div class="footer">
-  <span><strong>Trend Radar</strong> &nbsp;—&nbsp; Emerging Signal Intelligence</span>
+  <span><strong>Rarity Radar</strong> &nbsp;—&nbsp; Where tech meets fashion, beauty &amp; lifestyle</span>
   <span>${date}</span>
 </div>
 

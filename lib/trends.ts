@@ -9,7 +9,7 @@ export const RISO_PALETTE = {
   darkGreen:   "#53A373",
 };
 
-export const RADAR_OVERVIEW = "A convergence of bio, tech, and digital is collapsing the boundaries between body, identity, and experience. AI is now a co-creator; longevity science is entering mainstream beauty; spatial and AR interfaces are merging physical commerce with digital selfhood. The body itself is becoming a platform, and the brands that understand this first will define the next decade of culture.";
+export const RADAR_OVERVIEW = "Rarity Radar maps where emerging technology collides with fashion, beauty, and lifestyle — the territory covered each week in the Rarity newsletter. Culture and tech don't move in parallel; they pull on each other constantly. The signals here trace that friction: AI rewriting creative labour, biotech entering the skincare aisle, spatial interfaces changing how we shop and dress. This board exists to make those intersections visible before they become obvious.";
 
 export const TRENDS: Trend[] = [
   {

@@ -420,7 +420,7 @@ export default function HomePage() {
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
-        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Trend Radar</span>
+        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Rarity Radar</span>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <button
             onClick={() => setShowAdd(true)}

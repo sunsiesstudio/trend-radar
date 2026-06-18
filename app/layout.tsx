@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Trend Radar",
-  description: "Emerging signal intelligence for brand consulting",
+  title: "Rarity Radar",
+  description: "Where emerging tech meets fashion, beauty, and lifestyle — by Rarity",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

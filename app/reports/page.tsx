@@ -82,7 +82,7 @@ Signals are sourced from academic preprints (arXiv, bioRxiv), patent filings, ni
 
 ---
 
-*Trend Radar — Emerging Signal Intelligence · ${date}*
+*Rarity Radar — Where tech meets fashion, beauty & lifestyle · ${date}*
 `.trim();
 }
 
