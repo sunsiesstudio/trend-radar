@@ -4,12 +4,9 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic();
 
 const PALETTE = ["#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C", "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C"];
-const POSITIONS: { x: number; y: number }[] = [
-  { x: 368, y: 1968 }, { x: 948, y: 1968 }, { x: 1528, y: 1968 },
-  { x: -32, y: 2568 }, { x: 548, y: 2568 }, { x: 1128, y: 2568 },
-  { x: 1708, y: 2568 }, { x: 168, y: 3168 }, { x: 748, y: 3168 },
-  { x: 1328, y: 3168 },
-];
+const GEN_X = [168, 748, 1328, -32, 548, 1128, 1708];
+const GEN_Y_BASE = 4200;
+const GEN_ROW_H  = 600;
 
 function pickColor(topic: string, idx: number): string {
   let h = 0;
@@ -18,7 +15,7 @@ function pickColor(topic: string, idx: number): string {
 }
 
 export async function POST(req: NextRequest) {
-  const { topic, existingTrendIds = [] } = await req.json();
+  const { topic, existingTrendIds = [], positionOffset = 0 } = await req.json();
   if (!topic || typeof topic !== "string") {
     return NextResponse.json({ error: "topic required" }, { status: 400 });
   }
@@ -103,7 +100,10 @@ Rules:
         relevanceScore: t.relevanceScore,
         redditQuery: `${topic} technology`,
         newsQuery: `${topic} emerging tech`,
-        position: POSITIONS[i % POSITIONS.length],
+        position: {
+          x: GEN_X[(positionOffset + i) % GEN_X.length],
+          y: GEN_Y_BASE + Math.floor((positionOffset + i) / GEN_X.length) * GEN_ROW_H,
+        },
         whyRelevant: t.why_now,
         trajectory: t.brand_relevance,
         nextSteps: [],

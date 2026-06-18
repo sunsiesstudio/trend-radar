@@ -15,16 +15,16 @@ export const TOPIC_COLORS: Record<string, string> = {
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
-  fashion:        "Fashion is where technology first becomes visible on the body. AI is compressing creative cycles, AR is changing how people try and buy, and digital identity is making physical garments only one layer of self-expression.",
-  beauty:         "Beauty is biotech's most accessible consumer entry point. Microbiome science, longevity chemistry, and neurocosmetics are rewriting what a skincare product is — and who gets to make one.",
-  lifestyle:      "Lifestyle is where technology disappears into habit. Wearables, spatial interfaces, and digital identity are becoming invisible infrastructure for how people live, move, and present themselves.",
-  gaming:         "Gaming is a testing ground for the economy of attention and scarcity. Drop mechanics, NPC aesthetics, and virtual status objects are teaching a generation new rules for desire.",
-  wellness:       "Wellness has industrialised: cold exposure, cortisol management, and biometric feedback are product categories now. The body as optimisation project is a $5.6T market and accelerating.",
-  "food-tech":    "Precision nutrition and functional food are converging with lifestyle aesthetics — adaptogens, nootropics, and personalised microbiome plans are becoming part of the visible, curated self.",
-  "mental-health":"Mental health language has entered mainstream product and brand design. Dopamine loops, therapeutic aesthetics, and nervous-system regulation are now product briefs, not just clinical concepts.",
-  sustainability: "Sustainability is becoming table stakes rather than USP. The frontier is material provenance, digital product passports, and circular business models that actually close the loop at scale.",
-  tech:           "Technology is the underlying current across every trend. The question is never whether tech is involved — it is which tech becomes invisible fastest, disappearing into behaviour and culture.",
-  health:         "Consumer health is collapsing the boundary between medical and lifestyle. At-home diagnostics, biometric wearables, and longevity clinics are democratising information that was previously gated by healthcare systems.",
+  fashion:        "Fashion is honestly where tech shows up on your body first. AI is doing the moodboard in an afternoon, AR is making the changing room optional, and digital outfits are making physical clothes just one layer of who you are.",
+  beauty:         "Beauty is where biotech got really interesting. Microbiome science, longevity chemistry, and neurocosmetics are rewriting what a skincare product even is, and who gets to make one.",
+  lifestyle:      "Lifestyle is where technology disappears into habit. Wearables, spatial interfaces, and digital identity are becoming invisible infrastructure for how people actually live and show up.",
+  gaming:         "Gaming is basically a live test for how attention and scarcity work. Drop mechanics, NPC aesthetics, and virtual status objects are teaching a whole generation new rules about what desire looks like.",
+  wellness:       "Wellness has fully industrialised. Cold exposure, cortisol management, and biometric feedback are product categories now. The body as an optimisation project is a massive market and it is only getting bigger.",
+  "food-tech":    "Precision nutrition and functional food are merging with lifestyle aesthetics. Adaptogens, nootropics, and personalised microbiome plans are becoming part of the visible, curated self.",
+  "mental-health":"Mental health language has entered mainstream product and brand design. Dopamine loops, therapeutic aesthetics, and nervous system regulation are now product briefs, not just clinical concepts.",
+  sustainability: "Sustainability is becoming table stakes rather than a USP. The real frontier now is material provenance, digital product passports, and circular business models that actually close the loop.",
+  tech:           "Technology is the current running underneath every trend here. The question is never whether tech is involved. It is which tech becomes invisible fastest, disappearing into behaviour and culture.",
+  health:         "Consumer health is dissolving the boundary between medical and lifestyle. At-home diagnostics, biometric wearables, and longevity clinics are putting information in your hands that used to sit behind a doctor's appointment.",
 };
 
 // Normalise user input to a canonical topic key
@@ -64,7 +64,7 @@ const EXTENDED_TRENDS: Trend[] = [
   {
     id: "gaming-npc-aesthetics",
     name: "NPC Aesthetics",
-    description: "The visual grammar of video game NPCs — flat affect, uniform styling, repeated behaviour — is crossing from ironic meme culture into genuine fashion and creative direction.",
+    description: "Video game NPC aesthetics have crossed from ironic meme into genuine fashion direction. That blank affect, the uniform dressing, the repetition, brands are actually running with it now.",
     color: "#78C9A8",
     topics: ["gaming", "fashion", "lifestyle"],
     relevanceScore: 71,
@@ -82,7 +82,7 @@ const EXTENDED_TRENDS: Trend[] = [
   {
     id: "gaming-drop-economy",
     name: "The Drop Economy",
-    description: "Gaming's limited-item culture — loot boxes, seasonal drops, battle pass exclusives — is restructuring consumer psychology around scarcity and timing in fashion and lifestyle.",
+    description: "Gaming rewired how a generation thinks about scarcity and timing. Loot boxes, seasonal drops, battle pass exclusives, all of it trained people to feel urgency in a very specific way, and fashion is borrowing those exact same mechanics.",
     color: "#FFD65C",
     topics: ["gaming", "fashion", "lifestyle"],
     relevanceScore: 65,
@@ -140,7 +140,7 @@ const EXTENDED_TRENDS: Trend[] = [
   {
     id: "foodtech-functional",
     name: "Functional Food as Accessory",
-    description: "Adaptogenic drinks, nootropic snacks, and precision nutrition products are becoming visible lifestyle props — displayed and carried as signifiers of an optimised life.",
+    description: "Adaptogenic drinks, nootropic snacks, and precision nutrition products are becoming visible lifestyle props, displayed and carried like signifiers of an optimised life.",
     color: "#FD8326",
     topics: ["food-tech", "wellness", "lifestyle"],
     relevanceScore: 59,
@@ -178,7 +178,7 @@ const EXTENDED_TRENDS: Trend[] = [
   {
     id: "mentalhealth-dopamine",
     name: "Dopamine Design",
-    description: "Product designers, brand strategists, and retail architects are explicitly borrowing the neuroscience of reward and pleasure — designing for dopamine responses rather than functional utility.",
+    description: "Product designers and brand strategists are explicitly borrowing the neuroscience of reward and pleasure, designing for dopamine responses rather than functional utility.",
     color: "#C4A0CE",
     topics: ["mental-health", "lifestyle", "beauty"],
     relevanceScore: 73,
@@ -196,7 +196,7 @@ const EXTENDED_TRENDS: Trend[] = [
   {
     id: "mentalhealth-therapeutic",
     name: "Therapeutic Aesthetics",
-    description: "The visual and material language of therapy — softness, safety cues, earth tones, the rejection of stimulation — is becoming a mainstream aesthetic register in fashion and brand identity.",
+    description: "The visual and material language of therapy, think softness, safety cues, earth tones, and a rejection of stimulation, is becoming a mainstream aesthetic in fashion and brand identity.",
     color: "#FFB04A",
     topics: ["mental-health", "lifestyle", "beauty"],
     relevanceScore: 67,

@@ -434,7 +434,7 @@ export default function HomePage() {
       const res = await fetch("/api/generate-trends", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: key, existingTrendIds: existingIds }),
+        body: JSON.stringify({ topic: key, existingTrendIds: existingIds, positionOffset: dynamicTrends.length }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -480,7 +480,7 @@ export default function HomePage() {
     setShowAdd(false);
   }, []);
 
-  const activeTrendForSignal = activeSignal ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null : null;
+  const activeTrendForSignal = activeSignal ? allTrends.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
   // Clamp focusIdx when visibleTrends shrinks after topics are applied
   useEffect(() => {
@@ -663,9 +663,14 @@ export default function HomePage() {
             } as React.CSSProperties}
           >
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-              <h3 style={{ flex: 1, fontSize: 16, fontWeight: 700, color: "#000", lineHeight: 1.5, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                What{"'"}s on the board
-              </h3>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  {"What you're tracking"}
+                </div>
+                <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+                  {appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")}
+                </h3>
+              </div>
               <button
                 onClick={() => setSummaryOpen(false)}
                 aria-label="Close overview"
@@ -673,8 +678,8 @@ export default function HomePage() {
               >×</button>
             </div>
 
-            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, marginBottom: 16, margin: "0 0 16px" }}>
-              {RADAR_OVERVIEW}
+            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, margin: "12px 0 16px" }}>
+              Every trend here is a place where something new is genuinely happening at the intersection of tech and the topics you are tracking.
             </p>
 
             {/* Per-topic descriptions */}
