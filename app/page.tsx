@@ -401,10 +401,6 @@ export default function HomePage() {
     allTrends.filter(t => !t.topics?.length || t.topics.some(tp => appliedTopics.includes(tp))),
     [allTrends, appliedTopics]
   );
-  const hasPendingChanges = useMemo(() =>
-    JSON.stringify([...activeTopics].sort()) !== JSON.stringify([...appliedTopics].sort()),
-    [activeTopics, appliedTopics]
-  );
 
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
@@ -414,20 +410,25 @@ export default function HomePage() {
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
     if (!key || activeTopics.includes(key)) return;
-    setActiveTopics(prev => [...prev, key]);
+    const newTopics = [...activeTopics, key];
+    setActiveTopics(newTopics);
     setTopicInput("");
     setAddingTopic(false);
 
-    // Use pre-built library first
+    // Use pre-built library first — apply immediately
     const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
       !TRENDS.find(e => e.id === t.id) && !dynamicTrends.find(e => e.id === t.id)
     );
     if (libraryTrends.length) {
-      setDynamicTrends(prev => [...prev, ...libraryTrends]);
+      const newDynamic = [...dynamicTrends, ...libraryTrends];
+      setDynamicTrends(newDynamic);
+      setAppliedTopics(newTopics);
+      setAppliedDynamicTrends(newDynamic);
+      setTimeout(() => setFocusIdx(9999), 60);
       return;
     }
 
-    // Otherwise generate via Claude
+    // Generate via Claude — apply when done
     setGeneratingTopic(key);
     try {
       const existingIds = [...TRENDS, ...dynamicTrends].map(t => t.id);
@@ -439,12 +440,16 @@ export default function HomePage() {
       if (res.ok) {
         const data = await res.json();
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
-        setDynamicTrends(prev => [...prev, ...items.map(i => i.trend)]);
+        const newDynamic = [...dynamicTrends, ...items.map(i => i.trend)];
+        setDynamicTrends(newDynamic);
+        setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(prev => [...prev, ...items.flatMap(i => i.signals)]);
+        setTimeout(() => setFocusIdx(9999), 60);
       }
     } catch (err) {
       console.error("generate-trends failed:", err);
     } finally {
+      setAppliedTopics(newTopics);
       setGeneratingTopic(null);
     }
   }, [activeTopics, dynamicTrends]);
@@ -452,8 +457,10 @@ export default function HomePage() {
   const removeTopic = useCallback((topic: string) => {
     setActiveTopics(prev => {
       const next = prev.filter(t => t !== topic);
+      setAppliedTopics(next);
       setDynamicTrends(dt => {
         const kept = dt.filter(t => t.topics?.some(tp => next.includes(tp)));
+        setAppliedDynamicTrends(kept);
         const removedIds = new Set(dt.filter(t => !kept.includes(t)).map(t => t.id));
         setGeneratedSignals(gs => gs.filter(s => !removedIds.has(s.trendId ?? "")));
         return kept;
@@ -600,26 +607,6 @@ export default function HomePage() {
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
             generating {generatingTopic}…
           </div>
-        )}
-        {hasPendingChanges && (
-          <button
-            onClick={() => {
-              setAppliedTopics(activeTopics);
-              setAppliedDynamicTrends(dynamicTrends);
-              setTimeout(() => fitViewRef.current?.(), 80);
-            }}
-            style={{
-              flexShrink: 0, height: 28, padding: "0 14px",
-              border: "none", borderRadius: 20,
-              fontSize: 11, fontWeight: 700, color: "#fff",
-              background: "#111", cursor: "pointer",
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              display: "flex", alignItems: "center", gap: 4,
-              marginLeft: 4,
-            }}
-          >
-            Update board
-          </button>
         )}
       </div>
 
