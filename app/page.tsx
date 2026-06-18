@@ -146,11 +146,13 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: data.w,
+      height: data.w,
       background: `${data.color}${data.fillAlpha}`,
       border: "none",
       borderRadius: blobFromId(data.id),
-      padding: "9px 14px",
-      display: "flex", alignItems: "center",
+      padding: "8px",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      textAlign: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
       boxShadow: data.isNew ? `0 3px 16px ${data.color}40` : `0 2px 10px ${data.color}20`,
@@ -172,7 +174,11 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
           background: "#00c47a",
         }} />
       )}
-      <div style={{ fontSize: 10.5, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
+      <div style={{
+        fontSize: 9, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.3,
+        letterSpacing: "-0.01em", overflow: "hidden",
+        display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical",
+      }}>
         {data.title}
       </div>
     </div>
@@ -205,16 +211,14 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    // Ring radius: big enough that N signals of avg width 126 fit around it with GAP spacing.
-    // All signals start at this radius → they form a ring, not a spiral arm.
-    // Greedy outward step only nudges signals that the golden angle happens to put too close.
+    // Nodes are square blobs — w = height. Pack them in a ring like cells around a nucleus.
     const GOLDEN_ANGLE = 2.399963;
-    const GAP = 20;
-    const NH = 50;
+    const GAP = 6;   // tight gap like the reference image
+    const AVG_SZ = 78;
     const N = trendSignals.length;
     const ringR = Math.max(
-      d / 2 + 80,                              // must clear the blob
-      (N * (126 + GAP)) / (2 * Math.PI)        // circumference fit (126 = avg signal width)
+      d / 2 + AVG_SZ / 2 + GAP,           // must clear the blob
+      (N * (AVG_SZ + GAP)) / (2 * Math.PI) // circumference fit
     );
     type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
     const placements: P[] = [];
@@ -224,20 +228,20 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
       const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
       const angle = i * GOLDEN_ANGLE + jitter;
-      const w = 96 + ((h >> 20 & 0x1f) % 60);
+      const w = 68 + ((h >> 20 & 0x1f) % 22); // 68–90px square
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
-      let r = ringR; // start at the ring, not at the blob edge
+      let r = ringR;
       let x = 0, y = 0;
-      for (let step = 0; step < 200; step++, r += 8) {
+      for (let step = 0; step < 200; step++, r += 4) {
         x = cx + r * Math.cos(angle) - w / 2;
-        y = cy + r * Math.sin(angle) - NH / 2;
-        const ncx = x + w / 2, ncy = y + NH / 2;
+        y = cy + r * Math.sin(angle) - w / 2; // square: use w for height too
+        const ncx = x + w / 2, ncy = y + w / 2;
         let clear = true;
         for (const p of placements) {
           const dx = ncx - (p.x + p.w / 2);
-          const dy = ncy - (p.y + NH / 2);
+          const dy = ncy - (p.y + p.w / 2); // p.w = p.height since square
           if (Math.sqrt(dx * dx + dy * dy) < (w + p.w) / 2 + GAP) { clear = false; break; }
         }
         if (clear) break;
@@ -281,7 +285,7 @@ function FocusController({ trendId }: { trendId: string }) {
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
     const pad = 24;
-    const viewR = 460; // ringR(max≈302) + greedy nudge(≈50) + w/2(78) ≈ 430
+    const viewR = 300; // ringR(max≈176) + nudge(≈50) + w/2(45) ≈ 271
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
