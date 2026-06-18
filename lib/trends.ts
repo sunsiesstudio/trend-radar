@@ -9,7 +9,7 @@ export const RISO_PALETTE = {
   darkGreen:   "#53A373",
 };
 
-export const RADAR_OVERVIEW = "Rarity Radar maps where emerging technology collides with fashion, beauty, and lifestyle — the territory covered each week in the Rarity newsletter. Culture and tech don't move in parallel; they pull on each other constantly. The signals here trace that friction: AI rewriting creative labour, biotech entering the skincare aisle, spatial interfaces changing how we shop and dress. This board exists to make those intersections visible before they become obvious.";
+export const RADAR_OVERVIEW = "Rarity Radar is the signal board for Augmented Rarity — a newsletter tracking where emerging technology collides with fashion, beauty, and lifestyle. Culture and tech don't move in parallel; they pull on each other constantly. The signals here trace that friction: AI rewriting creative labour, biotech entering the skincare aisle, spatial interfaces changing how we shop and dress. Read the newsletter at augmentedrarity.substack.com.";
 
 export const TRENDS: Trend[] = [
   {
