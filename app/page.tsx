@@ -114,19 +114,6 @@ function blobFromId(id: string): string {
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   return (
     <div style={{ position: "relative" }}>
-      {data.newCount > 0 && (
-        <div style={{
-          position: "absolute", top: -6, right: -6, zIndex: 2,
-          minWidth: 18, height: 18, borderRadius: 9,
-          background: "#FF2D78", color: "#fff",
-          fontSize: 9, fontWeight: 900, padding: "0 5px",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 1px 6px rgba(255,45,120,0.4)",
-          letterSpacing: "0.02em",
-        }}>
-          {data.newCount}
-        </div>
-      )}
       <div style={{
         width: data.d, height: data.d,
         borderRadius: BLOB[data.id] ?? "50%",
@@ -164,15 +151,6 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
       boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
       position: "relative",
     }}>
-      {data.isNew && (
-        <span style={{
-          position: "absolute", top: -7, left: 8,
-          fontSize: 7, fontWeight: 900, color: "#fff",
-          background: "#FF2D78",
-          borderRadius: 3, padding: "1px 4px",
-          letterSpacing: "0.07em", lineHeight: 1.5,
-        }}>NEW</span>
-      )}
       <div style={{ fontSize: 9.5, fontWeight: 500, color: "#000", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {data.title}
       </div>
