@@ -208,14 +208,15 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
     const total = trendSignals.length;
 
     trendSignals.forEach((sig, i) => {
-      // Golden angle scatter: avoids any circular pattern, signals feel "free"
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
-      const GOLDEN_ANGLE = 2.399963; // 137.5° in radians
-      const angleNoise = ((h & 0x1ff) / 512 - 0.5) * 2.0; // ±1.0 rad extra jitter
-      const angle = i * GOLDEN_ANGLE + angleNoise;
-      const minR = d / 2 + 10; // just outside the trend blob edge
-      const r = minR + ((h >> 10 & 0xff) / 255) * 85; // spread max 85px past blob
+      const GOLDEN_ANGLE = 2.399963;
+      // Tiny jitter only — golden angle alone gives the even spread
+      const angleJitter = ((h & 0xff) / 255 - 0.5) * 0.25;
+      const angle = i * GOLDEN_ANGLE + angleJitter;
+      // sqrt(i+1) growth keeps nodes evenly spaced in area (sunflower pattern)
+      const baseR = d / 2 + 20;
+      const r = baseR + 34 * Math.sqrt(i + 1);
       const w = 96 + ((h >> 20 & 0x1f) % 60); // 96–156px per signal
       // Per-signal fill opacity: 18%–48% of trend color (hex 2D–7A)
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
@@ -257,7 +258,7 @@ function FocusController({ trendId }: { trendId: string }) {
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
     const pad = 20;
-    const viewR = 275; // d/2(max≈99) + 10 + 85spread + w/2(max≈78) ≈ 272px
+    const viewR = 340; // d/2(max≈101) + 20 + 34*√13(≈122) + w/2(max≈78) ≈ 321px
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
