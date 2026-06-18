@@ -358,11 +358,11 @@ export default function HomePage() {
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [focusIdx,      setFocusIdx]      = useState(0);
   const [summaryOpen,      setSummaryOpen]      = useState(false);
-  const [activeTopics,     setActiveTopics]     = useState<string[]>(["fashion", "beauty", "lifestyle"]);
+  const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
   const [generatingTopic,  setGeneratingTopic]  = useState<string | null>(null);
-  const [appliedTopics,        setAppliedTopics]        = useState<string[]>(["fashion", "beauty", "lifestyle"]);
+  const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [addingTopic,   setAddingTopic]   = useState(false);
   const [topicInput,    setTopicInput]    = useState("");
@@ -396,10 +396,9 @@ export default function HomePage() {
     return () => { cancelled = true; };
   }, []);
 
-  const allTrends = useMemo(() => [...TRENDS, ...appliedDynamicTrends], [appliedDynamicTrends]);
+  const allTrends = useMemo(() => [...appliedDynamicTrends], [appliedDynamicTrends]);
   const visibleTrends = useMemo(() =>
     allTrends.filter(t =>
-      TRENDS.some(s => s.id === t.id) ||          // base trends always show
       !t.topics?.length ||
       t.topics.some(tp => appliedTopics.includes(tp))
     ),
@@ -421,7 +420,7 @@ export default function HomePage() {
 
     // Use pre-built library first — apply immediately
     const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
-      !TRENDS.find(e => e.id === t.id) && !dynamicTrends.find(e => e.id === t.id)
+      !dynamicTrends.find(e => e.id === t.id)
     );
     if (libraryTrends.length) {
       const newDynamic = [...dynamicTrends, ...libraryTrends];
@@ -435,7 +434,7 @@ export default function HomePage() {
     // Generate via Claude — apply when done
     setGeneratingTopic(key);
     try {
-      const existingIds = [...TRENDS, ...dynamicTrends].map(t => t.id);
+      const existingIds = [...dynamicTrends].map(t => t.id);
       const res = await fetch("/api/generate-trends", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -475,7 +474,7 @@ export default function HomePage() {
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
-      const trend = [...TRENDS, ...appliedDynamicTrends].find((t) => t.id === node.id);
+      const trend = appliedDynamicTrends.find((t) => t.id === node.id);
       if (trend) {
         setActiveTrend(trend);
         markSeen(allSignals.filter((s) => s.trendId === trend.id).map((s) => s.id));
@@ -659,7 +658,7 @@ export default function HomePage() {
                   {"What you're tracking"}
                 </div>
                 <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                  {appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")}
+                  {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "No topics yet"}
                 </h3>
               </div>
               <button
@@ -670,15 +669,18 @@ export default function HomePage() {
             </div>
 
             <p style={{ fontSize: 14, color: "#444", lineHeight: 1.7, margin: "14px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
-              {(() => {
-                const topics = appliedTopics;
-                const phrase = topics.length === 1
-                  ? topics[0]
-                  : topics.length === 2
-                  ? `${topics[0]} and ${topics[1]}`
-                  : `${topics.slice(0, -1).join(", ")}, and ${topics[topics.length - 1]}`;
-                return `${visibleTrends.length} trends tracking where new tech is hitting ${phrase} right now. Not predictions. Things that are actually moving.`;
-              })()}
+              {appliedTopics.length === 0
+                ? "Add a topic above to start mapping where new technology is reshaping that space."
+                : (() => {
+                    const topics = appliedTopics;
+                    const phrase = topics.length === 1
+                      ? topics[0]
+                      : topics.length === 2
+                      ? `${topics[0]} and ${topics[1]}`
+                      : `${topics.slice(0, -1).join(", ")}, and ${topics[topics.length - 1]}`;
+                    return `${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"} tracking where new tech is hitting ${phrase} right now. Not predictions. Things that are actually moving.`;
+                  })()
+              }
             </p>
 
             {/* Visible trend list */}
@@ -721,6 +723,39 @@ export default function HomePage() {
           swipeStart.current = null;
         }}
       >
+        {visibleTrends.length === 0 && (
+          <div style={{
+            position: "absolute", inset: 0, zIndex: 1,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            pointerEvents: "none",
+          }}>
+            <div style={{ textAlign: "center", padding: "0 40px" }}>
+              {generatingTopic ? (
+                <>
+                  <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #eee", borderTopColor: "#aaa", margin: "0 auto 16px", animation: "spin 0.9s linear infinite" }} />
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#555", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                    Mapping {generatingTopic}…
+                  </div>
+                  <div style={{ fontSize: 12, color: "#bbb", marginTop: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                    Finding where new tech is hitting this space
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#bbb", letterSpacing: "0.04em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginBottom: 10 }}>
+                    Your radar is empty
+                  </div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 10 }}>
+                    Add a topic to start
+                  </div>
+                  <div style={{ fontSize: 14, color: "#999", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
+                    Type any topic above — fashion, gaming,<br/>wellness, whatever — and see where<br/>new tech is hitting it right now.
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
         <ReactFlow
           nodes={graphNodes}
           edges={graphEdges}
@@ -750,44 +785,54 @@ export default function HomePage() {
         borderTop: "1px solid rgba(0,0,0,0.07)",
         padding: "0 24px", gap: 16,
       }}>
-        <button
-          onClick={prev}
-          disabled={focusIdx === 0}
-          style={{
-            width: 44, height: 44, borderRadius: "50%",
-            border: "1.5px solid #e8e4de",
-            background: focusIdx === 0 ? "#f5f3ee" : "#fff",
-            fontSize: 20, color: focusIdx === 0 ? "#ccc" : "#333",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: focusIdx === 0 ? "default" : "pointer", flexShrink: 0,
-          }}
-        >‹</button>
-
-        <div style={{ flex: 1, textAlign: "center" }}>
-          <div style={{
-            display: "inline-block", width: 10, height: 10,
-            borderRadius: "50%", background: focusTrend?.color, marginBottom: 5,
-          }} />
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
-            {focusTrend?.name}
+        {visibleTrends.length === 0 ? (
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <div style={{ fontSize: 13, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+              {generatingTopic ? `Generating ${generatingTopic}…` : "Add a topic above to begin"}
+            </div>
           </div>
-          <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
-            {focusIdx + 1} / {visibleTrends.length}
-          </div>
-        </div>
+        ) : (
+          <>
+            <button
+              onClick={prev}
+              disabled={focusIdx === 0}
+              style={{
+                width: 44, height: 44, borderRadius: "50%",
+                border: "1.5px solid #e8e4de",
+                background: focusIdx === 0 ? "#f5f3ee" : "#fff",
+                fontSize: 20, color: focusIdx === 0 ? "#ccc" : "#333",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: focusIdx === 0 ? "default" : "pointer", flexShrink: 0,
+              }}
+            >‹</button>
 
-        <button
-          onClick={next}
-          disabled={focusIdx === visibleTrends.length - 1}
-          style={{
-            width: 44, height: 44, borderRadius: "50%",
-            border: "1.5px solid #e8e4de",
-            background: focusIdx === visibleTrends.length - 1 ? "#f5f3ee" : "#fff",
-            fontSize: 20, color: focusIdx === visibleTrends.length - 1 ? "#ccc" : "#333",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: focusIdx === visibleTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
-          }}
-        >›</button>
+            <div style={{ flex: 1, textAlign: "center" }}>
+              <div style={{
+                display: "inline-block", width: 10, height: 10,
+                borderRadius: "50%", background: focusTrend?.color, marginBottom: 5,
+              }} />
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+                {focusTrend?.name}
+              </div>
+              <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
+                {focusIdx + 1} / {visibleTrends.length}
+              </div>
+            </div>
+
+            <button
+              onClick={next}
+              disabled={focusIdx === visibleTrends.length - 1}
+              style={{
+                width: 44, height: 44, borderRadius: "50%",
+                border: "1.5px solid #e8e4de",
+                background: focusIdx === visibleTrends.length - 1 ? "#f5f3ee" : "#fff",
+                fontSize: 20, color: focusIdx === visibleTrends.length - 1 ? "#ccc" : "#333",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: focusIdx === visibleTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
+              }}
+            >›</button>
+          </>
+        )}
       </div>
 
       {activeTrend && (
