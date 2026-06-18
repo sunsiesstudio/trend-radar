@@ -82,7 +82,7 @@ Signals are sourced from academic preprints (arXiv, bioRxiv), patent filings, ni
 
 ---
 
-*Rarity Radar — Where tech meets fashion, beauty & lifestyle · ${date}*
+*Augmented Radar — Where tech meets fashion, beauty & lifestyle · ${date}*
 `.trim();
 }
 

@@ -14,6 +14,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, TOPIC_DESCRIPTIONS, EXTENDED_SIGNALS, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
@@ -184,10 +185,10 @@ const NODE_TYPES = { trendCircle: TrendCircleNode, signalOrbit: SignalOrbitNode 
 
 // ─── Build graph ──────────────────────────────────────────────────────────────
 
-function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node[]; edges: Edge[] } {
+function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends: Trend[]): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
-  const allSignals = [...SIGNALS, ...extraSignals];
+  const allSignals = [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals];
 
   const GOLDEN_ANGLE = 2.399963;
   const GAP = 5;
@@ -202,8 +203,8 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
   // when clusters are close together.
   const allSignalPlacements: P[] = [];
 
-  TRENDS.forEach((trend) => {
-    const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
+  visibleTrends.forEach((trend) => {
+    const pos = TREND_POSITIONS[trend.id] ?? trend.position ?? { x: 0, y: 0 };
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
     const d = Math.round(75 + (trend.relevanceScore / 100) * 140);
@@ -337,15 +338,19 @@ function FocusController({ trendId }: { trendId: string }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const [activeTrend,  setActiveTrend]  = useState<Trend | null>(null);
-  const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
-  const [showAdd,      setShowAdd]      = useState(false);
-  const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
-  const [liveSignals, setLiveSignals] = useState<Signal[]>([]);
-  const [liveLoading, setLiveLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [focusIdx,     setFocusIdx]     = useState(0);
-  const [summaryOpen,  setSummaryOpen]  = useState(false);
+  const [activeTrend,   setActiveTrend]   = useState<Trend | null>(null);
+  const [activeSignal,  setActiveSignal]  = useState<Signal | null>(null);
+  const [showAdd,       setShowAdd]       = useState(false);
+  const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
+  const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
+  const [liveLoading,   setLiveLoading]   = useState(true);
+  const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
+  const [focusIdx,      setFocusIdx]      = useState(0);
+  const [summaryOpen,   setSummaryOpen]   = useState(false);
+  const [activeTopics,  setActiveTopics]  = useState<string[]>(["fashion", "beauty", "lifestyle"]);
+  const [dynamicTrends, setDynamicTrends] = useState<Trend[]>([]);
+  const [addingTopic,   setAddingTopic]   = useState(false);
+  const [topicInput,    setTopicInput]    = useState("");
   // Seed seen IDs with all static signals on first visit so they don't show NEW
   const [seenIds, setSeenIds] = useState<Set<string>>(() => {
     const stored = loadSeen();
@@ -376,9 +381,15 @@ export default function HomePage() {
     return () => { cancelled = true; };
   }, []);
 
-  const allSignals = useMemo(() => [...SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
+  const allTrends = useMemo(() => [...TRENDS, ...dynamicTrends], [dynamicTrends]);
+  const visibleTrends = useMemo(() =>
+    allTrends.filter(t => !t.topics?.length || t.topics.some(tp => activeTopics.includes(tp))),
+    [allTrends, activeTopics]
+  );
+
+  const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
-  const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds), [allExtraSignals, seenIds]);
+  const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends), [allExtraSignals, seenIds, visibleTrends]);
   const [nodes, setNodes] = useNodesState(graphNodes);
   const [edges, setEdges] = useEdgesState(graphEdges);
 
@@ -387,6 +398,27 @@ export default function HomePage() {
     setEdges(graphEdges);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphNodes, graphEdges]);
+
+  const addTopic = useCallback((raw: string) => {
+    const key = normaliseTopicKey(raw);
+    if (!key) return;
+    setActiveTopics(prev => prev.includes(key) ? prev : [...prev, key]);
+    const newTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
+      !TRENDS.find(e => e.id === t.id) && !dynamicTrends.find(e => e.id === t.id)
+    );
+    if (newTrends.length) setDynamicTrends(prev => [...prev, ...newTrends]);
+    setTopicInput("");
+    setAddingTopic(false);
+  }, [dynamicTrends]);
+
+  const removeTopic = useCallback((topic: string) => {
+    setActiveTopics(prev => {
+      const next = prev.filter(t => t !== topic);
+      // Remove dynamic trends that are no longer covered by remaining topics
+      setDynamicTrends(dt => dt.filter(t => t.topics?.some(tp => next.includes(tp))));
+      return next;
+    });
+  }, []);
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
@@ -422,7 +454,7 @@ export default function HomePage() {
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
-        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Rarity Radar</span>
+        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Augmented Radar</span>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {lastUpdated && (
             <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
@@ -443,9 +475,75 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Summary strip — always 2-line slim bar */}
+      {/* Topics bar */}
       <div style={{
         position: "absolute", top: 52, left: 0, right: 0, zIndex: 9,
+        height: 44, padding: "0 14px",
+        display: "flex", alignItems: "center", gap: 6,
+        overflowX: "auto", WebkitOverflowScrolling: "touch",
+        background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
+        borderBottom: "1px solid rgba(0,0,0,0.06)",
+        scrollbarWidth: "none",
+      } as React.CSSProperties}>
+        {activeTopics.map((topic) => {
+          const color = TOPIC_COLORS[topic] ?? "#aaa";
+          return (
+            <div key={topic} style={{
+              display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
+              background: `${color}22`, border: `1px solid ${color}66`,
+              borderRadius: 20, padding: "3px 10px 3px 12px", cursor: "default",
+            }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: darkenColor(color, 0.55), letterSpacing: "0.03em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                {topic}
+              </span>
+              <button
+                onClick={() => removeTopic(topic)}
+                style={{ background: "none", border: "none", padding: 0, marginLeft: 2, cursor: "pointer", fontSize: 13, color: darkenColor(color, 0.55), lineHeight: 1, display: "flex", alignItems: "center" }}
+                aria-label={`Remove ${topic}`}
+              >×</button>
+            </div>
+          );
+        })}
+        {addingTopic ? (
+          <input
+            autoFocus
+            value={topicInput}
+            onChange={(e) => setTopicInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && topicInput.trim()) addTopic(topicInput.trim());
+              if (e.key === "Escape") { setAddingTopic(false); setTopicInput(""); }
+            }}
+            onBlur={() => { if (!topicInput.trim()) { setAddingTopic(false); } }}
+            placeholder="e.g. gaming, wellness…"
+            style={{
+              flexShrink: 0, height: 28, padding: "0 10px",
+              border: "1.5px dashed #ccc", borderRadius: 20,
+              fontSize: 11, fontWeight: 600, color: "#555",
+              background: "transparent", outline: "none",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              width: 160,
+            }}
+          />
+        ) : (
+          <button
+            onClick={() => setAddingTopic(true)}
+            style={{
+              flexShrink: 0, height: 28, padding: "0 12px",
+              border: "1.5px dashed #ccc", borderRadius: 20,
+              fontSize: 11, fontWeight: 700, color: "#aaa",
+              background: "transparent", cursor: "pointer",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              display: "flex", alignItems: "center", gap: 4,
+            }}
+          >
+            <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> topic
+          </button>
+        )}
+      </div>
+
+      {/* Summary strip — always 2-line slim bar */}
+      <div style={{
+        position: "absolute", top: 96, left: 0, right: 0, zIndex: 9,
         padding: "10px 12px 10px 20px",
         background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
         borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -469,35 +567,67 @@ export default function HomePage() {
           style={{ position: "absolute", inset: 0, zIndex: 30, display: "flex", flexDirection: "column" }}
           onClick={() => setSummaryOpen(false)}
         >
-          {/* Backdrop */}
           <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(3px)" }} />
-          {/* Panel drops from under the header */}
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              position: "absolute", top: 52, left: 0, right: 0,
+              position: "absolute", top: 96, left: 0, right: 0,
               background: "#fff",
               borderBottom: "1px solid rgba(0,0,0,0.09)",
               boxShadow: "0 12px 40px rgba(0,0,0,0.14)",
               maxHeight: "60svh", overflowY: "auto", WebkitOverflowScrolling: "touch",
-              padding: "18px 20px 24px",
+              padding: "18px 20px 0",
             } as React.CSSProperties}
           >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-              <p style={{ flex: 1, fontSize: 16, fontWeight: 700, color: "#000", lineHeight: 1.65, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                Rarity Radar is the signal board for{" "}
-                <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 3 }}>
-                  Augmented Rarity
-                </a>
-                {" "}— a newsletter tracking where emerging technology collides with fashion, beauty, and lifestyle. Culture and tech don{"'"}t move in parallel; they pull on each other constantly. The signals here trace that friction: AI rewriting creative labour, biotech entering the skincare aisle, spatial interfaces changing how we shop and dress.
-              </p>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
+              <h3 style={{ flex: 1, fontSize: 16, fontWeight: 700, color: "#000", lineHeight: 1.5, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+                What{"'"}s on the board
+              </h3>
               <button
                 onClick={() => setSummaryOpen(false)}
                 aria-label="Close overview"
                 style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "none", background: "#f0f0f0", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-              >
-                ×
-              </button>
+              >×</button>
+            </div>
+
+            {/* Active topic descriptions */}
+            {activeTopics.map(topic => TOPIC_DESCRIPTIONS[topic] ? (
+              <div key={topic} style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: darkenColor(TOPIC_COLORS[topic] ?? "#aaa", 0.55), textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  {topic}
+                </div>
+                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
+                  {TOPIC_DESCRIPTIONS[topic]}
+                </p>
+              </div>
+            ) : null)}
+
+            {/* Visible trend list */}
+            <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid #f0ede8" }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                {visibleTrends.length} trends on the board
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                {visibleTrends.map(t => (
+                  <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: darkenColor(t.color), marginTop: 5, flexShrink: 0 }} />
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.3, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
+                      <div style={{ fontSize: 11, color: "#888", lineHeight: 1.5, marginTop: 2 }}>{t.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Credit */}
+            <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
+              <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                Vibe coded by Martina —{" "}
+                <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
+                  Augmented Rarity
+                </a>
+              </p>
             </div>
           </div>
         </div>
@@ -505,7 +635,7 @@ export default function HomePage() {
 
       {/* Canvas */}
       <div
-        style={{ position: "absolute", inset: 0, paddingTop: 114, paddingBottom: 80 }}
+        style={{ position: "absolute", inset: 0, paddingTop: 158, paddingBottom: 80 }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;

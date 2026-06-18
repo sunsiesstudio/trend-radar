@@ -9,7 +9,7 @@ export const RISO_PALETTE = {
   darkGreen:   "#53A373",
 };
 
-export const RADAR_OVERVIEW = "Rarity Radar is the signal board for Augmented Rarity — a newsletter tracking where emerging technology collides with fashion, beauty, and lifestyle. Culture and tech don't move in parallel; they pull on each other constantly. The signals here trace that friction: AI rewriting creative labour, biotech entering the skincare aisle, spatial interfaces changing how we shop and dress. Read the newsletter at augmentedrarity.substack.com.";
+export const RADAR_OVERVIEW = "Augmented Radar maps where emerging technology collides with fashion, beauty, and lifestyle — the territory tracked each week in the Augmented Rarity newsletter. Culture and tech don't move in parallel; they pull on each other constantly. Add or remove topics below to reshape the board around what you're watching.";
 
 export const TRENDS: Trend[] = [
   {
@@ -17,6 +17,7 @@ export const TRENDS: Trend[] = [
     name: "The Machine That Replaced Your Moodboard",
     description: "AI isn't a tool anymore, it's a creative collaborator that designs faster, cheaper, and stranger than any human team. Fashion is only beginning to reckon with what that means.",
     color: "#FF8BB4",
+    topics: ["fashion", "tech"],
     relevanceScore: 89,
     redditQuery: "AI fashion design generative",
     newsQuery: "AI generative fashion design",
@@ -39,6 +40,7 @@ export const TRENDS: Trend[] = [
     name: "Dressing the Self You Are Online",
     description: "Your avatar's outfit matters as much as what you wore to dinner. Digital fashion, virtual personas, and online self-expression are becoming billion-dollar identity markets.",
     color: "#8C93C7",
+    topics: ["fashion", "lifestyle", "gaming"],
     relevanceScore: 63,
     redditQuery: "digital identity avatar virtual fashion",
     newsQuery: "digital identity virtual avatar fashion",
@@ -61,6 +63,7 @@ export const TRENDS: Trend[] = [
     name: "Try Before You Never Buy",
     description: "AR try-on is collapsing the distance between desire and purchase. Virtual fitting rooms are cutting returns, lifting conversion, and making physical retail look slow.",
     color: "#FD8326",
+    topics: ["fashion", "tech"],
     relevanceScore: 55,
     redditQuery: "AR VR shopping try-on retail",
     newsQuery: "augmented reality virtual try-on shopping",
@@ -83,6 +86,7 @@ export const TRENDS: Trend[] = [
     name: "The Lab Is the New Beauty Counter",
     description: "Bioprinted skin. Microbiome formulas. Fermentation actives. The beauty industry is becoming a biotech industry, and the brands that understand biology will win.",
     color: "#B6D693",
+    topics: ["beauty", "wellness"],
     relevanceScore: 77,
     redditQuery: "biotech skincare microbiome beauty science",
     newsQuery: "biotech beauty skincare innovation",
@@ -105,6 +109,7 @@ export const TRENDS: Trend[] = [
     name: "Fashion Made From Air and Fungus",
     description: "Mycelium leather. Algae fibre. Carbon-captured nylon. A generation of radical materials is replacing conventional inputs, and making sustainability a design advantage, not a compromise.",
     color: "#53A373",
+    topics: ["fashion", "sustainability"],
     relevanceScore: 68,
     redditQuery: "sustainable fashion materials mycelium algae",
     newsQuery: "sustainable bio-materials fashion innovation",
@@ -127,6 +132,7 @@ export const TRENDS: Trend[] = [
     name: "The Printer That Ate the Factory",
     description: "Zero inventory. No waste. Shoes in 45 minutes. 3D printing is rewriting the rules of fashion manufacturing, and the brands piloting it now are building an insurmountable lead.",
     color: "#FFD65C",
+    topics: ["fashion", "tech"],
     relevanceScore: 44,
     redditQuery: "3D printing fashion footwear manufacturing",
     newsQuery: "3D printing fashion manufacturing",
@@ -149,6 +155,7 @@ export const TRENDS: Trend[] = [
     name: "Your Body Is Now a Dashboard",
     description: "Rings, patches, and smart fabrics are turning health data into a continuous stream. The question isn't whether consumers will wear health tech, it's whether fashion brands will design it.",
     color: "#FFB04A",
+    topics: ["lifestyle", "wellness", "health"],
     relevanceScore: 80,
     redditQuery: "smart wearables health ring fitness tracker",
     newsQuery: "smart wearables health monitoring",
@@ -171,6 +178,7 @@ export const TRENDS: Trend[] = [
     name: "Skincare for Your Nervous System",
     description: "Adaptogens in your serum. EEG-validated ingredients. Brain-computer interfaces on the horizon. Neurotechnology is quietly redefining what beauty and wellness products are supposed to do.",
     color: "#C4A0CE",
+    topics: ["beauty", "wellness", "health"],
     relevanceScore: 38,
     redditQuery: "neurotech BCI brain computer interface wellness",
     newsQuery: "neurotech consumer brain computer interface",
@@ -193,6 +201,7 @@ export const TRENDS: Trend[] = [
     name: "Shopping in a World That Doesn't Exist Yet",
     description: "Spatial commerce isn't the metaverse hype cycle, it's the quiet infrastructure being built right now inside Vision Pro apps and virtual showrooms. First-movers will own the format.",
     color: "#78C9A8",
+    topics: ["lifestyle", "tech", "gaming"],
     relevanceScore: 50,
     redditQuery: "spatial computing Apple Vision Pro metaverse",
     newsQuery: "spatial computing Apple Vision Pro brands",
@@ -215,6 +224,7 @@ export const TRENDS: Trend[] = [
     name: "The Business of Never Getting Old",
     description: "Longevity isn't a niche biohacking obsession anymore, it's a mainstream cultural obsession with a $600B market attached. Every beauty, wellness, and lifestyle brand needs a position on it.",
     color: "#A7D47C",
+    topics: ["beauty", "lifestyle", "wellness"],
     relevanceScore: 91,
     redditQuery: "longevity anti-aging biohacking health",
     newsQuery: "longevity anti-ageing culture wellness",

@@ -6,10 +6,11 @@ export interface Trend {
   relevanceScore: number; // 0-100 → determines node size
   redditQuery: string;
   newsQuery: string;
-  position: { x: number; y: number }; // center of node
+  position: { x: number; y: number }; // top-left of bounding box used by buildGraph
   whyRelevant: string;
   trajectory: string;
   nextSteps: string[];
+  topics?: string[]; // topic tags for filtering (e.g. "fashion", "beauty", "gaming")
   macroContext?: string;
   socialContext?: string;
   politicalContext?: string;
