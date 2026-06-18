@@ -18,13 +18,25 @@ import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
-import { FlowerCanvas } from "@/components/map/FlowerCanvas";
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
 const CIRCLE_D = 164;
 const ORBIT_R  = 160;
 const SIG_W    = 158;
 const SIG_H    = 44;
+
+const BLOB: Record<string, string> = {
+  "ai-creativity":         "65% 35% 40% 60% / 55% 45% 55% 45%",
+  "digital-identity":      "45% 55% 65% 35% / 35% 65% 45% 55%",
+  "ar-commerce":           "55% 45% 35% 65% / 65% 35% 55% 45%",
+  "biotech-beauty":        "40% 60% 55% 45% / 60% 40% 35% 65%",
+  "sustainable-materials": "70% 30% 45% 55% / 45% 55% 65% 35%",
+  "3d-printing":           "35% 65% 60% 40% / 55% 45% 40% 60%",
+  "wearables":             "50% 50% 40% 60% / 65% 35% 50% 50%",
+  "neurotech":             "60% 40% 50% 50% / 40% 60% 35% 65%",
+  "spatial-computing":     "45% 55% 70% 30% / 50% 50% 45% 55%",
+  "longevity":             "55% 45% 45% 55% / 70% 30% 60% 40%",
+};
 
 
 function darkenColor(hex: string, factor = 0.62): string {
@@ -101,7 +113,7 @@ function blobFromId(id: string): string {
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   return (
-    <div style={{ position: "relative", cursor: "pointer", userSelect: "none" }}>
+    <div style={{ position: "relative" }}>
       {data.newCount > 0 && (
         <div style={{
           position: "absolute", top: -6, right: -6, zIndex: 2,
@@ -115,22 +127,20 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
           {data.newCount}
         </div>
       )}
-      {/* drop-shadow follows the flower silhouette, not the bounding box */}
-      <div style={{ filter: `drop-shadow(0 6px 22px ${data.color}88)` }}>
-        <FlowerCanvas trendId={data.id} color={darkenColor(data.color)} size={data.d} />
-      </div>
-      {/* Text centred over the flower */}
       <div style={{
-        position: "absolute", inset: 0,
+        width: data.d, height: data.d,
+        borderRadius: BLOB[data.id] ?? "50%",
+        background: darkenColor(data.color),
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        textAlign: "center", padding: 26,
-        pointerEvents: "none",
+        textAlign: "center", padding: 22,
+        boxSizing: "border-box", cursor: "pointer", userSelect: "none",
+        boxShadow: `0 6px 32px ${data.color}66`,
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", textShadow: "0 1px 6px rgba(0,0,0,0.25)" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.7)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           {data.score}%
         </div>
       </div>
