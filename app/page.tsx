@@ -459,7 +459,7 @@ export default function HomePage() {
   const focusTrend = TRENDS[focusIdx];
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "repeating-linear-gradient(90deg,#fff 0px,#fff 12px,#111 12px,#111 24px)" }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#f0edf7" }}>
       {/* Header */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
@@ -519,7 +519,7 @@ export default function HomePage() {
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "repeating-linear-gradient(90deg,#fff 0px,#fff 12px,#111 12px,#111 24px)" }}
+          style={{ background: "#f0edf7" }}
         >
           <FocusController trendId={focusTrend.id} />
         </ReactFlow>
