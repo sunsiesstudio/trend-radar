@@ -220,38 +220,33 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
         y: cy + r * Math.sin(angle) - SIG_H / 2 };
     });
 
-    const PAD = 12;
-    const NH = 54; // height estimate (> SIG_H to absorb text wrapping)
-    for (let iter = 0; iter < 150; iter++) {
+    const PAD = 14;
+    const NH = 50; // node height estimate
+    for (let iter = 0; iter < 200; iter++) {
       for (let i = 0; i < placements.length; i++) {
         const a = placements[i];
-        // Keep outside trend blob
+        // Push outside trend blob (radial)
         const acx = a.x + a.w / 2, acy = a.y + NH / 2;
         const ddx = acx - cx, ddy = acy - cy;
         const dd = Math.sqrt(ddx * ddx + ddy * ddy);
-        const blobR = d / 2 + PAD;
+        const blobR = d / 2 + a.w / 2 + 6;
         if (dd < blobR && dd > 0) {
           const push = blobR - dd;
           a.x += (ddx / dd) * push;
           a.y += (ddy / dd) * push;
         }
-        // Pairwise repulsion
+        // Radial repulsion — push along center-to-center axis, not AABB axes
         for (let j = i + 1; j < placements.length; j++) {
           const b = placements[j];
-          const ox = (a.x + a.w / 2) - (b.x + b.w / 2);
-          const oy = (a.y + NH / 2) - (b.y + NH / 2);
-          const minX = (a.w + b.w) / 2 + PAD;
-          const minY = NH + PAD;
-          if (Math.abs(ox) < minX && Math.abs(oy) < minY) {
-            const px = minX - Math.abs(ox);
-            const py = minY - Math.abs(oy);
-            if (px < py) {
-              const s = Math.sign(ox) || 1;
-              a.x += s * px / 2; b.x -= s * px / 2;
-            } else {
-              const s = Math.sign(oy) || 1;
-              a.y += s * py / 2; b.y -= s * py / 2;
-            }
+          const dx = (a.x + a.w / 2) - (b.x + b.w / 2);
+          const dy = (a.y + NH / 2) - (b.y + NH / 2);
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const minDist = (a.w + b.w) / 2 + PAD;
+          if (dist < minDist && dist > 0) {
+            const push = (minDist - dist) / 2;
+            const nx = dx / dist, ny = dy / dist;
+            a.x += nx * push; a.y += ny * push;
+            b.x -= nx * push; b.y -= ny * push;
           }
         }
       }
