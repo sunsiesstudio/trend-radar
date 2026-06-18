@@ -13,7 +13,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-import { TRENDS, SIGNALS } from "@/lib/trends";
+import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
 import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
@@ -108,7 +108,6 @@ function blobFromId(id: string): string {
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const light = isLight(data.color);
   return (
     <div style={{ position: "relative" }}>
       {data.newCount > 0 && (
@@ -134,10 +133,10 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
         boxShadow: `0 6px 32px ${data.color}55`,
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: light ? "#111" : "#fff", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#000", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: light ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.6)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(0,0,0,0.5)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           {data.score}%
         </div>
       </div>
@@ -170,7 +169,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
           letterSpacing: "0.07em", lineHeight: 1.5,
         }}>NEW</span>
       )}
-      <div style={{ fontSize: 10, fontWeight: 600, color: "#111", lineHeight: 1.35, letterSpacing: "-0.01em" }}>
+      <div style={{ fontSize: 9.5, fontWeight: 500, color: "#000", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {data.title}
       </div>
     </div>
@@ -339,6 +338,8 @@ export default function HomePage() {
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
   const [liveSignals, setLiveSignals] = useState<Signal[]>([]);
   const [liveLoading, setLiveLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [refreshTick, setRefreshTick] = useState(0);
   const [focusIdx,     setFocusIdx]     = useState(0);
   // Seed seen IDs with all static signals on first visit so they don't show NEW
   const [seenIds, setSeenIds] = useState<Set<string>>(() => {
@@ -362,16 +363,13 @@ export default function HomePage() {
 
   useEffect(() => {
     let cancelled = false;
-    const load = () => {
-      fetch("/api/live-signals")
-        .then((r) => r.json())
-        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
-        .catch(() => { if (!cancelled) setLiveLoading(false); });
-    };
-    load();
-    const timer = setInterval(load, 2 * 60 * 60 * 1000);
-    return () => { cancelled = true; clearInterval(timer); };
-  }, []);
+    setLiveLoading(true);
+    fetch("/api/live-signals")
+      .then((r) => r.json())
+      .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
+      .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
+    return () => { cancelled = true; };
+  }, [refreshTick]);
 
   const allSignals = useMemo(() => [...SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
@@ -424,6 +422,14 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
   const focusTrend = TRENDS[focusIdx];
 
+  const updatedLabel = (() => {
+    if (!lastUpdated) return null;
+    const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
+    if (mins < 1) return "Updated just now";
+    if (mins === 1) return "Updated 1 min ago";
+    return `Updated ${mins} min ago`;
+  })();
+
   return (
     <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff" }}>
       {/* Header */}
@@ -434,17 +440,15 @@ export default function HomePage() {
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
-        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#111" }}>Trend Radar</span>
+        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Trend Radar</span>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#bbb", fontFamily: "monospace" }}>
-            {TRENDS.length} trends · {SIGNALS.length + extraSignals.length} signals
-            {liveSignals.length > 0 && (
-              <span style={{ color: "#00c47a", marginLeft: 6, fontWeight: 700 }}>
-                +{liveSignals.length} live
-              </span>
-            )}
-            {liveLoading && <span style={{ marginLeft: 6, opacity: 0.4 }}>●</span>}
-          </span>
+          <button
+            onClick={() => setRefreshTick((t) => t + 1)}
+            title="Refresh live signals"
+            style={{ padding: "6px 10px", background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#888", lineHeight: 1 }}
+          >
+            <span className={liveLoading ? "spin" : ""}>↻</span>
+          </button>
           <button
             onClick={exportCSV}
             style={{ padding: "6px 14px", background: "#f5f3ee", color: "#555", border: "1px solid #e8e4de", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
@@ -453,16 +457,34 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => setShowAdd(true)}
-            style={{ padding: "6px 16px", background: "#111", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+            style={{ padding: "6px 16px", background: "#000", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
           >
             + Signal
           </button>
         </div>
       </div>
 
+      {/* Summary strip */}
+      <div style={{
+        position: "absolute", top: 52, left: 0, right: 0, zIndex: 9,
+        padding: "10px 20px 10px",
+        background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
+        borderBottom: "1px solid rgba(0,0,0,0.06)",
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+      }}>
+        <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+          {RADAR_OVERVIEW}
+        </p>
+        {updatedLabel && (
+          <span style={{ fontSize: 9.5, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>
+            {updatedLabel}
+          </span>
+        )}
+      </div>
+
       {/* Canvas */}
       <div
-        style={{ position: "absolute", inset: 0, paddingTop: 52, paddingBottom: 80 }}
+        style={{ position: "absolute", inset: 0, paddingTop: 112, paddingBottom: 80 }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;

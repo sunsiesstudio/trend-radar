@@ -1,5 +1,7 @@
 import { Trend, Signal } from "@/types";
 
+export const RADAR_OVERVIEW = "A convergence of bio, tech, and digital is collapsing the boundaries between body, identity, and experience. AI is now a co-creator; longevity science is entering mainstream beauty; spatial and AR interfaces are merging physical commerce with digital selfhood. The body itself is becoming a platform, and the brands that understand this first will define the next decade of culture.";
+
 export const TRENDS: Trend[] = [
   {
     id: "ai-creativity",
