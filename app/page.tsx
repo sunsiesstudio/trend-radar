@@ -94,7 +94,20 @@ function dlCSV(content: string, name: string) {
 // ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number };
-type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; h: number; fillAlpha: string };
+type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string };
+
+// Newer signals are lighter; older signals are darker.
+// 0 days → ~18% fill, 365+ days → ~75% fill.
+function ageAlpha(date: string | undefined): { fillAlpha: string; borderAlpha: string } {
+  const ageDays = date ? (Date.now() - new Date(date).getTime()) / 86_400_000 : 90;
+  const t = Math.min(1, Math.max(0, ageDays / 365));
+  const fill   = Math.round(0x2E + t * (0xBF - 0x2E));
+  const border = Math.round(0x44 + t * (0xCC - 0x44));
+  return {
+    fillAlpha:   fill.toString(16).padStart(2, "0"),
+    borderAlpha: border.toString(16).padStart(2, "0"),
+  };
+}
 
 function blobFromId(id: string): string {
   // Two independent hashes → 8 fully uncorrelated corner values
@@ -151,7 +164,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
       width: data.w,
       height: data.h,
       background: `${data.color}${data.fillAlpha}`,
-      border: `1.5px solid ${data.color}bb`,
+      border: `1.5px solid ${data.color}${data.borderAlpha}`,
       borderRadius: blobFromId(data.id),
       padding: "8px",
       display: "flex", alignItems: "center", justifyContent: "center",
@@ -190,7 +203,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
   const GAP = 5;
   // 16 evenly-spaced angle probes per radius level (22.5° steps around full circle)
   const N_ANGLES = 16;
-  type P = { sig: Signal; w: number; h: number; fillAlpha: string; isNew: boolean; x: number; y: number };
+  type P = { sig: Signal; w: number; h: number; fillAlpha: string; borderAlpha: string; isNew: boolean; x: number; y: number };
   type Blob = { cx: number; cy: number; r: number };
 
   // All trend blobs — signals from every cluster must avoid these globally.
@@ -232,9 +245,8 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const estCharsPerLine = Math.max(1, Math.floor(innerW / 6.0));
       const estLines = Math.ceil(sig.title.length / estCharsPerLine);
       const sigH = Math.round(Math.max(w * 0.75, estLines * 13.5 + 20));
-      // Watercolor fill: vary opacity 33–67% per signal
-      const alphaByte = 0x55 + ((h >> 14 & 0x7f) % 0x55);
-      const fillAlpha = alphaByte.toString(16).padStart(2, "0");
+      // Opacity tracks signal age: newer = lighter, older = darker
+      const { fillAlpha, borderAlpha } = ageAlpha(sig.date);
 
       // Radius-first search: expand outward, probe N_ANGLES directions at each ring.
       // Checks against allSignalPlacements (global) so signals from different
@@ -273,16 +285,16 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       // Pass 2: beyond MAX_R if needed (no global blob check — keeps cluster together visually)
       if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
 
-      const entry: P = { sig, w, h: sigH, fillAlpha, isNew: !seenIds.has(sig.id), x, y };
+      const entry: P = { sig, w, h: sigH, fillAlpha, borderAlpha, isNew: !seenIds.has(sig.id), x, y };
       placements.push(entry);
       allSignalPlacements.push(entry);
     });
 
-    placements.forEach(({ sig, w, h, fillAlpha, isNew, x, y }) => {
+    placements.forEach(({ sig, w, h, fillAlpha, borderAlpha, isNew, x, y }) => {
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x, y },
-        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w, h, fillAlpha } as SignalNodeData,
+        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w, h, fillAlpha, borderAlpha } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",

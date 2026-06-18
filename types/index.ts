@@ -11,6 +11,10 @@ export interface Trend {
   trajectory: string;
   nextSteps: string[];
   macroContext?: string;
+  socialContext?: string;
+  politicalContext?: string;
+  geographicalContext?: string;
+  culturalContext?: string;
 }
 
 export interface Signal {
