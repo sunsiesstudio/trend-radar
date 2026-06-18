@@ -6,9 +6,16 @@ export const maxDuration = 60;
 const client = new Anthropic();
 
 const PALETTE = ["#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C", "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C"];
-const GEN_X = [168, 748, 1328, -32, 548, 1128, 1708];
-const GEN_Y_BASE = 4200;
-const GEN_ROW_H  = 600;
+const GRID_COLS = 3;
+const GRID_SPACING = 520;
+const GRID_ORIGIN = 80;
+
+function gridPosition(idx: number): { x: number; y: number } {
+  return {
+    x: GRID_ORIGIN + (idx % GRID_COLS) * GRID_SPACING,
+    y: GRID_ORIGIN + Math.floor(idx / GRID_COLS) * GRID_SPACING,
+  };
+}
 
 function pickColor(topic: string, idx: number): string {
   let h = 0;
@@ -103,10 +110,7 @@ Rules:
         relevanceScore: t.relevanceScore,
         redditQuery: `${topic} technology`,
         newsQuery: `${topic} emerging tech`,
-        position: {
-          x: GEN_X[(positionOffset + i) % GEN_X.length],
-          y: GEN_Y_BASE + Math.floor((positionOffset + i) / GEN_X.length) * GEN_ROW_H,
-        },
+        position: gridPosition(positionOffset + i),
         whyRelevant: t.why_now,
         trajectory: t.brand_relevance,
         nextSteps: [],

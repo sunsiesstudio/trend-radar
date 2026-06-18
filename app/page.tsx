@@ -45,10 +45,11 @@ function darkenColor(hex: string, factor = 0.62): string {
   return `#${r.toString(16).padStart(2,"0")}${g.toString(16).padStart(2,"0")}${b.toString(16).padStart(2,"0")}`;
 }
 
-// Cluster centres spaced 580 px apart so clusters feel densely packed
-// while each cluster's signal zone (MAX_R = d/2+320 ≈ 390) still fits
-// without crossing into a neighbour's trend blob.
-// pos = top-left of CIRCLE_D×CIRCLE_D anchor; centre = pos + CIRCLE_D/2.
+// Compact grid for dynamically added trends — 3 columns, 520 px apart.
+function computeTrendPosition(idx: number): { x: number; y: number } {
+  return { x: 80 + (idx % 3) * 520, y: 80 + Math.floor(idx / 3) * 520 };
+}
+
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
   "ai-creativity":          { x: 368,  y: 168  },
   "longevity":              { x: 948,  y: 168  },
@@ -217,7 +218,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    const MAX_R = d / 2 + 320;
+    const MAX_R = d / 2 + 160;
 
     // Local list for this cluster only — used when building nodes/edges below.
     const placements: P[] = [];
@@ -469,10 +470,10 @@ export default function HomePage() {
     setAddingTopic(false);
     setGenerationError(null);
 
-    // Use pre-built library first — apply immediately
+    // Use pre-built library first — apply immediately, overriding stored positions
     const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
       !dynamicTrends.find(e => e.id === t.id)
-    );
+    ).map((t, i) => ({ ...t, position: computeTrendPosition(dynamicTrends.length + i) }));
     if (libraryTrends.length) {
       const newDynamic = [...dynamicTrends, ...libraryTrends];
       setDynamicTrends(newDynamic);
@@ -851,14 +852,28 @@ export default function HomePage() {
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#bbb", letterSpacing: "0.04em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginBottom: 10 }}>
-                    Your radar is empty
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#bbb", letterSpacing: "0.04em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginBottom: 8 }}>
+                    What are you tracking?
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 10 }}>
-                    Add a topic to start
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 18 }}>
+                    Pick a topic to start
                   </div>
-                  <div style={{ fontSize: 14, color: "#999", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-                    Type any topic above — fashion, gaming,<br/>wellness, whatever — and see where<br/>new tech is hitting it right now.
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
+                    {LIBRARY_TOPICS.map(t => (
+                      <button key={t} onClick={() => addTopic(t)}
+                        style={{
+                          padding: "7px 16px",
+                          background: `${TOPIC_COLORS[t] ?? "#eee"}20`,
+                          border: `1.5px solid ${TOPIC_COLORS[t] ?? "#eee"}77`,
+                          borderRadius: 24, fontSize: 12, fontWeight: 700, color: "#333",
+                          cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          display: "flex", alignItems: "center", gap: 7,
+                        }}
+                      >
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                        {t.replace(/-/g, " ")}
+                      </button>
+                    ))}
                   </div>
                 </>
               )}
