@@ -20,6 +20,15 @@ export const TOPIC_COLORS: Record<string, string> = {
   food:              "#FD8326",
   skincare:          "#B6D693",
   sport:             "#78C9A8",
+  creativity:        "#FF8BB4",
+  photography:       "#8C93C7",
+  film:              "#FFD65C",
+  branding:          "#FD8326",
+  fragrance:         "#C4A0CE",
+  jewellery:         "#FFD65C",
+  retail:            "#FD8326",
+  social:            "#78C9A8",
+  education:         "#A7D47C",
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
@@ -43,6 +52,10 @@ export const TOPIC_DESCRIPTIONS: Record<string, string> = {
   skincare:          "Skincare is where biotech is most commercially advanced. Microbiome science, exosomes, AI-matched formulations: the gap between pharmaceutical and cosmetic is closing fast.",
   sport:             "Sport is where wearable biometrics, AI coaching, and immersive viewing are colliding. The boundary between professional training and consumer self-optimisation is dissolving.",
   fitness:           "Fitness is being quantified at the biological level. CGM, HRV, sleep staging: the body as a data system is the dominant metaphor in consumer health right now.",
+  creativity:        "Creativity is being turbocharged by AI — and the creative industries are having to figure out what that means for authorship, value, and workflow. The tools are ahead of the ethics.",
+  photography:       "Photography is in a legitimacy crisis and a technical renaissance at the same time. AI generation, computational photography, and synthetic imagery are rewriting what a photograph means.",
+  film:              "Film and video production is being structurally changed by AI. De-aging, virtual production, AI scripting tools, and algorithmic distribution are rewriting every phase of the process.",
+  branding:          "Branding is where AI is hitting creative agencies first. Generative identity systems, AI-driven consistency, and dynamic brand expression are replacing static guidelines.",
 };
 
 const TOPIC_ALIASES: Record<string, string> = {
@@ -118,6 +131,63 @@ const TOPIC_ALIASES: Record<string, string> = {
   "culinary":         "food",
   "cuisine":          "food",
   "gastronomy":       "food",
+  // creativity
+  "creative":         "creativity",
+  "creative industries": "creativity",
+  "generative ai":    "creativity",
+  "illustration":     "creativity",
+  "graphic design":   "creativity",
+  "visual art":       "art",
+  // photography
+  "photo":            "photography",
+  "photographer":     "photography",
+  "photos":           "photography",
+  // film
+  "cinema":           "film",
+  "movies":           "film",
+  "movie":            "film",
+  "video":            "film",
+  "production":       "film",
+  "tv":               "film",
+  "television":       "film",
+  "streaming":        "film",
+  // branding
+  "brand":            "branding",
+  "logo":             "branding",
+  "marketing":        "branding",
+  "advertising":      "branding",
+  // fragrance
+  "perfume":          "fragrance",
+  "scent":            "fragrance",
+  "parfum":           "fragrance",
+  "aroma":            "fragrance",
+  // jewellery
+  "jewelry":          "jewellery",
+  "accessories":      "jewellery",
+  "accessory":        "jewellery",
+  "gems":             "jewellery",
+  "diamonds":         "jewellery",
+  "watches":          "jewellery",
+  // retail
+  "ecommerce":        "retail",
+  "e-commerce":       "retail",
+  "shopping":         "retail",
+  "commerce":         "retail",
+  "store":            "retail",
+  "fashion retail":   "retail",
+  // social media
+  "social media":     "social",
+  "instagram":        "social",
+  "tiktok":           "social",
+  "influencer":       "social",
+  "content":          "social",
+  "creator":          "social",
+  // education
+  "learning":         "education",
+  "school":           "education",
+  "university":       "education",
+  "courses":          "education",
+  "training":         "education",
 };
 
 export function normaliseTopicKey(input: string): string {
@@ -475,6 +545,126 @@ const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [],
   },
 
+  // ── CREATIVITY ──────────────────────────────────────────────────────────────
+  {
+    id: "creativity-generative-tools",
+    name: "Generative Creative Tools",
+    description: "Midjourney, Sora, Runway, and Claude are restructuring the creative workflow. Moodboards, scripts, storyboards, copy, and video are all now AI-assisted by default in forward-looking studios. The question is no longer whether to use AI — it's what human creativity actually adds.",
+    color: "#FF8BB4",
+    topics: ["creativity", "art", "tech"],
+    relevanceScore: 82,
+    redditQuery: "AI creative tools Midjourney Runway generative creative workflow",
+    newsQuery: "AI generative creative tools workflow agencies studios",
+    position: { x: 168, y: 6768 },
+    whyRelevant: "AI creative tools are not augmenting creative production — they're restructuring it. Studios that adapt their workflow are producing at 5-10x the pace. Those that don't will be out-produced.",
+    trajectory: "Within 18 months AI creative tools will be as standard as Adobe Creative Suite. The competitive question moves from 'do you use AI' to 'how sophisticated is your AI workflow and proprietary training data'.",
+    nextSteps: [],
+  },
+  {
+    id: "creativity-human-ai-authorship",
+    name: "Human-AI Co-Authorship",
+    description: "The concept of creative authorship is being renegotiated in real time. Who owns an AI-assisted work? What does creative direction mean when the tool does the execution? The answers are shaping everything from contracts to copyright law.",
+    color: "#8C93C7",
+    topics: ["creativity", "art", "tech"],
+    relevanceScore: 71,
+    redditQuery: "AI authorship copyright creative work human AI collaboration",
+    newsQuery: "AI authorship copyright creative industries law",
+    position: { x: 748, y: 6768 },
+    whyRelevant: "Creative industry contracts written before AI are already inadequate. The authorship question is both a legal issue and a cultural one — and how it resolves will determine how creative value is distributed for the next decade.",
+    trajectory: "Copyright law for AI-assisted work will be clarified in most major jurisdictions by 2027. Until then, IP risk falls on creators and agencies — creating an opening for platforms that offer AI creative tools with built-in rights clarity.",
+    nextSteps: [],
+  },
+
+  // ── PHOTOGRAPHY ─────────────────────────────────────────────────────────────
+  {
+    id: "photography-ai-authenticity",
+    name: "Photography's Authenticity Crisis",
+    description: "AI-generated images are now indistinguishable from photographs. Press agencies, stock libraries, and social platforms are building verification systems; editorial photography is redefining what 'documentary evidence' means in a post-synthetic era.",
+    color: "#8C93C7",
+    topics: ["photography", "tech", "art"],
+    relevanceScore: 76,
+    redditQuery: "AI photography deepfake authenticity synthetic images press",
+    newsQuery: "AI synthetic photography authenticity crisis editorial",
+    position: { x: 1328, y: 6768 },
+    whyRelevant: "The documentary value of photography was always its anchor. When that's gone, the entire chain of trust — from journalism to social proof in advertising — needs rebuilding. Brands and media that get ahead of verification will own the credibility premium.",
+    trajectory: "Content authenticity standards (C2PA, Adobe Content Credentials) will become mandatory for editorial and advertising photography within 3 years. The brands that adopt early will have a transparency advantage.",
+    nextSteps: [],
+  },
+  {
+    id: "photography-computational",
+    name: "Computational Photography",
+    description: "AI-powered night mode, focus stacking, real-time HDR, and phone cameras that outperform DSLRs — computational photography has democratised professional image quality while simultaneously raising consumer expectations to pro level.",
+    color: "#FFD65C",
+    topics: ["photography", "tech"],
+    relevanceScore: 67,
+    redditQuery: "computational photography AI camera phone portrait night mode",
+    newsQuery: "computational photography AI smartphone camera professional",
+    position: { x: 1708, y: 6768 },
+    whyRelevant: "When a phone camera beats a professional DSLR in most use cases, the value of professional photography shifts entirely to judgement, vision, and direction — not technical execution. That's a profound change in what photographers sell.",
+    trajectory: "Computational photography capabilities will reach diminishing returns on the hardware side and shift to AI editing: automatic style application, scene-aware post-processing, and real-time cinematic grade.",
+    nextSteps: [],
+  },
+
+  // ── FILM ────────────────────────────────────────────────────────────────────
+  {
+    id: "film-ai-production",
+    name: "AI in Film Production",
+    description: "De-aging technology, AI extras, virtual production stages, and AI script analysis are changing every phase of film production. Major studios are using AI to reduce costs, accelerate timelines, and create effects previously impossible at budget.",
+    color: "#FFD65C",
+    topics: ["film", "tech", "creativity"],
+    relevanceScore: 74,
+    redditQuery: "AI film production de-aging virtual production Hollywood SAG",
+    newsQuery: "AI film production technology Hollywood studios",
+    position: { x: 168, y: 7368 },
+    whyRelevant: "AI production tools are restructuring film economics — lower budgets for comparable production values is the promise. The tension is with talent unions whose members' likenesses and work are the training data.",
+    trajectory: "The SAG-AFTRA agreement will define how AI is used in production for the next 5 years. Studios that build compliant AI workflows now will have a cost and speed advantage when the rules become clear.",
+    nextSteps: [],
+  },
+  {
+    id: "film-algorithmic-culture",
+    name: "Algorithm-Shaped Storytelling",
+    description: "Streaming algorithm data is feeding backwards into what gets greenlit, how it's structured, and where the emotional beats land. The result is a quietly homogenising effect on narrative — and a growing creative reaction against it.",
+    color: "#C4A0CE",
+    topics: ["film", "tech", "creativity"],
+    relevanceScore: 65,
+    redditQuery: "Netflix algorithm storytelling streaming content data driven",
+    newsQuery: "streaming algorithm content creation data narrative",
+    position: { x: 748, y: 7368 },
+    whyRelevant: "Understanding how algorithms shape content preferences is now a strategic input for any brand doing content marketing, not just studios. The same mechanics that drove The Crown's pacing are shaping branded video performance.",
+    trajectory: "The backlash against algorithmic storytelling is already building — in both critical culture and consumer behaviour (podcast and newsletter growth). Brands that can deliver non-algorithmic depth will find an underserved audience.",
+    nextSteps: [],
+  },
+
+  // ── BRANDING ────────────────────────────────────────────────────────────────
+  {
+    id: "branding-ai-identity",
+    name: "Generative Brand Identity",
+    description: "Dynamic brand systems that generate on-brief visual assets, copy, and motion in real time are replacing static brand guidelines. AI brand identity systems can produce hundreds of variations while maintaining consistency — something no human team could manage at scale.",
+    color: "#FD8326",
+    topics: ["branding", "creativity", "tech"],
+    relevanceScore: 71,
+    redditQuery: "AI brand identity generative design system dynamic visual",
+    newsQuery: "AI brand identity generative design system agency",
+    position: { x: 1328, y: 7368 },
+    whyRelevant: "Brand consistency at scale has always been the hardest problem for large organisations. AI brand systems solve it — but also raise the question of what brand creativity means when the system generates the executions.",
+    trajectory: "AI brand identity systems will be standard agency output within 3 years. The differentiator will shift from 'making brand assets' to 'training the AI on the right brand intelligence to generate the right assets'.",
+    nextSteps: [],
+  },
+  {
+    id: "branding-cultural-intelligence",
+    name: "AI Cultural Intelligence",
+    description: "AI systems that analyse cultural signals, trend data, and consumer sentiment in real time are giving brand strategists a feedback loop that previously took months of qualitative research to generate.",
+    color: "#A7D47C",
+    topics: ["branding", "tech", "creativity"],
+    relevanceScore: 63,
+    redditQuery: "AI brand strategy cultural intelligence trend prediction consumer sentiment",
+    newsQuery: "AI brand strategy cultural intelligence consumer insight",
+    position: { x: 1708, y: 7368 },
+    whyRelevant: "Real-time cultural intelligence is a structural advantage — brands that see shifts earlier can respond faster and more precisely. The question is whether the AI signal adds more than the noise it introduces.",
+    trajectory: "AI cultural intelligence tools will consolidate around 3-4 platforms within 24 months. The winners will be those with proprietary cultural data sets, not just better models.",
+    nextSteps: [],
+  },
+
   // ── FOOD (general) ──────────────────────────────────────────────────────────
   {
     id: "food-cultivated-protein",
@@ -504,6 +694,155 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI-assisted flavour development will be standard in top-50 FMCG companies within 3 years. The competitive question is whether the AI advantage goes to manufacturers or to the platforms that sit above them.",
     nextSteps: [],
   },
+  // ── FRAGRANCE ───────────────────────────────────────────────────────────────
+  {
+    id: "fragrance-ai-formulation",
+    name: "AI Perfume Formulation",
+    description: "Machine learning models trained on molecular structure and olfactory perception data are generating novel fragrance accords that human noses alone would never discover. Givaudan, Firmenich, and IFF are all deploying AI in their labs.",
+    color: "#C4A0CE",
+    topics: ["fragrance", "beauty", "tech"],
+    relevanceScore: 70,
+    redditQuery: "AI perfume fragrance formulation machine learning olfactory",
+    newsQuery: "AI perfume formulation fragrance technology laboratory",
+    position: { x: 168, y: 7968 },
+    whyRelevant: "Fragrance formulation is being accelerated by AI in ways that open entirely new olfactory territories — and compress development timelines from years to months. Brands with AI-assisted R&D will out-innovate at pace.",
+    trajectory: "AI fragrance formulation moves from R&D tool to consumer-facing story within 3 years — 'AI-developed accord' becomes a marketing differentiator the same way 'microbiome-tested' did in skincare.",
+    nextSteps: [],
+  },
+  {
+    id: "fragrance-emotional-tech",
+    name: "Scent as Emotional Technology",
+    description: "The neuroscience of olfaction and mood is being commercialised: scent diffusers synced to biometric data, fragrance as mental health intervention, and 'olfactory design' as a service category for retail and hospitality environments.",
+    color: "#FF8BB4",
+    topics: ["fragrance", "wellness", "mental-health"],
+    relevanceScore: 63,
+    redditQuery: "scent emotional wellbeing olfactory neuroscience fragrance wellness",
+    newsQuery: "olfactory design scent technology wellbeing retail",
+    position: { x: 748, y: 7968 },
+    whyRelevant: "Scent is the only sense that bypasses the rational brain entirely — making fragrance one of the most powerful tools in the emotional design toolkit. Brands that understand this are building ambient scent strategies with rigour, not just aesthetics.",
+    trajectory: "Olfactory design will become standard in premium retail, hospitality, and residential property development within 5 years, driven by evidence-based wellbeing research and consumer demand for multi-sensory environments.",
+    nextSteps: [],
+  },
+
+  // ── JEWELLERY ────────────────────────────────────────────────────────────────
+  {
+    id: "jewellery-lab-grown",
+    name: "Lab-Grown Stone Disruption",
+    description: "Lab-grown diamonds at 10-15% of mined diamond prices are forcing a complete repositioning of the fine jewellery category. De Beers has entered the lab-grown market. The question is no longer if but how fast the category restructures.",
+    color: "#FFD65C",
+    topics: ["jewellery", "sustainability", "tech"],
+    relevanceScore: 72,
+    redditQuery: "lab grown diamond jewellery synthetic gemstone disruption",
+    newsQuery: "lab grown diamond market jewellery disruption De Beers",
+    position: { x: 1328, y: 7968 },
+    whyRelevant: "Lab-grown stones are not a trend — they're a structural market shift. The brands that reposition fastest (around craftsmanship, design, heritage, and emotional storytelling rather than material scarcity) will survive the transition.",
+    trajectory: "Lab-grown diamonds will hold 30%+ of the diamond market within 5 years. Mined diamonds will stratify into a ultra-premium heritage category while lab-grown captures the fashion and accessible luxury segments.",
+    nextSteps: [],
+  },
+  {
+    id: "jewellery-digital-identity",
+    name: "Digital & Avatar Jewellery",
+    description: "Digital jewellery for avatars, social platforms, and virtual environments is an emerging category — separate from NFT hype, grounded in the genuine purchase of personal expression in digital spaces.",
+    color: "#8C93C7",
+    topics: ["jewellery", "tech", "luxury"],
+    relevanceScore: 58,
+    redditQuery: "digital jewellery avatar fashion virtual identity metaverse",
+    newsQuery: "digital jewellery avatar luxury fashion virtual identity",
+    position: { x: 1708, y: 7968 },
+    whyRelevant: "Digital identity expression is a real consumer behaviour — people spend on skins, avatars, and digital accessories. Jewellery brands that understand this as an extension of their category will reach younger audiences in their native environments.",
+    trajectory: "Digital jewellery becomes a standard product extension for luxury houses within 5 years, driven by gaming and social platform integrations rather than standalone NFT projects.",
+    nextSteps: [],
+  },
+
+  // ── RETAIL ──────────────────────────────────────────────────────────────────
+  {
+    id: "retail-ai-personalisation",
+    name: "AI Retail Personalisation",
+    description: "AI recommendation engines are replacing editorial curation as the primary product discovery mechanism in fashion e-commerce. The best-converting product page is now the one built in real time for each individual consumer.",
+    color: "#FD8326",
+    topics: ["retail", "tech", "fashion"],
+    relevanceScore: 78,
+    redditQuery: "AI retail personalisation ecommerce recommendation engine shopping",
+    newsQuery: "AI personalisation retail e-commerce conversion recommendation",
+    position: { x: 168, y: 8568 },
+    whyRelevant: "AI personalisation is compounding — every click refines the model. The brands that invested in data infrastructure 3 years ago are now seeing conversion advantages that are structurally impossible for new entrants to close quickly.",
+    trajectory: "AI personalisation in retail will reach commodity status — it will be expected, not differentiated. The next frontier is personalised pricing, personalised inventory, and personalised physical retail experiences.",
+    nextSteps: [],
+  },
+  {
+    id: "retail-immersive-commerce",
+    name: "Immersive Commerce",
+    description: "Livestream shopping, AR try-on, and spatial commerce are collapsing the distance between content and purchase. The discovery-to-checkout journey is being compressed into a single immersive experience.",
+    color: "#78C9A8",
+    topics: ["retail", "tech", "lifestyle"],
+    relevanceScore: 68,
+    redditQuery: "livestream shopping AR try-on spatial commerce immersive retail",
+    newsQuery: "immersive commerce livestream shopping AR retail spatial",
+    position: { x: 748, y: 8568 },
+    whyRelevant: "Immersive commerce formats have proven conversion rates 6-10x higher than static product pages in Asian markets — and that gap is now arriving in Western retail. The window to build capability before it's expected is closing.",
+    trajectory: "Livestream shopping will normalise in Western markets within 3 years, starting with beauty, fashion, and food. AR try-on will become the default product experience for apparel and footwear e-commerce.",
+    nextSteps: [],
+  },
+
+  // ── SOCIAL MEDIA ────────────────────────────────────────────────────────────
+  {
+    id: "social-ai-content",
+    name: "AI Content Creation at Scale",
+    description: "AI is enabling brands to produce content at 100x the pace — daily posting, personalised variants, localised versions, and real-time reactive content are all now tractable. The question is whether quantity trades off against brand authenticity.",
+    color: "#FF8BB4",
+    topics: ["social", "creativity", "branding"],
+    relevanceScore: 76,
+    redditQuery: "AI social media content creation brand automation scale",
+    newsQuery: "AI social media content creation brand automation",
+    position: { x: 1328, y: 8568 },
+    whyRelevant: "The content velocity advantage of AI is real — and so is the risk of brand dilution when AI produces content without genuine brand intelligence. The brands that use AI as an execution layer on top of strong creative direction will win.",
+    trajectory: "AI-generated social content will be the default production method for tier-2 and tier-3 content within 18 months. The premium will shift to human-created, high-intent cultural content that AI cannot replicate.",
+    nextSteps: [],
+  },
+  {
+    id: "social-creator-economy",
+    name: "Creator Economy Infrastructure",
+    description: "The creator economy is maturing from ad-hoc influence deals into a structured commercial infrastructure: creator funds, brand studios, AI production tools, and direct-to-consumer monetisation models are reshaping who makes media and how.",
+    color: "#A7D47C",
+    topics: ["social", "tech", "lifestyle"],
+    relevanceScore: 70,
+    redditQuery: "creator economy monetisation brand studio tools infrastructure",
+    newsQuery: "creator economy infrastructure brand studio social media",
+    position: { x: 1708, y: 8568 },
+    whyRelevant: "The creator economy is not a marketing channel — it's an alternative media system. Brands that understand it build creator relationships as media partnerships, not influencer campaigns.",
+    trajectory: "Creator economy revenue will exceed traditional media advertising revenue in fashion and beauty within 5 years. The brands that built genuine creator partnerships (not just paid posts) will have the most durable position.",
+    nextSteps: [],
+  },
+
+  // ── EDUCATION ────────────────────────────────────────────────────────────────
+  {
+    id: "education-ai-tutoring",
+    name: "AI Personalised Learning",
+    description: "AI tutors that adapt to each student's pace, knowledge gaps, and learning style are delivering outcomes that classroom instruction cannot match at scale. Khan Academy's Khanmigo and similar systems are proving the model.",
+    color: "#FFD65C",
+    topics: ["education", "tech"],
+    relevanceScore: 73,
+    redditQuery: "AI tutor personalised learning education Khan Academy GPT",
+    newsQuery: "AI personalised learning tutoring education outcomes",
+    position: { x: 168, y: 9168 },
+    whyRelevant: "Personalised AI tutoring is not a supplement to education — it's a structural alternative that will reshape the education industry the same way streaming reshaped television. The institutions that understand this early will adapt; the rest will be displaced.",
+    trajectory: "AI tutoring reaches parity with human tutoring for most academic subjects within 3 years, measured by outcome metrics. The premium human tutoring market will shrink to high-touch coaching and social-emotional support.",
+    nextSteps: [],
+  },
+  {
+    id: "education-skills-credentials",
+    name: "Micro-Credentials & Skill Stacks",
+    description: "Blockchain-verified micro-credentials, employer-defined skill stacks, and AI-matched career pathways are emerging as alternatives to the four-year degree. The value proposition of traditional higher education is being actively contested.",
+    color: "#B6D693",
+    topics: ["education", "tech"],
+    relevanceScore: 65,
+    redditQuery: "micro credentials skills blockchain education alternative degree",
+    newsQuery: "micro credentials skills stacking alternative education credentials",
+    position: { x: 748, y: 9168 },
+    whyRelevant: "The credential inflation that made degrees compulsory is reversing — employer skill-based hiring is growing, and the 4-year degree ROI calculation is under active scrutiny. Brands that hire on skills over credentials will access better-fit talent faster.",
+    trajectory: "Blockchain-verified micro-credentials will be accepted by 50% of major employers within 5 years, creating parallel credentialing infrastructure that competes directly with university degrees.",
+    nextSteps: [],
+  },
 ];
 
 // ─── Topic Library ────────────────────────────────────────────────────────────
@@ -521,7 +860,21 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   skincare:         EXTENDED_TRENDS.filter(t => t.topics?.includes("skincare")),
   luxury:           EXTENDED_TRENDS.filter(t => t.topics?.includes("luxury")),
   food:             EXTENDED_TRENDS.filter(t => t.topics?.includes("food")),
+  creativity:       EXTENDED_TRENDS.filter(t => t.topics?.includes("creativity")),
+  photography:      EXTENDED_TRENDS.filter(t => t.topics?.includes("photography")),
+  film:             EXTENDED_TRENDS.filter(t => t.topics?.includes("film")),
+  branding:         EXTENDED_TRENDS.filter(t => t.topics?.includes("branding")),
+  fragrance:        EXTENDED_TRENDS.filter(t => t.topics?.includes("fragrance")),
+  jewellery:        EXTENDED_TRENDS.filter(t => t.topics?.includes("jewellery")),
+  retail:           EXTENDED_TRENDS.filter(t => t.topics?.includes("retail")),
+  social:           EXTENDED_TRENDS.filter(t => t.topics?.includes("social")),
+  education:        EXTENDED_TRENDS.filter(t => t.topics?.includes("education")),
 };
+
+// All topics available in the library — used for autocomplete suggestions
+export const LIBRARY_TOPICS = Object.keys(TOPIC_LIBRARY).filter(
+  k => TOPIC_LIBRARY[k].length > 0
+);
 
 // ─── Extended Signals ─────────────────────────────────────────────────────────
 
@@ -645,6 +998,97 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "foodcp-s1", trendId: "food-cultivated-protein", title: "GOOD Meat receives EU approval — cultivated chicken enters European restaurants", summary: "EU regulatory approval for cultivated meat removes the last major Western market barrier, triggering the restaurant and retail rollout phase.", source: "news", sourceName: "The Guardian", date: "2026-02-22", crossLinks: [] },
   { id: "foodcp-s2", trendId: "food-cultivated-protein", title: "Impossible Foods precision fermentation costs reach $8/kg — price parity approaching", summary: "Fermentation-derived protein is approaching conventional protein price parity at a pace that suggests mass market tipping point within 36 months.", source: "news", sourceName: "MIT Technology Review", date: "2026-03-15", crossLinks: [] },
   { id: "foodcp-s3", trendId: "food-cultivated-protein", title: "r/food: I ate cultivated chicken at a Michelin restaurant — couldn't tell the difference", summary: "Consumer taste validation from credible early adopters (fine dining context) is the word-of-mouth signal that precedes mainstream acceptance of new food technologies.", source: "reddit", sourceName: "r/food", date: "2026-04-05", crossLinks: [] },
+
+  // creativity-generative-tools
+  { id: "crtgen-s1", trendId: "creativity-generative-tools", title: "Publicis and WPP report 60% of creative briefs now have AI-produced references", summary: "AI-generated creative references have become standard in the brief process at major holding companies, signalling a structural shift in how creative work begins.", source: "news", sourceName: "Campaign", date: "2026-02-15", crossLinks: [] },
+  { id: "crtgen-s2", trendId: "creativity-generative-tools", title: "Runway Gen-3 enables full 60-second photorealistic video from text prompt", summary: "The quality threshold for AI video generation has crossed into broadcast usability, creating a mass-market disruption moment for video production.", source: "news", sourceName: "TechCrunch", date: "2026-03-28", crossLinks: [] },
+  { id: "crtgen-s3", trendId: "creativity-generative-tools", title: "r/graphic_design: I used AI to produce a full brand identity in one afternoon — the client couldn't tell", summary: "Community reports of AI-produced design work passing professional quality review signal that the gap between AI output and human creative work has closed in many execution categories.", source: "reddit", sourceName: "r/graphic_design", date: "2026-04-10", crossLinks: [] },
+
+  // creativity-human-ai-authorship
+  { id: "crtaut-s1", trendId: "creativity-human-ai-authorship", title: "US Copyright Office rules AI-assisted art requires 'human creative control' for protection", summary: "The regulatory framework for AI creative authorship is forming — clarity on what constitutes protectable creative control is the key variable brands and agencies need.", source: "news", sourceName: "The Verge", date: "2026-01-20", crossLinks: [] },
+  { id: "crtaut-s2", trendId: "creativity-human-ai-authorship", title: "Getty Images launches AI-generated content with full IP indemnification", summary: "Stock platform IP insurance for AI content is the market signal that the commercial use of AI creative output has been legitimised at scale.", source: "news", sourceName: "Wired", date: "2026-03-05", crossLinks: [] },
+  { id: "crtaut-s3", trendId: "creativity-human-ai-authorship", title: "r/ArtificialIntelligence: who owns the creative vision when AI does the execution?", summary: "The authorship question is being debated in real time across creative communities — the emerging consensus is that direction and curation are the protectable creative acts.", source: "reddit", sourceName: "r/ArtificialIntelligence", date: "2026-02-28", crossLinks: [] },
+
+  // photography-ai-authenticity
+  { id: "phtoauth-s1", trendId: "photography-ai-authenticity", title: "AP and Reuters mandate C2PA content credentials on all editorial photography", summary: "Press agencies mandating authentication standards sets the baseline that advertisers and social platforms will eventually follow.", source: "news", sourceName: "Reuters Institute", date: "2026-02-10", crossLinks: [] },
+  { id: "phtoauth-s2", trendId: "photography-ai-authenticity", title: "Getty's AI watermark detection catches 2M synthetic images submitted as photography", summary: "The scale of synthetic image submission to stock platforms has triggered industrial-scale detection — the verification arms race has begun.", source: "news", sourceName: "PetaPixel", date: "2026-03-18", crossLinks: [] },
+  { id: "phtoauth-s3", trendId: "photography-ai-authenticity", title: "r/photography: clients are now asking me to prove my photos are real — this was unthinkable 2 years ago", summary: "The authenticity question has reached client relationships — photographers are now having to document their process as proof of genuine capture.", source: "reddit", sourceName: "r/photography", date: "2026-04-05", crossLinks: [] },
+
+  // photography-computational
+  { id: "phtocomp-s1", trendId: "photography-computational", title: "iPhone 16 Pro camera outperforms $3,000 Sony in blind test at Wired", summary: "Computational photography has crossed the threshold where smartphone cameras beat professional equipment in most real-world conditions — a paradigm shift for the industry.", source: "news", sourceName: "Wired", date: "2026-01-25", crossLinks: [] },
+  { id: "phtocomp-s2", trendId: "photography-computational", title: "Adobe Lightroom AI adds scene-aware automatic grading — professionals divided", summary: "AI post-processing that makes creative decisions is landing in professional tools — the debate about what constitutes creative photography is shifting from capture to curation.", source: "news", sourceName: "PetaPixel", date: "2026-03-12", crossLinks: [] },
+  { id: "phtocomp-s3", trendId: "photography-computational", title: "r/photography: my phone camera made me better by handling the technical — now I just compose", summary: "Computational photography is changing what photographers learn and value — technical mastery depreciating, compositional and directorial vision appreciating.", source: "reddit", sourceName: "r/photography", date: "2026-02-20", crossLinks: [] },
+
+  // film-ai-production
+  { id: "filmaid-s1", trendId: "film-ai-production", title: "Disney uses AI de-aging for Harrison Ford in Indiana Jones — then for 40 other actors", summary: "Studio adoption of AI actor performance tools is scaling rapidly — the technology has crossed the uncanny valley threshold and entered mainstream production.", source: "news", sourceName: "Variety", date: "2026-01-28", crossLinks: [] },
+  { id: "filmaid-s2", trendId: "film-ai-production", title: "A24 produces $4M film with virtual production and AI — theatrical quality at indie budget", summary: "AI production tools are collapsing the budget required for theatrical-quality production, democratising film-making while disrupting studio economics.", source: "news", sourceName: "IndieWire", date: "2026-03-14", crossLinks: [] },
+  { id: "filmaid-s3", trendId: "film-ai-production", title: "r/filmmaking: AI pre-visualisation has replaced the storyboard — and it's 10x faster", summary: "AI pre-production tools are being adopted by working directors as a workflow improvement — the creative process is staying human while the execution is being AI-assisted.", source: "reddit", sourceName: "r/filmmaking", date: "2026-04-08", crossLinks: [] },
+
+  // film-algorithmic-culture
+  { id: "filmalg-s1", trendId: "film-algorithmic-culture", title: "Netflix data shows 'mid-episode hook' structure boosts completion by 34% — and it's now in every script", summary: "Algorithmic engagement data is actively shaping narrative structure — the algorithm is becoming an invisible co-writer.", source: "news", sourceName: "The Hollywood Reporter", date: "2026-02-05", crossLinks: [] },
+  { id: "filmalg-s2", trendId: "film-algorithmic-culture", title: "Greta Gerwig and 12 directors sign open letter against 'algorithm-driven creative notes'", summary: "Creative resistance to algorithmic production influence is forming a public position — the tension between data and vision is becoming a culture war in film.", source: "news", sourceName: "Variety", date: "2026-03-22", crossLinks: [] },
+  { id: "filmalg-s3", trendId: "film-algorithmic-culture", title: "r/movies: everything feels the same because it literally is — Netflix algorithm is writing movies now", summary: "Audience perception of algorithmic homogeneity in streaming content is a consumer sentiment signal that will eventually drive counter-programming demand.", source: "reddit", sourceName: "r/movies", date: "2026-02-18", crossLinks: [] },
+
+  // branding-ai-identity
+  { id: "brnaid-s1", trendId: "branding-ai-identity", title: "Pentagram launches AI brand system that generates on-brief assets in real time", summary: "When a legendary design firm launches an AI brand product, the format has crossed from startup experimentation to establishment adoption.", source: "news", sourceName: "Dezeen", date: "2026-02-22", crossLinks: [] },
+  { id: "brnaid-s2", trendId: "branding-ai-identity", title: "Spotify's AI-generated campaign produces 1,000 personalised poster variations simultaneously", summary: "AI creative systems producing thousands of on-brand variations simultaneously represent a step-change in campaign personalisation capability.", source: "news", sourceName: "Campaign", date: "2026-03-30", crossLinks: [] },
+  { id: "brnaid-s3", trendId: "branding-ai-identity", title: "r/graphic_design: AI brand systems are making junior design roles redundant — or are they?", summary: "The AI impact on design careers debate reflects a real structural shift — execution roles depreciating, strategic and training roles appreciating.", source: "reddit", sourceName: "r/graphic_design", date: "2026-04-12", crossLinks: [] },
+
+  // branding-cultural-intelligence
+  { id: "brncult-s1", trendId: "branding-cultural-intelligence", title: "Brandwatch AI predicts cultural trend peaks 8 weeks before they surface in brand briefs", summary: "AI trend prediction tools are creating a competitive window — brands that act on early signals arrive first rather than reacting to what's already mainstream.", source: "news", sourceName: "Marketing Week", date: "2026-01-30", crossLinks: [] },
+  { id: "brncult-s2", trendId: "branding-cultural-intelligence", title: "Dupe culture predicted 6 months early by cultural AI — brands that used it grew 40% YoY", summary: "Real-world commercial outcomes from AI cultural intelligence are creating proof of ROI that will drive rapid adoption across the brand strategy industry.", source: "news", sourceName: "Harvard Business Review", date: "2026-03-10", crossLinks: [] },
+  { id: "brncult-s3", trendId: "branding-cultural-intelligence", title: "r/marketing: AI trend tools are making our quarterly planning cycles feel obsolete", summary: "Marketing practitioner response to real-time cultural AI reveals that traditional planning cadences are misaligned with the speed of cultural signal emergence.", source: "reddit", sourceName: "r/marketing", date: "2026-02-25", crossLinks: [] },
+
+  // food-ai-flavour
+  // fragrance-ai-formulation
+  { id: "frgai-s1", trendId: "fragrance-ai-formulation", title: "Givaudan's Carto AI creates 1,800 new accords in one year vs 40 traditionally", summary: "AI fragrance formulation is producing novel olfactory territory at 45x the pace of human-only development, fundamentally changing the competitive dynamics of the fragrance industry.", source: "news", sourceName: "WWD", date: "2026-02-15", crossLinks: [] },
+  { id: "frgai-s2", trendId: "fragrance-ai-formulation", title: "Cosmo International Fragrances uses AI to map consumers' emotional scent memories", summary: "AI trained on emotional psychology data is being used to create fragrances that deliberately target autobiographical memory triggers — creating deeper consumer attachment.", source: "news", sourceName: "Beauty Business", date: "2026-03-20", crossLinks: [] },
+  { id: "frgai-s3", trendId: "fragrance-ai-formulation", title: "r/fragrance: the 'AI-developed' accord in my new perfume is unlike anything I've smelled", summary: "Consumer discovery of genuinely novel AI-developed fragrance accords is creating organic excitement — the first sign that AI formulation delivers a meaningful sensory difference.", source: "reddit", sourceName: "r/fragrance", date: "2026-04-08", crossLinks: [] },
+
+  // fragrance-emotional-tech
+  { id: "frgemot-s1", trendId: "fragrance-emotional-tech", title: "Aesop commissions olfactory design study for all new flagship retail environments", summary: "Luxury retail's investment in evidence-based scent design signals that olfactory experience has moved from nice-to-have to standard store design element.", source: "news", sourceName: "Dezeen", date: "2026-01-22", crossLinks: [] },
+  { id: "frgemot-s2", trendId: "fragrance-emotional-tech", title: "Moodo smart diffuser syncs scent to biometric stress data via Whoop integration", summary: "Biometric-triggered scent delivery represents the first genuinely personalised ambient wellbeing system — scent as responsive intervention rather than ambient background.", source: "news", sourceName: "TechCrunch", date: "2026-03-10", crossLinks: [] },
+  { id: "frgemot-s3", trendId: "fragrance-emotional-tech", title: "r/fragrance: using different scents for different emotional states changed how I think about perfume", summary: "Consumer adoption of intentional olfactory design in personal routines signals that the category is moving from identity expression to emotional toolkit.", source: "reddit", sourceName: "r/fragrance", date: "2026-02-28", crossLinks: [] },
+
+  // jewellery-lab-grown
+  { id: "jewlg-s1", trendId: "jewellery-lab-grown", title: "De Beers Lightbox reaches 50 store locations — mined diamond giant embraces lab-grown", summary: "When the world's largest diamond company launches a lab-grown sub-brand at scale, the market bifurcation is confirmed — not speculated.", source: "news", sourceName: "Retail Jeweller", date: "2026-02-08", crossLinks: [] },
+  { id: "jewlg-s2", trendId: "jewellery-lab-grown", title: "Lab-grown diamond engagement rings reach 40% of US market share", summary: "Engagement ring adoption is the high-value proof point for lab-grown acceptance — emotional significance overcomes synthetic stigma at this occasion purchase.", source: "news", sourceName: "National Jeweler", date: "2026-03-25", crossLinks: [] },
+  { id: "jewlg-s3", trendId: "jewellery-lab-grown", title: "r/Jewelry: I told my fiancée and she preferred lab-grown because of the ethics", summary: "Consumer preference data from the most emotionally significant jewellery purchase confirms that ethical sourcing now outweighs heritage rarity arguments for many buyers.", source: "reddit", sourceName: "r/Jewelry", date: "2026-04-15", crossLinks: [] },
+
+  // jewellery-digital-identity
+  { id: "jewdig-s1", trendId: "jewellery-digital-identity", title: "Tiffany & Co launches digital twin jewellery line for gaming avatars", summary: "Luxury jewellery entering avatar fashion signals that the category has identified digital identity expression as a genuine extension market.", source: "news", sourceName: "Vogue Business", date: "2026-01-30", crossLinks: [] },
+  { id: "jewdig-s2", trendId: "jewellery-digital-identity", title: "Roblox users spend $400M on virtual accessories in 2025 — jewellery category leads", summary: "At-scale virtual accessory spending proves that digital self-expression is a genuine consumer behaviour, not a niche curiosity.", source: "news", sourceName: "Hypebeast", date: "2026-03-14", crossLinks: [] },
+  { id: "jewdig-s3", trendId: "jewellery-digital-identity", title: "r/femalefashionadvice: I care about my avatar's jewellery as much as my real wardrobe now", summary: "Consumer self-report of equivalent investment in digital and physical accessory identity signals a permanent blending of fashion categories.", source: "reddit", sourceName: "r/femalefashionadvice", date: "2026-02-20", crossLinks: [] },
+
+  // retail-ai-personalisation
+  { id: "retai-s1", trendId: "retail-ai-personalisation", title: "Zalando AI stylist achieves 4.2x conversion vs. standard browse — rolls out globally", summary: "Conversion performance data from AI personalisation at scale is the commercial proof that will drive universal adoption across fashion e-commerce.", source: "news", sourceName: "Business of Fashion", date: "2026-02-12", crossLinks: [] },
+  { id: "retai-s2", trendId: "retail-ai-personalisation", title: "ASOS personalised homepage now generates 60% of all revenue", summary: "When the majority of revenue flows through AI-curated product discovery, the infrastructure investment has reached strategic necessity status.", source: "news", sourceName: "Retail Week", date: "2026-03-28", crossLinks: [] },
+  { id: "retai-s3", trendId: "retail-ai-personalisation", title: "r/femalefashionadvice: my AI stylist on [app] knows my taste better than I do at this point", summary: "Consumer emotional trust in AI style recommendations has crossed the threshold where the AI is genuinely preferred to self-directed browsing.", source: "reddit", sourceName: "r/femalefashionadvice", date: "2026-04-10", crossLinks: [] },
+
+  // retail-immersive-commerce
+  { id: "retimm-s1", trendId: "retail-immersive-commerce", title: "TikTok Shop reaches $20B GMV in the US — livestream commerce normalises", summary: "TikTok Shop's US scale confirms that the discovery-to-purchase compression in livestream commerce has crossed the adoption threshold in Western markets.", source: "news", sourceName: "Forbes", date: "2026-01-25", crossLinks: [] },
+  { id: "retimm-s2", trendId: "retail-immersive-commerce", title: "L'Oréal AR try-on used 2 billion times — beauty leads immersive commerce adoption", summary: "Beauty's AR try-on scale proves the commercial viability of the format and sets the expectation standard for fashion and accessories categories.", source: "news", sourceName: "WWD", date: "2026-03-08", crossLinks: [] },
+  { id: "retimm-s3", trendId: "retail-immersive-commerce", title: "r/femalefashionadvice: livestream shopping on TikTok has replaced my mall trips", summary: "Behaviour substitution in consumer shopping routines is the clearest indicator of structural retail change — the physical-to-digital shift in fashion retail is confirmed.", source: "reddit", sourceName: "r/femalefashionadvice", date: "2026-02-18", crossLinks: [] },
+
+  // social-ai-content
+  { id: "socai-s1", trendId: "social-ai-content", title: "Meta AI content creation tools double average brand posting frequency without additional headcount", summary: "AI content tools are proving their operational ROI — more output, same team, measurable engagement uplift — creating adoption pressure across all brand social teams.", source: "news", sourceName: "Social Media Today", date: "2026-02-22", crossLinks: [] },
+  { id: "socai-s2", trendId: "social-ai-content", title: "Unilever AI content system produces 10,000 localised social posts per month across 50 markets", summary: "At-scale AI social content production demonstrates that global-local content personalisation is no longer a resource constraint — it's an execution problem AI solves.", source: "news", sourceName: "Marketing Week", date: "2026-03-30", crossLinks: [] },
+  { id: "socai-s3", trendId: "social-ai-content", title: "r/marketing: we switched to 80% AI content and saw engagement go up — quality threshold is gone", summary: "Marketing practitioner data from AI content production is overturning the assumption that AI content underperforms human creative — at least at the scale required for social media.", source: "reddit", sourceName: "r/marketing", date: "2026-04-12", crossLinks: [] },
+
+  // social-creator-economy
+  { id: "soccr-s1", trendId: "social-creator-economy", title: "YouTube Shorts creator fund reaches $5B — platform competition for creators intensifies", summary: "Platform investment in creator funds signals that creator loyalty is the key distribution lever — the infrastructure of the creator economy is being built by platforms.", source: "news", sourceName: "The Verge", date: "2026-01-28", crossLinks: [] },
+  { id: "soccr-s2", trendId: "social-creator-economy", title: "1 in 4 Gen Z identifies as a content creator — the profession has mainstreamed", summary: "Creator identity adoption at this scale signals a permanent shift in career aspiration and media production — content creation is now a conventional professional path.", source: "news", sourceName: "Morning Consult", date: "2026-03-14", crossLinks: [] },
+  { id: "soccr-s3", trendId: "social-creator-economy", title: "r/Entrepreneur: my creator brand makes more than my corporate salary — and I have 80k followers", summary: "Creator economy income democratisation stories are fuelling career shifts at scale — the talent pool for traditional marketing roles is shrinking because the alternatives are better.", source: "reddit", sourceName: "r/Entrepreneur", date: "2026-02-25", crossLinks: [] },
+
+  // education-ai-tutoring
+  { id: "edai-s1", trendId: "education-ai-tutoring", title: "Khan Academy's Khanmigo closes learning gaps 40% faster than classroom instruction in pilot", summary: "Outcome data from AI tutoring at scale is creating the evidence base that will drive institutional adoption — the performance advantage is too large to ignore.", source: "news", sourceName: "The Atlantic", date: "2026-02-10", crossLinks: [] },
+  { id: "edai-s2", trendId: "education-ai-tutoring", title: "Duolingo AI tutor achieves C1 language learning outcomes in 6 months vs. 18-24 traditionally", summary: "AI personalised language learning has produced its first landmark outcome data — the compression of learning timelines is a fundamental market disruption.", source: "news", sourceName: "TechCrunch", date: "2026-03-18", crossLinks: [] },
+  { id: "edai-s3", trendId: "education-ai-tutoring", title: "r/learnprogramming: I learned Python to job-ready standard in 8 weeks with AI tutoring — no bootcamp", summary: "Consumer self-directed AI learning outcomes are generating word-of-mouth that is reshaping the skills training market faster than any institutional shift.", source: "reddit", sourceName: "r/learnprogramming", date: "2026-04-05", crossLinks: [] },
+
+  // education-skills-credentials
+  { id: "edskill-s1", trendId: "education-skills-credentials", title: "Google, IBM and 50 major employers remove degree requirements from 80% of job listings", summary: "Employer skill-based hiring at this scale creates immediate demand for alternative credential formats — the degree requirement is dissolving faster than universities can respond.", source: "news", sourceName: "Harvard Business Review", date: "2026-01-20", crossLinks: [] },
+  { id: "edskill-s2", trendId: "education-skills-credentials", title: "MIT and Coursera launch blockchain-verified nano-degrees — 6 weeks per credential", summary: "Elite institution entry into micro-credentialing validates the format's legitimacy and creates competitive pressure on traditional degree economics.", source: "news", sourceName: "MIT Technology Review", date: "2026-03-22", crossLinks: [] },
+  { id: "edskill-s3", trendId: "education-skills-credentials", title: "r/cscareerquestions: I got my dream job at FAANG with zero degree and 12 micro-credentials", summary: "Individual success stories from skill-stack credentialing are the most powerful peer influence signal — and they're multiplying across every professional community.", source: "reddit", sourceName: "r/cscareerquestions", date: "2026-02-15", crossLinks: [] },
 
   // food-ai-flavour
   { id: "foodfl-s1", trendId: "food-ai-flavour", title: "Givaudan AI flavour system cuts NPD cycle from 18 months to 3 months", summary: "The world's largest flavour company has operationalised AI in product development, compressing timelines that will force the entire industry to follow.", source: "news", sourceName: "Food Navigator", date: "2026-01-28", crossLinks: [] },

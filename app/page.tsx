@@ -12,7 +12,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
-import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
@@ -367,6 +367,7 @@ export default function HomePage() {
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [addingTopic,   setAddingTopic]   = useState(false);
   const [topicInput,    setTopicInput]    = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   // Seed seen IDs with all static signals on first visit so they don't show NEW
   const [seenIds, setSeenIds] = useState<Set<string>>(() => {
     const stored = loadSeen();
@@ -410,6 +411,15 @@ export default function HomePage() {
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends), [allExtraSignals, seenIds, visibleTrends]);
   const fitViewRef = useRef<(() => void) | null>(null);
+
+  const topicSuggestions = useMemo(() => {
+    const q = topicInput.toLowerCase().trim();
+    const all = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
+    if (!q) return all;
+    return all.filter(t =>
+      t.includes(q) || t.replace(/-/g, " ").includes(q)
+    );
+  }, [topicInput, activeTopics]);
 
   // Extracted so it can be called both on first add and on retry
   const runGeneration = useCallback(async (key: string, newTopics: string[]) => {
@@ -585,13 +595,14 @@ export default function HomePage() {
           <input
             autoFocus
             value={topicInput}
-            onChange={(e) => setTopicInput(e.target.value)}
+            onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && topicInput.trim()) addTopic(topicInput.trim());
-              if (e.key === "Escape") { setAddingTopic(false); setTopicInput(""); }
+              if (e.key === "Enter" && topicInput.trim()) { addTopic(topicInput.trim()); setShowSuggestions(false); }
+              if (e.key === "Escape") { setAddingTopic(false); setTopicInput(""); setShowSuggestions(false); }
             }}
-            onBlur={() => { if (!topicInput.trim()) { setAddingTopic(false); } }}
-            placeholder="e.g. gaming, wellness…"
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+            placeholder="e.g. travel, music…"
             style={{
               flexShrink: 0, height: 28, padding: "0 10px",
               border: "1.5px dashed #ccc", borderRadius: 20,
@@ -630,6 +641,40 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Autocomplete dropdown */}
+      {addingTopic && showSuggestions && topicSuggestions.length > 0 && (
+        <div style={{
+          position: "absolute", top: 96, left: 0, right: 0, zIndex: 20,
+          background: "#fff",
+          borderBottom: "1px solid rgba(0,0,0,0.08)",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+          padding: "6px 0",
+          maxHeight: 240, overflowY: "auto",
+        }}>
+          {topicSuggestions.map(topic => (
+            <button
+              key={topic}
+              onMouseDown={() => { addTopic(topic); setShowSuggestions(false); }}
+              style={{
+                display: "block", width: "100%",
+                padding: "10px 20px", textAlign: "left",
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: 13, fontWeight: 600, color: "#222",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                borderBottom: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <span style={{
+                display: "inline-block", width: 8, height: 8, borderRadius: "50%",
+                background: TOPIC_COLORS[topic] ?? "#ccc",
+                marginRight: 10, verticalAlign: "middle",
+              }} />
+              {topic.replace(/-/g, " ")}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Summary strip — click anywhere to open */}
       <div
@@ -760,11 +805,18 @@ export default function HomePage() {
                 </>
               ) : generationError ? (
                 <>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 10 }}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 8 }}>
                     Couldn't load trends
                   </div>
-                  <div style={{ fontSize: 13, color: "#999", marginBottom: 20, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-                    {generationError}
+                  <div style={{ fontSize: 13, color: "#999", marginBottom: 16, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
+                    Try one of the built-in topics below, or hit retry.
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 18, pointerEvents: "all", maxWidth: 280 }}>
+                    {LIBRARY_TOPICS.filter(t => !activeTopics.includes(t)).slice(0, 8).map(t => (
+                      <button key={t} onClick={() => { setGenerationError(null); addTopic(t); }}
+                        style={{ padding: "5px 12px", background: `${TOPIC_COLORS[t] ?? "#eee"}22`, border: `1px solid ${TOPIC_COLORS[t] ?? "#eee"}66`, borderRadius: 20, fontSize: 11, fontWeight: 700, color: "#333", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+                      >{t.replace(/-/g, " ")}</button>
+                    ))}
                   </div>
                   <button
                     onClick={retryGeneration}
