@@ -12,7 +12,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
-import { TOPIC_LIBRARY, TOPIC_COLORS, TOPIC_DESCRIPTIONS, EXTENDED_SIGNALS, normaliseTopicKey } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
@@ -678,21 +678,9 @@ export default function HomePage() {
               >×</button>
             </div>
 
-            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, margin: "12px 0 16px" }}>
+            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, margin: "12px 0 0" }}>
               {RADAR_OVERVIEW}
             </p>
-
-            {/* Per-topic descriptions */}
-            {appliedTopics.map(topic => TOPIC_DESCRIPTIONS[topic] ? (
-              <div key={topic} style={{ marginBottom: 14 }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: darkenColor(TOPIC_COLORS[topic] ?? "#aaa", 0.55), textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  {topic}
-                </div>
-                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                  {TOPIC_DESCRIPTIONS[topic]}
-                </p>
-              </div>
-            ) : null)}
 
             {/* Visible trend list */}
             <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid #f0ede8" }}>
