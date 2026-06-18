@@ -38,11 +38,11 @@ const BLOB: Record<string, string> = {
   "longevity":             "55% 45% 45% 55% / 70% 30% 60% 40%",
 };
 
-function isLight(hex: string) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return r * 0.299 + g * 0.587 + b * 0.114 > 155;
+function darkenColor(hex: string, factor = 0.62): string {
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+  return `#${r.toString(16).padStart(2,"0")}${g.toString(16).padStart(2,"0")}${b.toString(16).padStart(2,"0")}`;
 }
 
 // Cluster centres spaced 580 px apart so clusters feel densely packed
@@ -129,17 +129,17 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
       <div style={{
         width: data.d, height: data.d,
         borderRadius: BLOB[data.id] ?? "50%",
-        background: data.color,
+        background: darkenColor(data.color),
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: 22,
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: `0 6px 32px ${data.color}55`,
+        boxShadow: `0 6px 32px ${data.color}66`,
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#000", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(0,0,0,0.5)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           {data.score}%
         </div>
       </div>
