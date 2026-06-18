@@ -89,7 +89,7 @@ function dlCSV(content: string, name: string) {
 
 // ─── Node types ───────────────────────────────────────────────────────────────
 
-type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number };
+type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number };
 type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number };
 
 function blobFromId(id: string): string {
@@ -121,7 +121,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         </div>
       )}
       <div style={{
-        width: CIRCLE_D, height: CIRCLE_D,
+        width: data.d, height: data.d,
         borderRadius: BLOB[data.id] ?? "50%",
         background: data.color,
         display: "flex", flexDirection: "column",
@@ -130,10 +130,10 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
         boxShadow: `0 6px 32px ${data.color}50`,
       }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: dark ? "#fff" : "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: dark ? "#fff" : "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 8, fontSize: 9, fontWeight: 700, color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.32)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.32)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
           {data.score}%
         </div>
       </div>
@@ -191,15 +191,20 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
     const pos = TREND_POSITIONS[trend.id] ?? { x: 0, y: 0 };
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
+    // Diameter scales with relevance: 48→130px, 88→200px
+    const d = Math.round(75 + (trend.relevanceScore / 100) * 140);
+
+    // Keep cluster center fixed regardless of node size
+    const cx = pos.x + CIRCLE_D / 2;
+    const cy = pos.y + CIRCLE_D / 2;
 
     nodes.push({
-      id: trend.id, type: "trendCircle", position: pos,
-      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount } as TrendNodeData,
+      id: trend.id, type: "trendCircle",
+      position: { x: cx - d / 2, y: cy - d / 2 },
+      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
     const total = trendSignals.length;
-    const cx = pos.x + CIRCLE_D / 2;
-    const cy = pos.y + CIRCLE_D / 2;
 
     trendSignals.forEach((sig, i) => {
       // Golden angle scatter: avoids any circular pattern, signals feel "free"
