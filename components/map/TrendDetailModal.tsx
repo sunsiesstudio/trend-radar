@@ -13,48 +13,55 @@ interface Props {
 
 function buildReport(trend: Trend, signals: Signal[]): string {
   const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-  return `# ${trend.name}
-*Trend Intelligence Report · ${date}*
+  return `TREND INTELLIGENCE REPORT
+${date}
+Cultural Relevance Index: ${trend.relevanceScore}/100
 
-**Cultural Relevance: ${trend.relevanceScore}/100**
+════════════════════════════════════════════════════════
 
----
-
-## Overview
+${trend.name.toUpperCase()}
 
 ${trend.description}
 
----
+════════════════════════════════════════════════════════
 
-## Why This Matters Now
+01. MACROECONOMIC & CULTURAL DRIVERS
+
+${trend.macroContext ?? ""}
+
+────────────────────────────────────────────────────────
+
+02. STRATEGIC RATIONALE
 
 ${trend.whyRelevant}
 
----
+────────────────────────────────────────────────────────
 
-## Where This Is Going
+03. TRAJECTORY & OUTLOOK
 
 ${trend.trajectory}
 
----
+────────────────────────────────────────────────────────
 
-## Strategic Next Steps
+04. RECOMMENDED ACTIONS
 
-${trend.nextSteps.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+${trend.nextSteps.map((s, i) => `${String(i + 1).padStart(2, "0")}. ${s}`).join("\n\n")}
 
----
+────────────────────────────────────────────────────────
 
-## Signal Evidence (${signals.length} signals)
+05. SIGNAL INTELLIGENCE (${signals.length} signals)
 
-${signals.map((s) => `### ${s.title}
-Source: ${s.sourceName ?? "—"} · ${s.date ?? ""}
+${signals.map((s, i) => `[${String(i + 1).padStart(2, "0")}] ${s.title}
+    Source: ${s.sourceName ?? "—"}  |  Date: ${s.date ?? "—"}${s.isLive ? "  |  LIVE" : ""}
 
-${s.summary}
-`).join("\n---\n\n")}
+    ${s.summary}
+`).join("\n")}
 
----
+════════════════════════════════════════════════════════
 
-*Trend Radar — Emerging Signal Intelligence*`.trim();
+Trend Radar — Emerging Signal Intelligence
+This report is generated from live and curated signal data.
+`.trim();
 }
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
@@ -180,47 +187,63 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </div>
           ) : (
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8 }}>
-              {/* Macro drivers */}
+              {/* Report meta */}
+              <div style={{ marginBottom: 20, paddingBottom: 16, borderBottom: "2px solid #1a1a1a" }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#999", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 4 }}>
+                  Trend Intelligence Report
+                </div>
+                <div style={{ fontSize: 9, color: "#bbb", letterSpacing: "0.06em" }}>
+                  {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                  {" · "}Cultural Relevance Index: <strong style={{ color: "#555" }}>{trend.relevanceScore}/100</strong>
+                </div>
+              </div>
+
+              {/* 01. Macro drivers */}
               {trend.macroContext && (
-                <div style={{ marginBottom: 20 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>
-                    What's driving this
+                <div style={{ marginBottom: 22 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 10 }}>
+                    <span style={{ fontSize: 9, fontWeight: 900, color: trend.color, fontFamily: "monospace", letterSpacing: "0.04em" }}>01</span>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.12em" }}>Macroeconomic &amp; Cultural Drivers</span>
                   </div>
-                  <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0 }}>{trend.macroContext}</p>
+                  <p style={{ fontSize: 13, color: "#444", lineHeight: 1.75, margin: 0 }}>{trend.macroContext}</p>
                 </div>
               )}
 
-              {/* Why it matters */}
-              <div style={{ background: `${trend.color}0d`, border: `1px solid ${trend.color}25`, borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: trend.color, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
-                  Why this matters now
+              {/* 02. Strategic rationale */}
+              <div style={{ background: `${trend.color}09`, border: `1px solid ${trend.color}20`, borderRadius: 12, padding: "14px 16px", marginBottom: 22 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 10 }}>
+                  <span style={{ fontSize: 9, fontWeight: 900, color: trend.color, fontFamily: "monospace", letterSpacing: "0.04em" }}>02</span>
+                  <span style={{ fontSize: 9, fontWeight: 800, color: trend.color, textTransform: "uppercase", letterSpacing: "0.12em" }}>Strategic Rationale</span>
                 </div>
-                <p style={{ fontSize: 13, color: "#333", lineHeight: 1.7, margin: 0 }}>{trend.whyRelevant}</p>
+                <p style={{ fontSize: 13, color: "#333", lineHeight: 1.72, margin: 0 }}>{trend.whyRelevant}</p>
               </div>
 
-              {/* Trajectory */}
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>
-                  Where this is going
+              {/* 03. Trajectory */}
+              <div style={{ marginBottom: 22 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 10 }}>
+                  <span style={{ fontSize: 9, fontWeight: 900, color: trend.color, fontFamily: "monospace", letterSpacing: "0.04em" }}>03</span>
+                  <span style={{ fontSize: 9, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.12em" }}>Trajectory &amp; Outlook</span>
                 </div>
-                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>{trend.trajectory}</p>
+                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.72, margin: 0, fontStyle: "italic" }}>{trend.trajectory}</p>
               </div>
 
-              {/* Next steps */}
+              {/* 04. Recommended actions */}
               <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
-                  Strategic next steps
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
+                  <span style={{ fontSize: 9, fontWeight: 900, color: trend.color, fontFamily: "monospace", letterSpacing: "0.04em" }}>04</span>
+                  <span style={{ fontSize: 9, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.12em" }}>Recommended Actions</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {trend.nextSteps.map((step, i) => (
-                    <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                    <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                       <div style={{
-                        width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
-                        background: trend.color, color: "#fff",
+                        width: 20, height: 20, borderRadius: 4, flexShrink: 0,
+                        background: trend.color + "18", color: trend.color,
+                        border: `1px solid ${trend.color}40`,
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: 10, fontWeight: 800, marginTop: 1,
+                        fontSize: 9, fontWeight: 900, fontFamily: "monospace", marginTop: 2,
                       }}>
-                        {i + 1}
+                        {String(i + 1).padStart(2, "0")}
                       </div>
                       <p style={{ fontSize: 13, color: "#444", lineHeight: 1.65, margin: 0 }}>{step}</p>
                     </div>
@@ -228,16 +251,29 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 </div>
               </div>
 
-              {/* Signal digest */}
+              {/* 05. Signal intelligence */}
               <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 20 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
-                  Signal evidence ({signals.length})
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
+                  <span style={{ fontSize: 9, fontWeight: 900, color: trend.color, fontFamily: "monospace", letterSpacing: "0.04em" }}>05</span>
+                  <span style={{ fontSize: 9, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.12em" }}>Signal Intelligence ({signals.length})</span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {signals.map((s) => (
-                    <div key={s.id} style={{ fontSize: 12, color: "#666", lineHeight: 1.5, paddingLeft: 12, borderLeft: `2px solid ${trend.color}40` }}>
-                      <span style={{ fontWeight: 600, color: "#333" }}>{s.title}</span>
-                      {s.sourceName ? <span style={{ color: "#bbb" }}> — {s.sourceName}</span> : null}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {signals.map((s, i) => (
+                    <div key={s.id} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                      <span style={{ fontSize: 8, fontWeight: 900, color: "#ccc", fontFamily: "monospace", marginTop: 3, flexShrink: 0, width: 16 }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "#222", lineHeight: 1.4, marginBottom: 2 }}>
+                          {s.title}
+                          {s.isLive && (
+                            <span style={{ marginLeft: 6, fontSize: 8, fontWeight: 800, color: "#00c47a", background: "#00c47a12", borderRadius: 3, padding: "1px 4px", verticalAlign: "middle" }}>LIVE</span>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 10, color: "#bbb" }}>
+                          {s.sourceName ?? "—"}{s.date ? ` · ${new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
