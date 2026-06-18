@@ -349,19 +349,6 @@ function FocusController({ trendId, trendPos }: { trendId: string; trendPos: { x
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const chromeRef = useRef<HTMLDivElement>(null);
-  const [chromeH,  setChromeH]  = useState(158);
-
-  useEffect(() => {
-    const el = chromeRef.current;
-    if (!el) return;
-    const update = () => setChromeH(el.offsetHeight);
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
   const [activeTrend,   setActiveTrend]   = useState<Trend | null>(null);
   const [activeSignal,  setActiveSignal]  = useState<Signal | null>(null);
   const [showAdd,       setShowAdd]       = useState(false);
@@ -507,11 +494,10 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(visibleTrends.length - 1, i + 1));
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff", overflow: "hidden" }}>
-      {/* Chrome wrapper — measured so the canvas padding always tracks it */}
-      <div ref={chromeRef} style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column" }}>
       {/* Header */}
       <div style={{
+        flexShrink: 0, zIndex: 10,
         height: 52, padding: "0 20px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
@@ -540,6 +526,7 @@ export default function HomePage() {
 
       {/* Topics bar */}
       <div style={{
+        flexShrink: 0, zIndex: 9,
         height: 44, padding: "0 14px",
         display: "flex", alignItems: "center", gap: 6,
         overflowX: "auto", WebkitOverflowScrolling: "touch",
@@ -641,21 +628,21 @@ export default function HomePage() {
         onClick={() => setSummaryOpen(true)}
         role="button"
         style={{
-          padding: "10px 12px 10px 20px",
+          flexShrink: 0, zIndex: 9,
+          padding: "9px 12px 9px 20px",
           background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
           borderBottom: "1px solid rgba(0,0,0,0.06)",
           display: "flex", alignItems: "center", gap: 8,
           cursor: "pointer", WebkitTapHighlightColor: "transparent",
         } as React.CSSProperties}
       >
-        <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>
+        <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.45, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", whiteSpace: "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
           {RADAR_OVERVIEW}
         </p>
-        <span style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
+        <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
           ↓
         </span>
       </div>
-      </div>{/* end chrome wrapper */}
 
       {/* Summary expanded overlay */}
       {summaryOpen && (
@@ -731,9 +718,9 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Canvas — full screen behind chrome; paddingTop tracks measured chrome height */}
+      {/* Canvas */}
       <div
-        style={{ position: "absolute", inset: 0, paddingTop: chromeH, paddingBottom: 80 }}
+        style={{ flex: 1, minHeight: 0, position: "relative" }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;
