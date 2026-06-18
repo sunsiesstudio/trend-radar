@@ -102,8 +102,8 @@ function blobFromId(id: string): string {
     h1 = (h1 * 31 + id.charCodeAt(i)) >>> 0;
     h2 = (h2 * 37 + id.charCodeAt(i) * 17) >>> 0;
   }
-  // Wider range → fatter, more organic shapes
-  const v = (h: number, n: number) => 8 + (((h >>> n) & 0xff) % 82);
+  // Full 5-90% range for maximum blob wobble
+  const v = (h: number, n: number) => 5 + (((h >>> n) & 0xff) % 86);
   return `${v(h1,0)}% ${v(h1,8)}% ${v(h1,16)}% ${v(h1,24)}% / ${v(h2,0)}% ${v(h2,8)}% ${v(h2,16)}% ${v(h2,24)}%`;
 }
 
@@ -149,30 +149,28 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: data.w,
-      height: data.w,
+      height: data.h,
       background: `${data.color}${data.fillAlpha}`,
-      border: `1.5px solid ${data.color}cc`,
-      borderRadius: "50%",
-      padding: "14px",
+      border: `1.5px solid ${data.color}bb`,
+      borderRadius: blobFromId(data.id),
+      padding: "8px",
       display: "flex", alignItems: "center", justifyContent: "center",
       textAlign: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      overflow: "hidden",
       boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
       position: "relative",
     }}>
       {data.isNew && (
         <span style={{
-          position: "absolute", top: 6, left: "50%", transform: "translateX(-50%)",
-          fontSize: 6, fontWeight: 900, color: "#fff",
+          position: "absolute", top: -7, left: 8,
+          fontSize: 7, fontWeight: 900, color: "#fff",
           background: "#FF2D78",
           borderRadius: 3, padding: "1px 4px",
           letterSpacing: "0.07em", lineHeight: 1.5,
-          whiteSpace: "nowrap",
         }}>NEW</span>
       )}
-      <div style={{ fontSize: 9, fontWeight: 700, color: "#111", lineHeight: 1.3, letterSpacing: "-0.01em" }}>
+      <div style={{ fontSize: 10, fontWeight: 600, color: "#111", lineHeight: 1.35, letterSpacing: "-0.01em" }}>
         {data.title}
       </div>
     </div>
@@ -189,9 +187,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
   const allSignals = [...SIGNALS, ...extraSignals];
 
   const GOLDEN_ANGLE = 2.399963;
-  const GAP = 4;
-  // Try primary angle first, then rotate ±23°, ±45°, ±68°, ±90° before giving up
-  const ANGLE_OFFSETS = [0, 0.4, -0.4, 0.79, -0.79, 1.18, -1.18, 1.57, -1.57];
+  const GAP = 5;
+  // 16 evenly-spaced angle probes per radius level (22.5° steps around full circle)
+  const N_ANGLES = 16;
   type P = { sig: Signal; w: number; h: number; fillAlpha: string; isNew: boolean; x: number; y: number };
   type Blob = { cx: number; cy: number; r: number };
 
@@ -228,48 +226,52 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
       const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
       const baseAngle = i * GOLDEN_ANGLE + jitter;
-      // Circle diameter: scale with title length so text fits inside
-      // At 9px font, ~6px/char, effective text band ≈ 65% of diameter
-      const w = Math.max(120, Math.min(175, Math.round(sig.title.length * 2.4) + 38));
-      const sigH = w; // perfect circle
-      // Watercolor fill: vary opacity 33-67% per signal
+      const charsPerLine = Math.ceil(sig.title.length / 4);
+      const w = Math.max(90, Math.min(165, Math.round(charsPerLine * 5.8) + 20));
+      // Height from text wrapping so text never overflows the blob
+      const innerW = w - 16;
+      const estCharsPerLine = Math.max(1, Math.floor(innerW / 6.0));
+      const estLines = Math.ceil(sig.title.length / estCharsPerLine);
+      const sigH = Math.round(Math.max(w * 0.75, estLines * 13.5 + 20));
+      // Watercolor fill: vary opacity 33–67% per signal
       const alphaByte = 0x55 + ((h >> 14 & 0x7f) % 0x55);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
-      // Fallback: place just outside the blob edge along baseAngle (never at center)
-      const fallbackR = d / 2 + GAP + Math.max(w, sigH) / 2 + 10;
-      let x = cx + fallbackR * Math.cos(baseAngle) - w / 2;
-      let y = cy + fallbackR * Math.sin(baseAngle) - sigH / 2;
-      let placed = false;
+      // Radius-first search: expand outward, probe N_ANGLES directions at each ring.
+      // This guarantees the closest valid spot and never drops a signal on top of another.
+      let x = cx, y = cy, placed = false;
 
-      for (const dAngle of ANGLE_OFFSETS) {
-        if (placed) break;
-        const angle = baseAngle + dAngle;
-        for (let r = d / 2 + GAP; r <= MAX_R; r += 4) {
-          const tx = cx + r * Math.cos(angle) - w / 2;
-          const ty = cy + r * Math.sin(angle) - sigH / 2;
-          const ncx = tx + w / 2, ncy = ty + sigH / 2;
-
-          // Must clear ALL trend blobs
-          let clearBlobs = true;
-          for (const blob of allBlobs) {
-            const nearX = Math.max(tx, Math.min(blob.cx, tx + w));
-            const nearY = Math.max(ty, Math.min(blob.cy, ty + sigH));
-            if (Math.hypot(nearX - blob.cx, nearY - blob.cy) < blob.r + GAP) { clearBlobs = false; break; }
+      const tryPlace = (rMin: number, rMax: number, checkBlobs: boolean): boolean => {
+        for (let r = rMin; r <= rMax; r += 3) {
+          for (let k = 0; k < N_ANGLES; k++) {
+            const angle = baseAngle + (k * Math.PI * 2) / N_ANGLES;
+            const tx = cx + r * Math.cos(angle) - w / 2;
+            const ty = cy + r * Math.sin(angle) - sigH / 2;
+            const ncx = tx + w / 2, ncy = ty + sigH / 2;
+            if (checkBlobs) {
+              let ok = true;
+              for (const blob of allBlobs) {
+                const nearX = Math.max(tx, Math.min(blob.cx, tx + w));
+                const nearY = Math.max(ty, Math.min(blob.cy, ty + sigH));
+                if (Math.hypot(nearX - blob.cx, nearY - blob.cy) < blob.r + GAP) { ok = false; break; }
+              }
+              if (!ok) continue;
+            }
+            let clearNodes = true;
+            for (const p of placements) {
+              if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
+                  Math.abs(ncy - (p.y + p.h / 2)) < (sigH + p.h) / 2 + GAP) { clearNodes = false; break; }
+            }
+            if (clearNodes) { x = tx; y = ty; return true; }
           }
-          if (!clearBlobs) continue;
-
-          // Must clear own cluster's signals
-          let clearNodes = true;
-          for (const p of placements) {
-            if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
-                Math.abs(ncy - (p.y + p.h / 2)) < (sigH + p.h) / 2 + GAP) { clearNodes = false; break; }
-          }
-          if (!clearNodes) continue;
-
-          x = tx; y = ty; placed = true; break;
         }
-      }
+        return false;
+      };
+
+      // Pass 1: within MAX_R, respect all blob clearances
+      placed = tryPlace(d / 2 + GAP, MAX_R, true);
+      // Pass 2: beyond MAX_R if needed (no global blob check — keeps cluster together visually)
+      if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
 
       placements.push({ sig, w, h: sigH, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
     });
