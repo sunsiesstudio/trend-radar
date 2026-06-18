@@ -362,6 +362,7 @@ export default function HomePage() {
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
   const [generatingTopic,  setGeneratingTopic]  = useState<string | null>(null);
+  const [generationError,  setGenerationError]  = useState<string | null>(null);
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [addingTopic,   setAddingTopic]   = useState(false);
@@ -410,6 +411,45 @@ export default function HomePage() {
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends), [allExtraSignals, seenIds, visibleTrends]);
   const fitViewRef = useRef<(() => void) | null>(null);
 
+  // Extracted so it can be called both on first add and on retry
+  const runGeneration = useCallback(async (key: string, newTopics: string[]) => {
+    setGeneratingTopic(key);
+    setGenerationError(null);
+    try {
+      const existingIds = dynamicTrends.map(t => t.id);
+      const res = await fetch("/api/generate-trends", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: key, existingTrendIds: existingIds, positionOffset: dynamicTrends.length }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
+        const newDynamic = [...dynamicTrends, ...items.map(i => i.trend)];
+        setDynamicTrends(newDynamic);
+        setAppliedDynamicTrends(newDynamic);
+        setGeneratedSignals(prev => [...prev, ...items.flatMap(i => i.signals)]);
+        setGenerationError(null);
+        setTimeout(() => setFocusIdx(9999), 60);
+      } else {
+        const errData = await res.json().catch(() => ({})) as { error?: string };
+        setGenerationError(errData.error ?? "Generation failed. Please try again.");
+      }
+    } catch {
+      setGenerationError("Network error. Check connection and try again.");
+    } finally {
+      setAppliedTopics(newTopics);
+      setGeneratingTopic(null);
+    }
+  }, [dynamicTrends]);
+
+  const retryGeneration = useCallback(() => {
+    const failedTopic = activeTopics.find(topic =>
+      !dynamicTrends.some(t => t.topics?.includes(topic))
+    );
+    if (failedTopic) runGeneration(failedTopic, activeTopics);
+  }, [activeTopics, dynamicTrends, runGeneration]);
+
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
     if (!key || activeTopics.includes(key)) return;
@@ -417,6 +457,7 @@ export default function HomePage() {
     setActiveTopics(newTopics);
     setTopicInput("");
     setAddingTopic(false);
+    setGenerationError(null);
 
     // Use pre-built library first — apply immediately
     const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
@@ -431,31 +472,8 @@ export default function HomePage() {
       return;
     }
 
-    // Generate via Claude — apply when done
-    setGeneratingTopic(key);
-    try {
-      const existingIds = [...dynamicTrends].map(t => t.id);
-      const res = await fetch("/api/generate-trends", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: key, existingTrendIds: existingIds, positionOffset: dynamicTrends.length }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
-        const newDynamic = [...dynamicTrends, ...items.map(i => i.trend)];
-        setDynamicTrends(newDynamic);
-        setAppliedDynamicTrends(newDynamic);
-        setGeneratedSignals(prev => [...prev, ...items.flatMap(i => i.signals)]);
-        setTimeout(() => setFocusIdx(9999), 60);
-      }
-    } catch (err) {
-      console.error("generate-trends failed:", err);
-    } finally {
-      setAppliedTopics(newTopics);
-      setGeneratingTopic(null);
-    }
-  }, [activeTopics, dynamicTrends]);
+    await runGeneration(key, newTopics);
+  }, [activeTopics, dynamicTrends, runGeneration]);
 
   const removeTopic = useCallback((topic: string) => {
     setActiveTopics(prev => {
@@ -739,6 +757,45 @@ export default function HomePage() {
                   <div style={{ fontSize: 12, color: "#bbb", marginTop: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                     Finding where new tech is hitting this space
                   </div>
+                </>
+              ) : generationError ? (
+                <>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 10 }}>
+                    Couldn't load trends
+                  </div>
+                  <div style={{ fontSize: 13, color: "#999", marginBottom: 20, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
+                    {generationError}
+                  </div>
+                  <button
+                    onClick={retryGeneration}
+                    style={{
+                      pointerEvents: "all",
+                      padding: "10px 28px", background: "#000", color: "#fff",
+                      border: "none", borderRadius: 20,
+                      fontSize: 13, fontWeight: 700, cursor: "pointer",
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    }}
+                  >
+                    Try again
+                  </button>
+                </>
+              ) : activeTopics.length > 0 ? (
+                <>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#bbb", fontFamily: "'EB Garamond', Georgia, serif", marginBottom: 8 }}>
+                    Nothing generated yet
+                  </div>
+                  <button
+                    onClick={retryGeneration}
+                    style={{
+                      pointerEvents: "all",
+                      padding: "10px 28px", background: "#000", color: "#fff",
+                      border: "none", borderRadius: 20,
+                      fontSize: 13, fontWeight: 700, cursor: "pointer",
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    }}
+                  >
+                    Generate trends
+                  </button>
                 </>
               ) : (
                 <>
