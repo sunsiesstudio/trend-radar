@@ -342,6 +342,7 @@ export default function HomePage() {
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
   const [liveSignals, setLiveSignals] = useState<Signal[]>([]);
   const [liveLoading, setLiveLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [focusIdx,     setFocusIdx]     = useState(0);
   const [summaryOpen,  setSummaryOpen]  = useState(false);
   // Seed seen IDs with all static signals on first visit so they don't show NEW
@@ -369,8 +370,8 @@ export default function HomePage() {
     setLiveLoading(true);
     fetch("/api/live-signals")
       .then((r) => r.json())
-      .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
-      .catch(() => { if (!cancelled) setLiveLoading(false); });
+      .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
+      .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
     return () => { cancelled = true; };
   }, []);
 
@@ -421,7 +422,17 @@ export default function HomePage() {
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
         <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Rarity Radar</span>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          {lastUpdated && (
+            <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
+              {(() => {
+                const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
+                if (mins < 1) return "Updated just now";
+                if (mins === 1) return "Updated 1 min ago";
+                return `Updated ${mins} min ago`;
+              })()}
+            </span>
+          )}
           <button
             onClick={() => setShowAdd(true)}
             style={{ padding: "6px 16px", background: "#000", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
