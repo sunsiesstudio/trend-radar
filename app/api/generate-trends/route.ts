@@ -82,7 +82,8 @@ Rules:
     });
 
     const raw = (msg.content[0] as { type: string; text: string }).text.trim();
-    const parsed = JSON.parse(raw);
+    const jsonStr = raw.startsWith("```") ? raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "") : raw;
+    const parsed = JSON.parse(jsonStr);
     const date = new Date().toISOString().split("T")[0];
 
     // Hydrate with positions, colors, topics
