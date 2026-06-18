@@ -678,22 +678,27 @@ export default function HomePage() {
               >×</button>
             </div>
 
-            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, margin: "12px 0 0" }}>
-              {RADAR_OVERVIEW}
+            <p style={{ fontSize: 14, color: "#444", lineHeight: 1.7, margin: "14px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
+              {(() => {
+                const topics = appliedTopics;
+                const phrase = topics.length === 1
+                  ? topics[0]
+                  : topics.length === 2
+                  ? `${topics[0]} and ${topics[1]}`
+                  : `${topics.slice(0, -1).join(", ")}, and ${topics[topics.length - 1]}`;
+                return `${visibleTrends.length} trends tracking where new tech is hitting ${phrase} right now. Not predictions. Things that are actually moving.`;
+              })()}
             </p>
 
             {/* Visible trend list */}
-            <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid #f0ede8" }}>
-              <div style={{ fontSize: 10, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                {visibleTrends.length} trends on the board
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+            <div style={{ marginTop: 20, marginBottom: 20 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {visibleTrends.map(t => (
-                  <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: darkenColor(t.color), marginTop: 5, flexShrink: 0 }} />
+                  <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.3, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
-                      <div style={{ fontSize: 11, color: "#888", lineHeight: 1.5, marginTop: 2 }}>{t.description}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
+                      <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
                     </div>
                   </div>
                 ))}
