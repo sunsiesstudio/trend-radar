@@ -189,10 +189,10 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         textAlign: "center", padding: 22, boxSizing: "border-box",
         pointerEvents: "none",
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: data.color, lineHeight: 1.22, letterSpacing: "-0.01em" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: `${data.color}99`, letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: "rgba(0,0,0,0.45)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
           {data.score}%
         </div>
       </div>
