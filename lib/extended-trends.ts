@@ -51,7 +51,6 @@ export const TOPIC_DESCRIPTIONS: Record<string, string> = {
   food:              "Food is where biotech, AI, and sustainability are all landing simultaneously. Cultivated protein, AI-matched flavour, and personalised nutrition are reshaping what eating means.",
   skincare:          "Skincare is where biotech is most commercially advanced. Microbiome science, exosomes, AI-matched formulations: the gap between pharmaceutical and cosmetic is closing fast.",
   sport:             "Sport is where wearable biometrics, AI coaching, and immersive viewing are colliding. The boundary between professional training and consumer self-optimisation is dissolving.",
-  fitness:           "Fitness is being quantified at the biological level. CGM, HRV, sleep staging: the body as a data system is the dominant metaphor in consumer health right now.",
   creativity:        "Creativity is being turbocharged by AI — and the creative industries are having to figure out what that means for authorship, value, and workflow. The tools are ahead of the ethics.",
   photography:       "Photography is in a legitimacy crisis and a technical renaissance at the same time. AI generation, computational photography, and synthetic imagery are rewriting what a photograph means.",
   film:              "Film and video production is being structurally changed by AI. De-aging, virtual production, AI scripting tools, and algorithmic distribution are rewriting every phase of the process.",
@@ -116,8 +115,7 @@ const TOPIC_ALIASES: Record<string, string> = {
   "sound":            "music",
   // art
   "arts":             "art",
-  "creative":         "art",
-  "creativity":       "art",
+  "creativity":       "creativity",
   // skincare
   "skin":             "skincare",
   "skin care":        "skincare",
@@ -187,7 +185,6 @@ const TOPIC_ALIASES: Record<string, string> = {
   "school":           "education",
   "university":       "education",
   "courses":          "education",
-  "training":         "education",
 };
 
 export function normaliseTopicKey(input: string): string {
