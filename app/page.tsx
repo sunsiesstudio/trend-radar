@@ -38,11 +38,12 @@ const BLOB: Record<string, string> = {
   "longevity":             "55% 45% 45% 55% / 70% 30% 60% 40%",
 };
 
-function isLight(hex: string) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return r * 0.299 + g * 0.587 + b * 0.114 > 140;
+function hexToRgb(hex: string) {
+  return {
+    r: parseInt(hex.slice(1, 3), 16),
+    g: parseInt(hex.slice(3, 5), 16),
+    b: parseInt(hex.slice(5, 7), 16),
+  };
 }
 
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
@@ -105,9 +106,76 @@ function blobFromId(id: string): string {
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const dark = !isLight(data.color);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const size = data.d;
+    const dpr = typeof window !== "undefined" ? (window.devicePixelRatio || 1) : 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(dpr, dpr);
+
+    const cx = size / 2, cy = size / 2, baseR = size / 2 - 1;
+
+    // Deterministic wobble seed per trend
+    let hv = 0;
+    for (let i = 0; i < data.id.length; i++) hv = (hv * 31 + data.id.charCodeAt(i)) >>> 0;
+    const hf = hv / 0xffffffff;
+
+    const wobblyPath = (radius: number, seed: number) => {
+      const pts = 80;
+      ctx.beginPath();
+      for (let i = 0; i <= pts; i++) {
+        const a = (i / pts) * Math.PI * 2;
+        const w = 1
+          + Math.sin(a * 3 + seed) * 0.055
+          + Math.sin(a * 7 + seed * 1.7) * 0.028
+          + Math.sin(a * 13 + seed * 0.9) * 0.012;
+        const rx = cx + radius * w * Math.cos(a);
+        const ry = cy + radius * w * Math.sin(a);
+        if (i === 0) ctx.moveTo(rx, ry); else ctx.lineTo(rx, ry);
+      }
+      ctx.closePath();
+    };
+
+    const { r, g, b } = hexToRgb(data.color);
+    const ltn = (a: number) => `rgb(${Math.min(255,r+a)},${Math.min(255,g+a)},${Math.min(255,b+a)})`;
+    const drk = (a: number) => `rgb(${Math.max(0,r-a)},${Math.max(0,g-a)},${Math.max(0,b-a)})`;
+
+    // Clip all drawing to outermost blob shape
+    wobblyPath(baseR, hf * 8);
+    ctx.save();
+    ctx.clip();
+    ctx.fillStyle = data.color;
+    ctx.fillRect(0, 0, size, size);
+
+    // 5 concentric rings alternating lighter / darker
+    const ringFills = [ltn(55), drk(30), ltn(85), drk(45), ltn(30)];
+    for (let i = 1; i <= 5; i++) {
+      const ratio = 1 - i / 6;
+      wobblyPath(baseR * ratio, hf * 8 + i * 1.9);
+      ctx.fillStyle = ringFills[i - 1];
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.5)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Center dark dot
+    wobblyPath(baseR * 0.14, hf * 20);
+    ctx.fillStyle = drk(65);
+    ctx.fill();
+
+    ctx.restore();
+  }, [data.d, data.color, data.id]);
+
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", width: data.d, height: data.d, cursor: "pointer", userSelect: "none" }}>
       {data.newCount > 0 && (
         <div style={{
           position: "absolute", top: -6, right: -6, zIndex: 2,
@@ -121,20 +189,17 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
           {data.newCount}
         </div>
       )}
+      <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, display: "block" }} />
       <div style={{
-        width: data.d, height: data.d,
-        borderRadius: BLOB[data.id] ?? "50%",
-        background: data.color,
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        textAlign: "center", padding: 22,
-        boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: `0 6px 32px ${data.color}50`,
+        position: "absolute", inset: 0,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        textAlign: "center", padding: 22, boxSizing: "border-box",
+        pointerEvents: "none",
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: dark ? "#fff" : "#111", lineHeight: 1.22, letterSpacing: "-0.01em" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: "#fff", lineHeight: 1.22, letterSpacing: "-0.01em", textShadow: "0 1px 6px rgba(0,0,0,0.45)" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.32)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
           {data.score}%
         </div>
       </div>
@@ -147,15 +212,15 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
     <div style={{
       width: data.w,
       height: data.w,
-      background: `${data.color}${data.fillAlpha}`,
-      border: "none",
+      background: "#fff",
+      border: `2.5px solid ${data.color}`,
       borderRadius: blobFromId(data.id),
       padding: "8px",
       display: "flex", alignItems: "center", justifyContent: "center",
       textAlign: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      boxShadow: data.isNew ? `0 3px 16px ${data.color}40` : `0 2px 10px ${data.color}20`,
+      boxShadow: data.isNew ? `0 3px 20px ${data.color}60` : `0 2px 12px ${data.color}35`,
       position: "relative",
     }}>
       {data.isNew && (
@@ -253,7 +318,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
-        style: { stroke: trend.color, strokeWidth: 1.2, opacity: 0.3 },
+        style: { stroke: trend.color, strokeWidth: 2, opacity: 0.55 },
       });
     });
   });
@@ -394,7 +459,7 @@ export default function HomePage() {
   const focusTrend = TRENDS[focusIdx];
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#fff" }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "repeating-linear-gradient(90deg,#fff 0px,#fff 12px,#111 12px,#111 24px)" }}>
       {/* Header */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
@@ -454,7 +519,7 @@ export default function HomePage() {
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#fff" }}
+          style={{ background: "repeating-linear-gradient(90deg,#fff 0px,#fff 12px,#111 12px,#111 24px)" }}
         >
           <FocusController trendId={focusTrend.id} />
         </ReactFlow>
