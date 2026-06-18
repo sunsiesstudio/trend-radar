@@ -144,32 +144,25 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
     };
 
     const { r, g, b } = hexToRgb(data.color);
-    const ltn = (a: number) => `rgb(${Math.min(255,r+a)},${Math.min(255,g+a)},${Math.min(255,b+a)})`;
-    const drk = (a: number) => `rgb(${Math.max(0,r-a)},${Math.max(0,g-a)},${Math.max(0,b-a)})`;
 
-    // Clip all drawing to outermost blob shape
+    // Clip everything to the outer blob shape
     wobblyPath(baseR, hf * 8);
     ctx.save();
     ctx.clip();
-    ctx.fillStyle = data.color;
+
+    // Very light tinted background (pale wash of the trend color)
+    ctx.fillStyle = `rgba(${Math.min(255,r+95)},${Math.min(255,g+92)},${Math.min(255,b+88)},0.95)`;
     ctx.fillRect(0, 0, size, size);
 
-    // 5 concentric rings alternating lighter / darker
-    const ringFills = [ltn(55), drk(30), ltn(85), drk(45), ltn(30)];
-    for (let i = 1; i <= 5; i++) {
-      const ratio = 1 - i / 6;
-      wobblyPath(baseR * ratio, hf * 8 + i * 1.9);
-      ctx.fillStyle = ringFills[i - 1];
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,0.5)";
-      ctx.lineWidth = 1.5;
+    // Dense contour strokes — topographic / IMG_0449 style
+    const NUM_CONTOURS = 20;
+    for (let i = 0; i <= NUM_CONTOURS; i++) {
+      const ratio = (1 - i / (NUM_CONTOURS + 2)) * 0.97;
+      wobblyPath(baseR * ratio, hf * 8 + i * 0.68);
+      ctx.strokeStyle = `rgba(${r},${g},${b},0.52)`;
+      ctx.lineWidth = 1.1;
       ctx.stroke();
     }
-
-    // Center dark dot
-    wobblyPath(baseR * 0.14, hf * 20);
-    ctx.fillStyle = drk(65);
-    ctx.fill();
 
     ctx.restore();
   }, [data.d, data.color, data.id]);
@@ -196,10 +189,10 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         textAlign: "center", padding: 22, boxSizing: "border-box",
         pointerEvents: "none",
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: "#fff", lineHeight: 1.22, letterSpacing: "-0.01em", textShadow: "0 1px 6px rgba(0,0,0,0.45)" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 800, color: data.color, lineHeight: 1.22, letterSpacing: "-0.01em" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
+        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 700, color: `${data.color}99`, letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "monospace" }}>
           {data.score}%
         </div>
       </div>
@@ -212,8 +205,8 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
     <div style={{
       width: data.w,
       height: data.w,
-      background: "#fff",
-      border: `2.5px solid ${data.color}`,
+      background: `${data.color}12`,
+      border: `1.8px solid ${data.color}`,
       borderRadius: blobFromId(data.id),
       padding: "8px",
       display: "flex", alignItems: "center", justifyContent: "center",
@@ -459,7 +452,7 @@ export default function HomePage() {
   const focusTrend = TRENDS[focusIdx];
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#f0edf7" }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#f5ece8" }}>
       {/* Header */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
@@ -519,7 +512,7 @@ export default function HomePage() {
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#f0edf7" }}
+          style={{ background: "#f5ece8" }}
         >
           <FocusController trendId={focusTrend.id} />
         </ReactFlow>
