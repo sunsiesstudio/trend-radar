@@ -90,7 +90,7 @@ function dlCSV(content: string, name: string) {
 // ─── Node types ───────────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number };
-type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number };
+type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; fillAlpha: string };
 
 function blobFromId(id: string): string {
   // Two independent hashes → 8 fully uncorrelated corner values
@@ -99,8 +99,9 @@ function blobFromId(id: string): string {
     h1 = (h1 * 31 + id.charCodeAt(i)) >>> 0;
     h2 = (h2 * 37 + id.charCodeAt(i) * 17) >>> 0;
   }
-  const v = (h: number, n: number) => 6 + (((h >>> n) & 0x7f) % 84);
-  return `${v(h1,0)}% ${v(h1,7)}% ${v(h1,14)}% ${v(h1,21)}% / ${v(h2,0)}% ${v(h2,7)}% ${v(h2,14)}% ${v(h2,21)}%`;
+  // Wider range → fatter, more organic shapes
+  const v = (h: number, n: number) => 8 + (((h >>> n) & 0xff) % 82);
+  return `${v(h1,0)}% ${v(h1,8)}% ${v(h1,16)}% ${v(h1,24)}% / ${v(h2,0)}% ${v(h2,8)}% ${v(h2,16)}% ${v(h2,24)}%`;
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
@@ -145,14 +146,14 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
     <div style={{
       width: data.w,
-      background: data.isLive ? `${data.color}18` : `${data.color}12`,
-      border: `1.5px solid ${data.isNew ? data.color + "99" : data.isLive ? data.color + "88" : data.color + "55"}`,
+      background: `${data.color}${data.fillAlpha}`,
+      border: "none",
       borderRadius: blobFromId(data.id),
       padding: "9px 14px",
       display: "flex", alignItems: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      boxShadow: data.isNew ? `0 2px 14px ${data.color}30` : `0 2px 12px ${data.color}18`,
+      boxShadow: data.isNew ? `0 3px 16px ${data.color}40` : `0 2px 10px ${data.color}20`,
       position: "relative",
     }}>
       {data.isNew && (
@@ -216,12 +217,15 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const minR = d / 2 + 10; // just outside the trend blob edge
       const r = minR + ((h >> 10 & 0xff) / 255) * 85; // spread max 85px past blob
       const w = 96 + ((h >> 20 & 0x1f) % 60); // 96–156px per signal
+      // Per-signal fill opacity: 18%–48% of trend color (hex 2D–7A)
+      const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
+      const fillAlpha = alphaByte.toString(16).padStart(2, "0");
       const isNew = !seenIds.has(sig.id);
 
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x: cx + r * Math.cos(angle) - w / 2, y: cy + r * Math.sin(angle) - SIG_H / 2 },
-        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w } as SignalNodeData,
+        data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w, fillAlpha } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
