@@ -357,10 +357,12 @@ export default function HomePage() {
   const [liveLoading,   setLiveLoading]   = useState(true);
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [focusIdx,      setFocusIdx]      = useState(0);
-  const [summaryOpen,   setSummaryOpen]   = useState(false);
-  const [activeTopics,  setActiveTopics]  = useState<string[]>(["fashion", "beauty", "lifestyle"]);
-  const [dynamicTrends, setDynamicTrends] = useState<Trend[]>([]);
-  const [appliedTopics,       setAppliedTopics]       = useState<string[]>(["fashion", "beauty", "lifestyle"]);
+  const [summaryOpen,      setSummaryOpen]      = useState(false);
+  const [activeTopics,     setActiveTopics]     = useState<string[]>(["fashion", "beauty", "lifestyle"]);
+  const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
+  const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
+  const [generatingTopic,  setGeneratingTopic]  = useState<string | null>(null);
+  const [appliedTopics,        setAppliedTopics]        = useState<string[]>(["fashion", "beauty", "lifestyle"]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [addingTopic,   setAddingTopic]   = useState(false);
   const [topicInput,    setTopicInput]    = useState("");
@@ -404,35 +406,65 @@ export default function HomePage() {
     [activeTopics, appliedTopics]
   );
 
-  const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
-  const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
+  const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
+  const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends), [allExtraSignals, seenIds, visibleTrends]);
   const fitViewRef = useRef<(() => void) | null>(null);
 
-  const addTopic = useCallback((raw: string) => {
+  const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
-    if (!key) return;
-    setActiveTopics(prev => prev.includes(key) ? prev : [...prev, key]);
-    const newTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
-      !TRENDS.find(e => e.id === t.id) && !dynamicTrends.find(e => e.id === t.id)
-    );
-    if (newTrends.length) setDynamicTrends(prev => [...prev, ...newTrends]);
+    if (!key || activeTopics.includes(key)) return;
+    setActiveTopics(prev => [...prev, key]);
     setTopicInput("");
     setAddingTopic(false);
-  }, [dynamicTrends]);
+
+    // Use pre-built library first
+    const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
+      !TRENDS.find(e => e.id === t.id) && !dynamicTrends.find(e => e.id === t.id)
+    );
+    if (libraryTrends.length) {
+      setDynamicTrends(prev => [...prev, ...libraryTrends]);
+      return;
+    }
+
+    // Otherwise generate via Claude
+    setGeneratingTopic(key);
+    try {
+      const existingIds = [...TRENDS, ...dynamicTrends].map(t => t.id);
+      const res = await fetch("/api/generate-trends", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: key, existingTrendIds: existingIds }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
+        setDynamicTrends(prev => [...prev, ...items.map(i => i.trend)]);
+        setGeneratedSignals(prev => [...prev, ...items.flatMap(i => i.signals)]);
+      }
+    } catch (err) {
+      console.error("generate-trends failed:", err);
+    } finally {
+      setGeneratingTopic(null);
+    }
+  }, [activeTopics, dynamicTrends]);
 
   const removeTopic = useCallback((topic: string) => {
     setActiveTopics(prev => {
       const next = prev.filter(t => t !== topic);
-      // Remove dynamic trends that are no longer covered by remaining topics
-      setDynamicTrends(dt => dt.filter(t => t.topics?.some(tp => next.includes(tp))));
+      setDynamicTrends(dt => {
+        const kept = dt.filter(t => t.topics?.some(tp => next.includes(tp)));
+        const removedIds = new Set(dt.filter(t => !kept.includes(t)).map(t => t.id));
+        setGeneratedSignals(gs => gs.filter(s => !removedIds.has(s.trendId ?? "")));
+        return kept;
+      });
       return next;
     });
   }, []);
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
-      const trend = TRENDS.find((t) => t.id === node.id);
+      const trend = [...TRENDS, ...appliedDynamicTrends].find((t) => t.id === node.id);
       if (trend) {
         setActiveTrend(trend);
         markSeen(allSignals.filter((s) => s.trendId === trend.id).map((s) => s.id));
@@ -441,7 +473,7 @@ export default function HomePage() {
       const sig = allSignals.find((s) => s.id === node.id);
       if (sig) { setActiveSignal(sig); markSeen([sig.id]); }
     }
-  }, [allSignals, markSeen]);
+  }, [allSignals, markSeen, appliedDynamicTrends]);
 
   const handleAddSignal = useCallback((s: Signal) => {
     setExtraSignals((prev) => [...prev, s]);
@@ -556,6 +588,19 @@ export default function HomePage() {
             <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> topic
           </button>
         )}
+        {generatingTopic && (
+          <div style={{
+            flexShrink: 0, height: 28, padding: "0 12px",
+            border: "1.5px solid #ddd", borderRadius: 20,
+            fontSize: 11, fontWeight: 600, color: "#999",
+            background: "#f8f8f8",
+            display: "flex", alignItems: "center", gap: 6,
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
+            generating {generatingTopic}…
+          </div>
+        )}
         {hasPendingChanges && (
           <button
             onClick={() => {
@@ -579,6 +624,12 @@ export default function HomePage() {
       </div>
 
       {/* Summary strip — always 2-line slim bar */}
+      {(() => {
+        const topicDescs = appliedTopics.map(t => TOPIC_DESCRIPTIONS[t]).filter(Boolean);
+        const stripText = topicDescs.length
+          ? topicDescs.join(" · ")
+          : RADAR_OVERVIEW;
+        return (
       <div style={{
         position: "absolute", top: 96, left: 0, right: 0, zIndex: 9,
         padding: "10px 12px 10px 20px",
@@ -587,7 +638,7 @@ export default function HomePage() {
         display: "flex", alignItems: "center", gap: 8,
       }}>
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>
-          {RADAR_OVERVIEW}
+          {stripText}
         </p>
         <button
           onClick={() => setSummaryOpen(true)}
@@ -597,6 +648,8 @@ export default function HomePage() {
           ↓
         </button>
       </div>
+        );
+      })()}
 
       {/* Summary expanded overlay */}
       {summaryOpen && (
@@ -616,7 +669,7 @@ export default function HomePage() {
               padding: "18px 20px 0",
             } as React.CSSProperties}
           >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
               <h3 style={{ flex: 1, fontSize: 16, fontWeight: 700, color: "#000", lineHeight: 1.5, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
                 What{"'"}s on the board
               </h3>
@@ -627,8 +680,12 @@ export default function HomePage() {
               >×</button>
             </div>
 
-            {/* Active topic descriptions */}
-            {activeTopics.map(topic => TOPIC_DESCRIPTIONS[topic] ? (
+            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.65, marginBottom: 16, margin: "0 0 16px" }}>
+              {RADAR_OVERVIEW}
+            </p>
+
+            {/* Per-topic descriptions */}
+            {appliedTopics.map(topic => TOPIC_DESCRIPTIONS[topic] ? (
               <div key={topic} style={{ marginBottom: 14 }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: darkenColor(TOPIC_COLORS[topic] ?? "#aaa", 0.55), textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   {topic}
