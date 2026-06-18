@@ -213,8 +213,8 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       const GOLDEN_ANGLE = 2.399963; // 137.5° in radians
       const angleNoise = ((h & 0x1ff) / 512 - 0.5) * 2.0; // ±1.0 rad extra jitter
       const angle = i * GOLDEN_ANGLE + angleNoise;
-      const minR = CIRCLE_D * 0.6 + 90;
-      const r = minR + ((h >> 10 & 0xff) / 255) * (ORBIT_R * 0.9);
+      const minR = d / 2 + 10; // just outside the trend blob edge
+      const r = minR + ((h >> 10 & 0xff) / 255) * 85; // spread max 85px past blob
       const w = 96 + ((h >> 20 & 0x1f) % 60); // 96–156px per signal
       const isNew = !seenIds.has(sig.id);
 
@@ -252,14 +252,16 @@ function FocusController({ trendId }: { trendId: string }) {
 
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
-    const pad = 16;
-    const viewR = ORBIT_R * 1.05;
+    const pad = 20;
+    const viewR = 275; // d/2(max≈99) + 10 + 85spread + w/2(max≈78) ≈ 272px
+    const cx = pos.x + CIRCLE_D / 2;
+    const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
       {
-        x: pos.x - viewR - SIG_W / 2 - pad,
-        y: pos.y - viewR - SIG_H - pad,
-        width:  CIRCLE_D + 2 * (viewR + SIG_W / 2) + pad * 2,
-        height: CIRCLE_D + 2 * (viewR + SIG_H)     + pad * 2,
+        x: cx - viewR - pad,
+        y: cy - viewR - pad,
+        width:  (viewR + pad) * 2,
+        height: (viewR + pad) * 2,
       },
       { duration: first.current ? 0 : 420 },
     );
