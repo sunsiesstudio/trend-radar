@@ -342,8 +342,6 @@ export default function HomePage() {
   const [extraSignals, setExtraSignals] = useState<Signal[]>([]);
   const [liveSignals, setLiveSignals] = useState<Signal[]>([]);
   const [liveLoading, setLiveLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [refreshTick, setRefreshTick] = useState(0);
   const [focusIdx,     setFocusIdx]     = useState(0);
   const [summaryOpen,  setSummaryOpen]  = useState(false);
   // Seed seen IDs with all static signals on first visit so they don't show NEW
@@ -371,10 +369,10 @@ export default function HomePage() {
     setLiveLoading(true);
     fetch("/api/live-signals")
       .then((r) => r.json())
-      .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
-      .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
+      .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
+      .catch(() => { if (!cancelled) setLiveLoading(false); });
     return () => { cancelled = true; };
-  }, [refreshTick]);
+  }, []);
 
   const allSignals = useMemo(() => [...SIGNALS, ...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals], [extraSignals, liveSignals]);
@@ -412,14 +410,6 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
   const focusTrend = TRENDS[focusIdx];
 
-  const updatedLabel = (() => {
-    if (!lastUpdated) return null;
-    const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
-    if (mins < 1) return "Updated just now";
-    if (mins === 1) return "Updated 1 min ago";
-    return `Updated ${mins} min ago`;
-  })();
-
   return (
     <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff" }}>
       {/* Header */}
@@ -432,18 +422,6 @@ export default function HomePage() {
       }}>
         <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Trend Radar</span>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <button
-            onClick={() => setRefreshTick((t) => t + 1)}
-            title="Refresh live signals"
-            style={{ padding: "6px 10px", background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#888", lineHeight: 1 }}
-          >
-            <span className={liveLoading ? "spin" : ""}>↻</span>
-          </button>
-          {updatedLabel && (
-            <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
-              {updatedLabel}
-            </span>
-          )}
           <button
             onClick={() => setShowAdd(true)}
             style={{ padding: "6px 16px", background: "#000", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
@@ -573,11 +551,6 @@ export default function HomePage() {
           <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
             {focusIdx + 1} / {TRENDS.length}
           </div>
-          {updatedLabel && (
-            <div style={{ fontSize: 9, color: "#ccc", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-              {updatedLabel}
-            </div>
-          )}
         </div>
 
         <button
