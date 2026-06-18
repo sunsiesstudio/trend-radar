@@ -205,27 +205,62 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    const total = trendSignals.length;
-
-    trendSignals.forEach((sig, i) => {
+    // Initial random placement, then collision resolution
+    type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
+    const placements: P[] = trendSignals.map((sig) => {
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
-      const GOLDEN_ANGLE = 2.399963;
-      // Tiny jitter only — golden angle alone gives the even spread
-      const angleJitter = ((h & 0xff) / 255 - 0.5) * 0.25;
-      const angle = i * GOLDEN_ANGLE + angleJitter;
-      // sqrt(i+1) growth keeps nodes evenly spaced in area (sunflower pattern)
-      const baseR = d / 2 + 20;
-      const r = baseR + 34 * Math.sqrt(i + 1);
-      const w = 96 + ((h >> 20 & 0x1f) % 60); // 96–156px per signal
-      // Per-signal fill opacity: 18%–48% of trend color (hex 2D–7A)
+      const angle = (h & 0xffff) / 65536 * Math.PI * 2;
+      const r = d / 2 + 16 + ((h >> 16 & 0xff) / 255) * 55;
+      const w = 96 + ((h >> 20 & 0x1f) % 60);
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
-      const isNew = !seenIds.has(sig.id);
+      return { sig, w, fillAlpha, isNew: !seenIds.has(sig.id),
+        x: cx + r * Math.cos(angle) - w / 2,
+        y: cy + r * Math.sin(angle) - SIG_H / 2 };
+    });
 
+    const PAD = 12;
+    const NH = 54; // height estimate (> SIG_H to absorb text wrapping)
+    for (let iter = 0; iter < 150; iter++) {
+      for (let i = 0; i < placements.length; i++) {
+        const a = placements[i];
+        // Keep outside trend blob
+        const acx = a.x + a.w / 2, acy = a.y + NH / 2;
+        const ddx = acx - cx, ddy = acy - cy;
+        const dd = Math.sqrt(ddx * ddx + ddy * ddy);
+        const blobR = d / 2 + PAD;
+        if (dd < blobR && dd > 0) {
+          const push = blobR - dd;
+          a.x += (ddx / dd) * push;
+          a.y += (ddy / dd) * push;
+        }
+        // Pairwise repulsion
+        for (let j = i + 1; j < placements.length; j++) {
+          const b = placements[j];
+          const ox = (a.x + a.w / 2) - (b.x + b.w / 2);
+          const oy = (a.y + NH / 2) - (b.y + NH / 2);
+          const minX = (a.w + b.w) / 2 + PAD;
+          const minY = NH + PAD;
+          if (Math.abs(ox) < minX && Math.abs(oy) < minY) {
+            const px = minX - Math.abs(ox);
+            const py = minY - Math.abs(oy);
+            if (px < py) {
+              const s = Math.sign(ox) || 1;
+              a.x += s * px / 2; b.x -= s * px / 2;
+            } else {
+              const s = Math.sign(oy) || 1;
+              a.y += s * py / 2; b.y -= s * py / 2;
+            }
+          }
+        }
+      }
+    }
+
+    placements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
       nodes.push({
         id: sig.id, type: "signalOrbit",
-        position: { x: cx + r * Math.cos(angle) - w / 2, y: cy + r * Math.sin(angle) - SIG_H / 2 },
+        position: { x, y },
         data: { id: sig.id, title: sig.title, color: trend.color, source: sig.source, isLive: sig.isLive, isNew, w, fillAlpha } as SignalNodeData,
       });
       edges.push({
@@ -257,8 +292,8 @@ function FocusController({ trendId }: { trendId: string }) {
 
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
-    const pad = 20;
-    const viewR = 340; // d/2(max≈101) + 20 + 34*√13(≈122) + w/2(max≈78) ≈ 321px
+    const pad = 24;
+    const viewR = 380; // collision resolution can push signals further than initial r
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
