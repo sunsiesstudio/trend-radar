@@ -494,10 +494,10 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(visibleTrends.length - 1, i + 1));
 
   return (
-    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff" }}>
+    <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column" }}>
       {/* Header */}
       <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
+        flexShrink: 0, zIndex: 10,
         height: 52, padding: "0 20px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
@@ -526,7 +526,7 @@ export default function HomePage() {
 
       {/* Topics bar */}
       <div style={{
-        position: "absolute", top: 52, left: 0, right: 0, zIndex: 9,
+        flexShrink: 0, zIndex: 9,
         height: 44, padding: "0 14px",
         display: "flex", alignItems: "center", gap: 6,
         overflowX: "auto", WebkitOverflowScrolling: "touch",
@@ -628,7 +628,7 @@ export default function HomePage() {
         onClick={() => setSummaryOpen(true)}
         role="button"
         style={{
-          position: "absolute", top: 96, left: 0, right: 0, zIndex: 9,
+          flexShrink: 0, zIndex: 9,
           padding: "10px 12px 10px 20px",
           background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
           borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -720,7 +720,7 @@ export default function HomePage() {
 
       {/* Canvas */}
       <div
-        style={{ position: "absolute", inset: 0, paddingTop: 158, paddingBottom: 80 }}
+        style={{ flex: 1, minHeight: 0, position: "relative" }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;
@@ -743,7 +743,7 @@ export default function HomePage() {
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#ffffff" }}
+          style={{ background: "#ffffff", position: "absolute", inset: 0 }}
         >
           <BoardController fitViewRef={fitViewRef} />
           {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
@@ -752,7 +752,7 @@ export default function HomePage() {
 
       {/* Nav bar */}
       <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
+        flexShrink: 0, zIndex: 10,
         height: 80,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
