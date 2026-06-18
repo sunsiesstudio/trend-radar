@@ -205,52 +205,38 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    // Initial random placement, then collision resolution
+    // Sunflower angles, greedy radius: step outward until 20px clear of all prior nodes
+    const GOLDEN_ANGLE = 2.399963;
+    const GAP = 20;
+    const NH = 50; // node height estimate
     type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
-    const placements: P[] = trendSignals.map((sig) => {
+    const placements: P[] = [];
+
+    trendSignals.forEach((sig, i) => {
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
-      const angle = (h & 0xffff) / 65536 * Math.PI * 2;
-      const r = d / 2 + 16 + ((h >> 16 & 0xff) / 255) * 55;
+      const jitter = ((h & 0xff) / 255 - 0.5) * 0.12; // ±0.06 rad, tiny organic feel
+      const angle = i * GOLDEN_ANGLE + jitter;
       const w = 96 + ((h >> 20 & 0x1f) % 60);
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
-      return { sig, w, fillAlpha, isNew: !seenIds.has(sig.id),
-        x: cx + r * Math.cos(angle) - w / 2,
-        y: cy + r * Math.sin(angle) - SIG_H / 2 };
-    });
 
-    const PAD = 14;
-    const NH = 50; // node height estimate
-    for (let iter = 0; iter < 200; iter++) {
-      for (let i = 0; i < placements.length; i++) {
-        const a = placements[i];
-        // Push outside trend blob (radial)
-        const acx = a.x + a.w / 2, acy = a.y + NH / 2;
-        const ddx = acx - cx, ddy = acy - cy;
-        const dd = Math.sqrt(ddx * ddx + ddy * ddy);
-        const blobR = d / 2 + a.w / 2 + 6;
-        if (dd < blobR && dd > 0) {
-          const push = blobR - dd;
-          a.x += (ddx / dd) * push;
-          a.y += (ddy / dd) * push;
+      let r = d / 2 + 14;
+      let x = 0, y = 0;
+      for (let step = 0; step < 300; step++, r += 8) {
+        x = cx + r * Math.cos(angle) - w / 2;
+        y = cy + r * Math.sin(angle) - NH / 2;
+        const ncx = x + w / 2, ncy = y + NH / 2;
+        let clear = true;
+        for (const p of placements) {
+          const dx = ncx - (p.x + p.w / 2);
+          const dy = ncy - (p.y + NH / 2);
+          if (Math.sqrt(dx * dx + dy * dy) < (w + p.w) / 2 + GAP) { clear = false; break; }
         }
-        // Radial repulsion — push along center-to-center axis, not AABB axes
-        for (let j = i + 1; j < placements.length; j++) {
-          const b = placements[j];
-          const dx = (a.x + a.w / 2) - (b.x + b.w / 2);
-          const dy = (a.y + NH / 2) - (b.y + NH / 2);
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const minDist = (a.w + b.w) / 2 + PAD;
-          if (dist < minDist && dist > 0) {
-            const push = (minDist - dist) / 2;
-            const nx = dx / dist, ny = dy / dist;
-            a.x += nx * push; a.y += ny * push;
-            b.x -= nx * push; b.y -= ny * push;
-          }
-        }
+        if (clear) break;
       }
-    }
+      placements.push({ sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
+    });
 
     placements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
       nodes.push({
