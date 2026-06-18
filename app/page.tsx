@@ -205,25 +205,32 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    // Sunflower angles, greedy radius: step outward until 20px clear of all prior nodes
+    // Ring radius: big enough that N signals of avg width 126 fit around it with GAP spacing.
+    // All signals start at this radius → they form a ring, not a spiral arm.
+    // Greedy outward step only nudges signals that the golden angle happens to put too close.
     const GOLDEN_ANGLE = 2.399963;
     const GAP = 20;
-    const NH = 50; // node height estimate
+    const NH = 50;
+    const N = trendSignals.length;
+    const ringR = Math.max(
+      d / 2 + 80,                              // must clear the blob
+      (N * (126 + GAP)) / (2 * Math.PI)        // circumference fit (126 = avg signal width)
+    );
     type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
     const placements: P[] = [];
 
     trendSignals.forEach((sig, i) => {
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
-      const jitter = ((h & 0xff) / 255 - 0.5) * 0.12; // ±0.06 rad, tiny organic feel
+      const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
       const angle = i * GOLDEN_ANGLE + jitter;
       const w = 96 + ((h >> 20 & 0x1f) % 60);
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
-      let r = d / 2 + 14;
+      let r = ringR; // start at the ring, not at the blob edge
       let x = 0, y = 0;
-      for (let step = 0; step < 300; step++, r += 8) {
+      for (let step = 0; step < 200; step++, r += 8) {
         x = cx + r * Math.cos(angle) - w / 2;
         y = cy + r * Math.sin(angle) - NH / 2;
         const ncx = x + w / 2, ncy = y + NH / 2;
@@ -274,7 +281,7 @@ function FocusController({ trendId }: { trendId: string }) {
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
     const pad = 24;
-    const viewR = 380; // collision resolution can push signals further than initial r
+    const viewR = 460; // ringR(max≈302) + greedy nudge(≈50) + w/2(78) ≈ 430
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     fitBounds(
