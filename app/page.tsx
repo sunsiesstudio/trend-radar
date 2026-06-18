@@ -26,16 +26,16 @@ const SIG_W    = 158;
 const SIG_H    = 44;
 
 const BLOB: Record<string, string> = {
-  "ai-creativity":         "65% 35% 40% 60% / 55% 45% 55% 45%",
-  "digital-identity":      "45% 55% 65% 35% / 35% 65% 45% 55%",
-  "ar-commerce":           "55% 45% 35% 65% / 65% 35% 55% 45%",
-  "biotech-beauty":        "40% 60% 55% 45% / 60% 40% 35% 65%",
-  "sustainable-materials": "70% 30% 45% 55% / 45% 55% 65% 35%",
-  "3d-printing":           "35% 65% 60% 40% / 55% 45% 40% 60%",
-  "wearables":             "50% 50% 40% 60% / 65% 35% 50% 50%",
-  "neurotech":             "60% 40% 50% 50% / 40% 60% 35% 65%",
-  "spatial-computing":     "45% 55% 70% 30% / 50% 50% 45% 55%",
-  "longevity":             "55% 45% 45% 55% / 70% 30% 60% 40%",
+  "ai-creativity":         "65% 35% 40% 60% / 55% 45% 65% 35%",  // leans top-left
+  "digital-identity":      "25% 75% 55% 45% / 45% 55% 25% 75%",  // pointy TL + BR
+  "ar-commerce":           "75% 25% 50% 50% / 50% 50% 75% 25%",  // two sharp corners opposite
+  "biotech-beauty":        "50% 50% 30% 70% / 70% 30% 55% 45%",  // droops bottom-right
+  "sustainable-materials": "40% 60% 70% 30% / 30% 70% 40% 60%",  // diagonal S-curve
+  "3d-printing":           "60% 40% 60% 40% / 40% 60% 40% 60%",  // alternating wave
+  "wearables":             "70% 30% 45% 55% / 55% 45% 70% 30%",  // top-heavy
+  "neurotech":             "30% 70% 65% 35% / 65% 35% 30% 70%",  // bottom-heavy opposite
+  "spatial-computing":     "55% 45% 55% 45% / 25% 75% 75% 25%",  // vertically pinched
+  "longevity":             "45% 55% 35% 65% / 70% 30% 55% 45%",  // irregular organic
 };
 
 
