@@ -42,7 +42,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           borderRadius: "24px 24px 0 0",
           width: "100%",
           maxWidth: 680,
-          maxHeight: "85vh",
+          maxHeight: "88svh",
           display: "flex",
           flexDirection: "column",
           boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",
@@ -52,7 +52,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
         {/* Color bar */}
         <div style={{ height: 4, background: `linear-gradient(90deg, ${trendColor}, ${trendColor}44)`, flexShrink: 0 }} />
 
-        <div style={{ overflowY: "auto", flex: 1 }}>
+        <div style={{ overflowY: "auto", flex: 1, WebkitOverflowScrolling: "touch", touchAction: "pan-y", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))" } as React.CSSProperties}>
           {/* Header */}
           <div style={{ padding: "20px 24px 0" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
@@ -62,7 +62,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
               }}>
                 {trendName}
               </span>
-              <button onClick={onClose} style={{ marginLeft: "auto", fontSize: 22, color: "#ccc", background: "none", border: "none", cursor: "pointer", lineHeight: 1, padding: 0 }}>×</button>
+              <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
             </div>
 
             <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 14, letterSpacing: "-0.02em" }}>

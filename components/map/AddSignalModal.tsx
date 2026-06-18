@@ -93,7 +93,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId }: Props) {
         </div>
 
         {/* Body — scrolls independently */}
-        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 16 } as React.CSSProperties}>
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 16 } as React.CSSProperties}>
 
           {field("Add to trend",
             <select

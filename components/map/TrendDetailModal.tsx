@@ -13,7 +13,7 @@ interface Props {
 
 function SectionHeader({ color, num, label }: { color: string; num: string; label: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid #f0ede8` }}>
+    <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: "1px solid #f0ede8" }}>
       <span style={{ fontSize: 9, fontWeight: 800, color, fontFamily: "monospace", letterSpacing: "0.06em" }}>{num}</span>
       <span style={{ fontSize: 8.5, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em" }} dangerouslySetInnerHTML={{ __html: label }} />
     </div>
@@ -86,7 +86,6 @@ p{font-size:15px;color:#2a2a2a;line-height:1.85;margin-bottom:10px}
 .signal-summary{font-size:13px;color:#555;line-height:1.78}
 .live-badge{display:inline-block;font-size:8px;font-weight:800;color:#00c47a;background:#00c47a12;border-radius:4px;padding:1px 5px;vertical-align:middle;margin-left:6px;letter-spacing:.06em}
 .cross-links{margin-top:9px;font-size:10px;color:#bbb;font-style:italic}
-.divider{border:none;border-top:1px solid #efefef;margin:36px 0}
 .footer{margin-top:60px;padding-top:20px;border-top:2px solid ${c}22;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#bbb;letter-spacing:.03em}
 .footer strong{color:${c};font-weight:700}
 </style>
@@ -176,7 +175,8 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           borderRadius: "20px 20px 0 0",
           width: "100%",
           maxWidth: 680,
-          maxHeight: "92vh",
+          /* svh = small viewport height, excludes iOS browser chrome */
+          maxHeight: "92svh",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -186,16 +186,20 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         {/* Color stripe */}
         <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}66)`, flexShrink: 0 }} />
 
-        {/* Header */}
-        <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-            <h2 style={{ fontSize: 22, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.02em", color: "#1a1a1a", flex: 1 }}>
+        {/* Header — kept intentionally compact so body has room */}
+        <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.25, letterSpacing: "-0.02em", color: "#1a1a1a", flex: 1, margin: 0 }}>
               {trend.name}
             </h2>
-            <button onClick={onClose} style={{ fontSize: 24, color: "#bbb", background: "none", border: "none", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginTop: 2 }}>×</button>
+            {/* 44×44 tap target */}
+            <button
+              onClick={onClose}
+              style={{ width: 44, height: 44, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+            >×</button>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
             <div style={{ flex: 1, height: 3, backgroundColor: "#f0ede8", borderRadius: 2 }}>
               <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
             </div>
@@ -204,33 +208,33 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </span>
           </div>
 
-          <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6 }}>{trend.description}</p>
-
-          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+          <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={() => setShowReport(false)}
-              style={{ padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: !showReport ? trend.color : "#f5f3ee", color: !showReport ? "#fff" : "#888" }}
+              style={{ padding: "7px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: !showReport ? trend.color : "#f5f3ee", color: !showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
             >
               Signals ({signals.length})
             </button>
             <button
               onClick={() => setShowReport(true)}
-              style={{ padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: showReport ? trend.color : "#f5f3ee", color: showReport ? "#fff" : "#888" }}
+              style={{ padding: "7px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: showReport ? trend.color : "#f5f3ee", color: showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
             >
               Full report
             </button>
           </div>
         </div>
 
-        {/* Body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 24px" }}>
+        {/* Body — scrolls; touch-action pan-y overrides the body-level none */}
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 20px" } as React.CSSProperties}>
           {!showReport ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "14px 0" }}>
+              {/* Description shown at top of body in signals view */}
+              <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6, margin: "0 0 4px" }}>{trend.description}</p>
               {signals.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => onSelectSignal(s)}
-                  style={{ textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%" }}
+                  style={{ textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                     <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
@@ -239,13 +243,14 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                     <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
-                  <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.summary}</div>
+                  <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
                   {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
                 </button>
               ))}
+              <div style={{ height: 8 }} />
             </div>
           ) : (
-            <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8 }}>
+            <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8, padding: "14px 0" }}>
               {/* Report meta */}
               <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: "2px solid #1a1a1a" }}>
                 <div style={{ fontSize: 9, fontWeight: 800, color: "#999", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 4 }}>Trend Intelligence Report</div>
@@ -341,15 +346,23 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                   ))}
                 </div>
               </div>
+
+              <div style={{ height: 8 }} />
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div style={{ padding: "12px 24px 24px", borderTop: "1px solid #f0ede8", flexShrink: 0 }}>
+        <div style={{
+          padding: "12px 20px",
+          paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))",
+          borderTop: "1px solid #f0ede8",
+          flexShrink: 0,
+          background: "#fff",
+        }}>
           <button
             onClick={() => exportPDF(trend, signals)}
-            style={{ width: "100%", padding: "13px 0", borderRadius: 14, border: "none", backgroundColor: trend.color, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em" }}
+            style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: trend.color, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
           >
             Export as PDF
           </button>
