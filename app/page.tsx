@@ -292,9 +292,12 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
     });
   });
 
+  const placedSignalIds = new Set(nodes.filter(n => n.type === "signalOrbit").map(n => n.id));
   const seen = new Set<string>();
   allSignals.forEach((sig) => {
+    if (!placedSignalIds.has(sig.id)) return;
     (sig.crossLinks ?? []).forEach((targetId) => {
+      if (!placedSignalIds.has(targetId)) return;
       const key = [sig.id, targetId].sort().join("--");
       if (!seen.has(key)) {
         seen.add(key);
@@ -316,12 +319,14 @@ function BoardController({ fitViewRef }: { fitViewRef: React.MutableRefObject<((
   return null;
 }
 
-function FocusController({ trendId }: { trendId: string }) {
+function FocusController({ trendId, trendPos }: { trendId: string; trendPos: { x: number; y: number } }) {
   const { fitBounds } = useReactFlow();
   const first = useRef(true);
+  const posRef = useRef(trendPos);
+  posRef.current = trendPos;
 
   useEffect(() => {
-    const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
+    const pos = posRef.current;
     const pad = 24;
     const viewR = 300;
     const cx = pos.x + CIRCLE_D / 2;
@@ -445,9 +450,16 @@ export default function HomePage() {
 
   const activeTrendForSignal = activeSignal ? TRENDS.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
+  // Clamp focusIdx when visibleTrends shrinks after topics are applied
+  useEffect(() => {
+    setFocusIdx(i => Math.min(i, Math.max(0, visibleTrends.length - 1)));
+  }, [visibleTrends.length]);
+
+  const focusTrend = visibleTrends[Math.min(focusIdx, visibleTrends.length - 1)] ?? visibleTrends[0];
+  const focusTrendPos = TREND_POSITIONS[focusTrend?.id] ?? focusTrend?.position ?? { x: 0, y: 0 };
+
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
-  const next = () => setFocusIdx((i) => Math.min(TRENDS.length - 1, i + 1));
-  const focusTrend = TRENDS[focusIdx];
+  const next = () => setFocusIdx((i) => Math.min(visibleTrends.length - 1, i + 1));
 
   return (
     <div style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, background: "#ffffff" }}>
@@ -686,7 +698,7 @@ export default function HomePage() {
           style={{ background: "#ffffff" }}
         >
           <BoardController fitViewRef={fitViewRef} />
-          <FocusController trendId={focusTrend.id} />
+          {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
         </ReactFlow>
       </div>
 
@@ -715,26 +727,26 @@ export default function HomePage() {
         <div style={{ flex: 1, textAlign: "center" }}>
           <div style={{
             display: "inline-block", width: 10, height: 10,
-            borderRadius: "50%", background: focusTrend.color, marginBottom: 5,
+            borderRadius: "50%", background: focusTrend?.color, marginBottom: 5,
           }} />
           <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
-            {focusTrend.name}
+            {focusTrend?.name}
           </div>
           <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
-            {focusIdx + 1} / {TRENDS.length}
+            {focusIdx + 1} / {visibleTrends.length}
           </div>
         </div>
 
         <button
           onClick={next}
-          disabled={focusIdx === TRENDS.length - 1}
+          disabled={focusIdx === visibleTrends.length - 1}
           style={{
             width: 44, height: 44, borderRadius: "50%",
             border: "1.5px solid #e8e4de",
-            background: focusIdx === TRENDS.length - 1 ? "#f5f3ee" : "#fff",
-            fontSize: 20, color: focusIdx === TRENDS.length - 1 ? "#ccc" : "#333",
+            background: focusIdx === visibleTrends.length - 1 ? "#f5f3ee" : "#fff",
+            fontSize: 20, color: focusIdx === visibleTrends.length - 1 ? "#ccc" : "#333",
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: focusIdx === TRENDS.length - 1 ? "default" : "pointer", flexShrink: 0,
+            cursor: focusIdx === visibleTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
           }}
         >›</button>
       </div>
