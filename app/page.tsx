@@ -623,33 +623,26 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Summary strip — always 2-line slim bar */}
-      {(() => {
-        const topicDescs = appliedTopics.map(t => TOPIC_DESCRIPTIONS[t]).filter(Boolean);
-        const stripText = topicDescs.length
-          ? topicDescs.join(" · ")
-          : RADAR_OVERVIEW;
-        return (
-      <div style={{
-        position: "absolute", top: 96, left: 0, right: 0, zIndex: 9,
-        padding: "10px 12px 10px 20px",
-        background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
-        display: "flex", alignItems: "center", gap: 8,
-      }}>
+      {/* Summary strip — click anywhere to open */}
+      <div
+        onClick={() => setSummaryOpen(true)}
+        role="button"
+        style={{
+          position: "absolute", top: 96, left: 0, right: 0, zIndex: 9,
+          padding: "10px 12px 10px 20px",
+          background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
+          borderBottom: "1px solid rgba(0,0,0,0.06)",
+          display: "flex", alignItems: "center", gap: 8,
+          cursor: "pointer", WebkitTapHighlightColor: "transparent",
+        } as React.CSSProperties}
+      >
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>
-          {stripText}
+          {RADAR_OVERVIEW}
         </p>
-        <button
-          onClick={() => setSummaryOpen(true)}
-          aria-label="Read full overview"
-          style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 13, color: "#555", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-        >
+        <span style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
           ↓
-        </button>
+        </span>
       </div>
-        );
-      })()}
 
       {/* Summary expanded overlay */}
       {summaryOpen && (
