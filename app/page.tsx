@@ -344,6 +344,7 @@ export default function HomePage() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
   const [focusIdx,     setFocusIdx]     = useState(0);
+  const [summaryOpen,  setSummaryOpen]  = useState(false);
   // Seed seen IDs with all static signals on first visit so they don't show NEW
   const [seenIds, setSeenIds] = useState<Set<string>>(() => {
     const stored = loadSeen();
@@ -467,18 +468,61 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Summary strip */}
+      {/* Summary strip — always 2-line slim bar */}
       <div style={{
         position: "absolute", top: 52, left: 0, right: 0, zIndex: 9,
-        padding: "10px 20px 10px",
+        padding: "10px 12px 10px 20px",
         background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)",
         borderBottom: "1px solid rgba(0,0,0,0.06)",
-        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+        display: "flex", alignItems: "center", gap: 8,
       }}>
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>
           {RADAR_OVERVIEW}
         </p>
+        <button
+          onClick={() => setSummaryOpen(true)}
+          aria-label="Read full overview"
+          style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 13, color: "#555", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+        >
+          ↓
+        </button>
       </div>
+
+      {/* Summary expanded overlay */}
+      {summaryOpen && (
+        <div
+          style={{ position: "absolute", inset: 0, zIndex: 30, display: "flex", flexDirection: "column" }}
+          onClick={() => setSummaryOpen(false)}
+        >
+          {/* Backdrop */}
+          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(3px)" }} />
+          {/* Panel drops from under the header */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "absolute", top: 52, left: 0, right: 0,
+              background: "#fff",
+              borderBottom: "1px solid rgba(0,0,0,0.09)",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.14)",
+              maxHeight: "60svh", overflowY: "auto", WebkitOverflowScrolling: "touch",
+              padding: "18px 20px 24px",
+            } as React.CSSProperties}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+              <p style={{ flex: 1, fontSize: 16, fontWeight: 700, color: "#000", lineHeight: 1.65, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+                {RADAR_OVERVIEW}
+              </p>
+              <button
+                onClick={() => setSummaryOpen(false)}
+                aria-label="Close overview"
+                style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "none", background: "#f0f0f0", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Canvas */}
       <div
