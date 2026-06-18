@@ -45,20 +45,21 @@ function isLight(hex: string) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 155;
 }
 
-// Cluster centres spaced ≥800 px apart so each cluster's signal zone
-// (MAX_R = d/2+320) fits without crossing into a neighbour's territory.
+// Cluster centres spaced 580 px apart so clusters feel densely packed
+// while each cluster's signal zone (MAX_R = d/2+320 ≈ 390) still fits
+// without crossing into a neighbour's trend blob.
 // pos = top-left of CIRCLE_D×CIRCLE_D anchor; centre = pos + CIRCLE_D/2.
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
-  "ai-creativity":          { x: 418,  y: 318  },
-  "longevity":              { x: 1318, y: 318  },
-  "ar-commerce":            { x: 2218, y: 318  },
-  "biotech-beauty":         { x: 18,   y: 1218 },
-  "digital-identity":       { x: 868,  y: 1218 },
-  "sustainable-materials":  { x: 1668, y: 1218 },
-  "wearables":              { x: 2518, y: 1218 },
-  "neurotech":              { x: 218,  y: 2118 },
-  "spatial-computing":      { x: 1018, y: 2118 },
-  "3d-printing":            { x: 1918, y: 2118 },
+  "ai-creativity":          { x: 368,  y: 168  },
+  "longevity":              { x: 948,  y: 168  },
+  "ar-commerce":            { x: 1528, y: 168  },
+  "biotech-beauty":         { x: -32,  y: 768  },
+  "digital-identity":       { x: 548,  y: 768  },
+  "sustainable-materials":  { x: 1128, y: 768  },
+  "wearables":              { x: 1708, y: 768  },
+  "neurotech":              { x: 168,  y: 1368 },
+  "spatial-computing":      { x: 748,  y: 1368 },
+  "3d-printing":            { x: 1328, y: 1368 },
 };
 
 // ─── Seen-signal tracking (localStorage) ─────────────────────────────────────
@@ -472,14 +473,14 @@ export default function HomePage() {
         borderBottom: "1px solid rgba(0,0,0,0.06)",
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
       }}>
-        <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+        <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.55, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>
           {RADAR_OVERVIEW}
         </p>
       </div>
 
       {/* Canvas */}
       <div
-        style={{ position: "absolute", inset: 0, paddingTop: 112, paddingBottom: 80 }}
+        style={{ position: "absolute", inset: 0, paddingTop: 114, paddingBottom: 80 }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;
