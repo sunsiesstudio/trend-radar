@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
+export const maxDuration = 60;
+
 const client = new Anthropic();
 
 const PALETTE = ["#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C", "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C"];
@@ -124,6 +126,12 @@ Rules:
     return NextResponse.json({ trends });
   } catch (err) {
     console.error("generate-trends error:", err);
-    return NextResponse.json({ error: "generation failed", detail: String(err) }, { status: 500 });
+    const msg = String(err);
+    const friendly = msg.includes("401") || msg.includes("Authentication") || msg.includes("API key")
+      ? "API key not configured. Set ANTHROPIC_API_KEY in Vercel environment variables."
+      : msg.includes("timeout") || msg.includes("504") || msg.includes("ETIMEDOUT")
+      ? "Request timed out. Try again."
+      : "Generation failed. Try again.";
+    return NextResponse.json({ error: friendly, detail: msg }, { status: 500 });
   }
 }
