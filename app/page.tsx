@@ -21,7 +21,7 @@ import { AddSignalModal } from "@/components/map/AddSignalModal";
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
 const CIRCLE_D = 164;
-const ORBIT_R  = 230;
+const ORBIT_R  = 160;
 const SIG_W    = 158;
 const SIG_H    = 44;
 
@@ -92,15 +92,11 @@ function dlCSV(content: string, name: string) {
 type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number };
 type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean };
 
-const SOURCE_ICON: Record<string, string> = {
-  reddit: "●", arxiv: "◆", youtube: "▶", hackernews: "○", news: "·", manual: "·",
-};
-
 function blobFromId(id: string): string {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  const v = (n: number) => 30 + (((h >> n) & 0x1f) % 41);
-  return `${v(0)}% ${100 - v(0)}% ${v(5)}% ${100 - v(5)}% / ${v(10)}% ${v(15)}% ${100 - v(15)}% ${100 - v(10)}%`;
+  const v = (n: number) => 15 + (((h >> n) & 0x3f) % 71);
+  return `${v(0)}% ${100 - v(0)}% ${v(6)}% ${100 - v(6)}% / ${v(12)}% ${v(18)}% ${100 - v(18)}% ${100 - v(12)}%`;
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
@@ -171,10 +167,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
           background: "#00c47a",
         }} />
       )}
-      <span style={{ fontSize: 7, color: data.color, flexShrink: 0, opacity: 0.8, marginTop: 3 }}>
-        {SOURCE_ICON[data.source ?? "news"] ?? "·"}
-      </span>
-      <div style={{ fontSize: 9.5, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.42, letterSpacing: "-0.01em" }}>
+      <div style={{ fontSize: 10.5, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
         {data.title}
       </div>
     </div>
@@ -249,13 +242,14 @@ function FocusController({ trendId }: { trendId: string }) {
 
   useEffect(() => {
     const pos = TREND_POSITIONS[trendId] ?? { x: 0, y: 0 };
-    const pad = 48;
+    const pad = 16;
+    const viewR = ORBIT_R * 1.05;
     fitBounds(
       {
-        x: pos.x - ORBIT_R - SIG_W / 2 - pad,
-        y: pos.y - ORBIT_R - SIG_H - pad,
-        width:  CIRCLE_D + 2 * (ORBIT_R + SIG_W / 2) + pad * 2,
-        height: CIRCLE_D + 2 * (ORBIT_R + SIG_H)     + pad * 2,
+        x: pos.x - viewR - SIG_W / 2 - pad,
+        y: pos.y - viewR - SIG_H - pad,
+        width:  CIRCLE_D + 2 * (viewR + SIG_W / 2) + pad * 2,
+        height: CIRCLE_D + 2 * (viewR + SIG_H)     + pad * 2,
       },
       { duration: first.current ? 0 : 420 },
     );
