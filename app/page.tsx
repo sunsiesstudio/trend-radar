@@ -45,20 +45,20 @@ function isLight(hex: string) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 155;
 }
 
-// Organic composition — clusters packed so signal zones nearly touch.
-// Positions are top-left of a CIRCLE_D×CIRCLE_D anchor; actual blob
-// centres sit at pos + CIRCLE_D/2.
+// Cluster centres spaced ≥600 px apart so each cluster's signal zone
+// fits without crossing into a neighbour's territory.
+// pos = top-left of CIRCLE_D×CIRCLE_D anchor; centre = pos + CIRCLE_D/2.
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
-  "ai-creativity":          { x: 368,  y: 338  },
-  "longevity":              { x: 1118, y: 318  },
-  "wearables":              { x: 1818, y: 518  },
-  "ar-commerce":            { x: 1518, y: 68   },
-  "digital-identity":       { x: 818,  y: 718  },
-  "biotech-beauty":         { x: 618,  y: 1118 },
-  "sustainable-materials":  { x: 1368, y: 1218 },
-  "neurotech":              { x: 118,  y: 1018 },
-  "spatial-computing":      { x: 418,  y: 1618 },
-  "3d-printing":            { x: 1718, y: 1618 },
+  "ai-creativity":          { x: 418,  y: 368  },
+  "longevity":              { x: 1118, y: 268  },
+  "wearables":              { x: 1868, y: 568  },
+  "ar-commerce":            { x: 2318, y: 118  },
+  "digital-identity":       { x: 868,  y: 918  },
+  "biotech-beauty":         { x: 218,  y: 1018 },
+  "sustainable-materials":  { x: 1518, y: 1118 },
+  "neurotech":              { x: 18,   y: 1618 },
+  "spatial-computing":      { x: 618,  y: 1618 },
+  "3d-printing":            { x: 2018, y: 1618 },
 };
 
 // ─── Seen-signal tracking (localStorage) ─────────────────────────────────────
@@ -195,11 +195,12 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
 
   const GOLDEN_ANGLE = 2.399963;
   const GAP = 8;
+  // Try primary angle first, then rotate ±23°, ±45°, ±68°, ±90° before giving up
+  const ANGLE_OFFSETS = [0, 0.4, -0.4, 0.79, -0.79, 1.18, -1.18, 1.57, -1.57];
   type P = { sig: Signal; w: number; fillAlpha: string; isNew: boolean; x: number; y: number };
   type Blob = { cx: number; cy: number; r: number };
 
-  // Global registries — signals and trend blobs from ALL clusters checked together.
-  const allPlacements: P[] = [];
+  // All trend blobs — signals from every cluster must avoid these globally.
   const allBlobs: Blob[] = [];
 
   TRENDS.forEach((trend) => {
@@ -207,11 +208,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
     const d = Math.round(75 + (trend.relevanceScore / 100) * 140);
-
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
 
-    // Register trend blob so signals from other clusters avoid it too
     allBlobs.push({ cx, cy, r: d / 2 });
 
     nodes.push({
@@ -220,48 +219,61 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>): { nodes: Node
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
     });
 
-    const clusterPlacements: P[] = [];
+    // Signals may not travel more than 260 px from the blob edge — keeps
+    // each cluster's signals within its own territory.
+    const MAX_R = d / 2 + 260;
+
+    // Collision list: only this cluster's already-placed signals.
+    // Different clusters are separated enough that cross-cluster signal
+    // overlap can't happen within MAX_R.
+    const placements: P[] = [];
 
     trendSignals.forEach((sig, i) => {
       let h = 0;
       for (let k = 0; k < sig.id.length; k++) h = (h * 31 + sig.id.charCodeAt(k)) >>> 0;
       const jitter = ((h & 0xff) / 255 - 0.5) * 0.1;
-      const angle = i * GOLDEN_ANGLE + jitter;
+      const baseAngle = i * GOLDEN_ANGLE + jitter;
       const charsPerLine = Math.ceil(sig.title.length / 4);
       const w = Math.max(90, Math.min(170, Math.round(charsPerLine * 5.8) + 20));
       const alphaByte = 0x2d + ((h >> 14 & 0x7f) % 0x4d);
       const fillAlpha = alphaByte.toString(16).padStart(2, "0");
 
-      let r = d / 2 + GAP;
-      let x = 0, y = 0;
-      for (let step = 0; step < 500; step++, r += 4) {
-        x = cx + r * Math.cos(angle) - w / 2;
-        y = cy + r * Math.sin(angle) - w / 2;
-        const ncx = x + w / 2, ncy = y + w / 2;
+      let x = cx - w / 2, y = cy - w / 2;
+      let placed = false;
 
-        // Clear ALL trend blobs (own + neighbours)
-        let clearBlobs = true;
-        for (const blob of allBlobs) {
-          const nearX = Math.max(x, Math.min(blob.cx, x + w));
-          const nearY = Math.max(y, Math.min(blob.cy, y + w));
-          if (Math.hypot(nearX - blob.cx, nearY - blob.cy) < blob.r + GAP) { clearBlobs = false; break; }
+      for (const dAngle of ANGLE_OFFSETS) {
+        if (placed) break;
+        const angle = baseAngle + dAngle;
+        for (let r = d / 2 + GAP; r <= MAX_R; r += 4) {
+          const tx = cx + r * Math.cos(angle) - w / 2;
+          const ty = cy + r * Math.sin(angle) - w / 2;
+          const ncx = tx + w / 2, ncy = ty + w / 2;
+
+          // Must clear ALL trend blobs
+          let clearBlobs = true;
+          for (const blob of allBlobs) {
+            const nearX = Math.max(tx, Math.min(blob.cx, tx + w));
+            const nearY = Math.max(ty, Math.min(blob.cy, ty + w));
+            if (Math.hypot(nearX - blob.cx, nearY - blob.cy) < blob.r + GAP) { clearBlobs = false; break; }
+          }
+          if (!clearBlobs) continue;
+
+          // Must clear own cluster's signals
+          let clearNodes = true;
+          for (const p of placements) {
+            if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
+                Math.abs(ncy - (p.y + p.w / 2)) < (w + p.w) / 2 + GAP) { clearNodes = false; break; }
+          }
+          if (!clearNodes) continue;
+
+          x = tx; y = ty; placed = true; break;
         }
-
-        // Clear ALL placed signals (own cluster + previous clusters)
-        let clearNodes = true;
-        for (const p of allPlacements) {
-          if (Math.abs(ncx - (p.x + p.w / 2)) < (w + p.w) / 2 + GAP &&
-              Math.abs(ncy - (p.y + p.w / 2)) < (w + p.w) / 2 + GAP) { clearNodes = false; break; }
-        }
-
-        if (clearBlobs && clearNodes) break;
       }
-      const placement = { sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y };
-      clusterPlacements.push(placement);
-      allPlacements.push(placement);
+
+      placements.push({ sig, w, fillAlpha, isNew: !seenIds.has(sig.id), x, y });
     });
 
-    clusterPlacements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
+    placements.forEach(({ sig, w, fillAlpha, isNew, x, y }) => {
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x, y },
