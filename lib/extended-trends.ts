@@ -29,6 +29,15 @@ export const TOPIC_COLORS: Record<string, string> = {
   retail:            "#FD8326",
   social:            "#78C9A8",
   education:         "#A7D47C",
+  dating:            "#FF8BB4",
+  pets:              "#A7D47C",
+  finance:           "#FFD65C",
+  parenting:         "#C4A0CE",
+  kids:              "#78C9A8",
+  nightlife:         "#8C93C7",
+  mobility:          "#FFB04A",
+  spirituality:      "#C4A0CE",
+  coffee:            "#FD8326",
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
@@ -55,6 +64,15 @@ export const TOPIC_DESCRIPTIONS: Record<string, string> = {
   photography:       "Photography is in a legitimacy crisis and a technical renaissance at the same time. AI generation, computational photography, and synthetic imagery are rewriting what a photograph means.",
   film:              "Film and video production is being structurally changed by AI. De-aging, virtual production, AI scripting tools, and algorithmic distribution are rewriting every phase of the process.",
   branding:          "Branding is where AI is hitting creative agencies first. Generative identity systems, AI-driven consistency, and dynamic brand expression are replacing static guidelines.",
+  dating:            "Dating is being restructured by AI at every layer. Apps are adding AI coaches, conversation assistants, and compatibility models. The question is what happens to desire when the algorithm optimises for it.",
+  pets:              "Pets have been humanised to the point where they are a consumer category as sophisticated as wellness. Smart feeders, pet wearables, gut-health supplements, DNA testing: the pet economy is running the same playbook as human health.",
+  finance:           "Consumer finance is in a structural shift. BNPL rewired spending behaviour. Crypto went mainstream and crashed and is back. AI-powered budgeting and investing tools are making financial decisions feel personal for the first time.",
+  parenting:         "Parenting culture has industrialised. Baby tech, screen-time management apps, early learning AI, parental monitoring wearables: the anxious parent is a very specific consumer, and the market knows it.",
+  kids:              "Gen Alpha is the first generation for whom AI, spatial computing, and digital-physical blur are just baseline reality. They are already a consumer force, and the brands that get them now are building decades of loyalty.",
+  nightlife:         "Nightlife is having a reinvention moment. Sober socialising, immersive experiences, AI-curated playlists, spatial sound design: the night out is becoming a multi-sensory product as much as a social ritual.",
+  mobility:          "Urban mobility is being renegotiated. EVs, e-bikes, scooters, and autonomous vehicles are all competing for the same space. The car is becoming a software product and the city is the UI.",
+  spirituality:      "Modern spirituality has become a consumer category. Crystals, astrology apps, sound healing, micro-dosing retreats: all intersecting with wellness, beauty, and tech in ways that are commercially serious.",
+  coffee:            "Coffee is a bellwether for consumer taste. Specialty, functional, adaptogenic: each wave has pulled the category further from commodity toward lifestyle signal. The third wave has a fourth one behind it.",
 };
 
 const TOPIC_ALIASES: Record<string, string> = {
@@ -185,6 +203,53 @@ const TOPIC_ALIASES: Record<string, string> = {
   "school":           "education",
   "university":       "education",
   "courses":          "education",
+  // dating
+  "relationships":    "dating",
+  "romance":          "dating",
+  "love":             "dating",
+  "apps dating":      "dating",
+  // pets
+  "pet":              "pets",
+  "dogs":             "pets",
+  "cats":             "pets",
+  "animal":           "pets",
+  // finance
+  "fintech":          "finance",
+  "money":            "finance",
+  "investing":        "finance",
+  "crypto":           "finance",
+  "banking":          "finance",
+  "payments":         "finance",
+  // parenting
+  "baby":             "parenting",
+  "family":           "parenting",
+  "mothers":          "parenting",
+  "fathers":          "parenting",
+  // kids
+  "children":         "kids",
+  "gen alpha":        "kids",
+  "youth":            "kids",
+  "toys":             "kids",
+  // nightlife
+  "clubs":            "nightlife",
+  "events":           "nightlife",
+  "entertainment":    "nightlife",
+  "parties":          "nightlife",
+  // mobility
+  "ev":               "mobility",
+  "electric vehicles":"mobility",
+  "transport":        "mobility",
+  "cars":             "mobility",
+  "urban":            "mobility",
+  // spirituality
+  "astrology":        "spirituality",
+  "crystals":         "spirituality",
+  "healing":          "spirituality",
+  // coffee
+  "cafe":             "coffee",
+  "cafes":            "coffee",
+  "espresso":         "coffee",
+  "specialty coffee": "coffee",
 };
 
 export function normaliseTopicKey(input: string): string {
@@ -845,6 +910,7 @@ const EXTENDED_TRENDS: Trend[] = [
 // ─── Topic Library ────────────────────────────────────────────────────────────
 
 export const TOPIC_LIBRARY: Record<string, Trend[]> = {
+  // Topics with pre-built trends
   gaming:           EXTENDED_TRENDS.filter(t => t.topics?.includes("gaming")),
   wellness:         EXTENDED_TRENDS.filter(t => t.topics?.includes("wellness")),
   "food-tech":      EXTENDED_TRENDS.filter(t => t.topics?.includes("food-tech")),
@@ -866,12 +932,27 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   retail:           EXTENDED_TRENDS.filter(t => t.topics?.includes("retail")),
   social:           EXTENDED_TRENDS.filter(t => t.topics?.includes("social")),
   education:        EXTENDED_TRENDS.filter(t => t.topics?.includes("education")),
+  // Consumer culture topics — AI-generated on demand
+  fashion:          [],
+  beauty:           [],
+  lifestyle:        [],
+  sport:            [],
+  health:           [],
+  sustainability:   [],
+  tech:             [],
+  dating:           [],
+  pets:             [],
+  finance:          [],
+  parenting:        [],
+  kids:             [],
+  nightlife:        [],
+  mobility:         [],
+  spirituality:     [],
+  coffee:           [],
 };
 
 // All topics available in the library, used for autocomplete suggestions
-export const LIBRARY_TOPICS = Object.keys(TOPIC_LIBRARY).filter(
-  k => TOPIC_LIBRARY[k].length > 0
-);
+export const LIBRARY_TOPICS = Object.keys(TOPIC_LIBRARY);
 
 // ─── Extended Signals ─────────────────────────────────────────────────────────
 
