@@ -55,10 +55,10 @@ function darkenColor(hex: string, factor = 0.62): string {
 }
 
 // Darkening factor for a trend blob based on age of its freshest signal.
-// New trends (0 days) → factor 0.78 (bright). 60+ days → factor 0.50 (dark).
+// New (0 days) → factor 0.78 (bright). 30+ days → factor 0.50 (dark). Linear in between.
 function blobAgeFactor(latestDate?: string): number {
-  const ageDays = latestDate ? (Date.now() - new Date(latestDate).getTime()) / 86_400_000 : 60;
-  const t = Math.min(1, Math.max(0, ageDays / 60));
+  const ageDays = latestDate ? (Date.now() - new Date(latestDate).getTime()) / 86_400_000 : 30;
+  const t = Math.min(1, Math.max(0, ageDays / 30));
   return 0.78 - t * 0.28;
 }
 
