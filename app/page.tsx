@@ -14,6 +14,15 @@ import "reactflow/dist/style.css";
 import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
 import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS, TOPIC_DESCRIPTIONS } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
+
+interface IndustryReport {
+  overview: string;
+  tech_curve: string;
+  forces: string;
+  tensions: Array<{ label: string; body: string }>;
+  outlook: string;
+  watch: string[];
+}
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
@@ -359,6 +368,9 @@ export default function HomePage() {
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [focusIdx,      setFocusIdx]      = useState(0);
   const [summaryOpen,      setSummaryOpen]      = useState(false);
+  const [overlayTab,       setOverlayTab]       = useState<"trends" | "report">("trends");
+  const [industryReports,  setIndustryReports]  = useState<Record<string, IndustryReport>>({});
+  const [industryLoading,  setIndustryLoading]  = useState(false);
   const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
@@ -500,6 +512,24 @@ export default function HomePage() {
       return next;
     });
   }, []);
+
+  const fetchIndustryReport = useCallback(async (topic: string) => {
+    if (industryReports[topic]) return;
+    setIndustryLoading(true);
+    try {
+      const res = await fetch("/api/generate-industry-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic }),
+      });
+      const data = await res.json();
+      if (data.report) setIndustryReports(prev => ({ ...prev, [topic]: data.report }));
+    } catch { /* silent */ } finally {
+      setIndustryLoading(false);
+    }
+  }, [industryReports]);
+
+  useEffect(() => { setOverlayTab("trends"); }, [appliedTopics.join(",")]);
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
@@ -723,58 +753,167 @@ export default function HomePage() {
               background: "#fff",
               borderBottom: "1px solid rgba(0,0,0,0.09)",
               boxShadow: "0 12px 40px rgba(0,0,0,0.14)",
-              maxHeight: "60svh", overflowY: "auto", WebkitOverflowScrolling: "touch",
-              padding: "18px 20px 0",
+              maxHeight: "60svh",
+              display: "flex", flexDirection: "column",
             } as React.CSSProperties}
           >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  {"What you're tracking"}
+            {/* Fixed header */}
+            <div style={{ padding: "18px 20px 0", flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                    {"What you're tracking"}
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+                    {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "Augmented Radar"}
+                  </h3>
                 </div>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                  {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "Augmented Radar"}
-                </h3>
+                <button
+                  onClick={() => setSummaryOpen(false)}
+                  aria-label="Close overview"
+                  style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "none", background: "#f0f0f0", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                >×</button>
               </div>
-              <button
-                onClick={() => setSummaryOpen(false)}
-                aria-label="Close overview"
-                style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "none", background: "#f0f0f0", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-              >×</button>
+
+              {/* Tabs — only when topics are active */}
+              {appliedTopics.length > 0 && (
+                <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+                  <button
+                    onClick={() => setOverlayTab("trends")}
+                    style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: overlayTab === "trends" ? "#111" : "#f0f0f0", color: overlayTab === "trends" ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                  >
+                    Trends
+                  </button>
+                  <button
+                    onClick={() => {
+                      setOverlayTab("report");
+                      if (appliedTopics.length > 0) fetchIndustryReport(appliedTopics[0]);
+                    }}
+                    style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: overlayTab === "report" ? "#111" : "#f0f0f0", color: overlayTab === "report" ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                  >
+                    Industry Report
+                  </button>
+                </div>
+              )}
             </div>
 
-            {appliedTopics.length > 0 && (() => {
-              const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
-              return desc ? (
-                <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: "10px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                  {desc}
-                </p>
-              ) : null;
-            })()}
+            {/* Scrollable body */}
+            <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 20px" } as React.CSSProperties}>
 
-            {/* Visible trend list */}
-            <div style={{ marginTop: 20, marginBottom: 20 }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {visibleTrends.map(t => (
-                  <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                    <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
-                      <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
+              {/* ── Trends tab ── */}
+              {(overlayTab === "trends" || appliedTopics.length === 0) && (
+                <>
+                  {appliedTopics.length > 0 && (() => {
+                    const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
+                    return desc ? (
+                      <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: "4px 0 16px", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                        {desc}
+                      </p>
+                    ) : null;
+                  })()}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingBottom: 20 }}>
+                    {visibleTrends.map(t => (
+                      <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                        <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
+                        <div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
+                          <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* ── Industry Report tab ── */}
+              {overlayTab === "report" && appliedTopics.length > 0 && (() => {
+                const report = industryReports[appliedTopics[0]];
+                if (industryLoading && !report) return (
+                  <div style={{ padding: "40px 0", textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                      Generating industry briefing…
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                );
+                if (!report) return (
+                  <div style={{ padding: "40px 0", textAlign: "center" }}>
+                    <div style={{ fontSize: 12, color: "#bbb" }}>No report yet. Try again.</div>
+                  </div>
+                );
+                const topicLabel = appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1);
+                return (
+                  <div style={{ paddingBottom: 28 }}>
+                    {/* meta */}
+                    <div style={{ marginBottom: 20, paddingBottom: 14, borderBottom: "1.5px solid #111" }}>
+                      <div style={{ fontSize: 9, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 3, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Industry Intelligence Briefing</div>
+                      <div style={{ fontSize: 9, color: "#bbb", letterSpacing: "0.06em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{topicLabel} · {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long" })}</div>
+                    </div>
 
-            {/* Credit */}
-            <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
-              <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                Vibe coded by Martina —{" "}
-                <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
-                  Augmented Rarity
-                </a>
-              </p>
+                    {/* Overview */}
+                    <p style={{ fontSize: 14.5, color: "#222", lineHeight: 1.8, margin: "0 0 24px", fontFamily: "'EB Garamond', Georgia, serif" }}>{report.overview}</p>
+
+                    {/* Tech curve */}
+                    <div style={{ marginBottom: 22 }}>
+                      <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 8, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>The technology curve</div>
+                      <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{report.tech_curve}</p>
+                    </div>
+
+                    {/* Forces */}
+                    <div style={{ marginBottom: 22 }}>
+                      <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 8, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Forces at play</div>
+                      <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{report.forces}</p>
+                    </div>
+
+                    {/* Tensions */}
+                    {report.tensions?.length > 0 && (
+                      <div style={{ marginBottom: 22 }}>
+                        <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Key tensions</div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                          {report.tensions.map((t, i) => (
+                            <div key={i} style={{ borderLeft: "2px solid #e8e4de", paddingLeft: 12 }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, color: "#111", marginBottom: 3, letterSpacing: "-0.01em" }}>{t.label}</div>
+                              <p style={{ fontSize: 12.5, color: "#666", lineHeight: 1.7, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.body}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Outlook */}
+                    <div style={{ marginBottom: 22, background: "#f8f7f5", borderRadius: 12, padding: "14px 16px" }}>
+                      <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 8, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Strategic outlook · 18 months</div>
+                      <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.8, margin: 0, fontStyle: "italic", fontFamily: "'EB Garamond', Georgia, serif" }}>{report.outlook}</p>
+                    </div>
+
+                    {/* Watch */}
+                    {report.watch?.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Three things to watch</div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                          {report.watch.map((item, i) => (
+                            <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                              <div style={{ width: 20, height: 20, borderRadius: 5, flexShrink: 0, background: "#f0ede8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#999", fontFamily: "monospace", marginTop: 1 }}>
+                                {String(i + 1).padStart(2, "0")}
+                              </div>
+                              <p style={{ fontSize: 13, color: "#444", lineHeight: 1.7, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{item}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Credit */}
+              <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
+                <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  Vibe coded by Martina —{" "}
+                  <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
+                    Augmented Rarity
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -857,14 +996,11 @@ export default function HomePage() {
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: "#bbb", letterSpacing: "0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginBottom: 10 }}>
-                    Augmented Radar
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                    What are you tracking?
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
-                    where is tech actually<br />changing this space?
-                  </div>
-                  <div style={{ fontSize: 13, color: "#888", lineHeight: 1.65, marginBottom: 24, maxWidth: 260, margin: "0 auto 24px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    pick a topic and the radar shows you the signals worth watching — no noise, no hype.
+                  <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
+                    Pick a topic to start
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
                     {LIBRARY_TOPICS.map(t => (

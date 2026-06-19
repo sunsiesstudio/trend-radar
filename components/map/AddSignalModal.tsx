@@ -96,13 +96,16 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId }: Props) {
         <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 16 } as React.CSSProperties}>
 
           {field("Add to trend",
-            <select
-              value={trendId}
-              onChange={(e) => setTrendId(e.target.value)}
-              style={{ ...inputBase, cursor: "pointer" }}
-            >
-              {TRENDS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-            </select>
+            <div style={{ position: "relative" }}>
+              <select
+                value={trendId}
+                onChange={(e) => setTrendId(e.target.value)}
+                style={{ ...inputBase, cursor: "pointer", paddingRight: 40 }}
+              >
+                {TRENDS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+              </select>
+              <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#aaa", pointerEvents: "none", lineHeight: 1 }}>⌄</span>
+            </div>
           )}
 
           {field("Title *",
@@ -137,15 +140,18 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId }: Props) {
           )}
 
           {field("Source type",
-            <select
-              value={source}
-              onChange={(e) => setSource(e.target.value as Signal["source"])}
-              style={{ ...inputBase, cursor: "pointer" }}
-            >
-              {["manual", "reddit", "news", "youtube", "arxiv", "hackernews"].map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+            <div style={{ position: "relative" }}>
+              <select
+                value={source}
+                onChange={(e) => setSource(e.target.value as Signal["source"])}
+                style={{ ...inputBase, cursor: "pointer", paddingRight: 40 }}
+              >
+                {["manual", "reddit", "news", "youtube", "arxiv", "hackernews"].map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#aaa", pointerEvents: "none", lineHeight: 1 }}>⌄</span>
+            </div>
           )}
 
           {field("Source URL (optional)",
