@@ -1199,17 +1199,18 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   health:           EXTENDED_TRENDS.filter(t => t.topics?.includes("health")),
   sustainability:   EXTENDED_TRENDS.filter(t => t.topics?.includes("sustainability")),
   tech:             EXTENDED_TRENDS.filter(t => t.topics?.includes("tech")),
+  // Topics with pre-built trends via topic tag
+  dating:           EXTENDED_TRENDS.filter(t => t.topics?.includes("dating")),
+  nightlife:        EXTENDED_TRENDS.filter(t => t.topics?.includes("nightlife")),
+  coffee:           EXTENDED_TRENDS.filter(t => t.topics?.includes("coffee")),
   // Topics with no pre-built trends — AI-generated on demand
   sport:            [],
-  dating:           [],
   pets:             [],
   finance:          [],
   parenting:        [],
   kids:             [],
-  nightlife:        [],
   mobility:         [],
   spirituality:     [],
-  coffee:           [],
 };
 
 // All topics available in the library, used for autocomplete suggestions
