@@ -479,7 +479,7 @@ export default function HomePage() {
       setDynamicTrends(newDynamic);
       setAppliedTopics(newTopics);
       setAppliedDynamicTrends(newDynamic);
-      setTimeout(() => setFocusIdx(9999), 60);
+      setTimeout(() => setFocusIdx(0), 60);
       return;
     }
 
