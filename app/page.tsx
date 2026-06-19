@@ -702,7 +702,7 @@ export default function HomePage() {
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.45, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", whiteSpace: "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
           {appliedTopics.length > 0
             ? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`
-            : RADAR_OVERVIEW}
+            : "pick a topic and the radar shows you where tech is genuinely moving in that space."}
         </p>
         <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
           ↓
@@ -733,7 +733,7 @@ export default function HomePage() {
                   {"What you're tracking"}
                 </div>
                 <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                  {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "No topics yet"}
+                  {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "Augmented Radar"}
                 </h3>
               </div>
               <button
