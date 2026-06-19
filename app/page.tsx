@@ -389,6 +389,7 @@ export default function HomePage() {
   const [addingTopic,   setAddingTopic]   = useState(false);
   const [topicInput,    setTopicInput]    = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [emptySearchInput, setEmptySearchInput] = useState("");
   // Seed seen IDs with all static signals on first visit so they don't show NEW
   const [seenIds, setSeenIds] = useState<Set<string>>(() => {
     const stored = loadSeen();
@@ -931,25 +932,64 @@ export default function HomePage() {
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 20, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                     what are we tracking?
                   </div>
-                  <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
-                    pick a topic to start.
+                  {/* Search bar */}
+                  <form
+                    onSubmit={(e) => { e.preventDefault(); if (emptySearchInput.trim()) { addTopic(emptySearchInput.trim()); setEmptySearchInput(""); } }}
+                    style={{ pointerEvents: "all", marginBottom: 28, width: "100%", maxWidth: 340 }}
+                  >
+                    <div style={{ position: "relative" }}>
+                      <input
+                        value={emptySearchInput}
+                        onChange={(e) => setEmptySearchInput(e.target.value)}
+                        placeholder="search any topic…"
+                        style={{
+                          width: "100%", boxSizing: "border-box",
+                          height: 48, padding: "0 52px 0 20px",
+                          border: "1.5px solid #e0ddd8", borderRadius: 30,
+                          fontSize: 14, fontWeight: 500, color: "#222",
+                          background: "#fff", outline: "none",
+                          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        disabled={!emptySearchInput.trim()}
+                        style={{
+                          position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)",
+                          width: 36, height: 36, borderRadius: "50%",
+                          background: emptySearchInput.trim() ? "#111" : "#eee",
+                          border: "none", cursor: emptySearchInput.trim() ? "pointer" : "default",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          transition: "background 0.15s",
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 1L13 7L7 13M1 7H13" stroke={emptySearchInput.trim() ? "#fff" : "#bbb"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </form>
+                  {/* Inspiration pills */}
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#ccc", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 12, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                    or try
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", pointerEvents: "all", maxWidth: 380 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 360 }}>
                     {FEATURED_TOPICS.map(t => (
                       <button key={t} onClick={() => addTopic(t)}
                         style={{
-                          padding: "9px 18px",
+                          padding: "7px 16px",
                           background: `${TOPIC_COLORS[t] ?? "#eee"}18`,
-                          border: `1.5px solid ${TOPIC_COLORS[t] ?? "#eee"}88`,
-                          borderRadius: 30, fontSize: 13, fontWeight: 600, color: "#222",
+                          border: `1.5px solid ${TOPIC_COLORS[t] ?? "#eee"}77`,
+                          borderRadius: 30, fontSize: 12, fontWeight: 600, color: "#444",
                           cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                          display: "flex", alignItems: "center", gap: 8,
+                          display: "flex", alignItems: "center", gap: 7,
                         }}
                       >
-                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
                         {t.replace(/-/g, " ")}
                       </button>
                     ))}
