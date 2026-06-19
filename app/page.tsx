@@ -207,7 +207,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d, latestDate } as TrendNodeData,
     });
 
-    const MAX_R = d / 2 + 250;
+    const MAX_R = d / 2 + 110;
 
     // Local list for this cluster only — used when building nodes/edges below.
     const placements: P[] = [];
@@ -220,7 +220,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       // Fully hash-derived angle — each signal lands in a unique, organic direction
       const baseAngle = ((h & 0xffffff) / 0x1000000) * Math.PI * 2;
       // Random start radius — signals scatter at different distances from the blob
-      const startR = d / 2 + GAP + ((h2 & 0xff) / 255) * (MAX_R * 0.55);
+      const startR = d / 2 + GAP + ((h2 & 0xff) / 255) * (MAX_R * 0.4);
       const charsPerLine = Math.ceil(sig.title.length / 4);
       const w = Math.max(90, Math.min(165, Math.round(charsPerLine * 5.8) + 20));
       // Height from text wrapping so text never overflows the blob
