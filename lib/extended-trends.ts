@@ -905,6 +905,196 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Blockchain-verified micro-credentials will be accepted by 50% of major employers within 5 years, creating parallel credentialing infrastructure that competes directly with university degrees.",
     nextSteps: [],
   },
+
+  // ── FASHION ─────────────────────────────────────────────────────────────────
+  {
+    id: "fashion-resale-first",
+    name: "Resale Goes Primary",
+    description: "Secondhand is no longer the backup plan. Vinted, Depop, and ThredUp are growing 3x faster than new retail, and Gen Z shops resale first. The shift is structural: sustainability pressure, economic squeeze, and the thrill of the find are all pointing the same direction at the same time.",
+    color: "#FF8BB4",
+    topics: ["fashion", "retail", "sustainability"],
+    relevanceScore: 74,
+    redditQuery: "resale fashion Vinted Depop secondhand thrift",
+    newsQuery: "resale fashion market growth 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "When secondhand becomes the primary market, the whole logic of new product development changes. Brands that ignore resale are leaving money on the table and ceding cultural relevance to platforms they don't control. The brands winning here treat resale as a channel, not a threat. Patagonia did it early. Levi's did it. The window for a credible brand resale play is still open but closing.",
+    trajectory: "Accelerating. The resale market will overtake fast fashion in value within 5 years. Brands that build their own resale programs now own the customer relationship. The ones that don't will watch Vinted own it instead.",
+    nextSteps: [
+      "Now (0-3 months): audit how your product shows up on Vinted and Depop. What's the secondary market price? That number tells you more about perceived value than any focus group.",
+      "Soon (3-12 months): launch a branded resale or take-back program. Patagonia's Worn Wear is the model. Own the resale of your own product before someone else does.",
+      "Bet (12-36 months): design for resale from the start. Products with provenance, repairability, and longevity built in command premium secondhand prices and drive first-sale demand.",
+    ],
+  },
+  {
+    id: "fashion-micro-trend-fatigue",
+    name: "Micro-Trend Burnout",
+    description: "TikTok compressed the trend cycle to weeks and now the backlash is real. Mob wife, clean girl, coastal grandmother: they peak and die before brands can even respond. The consumer who's paying attention is exhausted. The counter-signal is a return to personal style over trend participation.",
+    color: "#FF8BB4",
+    topics: ["fashion", "social", "lifestyle"],
+    relevanceScore: 66,
+    redditQuery: "micro trends tiktok fashion aesthetic fatigue burnout personal style",
+    newsQuery: "micro trend fashion TikTok burnout 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "Brands chasing micro-trends are burning creative resources on content that's irrelevant before it ships. The opportunity is in the counter-movement: timelessness, craft, personal style. The brands positioned as anchors rather than trend-chasers are building more durable relationships. Being the thing people come back to when they're tired of chasing is a real strategic position.",
+    trajectory: "The micro-trend machine keeps running because engagement drives it, but the cultural backlash is real and growing. Expect bifurcation: trend-speed brands for pure volume, timeless brands for cultural credibility.",
+    nextSteps: [
+      "Now (0-3 months): audit your trend response time. If you can't ship in under 3 weeks, stop trying to chase micro-trends. Play a different game.",
+      "Soon (3-12 months): invest in evergreen content and product that doesn't date. Build an aesthetic identity that doesn't require trend participation to stay relevant.",
+      "Bet (12-36 months): brands with strong POV and consistent aesthetic are the ones people remember and return to. Define yours clearly enough that customers know immediately if something is 'you'.",
+    ],
+  },
+
+  // ── BEAUTY ───────────────────────────────────────────────────────────────────
+  {
+    id: "beauty-skin-diagnostics",
+    name: "Skin Diagnostics Go Home",
+    description: "AI cameras, at-home scanners, and apps analyzing your skin in real time are pulling the dermatologist consultation into your bathroom. Neutrogena's Skin360, FOREO's Luna, and a wave of startups are making clinical-grade skin analysis a daily consumer habit that drives personalized product purchasing.",
+    color: "#B6D693",
+    topics: ["beauty", "skincare", "health", "tech"],
+    relevanceScore: 72,
+    redditQuery: "at home skin analysis AI skincare diagnostic app",
+    newsQuery: "skin diagnostic AI technology beauty 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "When consumers can diagnose their own skin accurately, the generic product pitch dies. The brands winning are the ones that follow the data: personalized formulations, subscription models tied to skin progress, and recommendations that actually change based on what the scan says. The diagnostic becomes the retention mechanism, not just the acquisition hook.",
+    trajectory: "Accelerating fast. The cost of the underlying tech is dropping and the consumer appetite is proven. Within 3 years, a beauty purchase without a diagnostic step will feel like buying glasses without an eye test.",
+    nextSteps: [
+      "Now (0-3 months): integrate a skin quiz or AI diagnostic tool into your DTC purchase flow. Even a basic assessment improves conversion and makes product recommendations feel personal.",
+      "Soon (3-12 months): partner with a skin diagnostic platform or build your own. Use the data to drive recommendations and reorder triggers.",
+      "Bet (12-36 months): move toward formulation-on-demand. The diagnostic data tells you exactly what someone's skin needs. The brand that can fulfill that precisely wins the loyalty.",
+    ],
+  },
+  {
+    id: "beauty-ingestible",
+    name: "Beauty You Eat",
+    description: "Collagen drinks, biotin gummies, ceramide capsules, and skin-focused supplements are turning beauty into something you consume as much as apply. The Nue Co, Hum Nutrition, and Vital Proteins have proven the market. Now every major beauty brand is launching an ingestibles line because the margins and the retention rates are better than topicals.",
+    color: "#B6D693",
+    topics: ["beauty", "wellness", "health", "food"],
+    relevanceScore: 65,
+    redditQuery: "beauty supplements collagen ingestible gummies skin health",
+    newsQuery: "ingestible beauty supplements market 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "Ingestibles expand the beauty wallet without cannibalizing topical spend. They also pull beauty brands into the health and wellness category, which has more daily touchpoints and higher repurchase rates. The consumer who buys both your serum and your collagen supplement is worth 2-3x the one who only buys one. The crossover between beauty and nutrition is the growth edge of the decade.",
+    trajectory: "Still accelerating. The science is improving, the consumer behaviour is established, and the format variety (drinks, gummies, powders, capsules) is expanding the addressable market. The next phase is clinical validation separating genuine efficacy from marketing.",
+    nextSteps: [
+      "Now (0-3 months): survey your existing customers on supplement habits. The overlap between beauty and wellness spend is probably higher than you think.",
+      "Soon (3-12 months): launch one hero ingestible product. A collagen powder or skin supplement subscription is a proven format with strong retention mechanics.",
+      "Bet (12-36 months): build a beauty nutrition platform. Brands that own both the topical and the ingestible routine have the most complete relationship with the skin-conscious consumer.",
+    ],
+  },
+
+  // ── DATING ──────────────────────────────────────────────────────────────────
+  {
+    id: "dating-ai-assisted",
+    name: "AI Enters the Chat",
+    description: "Hinge launched an AI dating coach. Bumble is using AI to surface better matches. Third-party apps are writing opening lines and profile bios for millions of users. The question is shifting from whether you're good at dating apps to whether your AI is good at dating apps.",
+    color: "#FF8BB4",
+    topics: ["dating", "tech", "social"],
+    relevanceScore: 71,
+    redditQuery: "AI dating apps Hinge coach bio profile writing",
+    newsQuery: "AI dating coach apps Hinge Bumble 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "When AI mediates the early stages of human connection, what changes isn't just the UX of dating apps: it's what authenticity means in a first impression. The friction point is real: people want help but don't want to feel like they're misrepresenting themselves. The apps that solve that tension will win a generation. Everything downstream of dating (weddings, cohabitation, family formation) follows.",
+    trajectory: "Just getting started. AI features on major apps are still experimental but adoption is fast. The differentiation will be in how human the AI-assisted experience feels, not how capable the AI is.",
+    nextSteps: [
+      "Now (0-3 months): if you're building in the social or dating space, add one AI feature and watch how users actually interact with it. Behavioral data beats any survey.",
+      "Soon (3-12 months): design for human-AI collaboration, not replacement. Features that make people better at expressing themselves outperform features that express things for them.",
+      "Bet (12-36 months): the dating app that cracks genuine compatibility matching, not just swiping optimization, restructures the whole category.",
+    ],
+  },
+  {
+    id: "dating-slow",
+    name: "Slow Dating",
+    description: "Thursday (one day a week to match and meet), Once (one match per day), and a wave of IRL dating events are pushing back against swipe fatigue. People want fewer, better interactions. The infinite scroll model of dating is producing diminishing returns and the market knows it.",
+    color: "#FF8BB4",
+    topics: ["dating", "lifestyle", "social"],
+    relevanceScore: 57,
+    redditQuery: "slow dating swipe fatigue app burnout IRL meeting people",
+    newsQuery: "slow dating trend Thursday app alternatives 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "Slow dating is a signal about attention economics broadly: people are pushing back on infinite-scroll mechanics everywhere, not just in dating. The insight applies to content, social, and commerce. The brand that gives people a reason to slow down and pay genuine attention is doing something countercultural that actually converts and retains.",
+    trajectory: "Early but real. IRL events and curated formats are growing but niche. Watch whether the mainstream apps absorb slow-dating mechanics or whether Thursday builds to scale independently.",
+    nextSteps: [
+      "Now (0-3 months): look at your engagement metrics. If you measure success by volume of interactions, you might be optimising for the wrong thing entirely.",
+      "Soon (3-12 months): test a curated model. What happens to conversion and satisfaction when you give people fewer but better options?",
+      "Bet (12-36 months): the platform that figures out intentional social connection at scale wins a generation actively rejecting the attention-drain model.",
+    ],
+  },
+
+  // ── NIGHTLIFE ────────────────────────────────────────────────────────────────
+  {
+    id: "nightlife-sober-social",
+    name: "Sober Is the Night Out",
+    description: "0% bars like Redemption in London, sober raves, alcohol-free events, and Dry January going year-round for Gen Z: the night out doesn't require alcohol anymore. The UK's fastest-growing hospitality segment in 2024 was alcohol-free venues. This isn't a niche experiment, it's a structural shift in how a generation socialises.",
+    color: "#8C93C7",
+    topics: ["nightlife", "wellness", "food"],
+    relevanceScore: 63,
+    redditQuery: "sober bar nightlife alcohol free events Gen Z sober curious",
+    newsQuery: "sober socialising alcohol free bar trend 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "Sobriety is becoming a social identity, not a medical condition or a temporary challenge. For hospitality, drinks brands, and event companies, this is both a threat and a massive opportunity. Brands with something compelling for the sober consumer are finding a loyal, underserved customer who spends differently but doesn't spend less. Seedlip's 9-figure exit proved the market.",
+    trajectory: "Accelerating. Gen Z drinks less than any previous generation at the same age, and the trend has infrastructure now: dedicated venues, product categories, media coverage. The growth is structural, not cyclical.",
+    nextSteps: [
+      "Now (0-3 months): review your non-alcoholic offering. If it's an afterthought, it's a missed revenue line and a statement about who you think your customer is.",
+      "Soon (3-12 months): design an experience that works completely without alcohol: not a compromise version, a genuine alternative that stands on its own.",
+      "Bet (12-36 months): hospitality brands built around social experience rather than drinking are positioned for the dominant consumer behaviour of the next decade.",
+    ],
+  },
+  {
+    id: "nightlife-immersive",
+    name: "The Night Out Goes Immersive",
+    description: "Meow Wolf, teamLab, Frameless, Secret Cinema, Punchdrunk: the premium night out is becoming a spatial, multi-sensory experience rather than drinks and a dance floor. People are paying 3-4x the price of a club ticket for immersive events, and they sell out. The experience is the product.",
+    color: "#8C93C7",
+    topics: ["nightlife", "art", "tech"],
+    relevanceScore: 67,
+    redditQuery: "immersive experience Meow Wolf teamLab Secret Cinema night out",
+    newsQuery: "immersive entertainment venues market growth 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "The shift from passive consumption to active participation is the experience economy maturing. Brands that create genuinely immersive experiences are generating shareable content, loyalty, and social proof that no paid media budget can match. The event is the marketing. The brands winning here are the ones where attendance is the conversation starter, not the content they post about it.",
+    trajectory: "Accelerating. Investment in immersive entertainment is increasing and the consumer appetite is proven across demographics and geographies. The challenge is scaling without losing the intimacy that makes it special.",
+    nextSteps: [
+      "Now (0-3 months): audit your brand's experiential touchpoints. Is anything genuinely immersive or is it all standard activation formats that could belong to any brand?",
+      "Soon (3-12 months): design one experience that couldn't exist as content. Something that requires presence to feel it. Even at small scale, the learning is valuable.",
+      "Bet (12-36 months): brands that own flagship experiential venues will have an unfair advantage in the attention economy. The experience is the moat.",
+    ],
+  },
+
+  // ── COFFEE ──────────────────────────────────────────────────────────────────
+  {
+    id: "coffee-functional",
+    name: "Coffee Gets Functional",
+    description: "Four Sigmatic launched a category. Now Ryze, MUD\\WTR, and dozens of others are selling adaptogenic blends, nootropic coffees, and collagen-spiked espressos. The functional coffee market is growing 25% year on year, pulling in both the wellness consumer and the coffee enthusiast who wants their ritual to do more work.",
+    color: "#FD8326",
+    topics: ["coffee", "wellness", "food"],
+    relevanceScore: 62,
+    redditQuery: "mushroom coffee adaptogenic functional ryze mudwtr four sigmatic",
+    newsQuery: "functional coffee adaptogenic market growth 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "Functional coffee sits at the intersection of the two biggest consumer growth categories right now: coffee culture and wellness. Brands in this space command premium prices and subscription rates that traditional coffee can't touch. If you're in either category, this is the overlap you should be in. The consumer who merges their morning ritual with their health stack is the highest-value customer in the space.",
+    trajectory: "Accelerating but heading toward saturation in the mushroom coffee sub-category specifically. The next wave is personalization: formulations matched to biomarkers, time-of-day optimization, coffee as part of a tracked health stack.",
+    nextSteps: [
+      "Now (0-3 months): if you're in wellness or food, look at the functional beverage category seriously. The consumer overlap with your existing customer is very high.",
+      "Soon (3-12 months): develop a functional beverage SKU or collab. The format (sachet, pods, premix) matters as much as the ingredient list for adoption.",
+      "Bet (12-36 months): personalized functional beverage subscriptions tied to health data will be a major category. The brands building the data relationship now will own it.",
+    ],
+  },
+  {
+    id: "coffee-third-space",
+    name: "The Coffee Shop as Anchor",
+    description: "Blank Street, Blue Bottle, and a wave of independent roasters are designing entire identities around coffee ritual. The specialty coffee shop has become the most important third space in urban culture, the place that isn't home or work. The drink is almost secondary to the aesthetic, the community, and the slow moment the shop sells.",
+    color: "#FD8326",
+    topics: ["coffee", "lifestyle", "social"],
+    relevanceScore: 58,
+    redditQuery: "specialty coffee shop culture third space community aesthetic",
+    newsQuery: "specialty coffee culture third space urban retail 2025",
+    position: { x: 0, y: 0 },
+    whyRelevant: "Coffee shops are solving the loneliness economy problem in a scalable format. For brands looking to build genuine community touchpoints, the coffee shop model (low barrier, high dwell time, daily ritual, strong identity) is a blueprint worth studying regardless of whether you're in beverages. The third space is underbuilt and the consumer demand for it is only growing.",
+    trajectory: "Stable and structurally significant. The third-wave coffee shop is becoming a cultural institution in cities. The question is whether the aesthetic plateaus or keeps evolving. Watch what happens when AI, specialty coffee, and social design collide.",
+    nextSteps: [
+      "Now (0-3 months): look at which coffee shops your audience is tagging. The aesthetic signals there are more reliable than any trend report.",
+      "Soon (3-12 months): if you have physical retail, think about what the coffee shop achieves (dwell time, ritual, community) and whether you can borrow any of those mechanics.",
+      "Bet (12-36 months): brands that create genuine third spaces, not just pop-ups, will have the stickiest communities. The physical world is underrated.",
+    ],
+  },
 ];
 
 // ─── Topic Library ────────────────────────────────────────────────────────────
@@ -1397,4 +1587,82 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "foodfl-s7", trendId: "food-ai-flavour", title: "r/food: I tried three products made by AI flavour systems, two were genuinely better than anything I've had", summary: "Consumer blind taste preference for AI-developed flavours over human-formulated products is the most powerful market signal for the flavour AI category.", source: "reddit", sourceName: "r/food", date: "2026-05-22", crossLinks: [] },
   { id: "foodfl-s8", trendId: "food-ai-flavour", title: "Nestlé AI flavour platform analyses 2M social media mentions daily to track emerging taste trends in real time", summary: "Real-time social trend-to-flavour pipeline is collapsing the lag between emerging taste culture and product development response to near-zero.", source: "news", sourceName: "Food Navigator", date: "2026-02-28", crossLinks: [] },
   { id: "foodfl-s9", trendId: "food-ai-flavour", title: "AI-designed regional flavour adaptations increase category sales 35% in new markets without human formulation work", summary: "AI-driven localisation of flavour profiles at zero marginal formulation cost is making global flavour personalisation economically viable for the first time.", source: "news", sourceName: "Mintel", date: "2026-04-30", crossLinks: [] },
+
+  // fashion-resale-first
+  { id: "fres-s1", trendId: "fashion-resale-first", title: "Vinted hits 75M users, overtakes Zalando in monthly active users across Europe", summary: "Resale has crossed into primary market territory: Vinted is now a larger shopping destination than the continent's leading new-retail fashion platform by active user count.", source: "news", sourceName: "Financial Times", date: "2026-02-14", crossLinks: [] },
+  { id: "fres-s2", trendId: "fashion-resale-first", title: "r/frugalfemalefashion: I haven't bought anything new in 14 months and my wardrobe is better than ever", summary: "Community threads where secondhand-only consumers report superior wardrobes are normalising resale as a quality-first choice rather than a budget compromise.", source: "reddit", sourceName: "r/frugalfemalefashion", date: "2026-03-05", crossLinks: [] },
+  { id: "fres-s3", trendId: "fashion-resale-first", title: "Levi's SecondHand platform crosses $10M in sales in year one", summary: "Brand-owned resale is proving financially material, not just reputationally useful: Levi's direct resale revenue is growing faster than any new product category they launched in the same period.", source: "news", sourceName: "Business of Fashion", date: "2026-01-28", crossLinks: [] },
+  { id: "fres-s4", trendId: "fashion-resale-first", title: "ThredUp 2025 Resale Report: secondhand to reach $350B globally by 2027", summary: "The trajectory of secondhand market growth is now large enough that traditional retail investors are repricing new-goods-only brands as structurally exposed.", source: "news", sourceName: "ThredUp", date: "2026-04-10", crossLinks: [] },
+  { id: "fres-s5", trendId: "fashion-resale-first", title: "r/malefashionadvice: Depop is the only place I find actually interesting pieces now", summary: "Resale platforms are winning on curation and discovery, not just price: the secondhand market is becoming the primary place younger consumers find pieces with cultural distinctiveness.", source: "reddit", sourceName: "r/malefashionadvice", date: "2026-02-20", crossLinks: [] },
+  { id: "fres-s6", trendId: "fashion-resale-first", title: "LVMH launches Nona Source internal deadstock marketplace, opens to public", summary: "Luxury's move into deadstock and resale signals that the stigma of secondhand has fully dissolved even at the top of the market.", source: "news", sourceName: "WWD", date: "2026-03-18", crossLinks: [] },
+
+  // fashion-micro-trend-fatigue
+  { id: "fmicro-s1", trendId: "fashion-micro-trend-fatigue", title: "TikTok fashion micro-trends peaking and dying in under 2 weeks, analysis shows", summary: "Data tracking the lifecycle of TikTok-driven aesthetics shows the saturation point has dropped from months to weeks, making trend-reactive supply chains structurally unviable.", source: "news", sourceName: "Vogue Business", date: "2026-02-08", crossLinks: [] },
+  { id: "fmicro-s2", trendId: "fashion-micro-trend-fatigue", title: "r/femalefashionadvice: I'm so tired of every look being a named aesthetic, I just want to dress for myself", summary: "Community pushback against aesthetic categorisation is growing: the consumer who found TikTok fashion liberating is now finding it prescriptive.", source: "reddit", sourceName: "r/femalefashionadvice", date: "2026-03-22", crossLinks: [] },
+  { id: "fmicro-s3", trendId: "fashion-micro-trend-fatigue", title: "Bottega Veneta's no-social-media strategy proving commercially durable 5 years in", summary: "The brand that opted out of trend participation years ago is outperforming trend-chasing luxury peers on both revenue growth and brand equity metrics.", source: "news", sourceName: "Business of Fashion", date: "2026-01-15", crossLinks: [] },
+  { id: "fmicro-s4", trendId: "fashion-micro-trend-fatigue", title: "Fast fashion overproduction losses hit $20B as micro-trend chasing misfires", summary: "Trend-reactive overproduction is generating massive inventory write-offs as the lifecycle of micro-trends collapses faster than supply chains can respond.", source: "news", sourceName: "Reuters", date: "2026-04-02", crossLinks: [] },
+  { id: "fmicro-s5", trendId: "fashion-micro-trend-fatigue", title: "r/minimalism: buying one piece instead of five trend items. my wardrobe finally makes sense", summary: "Anti-trend minimalism is growing as a direct response to micro-trend exhaustion, with consumers actively choosing coherence over trend participation.", source: "reddit", sourceName: "r/minimalism", date: "2026-05-10", crossLinks: [] },
+  { id: "fmicro-s6", trendId: "fashion-micro-trend-fatigue", title: "Uniqlo revenue grows 18% as it positions against trend culture with LifeWear campaign", summary: "The brand most explicitly anti-trend is outperforming fashion-cycle brands during a period of micro-trend fatigue, confirming the commercial case for timelessness.", source: "news", sourceName: "Nikkei Asia", date: "2026-03-30", crossLinks: [] },
+
+  // beauty-skin-diagnostics
+  { id: "bskin-s1", trendId: "beauty-skin-diagnostics", title: "Neutrogena Skin360 AI scanner reaches 10M users, drives 40% uplift in recommendation conversion", summary: "At-home skin diagnostics are proving their commercial case: the uplift in recommendation conversion proves the diagnostic step materially improves purchase intent and precision.", source: "news", sourceName: "WWD", date: "2026-02-20", crossLinks: [] },
+  { id: "bskin-s2", trendId: "beauty-skin-diagnostics", title: "r/SkincareAddiction: tried the AI skin scanner at Sephora and it actually caught things I'd missed for years", summary: "Consumer discovery of skin conditions through diagnostic tools is driving new product category adoption that wouldn't have happened through standard browsing or self-diagnosis.", source: "reddit", sourceName: "r/SkincareAddiction", date: "2026-03-14", crossLinks: [] },
+  { id: "bskin-s3", trendId: "beauty-skin-diagnostics", title: "L'Oreal acquires skin AI startup for $380M to power personalized formulation at scale", summary: "Tier-one beauty acquisition of AI diagnostic capability signals that personalized skin analysis is becoming infrastructure, not a feature.", source: "news", sourceName: "TechCrunch", date: "2026-01-22", crossLinks: [] },
+  { id: "bskin-s4", trendId: "beauty-skin-diagnostics", title: "Proven Skincare raises $50M Series B on 2M personalized formula subscriptions", summary: "Subscription personalized skincare built on diagnostic data is proving the retention model: customers who built a formula based on their own skin data churn at a fraction of the rate of standard product subscribers.", source: "news", sourceName: "Forbes", date: "2026-04-08", crossLinks: [] },
+  { id: "bskin-s5", trendId: "beauty-skin-diagnostics", title: "r/beauty: my dermatologist literally uses the same AI skin analysis tool as the app I downloaded for free", summary: "When consumer diagnostic tools reach clinical parity, the case for a professional consultation as the only credible skincare advice source collapses.", source: "reddit", sourceName: "r/beauty", date: "2026-05-02", crossLinks: [] },
+  { id: "bskin-s6", trendId: "beauty-skin-diagnostics", title: "Sephora rolls out AI skin diagnostic stations in 300 stores globally", summary: "Brick-and-mortar beauty retail is adopting AI diagnostics as a conversion driver, transforming the store visit from browsing to consultation.", source: "news", sourceName: "Retail Dive", date: "2026-03-05", crossLinks: [] },
+
+  // beauty-ingestible
+  { id: "bing-s1", trendId: "beauty-ingestible", title: "Global ingestible beauty market reaches $12B, growing 22% YoY", summary: "The ingestible beauty category has crossed into a scale where it is commanding dedicated shelf space, marketing budgets, and R&D investment from every major beauty conglomerate.", source: "news", sourceName: "Mintel", date: "2026-02-10", crossLinks: [] },
+  { id: "bing-s2", trendId: "beauty-ingestible", title: "r/30PlusSkinCare: I've been taking marine collagen for 6 months and the texture difference is real", summary: "Consumer experiential endorsement of ingestible beauty products is building category credibility faster than clinical marketing claims alone could.", source: "reddit", sourceName: "r/30PlusSkinCare", date: "2026-03-25", crossLinks: [] },
+  { id: "bing-s3", trendId: "beauty-ingestible", title: "Charlotte Tilbury launches Collagen Superfood supplement line, sells out in 48 hours", summary: "High-profile prestige beauty brand entry into ingestibles confirms the category is crossing from wellness niche into mainstream beauty retail territory.", source: "news", sourceName: "Glamour", date: "2026-04-15", crossLinks: [] },
+  { id: "bing-s4", trendId: "beauty-ingestible", title: "Hum Nutrition reorder rate hits 68% after introducing skin health tracking app", summary: "Connecting ingestible supplements to measurable skin outcomes through a companion app is proving to be the retention mechanism that justifies the subscription model.", source: "news", sourceName: "WWD", date: "2026-01-30", crossLinks: [] },
+  { id: "bing-s5", trendId: "beauty-ingestible", title: "r/Supplements: the overlap between skincare and supplements in my routine is basically complete now", summary: "Consumer blurring of supplement and skincare routines signals a category boundary dissolution that creates cross-sell opportunities for brands positioned in both spaces.", source: "reddit", sourceName: "r/Supplements", date: "2026-05-08", crossLinks: [] },
+  { id: "bing-s6", trendId: "beauty-ingestible", title: "Sephora launches dedicated ingestible beauty section across all US stores", summary: "Retail infrastructure shift at the world's largest beauty retailer confirms ingestibles are no longer a wellness category but a core beauty category with dedicated real estate.", source: "news", sourceName: "Beauty Independent", date: "2026-03-12", crossLinks: [] },
+
+  // dating-ai-assisted
+  { id: "dai-s1", trendId: "dating-ai-assisted", title: "Hinge launches AI dating coach Rose, 2M users in first month", summary: "Hinge's AI coach adoption rate signals that the emotional labor of dating app navigation has become a real pain point that consumers will outsource to AI.", source: "news", sourceName: "TechCrunch", date: "2026-02-18", crossLinks: [] },
+  { id: "dai-s2", trendId: "dating-ai-assisted", title: "r/dating_advice: I used AI to rewrite my profile and my match rate tripled", summary: "Real consumer results from AI-assisted profile optimization are creating grassroots proof-of-concept that's building the behaviour faster than any app marketing could.", source: "reddit", sourceName: "r/dating_advice", date: "2026-03-10", crossLinks: [] },
+  { id: "dai-s3", trendId: "dating-ai-assisted", title: "Bumble AI compatibility model reduces ghosting rate by 30% in pilot", summary: "AI matching that goes beyond surface preference signals is proving its value in the metric dating apps are most embarrassed by: the silence after a match.", source: "news", sourceName: "Bloomberg", date: "2026-01-25", crossLinks: [] },
+  { id: "dai-s4", trendId: "dating-ai-assisted", title: "Third-party AI dating assistant apps hit 5M downloads in 2025", summary: "The market for AI that helps people perform better on dating apps has grown large enough to support a dedicated app category outside the platforms themselves.", source: "news", sourceName: "The Verge", date: "2026-04-05", crossLinks: [] },
+  { id: "dai-s5", trendId: "dating-ai-assisted", title: "r/Tinder: is anyone else using ChatGPT for their opening lines? feels weird but it works", summary: "Community ambivalence about AI-assisted dating reveals the authenticity tension at the heart of the trend: it works, but people aren't sure how they feel about that.", source: "reddit", sourceName: "r/Tinder", date: "2026-05-01", crossLinks: [] },
+  { id: "dai-s6", trendId: "dating-ai-assisted", title: "Match Group acquires AI conversation coaching startup for $200M", summary: "Platform-level acquisition of AI coaching capability signals that the major dating apps are treating AI assistance as core infrastructure, not a differentiating feature.", source: "news", sourceName: "Reuters", date: "2026-03-20", crossLinks: [] },
+
+  // dating-slow
+  { id: "dslow-s1", trendId: "dating-slow", title: "Thursday app reaches 1M users in London, New York, and Paris with one-day matching model", summary: "Artificial scarcity in dating app availability is proving to be a feature, not a bug: constrained matching windows are increasing intentionality and in-person meeting rates.", source: "news", sourceName: "The Guardian", date: "2026-02-14", crossLinks: [] },
+  { id: "dslow-s2", trendId: "dating-slow", title: "r/dating: I deleted all my apps and started going to real events. I've had more genuine connections in 3 months than in 3 years of swiping", summary: "Consumer exodus from swipe-based dating toward IRL-first approaches is gathering pace as the experiential gap between app dating and in-person meeting becomes a recognized problem.", source: "reddit", sourceName: "r/dating", date: "2026-03-08", crossLinks: [] },
+  { id: "dslow-s3", trendId: "dating-slow", title: "IRL dating events operator Time Out Experiences reports 300% growth in singles events bookings", summary: "Institutional growth in the IRL dating event market confirms the slow dating movement has commercial scale beyond niche apps.", source: "news", sourceName: "Time Out", date: "2026-04-20", crossLinks: [] },
+  { id: "dslow-s4", trendId: "dating-slow", title: "Bumble study: 78% of users say they want fewer, higher-quality matches over more matches", summary: "Platform-level research confirming that the stated preference of the majority of dating app users is for less volume and more quality represents a strategic challenge to the existing engagement model.", source: "news", sourceName: "Bumble", date: "2026-01-18", crossLinks: [] },
+
+  // nightlife-sober-social
+  { id: "nsob-s1", trendId: "nightlife-sober-social", title: "Redemption Bar London expands to 5 locations as alcohol-free hospitality scales", summary: "The first-mover in alcohol-free bar hospitality is demonstrating that the model is commercially scalable, not just a niche concept.", source: "news", sourceName: "The Guardian", date: "2026-02-28", crossLinks: [] },
+  { id: "nsob-s2", trendId: "nightlife-sober-social", title: "r/SoberCurious: went to my first alcohol-free event last week. the music was better, the conversations were better, and I remembered all of it", summary: "Consumer testimonials about the quality of sober social experiences are building category credibility faster than any brand marketing campaign could.", source: "reddit", sourceName: "r/SoberCurious", date: "2026-03-15", crossLinks: [] },
+  { id: "nsob-s3", trendId: "nightlife-sober-social", title: "Non-alcoholic spirits market hits $15B globally, Seedlip acquires two competitors", summary: "The non-alcoholic drinks category has consolidated to a scale where the category leader is making acquisitions, signalling market maturity and premium positioning.", source: "news", sourceName: "Drinks Business", date: "2026-04-08", crossLinks: [] },
+  { id: "nsob-s4", trendId: "nightlife-sober-social", title: "Gen Z alcohol consumption 28% lower than millennials at same age, drinking declining across all categories", summary: "Generational data on alcohol consumption confirms that sober socialising is a structural demographic shift, not a lifestyle trend cycle.", source: "news", sourceName: "IWSR", date: "2026-01-20", crossLinks: [] },
+  { id: "nsob-s5", trendId: "nightlife-sober-social", title: "r/stopdrinking: I went to a work party sober for the first time and realized how much the social pressure to drink had been making me miserable", summary: "Consumer discovery that social anxiety around not drinking is not as severe as feared is reducing the barrier to sober socialising, widening the potential market.", source: "reddit", sourceName: "r/stopdrinking", date: "2026-05-05", crossLinks: [] },
+  { id: "nsob-s6", trendId: "nightlife-sober-social", title: "Heineken 0.0 becomes brand's second-largest SKU by volume in 12 markets", summary: "The world's second-largest beer brand seeing its alcohol-free variant become a top-2 SKU confirms that sober-friendly options are driving volume at mainstream scale, not just niche.", source: "news", sourceName: "Marketing Week", date: "2026-03-22", crossLinks: [] },
+
+  // nightlife-immersive
+  { id: "nimm-s1", trendId: "nightlife-immersive", title: "Meow Wolf reports $200M revenue in 2025, announces 4 new permanent venues", summary: "Meow Wolf's revenue scale proves immersive entertainment is a financially serious category, not just a cultural moment: permanent venue economics are working.", source: "news", sourceName: "Bloomberg", date: "2026-02-10", crossLinks: [] },
+  { id: "nimm-s2", trendId: "nightlife-immersive", title: "r/london: Frameless is the best night out I've had in years and I didn't have a single drink", summary: "Consumer preference for immersive experiences over traditional nightlife is demonstrated most powerfully when the comparison is made explicit by the consumer themselves.", source: "reddit", sourceName: "r/london", date: "2026-03-28", crossLinks: [] },
+  { id: "nimm-s3", trendId: "nightlife-immersive", title: "Punchdrunk's Sleep No More New York extension runs into 15th consecutive year, premium tickets at $250+", summary: "A 15-year run at full occupancy and premium pricing proves the immersive experience model has retention and word-of-mouth economics that traditional entertainment cannot match.", source: "news", sourceName: "The New York Times", date: "2026-04-18", crossLinks: [] },
+  { id: "nimm-s4", trendId: "nightlife-immersive", title: "Club Shelter and fabric report 40% revenue from events, not door tickets", summary: "Traditional nightlife venues are diversifying into experience and event formats because the economics of experience programming outperform pure door-ticket models.", source: "news", sourceName: "DJ Mag", date: "2026-01-15", crossLinks: [] },
+  { id: "nimm-s5", trendId: "nightlife-immersive", title: "r/ifyoulikeblank: went to teamLab last week and it destroyed every other night out I've had this year in terms of actual feeling", summary: "Experiential venues are winning on the metric that matters most: the emotional intensity of the memory. Consumer language around immersive experiences ('feeling', 'destroyed') reveals the depth of impact.", source: "reddit", sourceName: "r/ifyoulikeblank", date: "2026-05-12", crossLinks: [] },
+  { id: "nimm-s6", trendId: "nightlife-immersive", title: "Amazon invests $300M in immersive entertainment company, signals category mainstream moment", summary: "Platform-scale investment in immersive entertainment from a company with full-stack distribution capability signals the category is entering its mainstream infrastructure phase.", source: "news", sourceName: "Variety", date: "2026-03-08", crossLinks: [] },
+
+  // coffee-functional
+  { id: "cfunc-s1", trendId: "coffee-functional", title: "Four Sigmatic valued at $1B as functional coffee category reaches $4.5B globally", summary: "The brand that created the mushroom coffee category has reached unicorn valuation, confirming the functional coffee segment has permanent commercial scale.", source: "news", sourceName: "Forbes", date: "2026-02-22", crossLinks: [] },
+  { id: "cfunc-s2", trendId: "coffee-functional", title: "r/Supplements: I replaced my morning coffee with Ryze mushroom blend and my afternoon crash is completely gone", summary: "Consumer health outcomes from functional coffee substitution are generating organic word-of-mouth that is the primary growth driver for the category.", source: "reddit", sourceName: "r/Supplements", date: "2026-03-18", crossLinks: [] },
+  { id: "cfunc-s3", trendId: "coffee-functional", title: "Starbucks tests adaptogenic latte line in 200 US stores following functional beverage surge", summary: "The world's largest coffee chain testing functional formulations in a significant store footprint confirms the category has crossed into mass-market territory.", source: "news", sourceName: "Nation's Restaurant News", date: "2026-04-05", crossLinks: [] },
+  { id: "cfunc-s4", trendId: "coffee-functional", title: "Athletic Greens AG1 adds coffee-flavoured morning drink, targets 8AM routine", summary: "The dominant wellness supplement brand entering the functional coffee space with a caffeinated format signals that the morning ritual is the highest-value consumer behaviour window.", source: "news", sourceName: "Business Insider", date: "2026-01-28", crossLinks: [] },
+  { id: "cfunc-s5", trendId: "coffee-functional", title: "r/nootropics: starting to think adaptogens in my coffee stack are doing more than the coffee itself", summary: "Consumer experimentation with nootropic-coffee combinations is building category knowledge at the grassroots level, accelerating informed adoption beyond marketing claims.", source: "reddit", sourceName: "r/nootropics", date: "2026-05-15", crossLinks: [] },
+  { id: "cfunc-s6", trendId: "coffee-functional", title: "Ryze functional coffee raises $45M Series B, subscription customer LTV up 3x vs standard coffee brands", summary: "Functional coffee subscription economics are proving materially superior to standard coffee subscription models: the health benefit creates a stickier retention reason than taste alone.", source: "news", sourceName: "TechCrunch", date: "2026-03-10", crossLinks: [] },
+
+  // coffee-third-space
+  { id: "cthird-s1", trendId: "coffee-third-space", title: "Blank Street Coffee raises $84M to expand its 'neighborhood ritual' model to 300 locations", summary: "VC-scale investment in the aesthetic-first, community-driven coffee shop model confirms that the third-space coffee concept is scalable infrastructure, not just indie culture.", source: "news", sourceName: "TechCrunch", date: "2026-02-05", crossLinks: [] },
+  { id: "cthird-s2", trendId: "coffee-third-space", title: "r/coffee: my local specialty cafe is where I have all my best thinking. I'd pay triple what I pay now to keep it open", summary: "Consumer valuation of the specialty coffee shop as a cognitive and creative space reveals the third-space function is the primary value driver, not the coffee itself.", source: "reddit", sourceName: "r/coffee", date: "2026-03-22", crossLinks: [] },
+  { id: "cthird-s3", trendId: "coffee-third-space", title: "Urban planning reports cite specialty coffee shops as anchor tenants for neighbourhood gentrification", summary: "Coffee shops have become reliable leading indicators of neighbourhood change: their location decisions are now tracked by real estate investors and city planners as cultural infrastructure signals.", source: "news", sourceName: "The Economist", date: "2026-04-12", crossLinks: [] },
+  { id: "cthird-s4", trendId: "coffee-third-space", title: "Blue Bottle Coffee membership program at 200k members, average visit frequency 4x per week", summary: "The frequency and loyalty metrics of premium coffee shop members confirm that the coffee ritual is daily infrastructure, not discretionary leisure, for a significant consumer segment.", source: "news", sourceName: "Bloomberg", date: "2026-01-18", crossLinks: [] },
+  { id: "cthird-s5", trendId: "coffee-third-space", title: "r/sipping: a well-designed coffee shop is the only public space where I feel genuinely comfortable staying for hours", summary: "Consumer identification of specialty coffee shops as the only accessible third space confirms the depth of the cultural role the category has assumed beyond beverage retail.", source: "reddit", sourceName: "r/sipping", date: "2026-05-08", crossLinks: [] },
+  { id: "cthird-s6", trendId: "coffee-third-space", title: "Apple Store foot traffic declining as Blank Street locations in same neighbourhoods outperform as social destinations", summary: "The comparative foot traffic data shows specialty coffee shops outperforming even premium retail as social destinations, confirming the third-space function is a genuine competitive advantage.", source: "news", sourceName: "Retail Gazette", date: "2026-03-15", crossLinks: [] },
 ];
