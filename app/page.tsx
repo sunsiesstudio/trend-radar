@@ -390,6 +390,10 @@ export default function HomePage() {
   const [topicInput,    setTopicInput]    = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [emptySearchInput, setEmptySearchInput] = useState("");
+  const [randomTopics] = useState<string[]>(() => {
+    const shuffled = [...LIBRARY_TOPICS].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 10);
+  });
   // Seed seen IDs with all static signals on first visit so they don't show NEW
   const [seenIds, setSeenIds] = useState<Set<string>>(() => {
     const stored = loadSeen();
@@ -1019,7 +1023,7 @@ export default function HomePage() {
                     or try
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 360 }}>
-                    {FEATURED_TOPICS.map(t => (
+                    {randomTopics.map(t => (
                       <button key={t} onClick={() => addTopic(t)}
                         style={{
                           padding: "7px 16px",
