@@ -279,49 +279,69 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 </div>
               </div>
 
-              {/* 01 — Macro */}
+              {/* 01 — Historical */}
+              {trend.historicalContext && (
+                <div style={{ marginBottom: 28 }}>
+                  <SectionHeader color={textCol} num="01" label="Historical Context" />
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.historicalContext}</p>
+                </div>
+              )}
+
+              {/* 02 — Economic */}
+              {trend.economicContext && (
+                <div style={{ marginBottom: 28 }}>
+                  <SectionHeader color={textCol} num="02" label="Economic Context" />
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.economicContext}</p>
+                </div>
+              )}
+
+              {/* 03 — Macro */}
               {trend.macroContext && (
                 <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={textCol} num="01" label="Macroeconomic Context" />
+                  <SectionHeader color={textCol} num="03" label="Macroeconomic Forces" />
                   <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.macroContext}</p>
                 </div>
               )}
 
-              {/* 02 — SPGC context */}
-              {(trend.socialContext || trend.politicalContext || trend.geographicalContext || trend.culturalContext) && (
+              {/* 04 — Cultural */}
+              {trend.culturalContext && (
                 <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={textCol} num="02" label="Social · Political · Geographical · Cultural" />
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {([
-                      ["Social", trend.socialContext],
-                      ["Political", trend.politicalContext],
-                      ["Geographical", trend.geographicalContext],
-                      ["Cultural", trend.culturalContext],
-                    ] as [string, string | undefined][]).filter(([, v]) => v).map(([label, body]) => (
-                      <div key={label} style={{ borderLeft: `3px solid ${trend.color}44`, paddingLeft: 14 }}>
-                        <div style={{ fontSize: 8, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 5 }}>{label}</div>
-                        <p style={{ fontSize: 13, color: "#444", lineHeight: 1.8, margin: 0 }}>{body}</p>
-                      </div>
-                    ))}
-                  </div>
+                  <SectionHeader color={textCol} num="04" label="Cultural Dynamics" />
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{trend.culturalContext}</p>
                 </div>
               )}
 
-              {/* 03 — Strategic rationale */}
+              {/* 05 — Political */}
+              {trend.politicalContext && (
+                <div style={{ marginBottom: 28 }}>
+                  <SectionHeader color={textCol} num="05" label="Political &amp; Regulatory" />
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{trend.politicalContext}</p>
+                </div>
+              )}
+
+              {/* 06 — Geographical */}
+              {trend.geographicalContext && (
+                <div style={{ marginBottom: 28 }}>
+                  <SectionHeader color={textCol} num="06" label="Geographical Landscape" />
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{trend.geographicalContext}</p>
+                </div>
+              )}
+
+              {/* 07 — Strategic rationale */}
               <div style={{ background: `${trend.color}09`, border: `1px solid ${trend.color}20`, borderRadius: 12, padding: "16px 18px", marginBottom: 28 }}>
-                <SectionHeader color={textCol} num="03" label="Strategic Rationale" />
+                <SectionHeader color={textCol} num="07" label="Strategic Rationale" />
                 <p style={{ fontSize: 13.5, color: "#222", lineHeight: 1.8, margin: 0, fontWeight: 500 }}>{trend.whyRelevant}</p>
               </div>
 
-              {/* 04 — Trajectory */}
+              {/* 08 — Trajectory */}
               <div style={{ marginBottom: 28 }}>
-                <SectionHeader color={textCol} num="04" label="Trajectory &amp; Outlook" />
+                <SectionHeader color={textCol} num="08" label="Trajectory &amp; Outlook" />
                 <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.8, margin: 0, fontStyle: "italic" }}>{trend.trajectory}</p>
               </div>
 
-              {/* 05 — Actions */}
+              {/* 09 — Actions */}
               <div style={{ marginBottom: 28 }}>
-                <SectionHeader color={textCol} num="05" label="Recommended Actions" />
+                <SectionHeader color={textCol} num="09" label="Recommended Actions" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {trend.nextSteps.map((step, i) => (
                     <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
@@ -334,9 +354,9 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 </div>
               </div>
 
-              {/* 06 — Signals */}
+              {/* 10 — Signals */}
               <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 22 }}>
-                <SectionHeader color={textCol} num="06" label={`Signal Intelligence · ${signals.length} active signals`} />
+                <SectionHeader color={textCol} num="10" label={`Signal Intelligence · ${signals.length} active signals`} />
                 <p style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6, margin: "0 0 18px", fontStyle: "italic" }}>
                   Real-world data points confirming and advancing this trend&apos;s trajectory, drawn from live and curated sources.
                 </p>

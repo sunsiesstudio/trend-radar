@@ -11,6 +11,8 @@ export interface Trend {
   trajectory: string;
   nextSteps: string[];
   topics?: string[]; // topic tags for filtering (e.g. "fashion", "beauty", "gaming")
+  historicalContext?: string;
+  economicContext?: string;
   macroContext?: string;
   socialContext?: string;
   politicalContext?: string;

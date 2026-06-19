@@ -715,12 +715,10 @@ export default function HomePage() {
           cursor: "pointer", WebkitTapHighlightColor: "transparent",
         } as React.CSSProperties}
       >
-        {appliedTopics.length > 0 ? (
+        {appliedTopics.length > 0 && (
           <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", whiteSpace: "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
             {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
           </p>
-        ) : (
-          <span style={{ flex: 1, fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.04em" }}>about this radar ↗</span>
         )}
         <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
           ↓
