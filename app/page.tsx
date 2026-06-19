@@ -603,7 +603,7 @@ export default function HomePage() {
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
         <button
-          onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
+          onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); setTimeout(() => fitViewRef.current?.(), 80); }}
           style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" }}
         >Augmented Radar</button>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
