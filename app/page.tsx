@@ -720,9 +720,6 @@ export default function HomePage() {
             {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
           </p>
         )}
-        <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
-          ↓
-        </span>
       </div>
 
       {/* Summary expanded overlay */}
