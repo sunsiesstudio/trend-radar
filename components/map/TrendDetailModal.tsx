@@ -177,13 +177,14 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
     whyItMatters?: string; howToProceed?: string[];
   } | null>(null);
   const [enriching, setEnriching] = useState(false);
+  const [enrichError, setEnrichError] = useState<string | null>(null);
   const textCol = accessibleTextColor(trend.color);
 
   const needsContext = !trend.historicalContext && !trend.economicContext;
 
-  useEffect(() => {
-    if (!showReport || !needsContext || enriched || enriching) return;
+  const runEnrich = () => {
     setEnriching(true);
+    setEnrichError(null);
     const topic = trend.topics?.[0] ?? trend.name;
     fetch("/api/generate-trend-report", {
       method: "POST",
@@ -191,10 +192,19 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
       body: JSON.stringify({ trendName: trend.name, trendDescription: trend.description, topic }),
     })
       .then((r) => r.json())
-      .then((data) => { setEnriched(data); })
-      .catch(() => {})
+      .then((data) => {
+        if (data.error) throw new Error(data.error);
+        setEnriched(data);
+      })
+      .catch((e) => setEnrichError(String(e)))
       .finally(() => setEnriching(false));
-  }, [showReport, needsContext, enriched, enriching, trend]);
+  };
+
+  useEffect(() => {
+    if (!showReport || !needsContext || enriched || enriching || enrichError) return;
+    runEnrich();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showReport]);
   const signals = [
     ...SIGNALS.filter((s) => s.trendId === trend.id),
     ...EXTENDED_SIGNALS.filter((s) => s.trendId === trend.id),
@@ -309,11 +319,19 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 <p style={{ fontSize: 16, color: "#111", lineHeight: 1.9, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.description}</p>
               </div>
 
-              {/* Loading */}
+              {/* Loading / error */}
               {enriching && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: `${trend.color}08`, borderRadius: 12, marginBottom: 28, border: `1px solid ${trend.color}18` }}>
                   <div style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${trend.color}40`, borderTopColor: trend.color, animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: "#888" }}>Generating full contextual analysis. Takes about 15 seconds.</span>
+                  <span style={{ fontSize: 12, color: "#888" }}>Generating full contextual analysis. About 15 seconds.</span>
+                </div>
+              )}
+              {enrichError && !enriching && (
+                <div style={{ padding: "14px 16px", background: "#fff5f5", borderRadius: 12, marginBottom: 28, border: "1px solid #ffd0d0", display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ fontSize: 12, color: "#cc3333", flex: 1 }}>Context generation failed. {enrichError.includes("API key") ? "API key not set." : "Try again."}</span>
+                  <button onClick={runEnrich} style={{ fontSize: 11, fontWeight: 700, color: textCol, background: "none", border: `1.5px solid ${trend.color}50`, borderRadius: 8, padding: "5px 12px", cursor: "pointer", whiteSpace: "nowrap", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
+                    Retry
+                  </button>
                 </div>
               )}
 
