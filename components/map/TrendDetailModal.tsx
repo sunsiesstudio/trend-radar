@@ -171,6 +171,7 @@ ${trend.macroContext ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
   const [showReport, setShowReport] = useState(false);
+  const [showRelevanceInfo, setShowRelevanceInfo] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -275,13 +276,29 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           </h3>
 
           {/* Relevance bar */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#f8f7f5", borderRadius: 10, marginBottom: 16 }}>
-            <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
-              <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
+          <div style={{ position: "relative", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#f8f7f5", borderRadius: 10 }}>
+              <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
+                <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
+              </div>
+              <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>
+                {trend.relevanceScore}% relevance
+              </span>
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
+                style={{ width: 18, height: 18, borderRadius: "50%", border: `1.5px solid #d0ccc6`, background: "#fff", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
+                aria-label="What is this score?"
+              >i</button>
             </div>
-            <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>
-              {trend.relevanceScore}% relevance
-            </span>
+            {showRelevanceInfo && (
+              <div
+                onClick={() => setShowRelevanceInfo(false)}
+                style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
+              >
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>Cultural Relevance Index</div>
+                How much momentum this trend has right now. Scored by: volume and recency of signals captured, cross-category resonance (how many adjacent spaces it is touching), and how early or late we are in the adoption curve. Higher means more urgent to act on.
+              </div>
+            )}
           </div>
         </div>
 

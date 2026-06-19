@@ -115,7 +115,7 @@ function blobFromId(id: string): string {
   let g = 0x811c9dc5 ^ id.length;
   for (let i = id.length - 1; i >= 0; i--) { g ^= id.charCodeAt(i); g = Math.imul(g, 0x01000193) >>> 0; }
   g ^= g >>> 16; g = Math.imul(g, 0x45d9f3b) >>> 0; g ^= g >>> 16;
-  const v = (seed: number) => 8 + (seed % 74);
+  const v = (seed: number) => 28 + (seed % 52);
   return `${v(h & 0xff)}% ${v((h >> 8) & 0xff)}% ${v((h >> 16) & 0xff)}% ${v((h >>> 24) & 0xff)}% / ${v(g & 0xff)}% ${v((g >> 8) & 0xff)}% ${v((g >> 16) & 0xff)}% ${v((g >>> 24) & 0xff)}%`;
 }
 
@@ -305,8 +305,13 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
 
 // ─── Mobile: focus one trend cluster ─────────────────────────────────────────
 
-function BoardController({ fitViewRef, nodeCount }: { fitViewRef: React.MutableRefObject<(() => void) | null>; nodeCount: number }) {
-  const { fitView } = useReactFlow();
+function BoardController({ fitViewRef, nodeCount, isDesktop, firstTrendPos }: {
+  fitViewRef: React.MutableRefObject<(() => void) | null>;
+  nodeCount: number;
+  isDesktop: boolean;
+  firstTrendPos: { x: number; y: number } | null;
+}) {
+  const { fitView, fitBounds } = useReactFlow();
   useEffect(() => {
     fitViewRef.current = () => fitView({ duration: 420, padding: 0.22 });
   }, [fitView, fitViewRef]);
@@ -314,8 +319,20 @@ function BoardController({ fitViewRef, nodeCount }: { fitViewRef: React.MutableR
   useEffect(() => {
     if (nodeCount === prev.current) return;
     prev.current = nodeCount;
-    if (nodeCount > 0) setTimeout(() => fitView({ duration: 600, padding: 0.22 }), 80);
-  }, [nodeCount, fitView]);
+    if (nodeCount > 0) {
+      setTimeout(() => {
+        if (!isDesktop && firstTrendPos) {
+          const pad = 60;
+          const r = 260;
+          const cx = firstTrendPos.x + CIRCLE_D / 2;
+          const cy = firstTrendPos.y + CIRCLE_D / 2;
+          fitBounds({ x: cx - r - pad, y: cy - r - pad, width: (r + pad) * 2, height: (r + pad) * 2 }, { duration: 0 });
+        } else {
+          fitView({ duration: 600, padding: 0.22 });
+        }
+      }, 80);
+    }
+  }, [nodeCount, fitView, fitBounds, isDesktop, firstTrendPos]);
   return null;
 }
 
@@ -958,7 +975,7 @@ export default function HomePage() {
           proOptions={{ hideAttribution: true }}
           style={{ background: "#ffffff" }}
         >
-          <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} />
+          <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} isDesktop={isDesktop} firstTrendPos={visibleTrends[0]?.position ?? null} />
           {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
         </ReactFlow>
       </div>
