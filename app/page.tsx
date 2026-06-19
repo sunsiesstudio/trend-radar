@@ -997,7 +997,7 @@ export default function HomePage() {
             ) : (
               <>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  a research tool for emerging tech —{" "}
+                  We track where emerging tech is actually going. —{" "}
                   <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
                     Augmented Rarity
                   </a>
