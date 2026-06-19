@@ -728,23 +728,27 @@ export default function HomePage() {
       {/* Summary expanded overlay */}
       {summaryOpen && (
         <div
-          style={{ position: "absolute", inset: 0, zIndex: 30, display: "flex", flexDirection: "column" }}
+          style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
           onClick={() => setSummaryOpen(false)}
         >
-          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(3px)" }} />
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              position: "absolute", top: 96, left: 0, right: 0,
-              background: "#fff",
-              borderBottom: "1px solid rgba(0,0,0,0.09)",
-              boxShadow: "0 12px 40px rgba(0,0,0,0.14)",
-              maxHeight: "60svh",
+              backgroundColor: "#fff",
+              borderRadius: "24px 24px 0 0",
+              width: "100%",
+              maxWidth: 680,
+              maxHeight: "80svh",
               display: "flex", flexDirection: "column",
+              boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",
+              overflow: "hidden",
             } as React.CSSProperties}
           >
+            {/* Color bar */}
+            <div style={{ height: 4, background: appliedTopics.length > 0 ? `linear-gradient(90deg, #111, #11111144)` : "linear-gradient(90deg, #e8e4de, #e8e4de44)", flexShrink: 0 }} />
+
             {/* Fixed header */}
-            <div style={{ padding: "18px 20px 0", flexShrink: 0 }}>
+            <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
@@ -757,14 +761,14 @@ export default function HomePage() {
                 <button
                   onClick={() => setSummaryOpen(false)}
                   aria-label="Close overview"
-                  style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "none", background: "#f0f0f0", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                  style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: "none", background: "#f0f0f0", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
                 >×</button>
               </div>
 
             </div>
 
             {/* Scrollable body */}
-            <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 20px" } as React.CSSProperties}>
+            <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 24px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))" } as React.CSSProperties}>
 
               {/* ── About (no topic selected) ── */}
               {appliedTopics.length === 0 && (

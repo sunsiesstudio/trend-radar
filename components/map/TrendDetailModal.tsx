@@ -360,28 +360,25 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 <p style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6, margin: "0 0 18px", fontStyle: "italic" }}>
                   Real-world data points confirming and advancing this trend&apos;s trajectory, drawn from live and curated sources.
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {signals.map((s, i) => (
-                    <div key={s.id} style={{ borderLeft: `2px solid ${trend.color}55`, paddingLeft: 14 }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 4 }}>
-                        <span style={{ fontSize: 8, fontWeight: 900, color: "#ccc", fontFamily: "monospace", marginTop: 3, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span>
-                        <div>
-                          <div style={{ fontSize: 12.5, fontWeight: 700, color: "#1a1a1a", lineHeight: 1.4, marginBottom: 3 }}>
-                            {s.title}
-                            {s.isLive && <span style={{ marginLeft: 6, fontSize: 8, fontWeight: 800, color: "#00c47a", background: "#00c47a12", borderRadius: 3, padding: "1px 4px", verticalAlign: "middle" }}>LIVE</span>}
-                          </div>
-                          <div style={{ fontSize: 10, color: "#bbb", marginBottom: 6 }}>
-                            {getSourceIcon(s.source)} {s.sourceName ?? ""}{s.date ? ` · ${new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}
-                          </div>
-                          <div style={{ fontSize: 12.5, color: "#555", lineHeight: 1.75 }}>{s.summary}</div>
-                          {(s.crossLinks ?? []).length > 0 && (
-                            <div style={{ marginTop: 5, fontSize: 10, color: "#ccc", fontStyle: "italic" }}>
-                              ↔ {(s.crossLinks ?? []).length} cross-trend connection{(s.crossLinks ?? []).length > 1 ? "s" : ""}
-                            </div>
-                          )}
-                        </div>
+                    <button
+                      key={s.id}
+                      onClick={() => onSelectSignal(s)}
+                      style={{ textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                        <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
+                        {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
+                        <span style={{ marginLeft: "auto", fontSize: 9, color: "#bbb", fontFamily: "monospace" }}>{String(i + 1).padStart(2, "0")}</span>
                       </div>
-                    </div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
+                      <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55 }}>{s.summary}</div>
+                      {s.sourceUrl && (
+                        <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, color: textCol }}>View source →</div>
+                      )}
+                    </button>
                   ))}
                 </div>
               </div>
