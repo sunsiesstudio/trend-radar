@@ -12,7 +12,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
-import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS, TOPIC_DESCRIPTIONS } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
@@ -702,7 +702,7 @@ export default function HomePage() {
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.45, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", whiteSpace: "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
           {appliedTopics.length > 0
             ? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`
-            : "pick a topic and the radar shows you where tech is genuinely moving in that space."}
+            : "Augmented Radar"}
         </p>
         <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
           ↓
@@ -743,11 +743,14 @@ export default function HomePage() {
               >×</button>
             </div>
 
-            {appliedTopics.length === 0 && (
-              <p style={{ fontSize: 14, color: "#444", lineHeight: 1.7, margin: "14px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                Pick a topic and the radar shows you where tech is genuinely moving in that space.
-              </p>
-            )}
+            {appliedTopics.length > 0 && (() => {
+              const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
+              return desc ? (
+                <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: "10px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                  {desc}
+                </p>
+              ) : null;
+            })()}
 
             {/* Visible trend list */}
             <div style={{ marginTop: 20, marginBottom: 20 }}>
