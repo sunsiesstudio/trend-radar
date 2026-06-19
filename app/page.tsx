@@ -645,7 +645,7 @@ export default function HomePage() {
               borderRadius: 20, padding: "3px 10px 3px 12px", cursor: "default",
             }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: darkenColor(color, 0.55), letterSpacing: "0.03em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                {topic}
+                <span style={{ opacity: 0.6, fontWeight: 500 }}>Emerging Tech ×</span> {topic}
               </span>
               <button
                 onClick={() => removeTopic(topic)}
@@ -756,7 +756,7 @@ export default function HomePage() {
         {appliedTopics.length > 0 && (
           <>
             <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: isDesktop ? 2 : 1, WebkitBoxOrient: "vertical", whiteSpace: isDesktop ? "normal" : "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
-              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
+              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `Emerging Tech × ${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" & ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
             </p>
             {isDesktop && (
               <button
@@ -800,7 +800,7 @@ export default function HomePage() {
                     {appliedTopics.length > 0 ? "What we're tracking" : "About"}
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                    {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "Augmented Radar"}
+                    {appliedTopics.length > 0 ? `Emerging Tech × ${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" & ")}` : "Augmented Radar"}
                   </h3>
                 </div>
                 <button
