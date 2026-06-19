@@ -814,21 +814,14 @@ export default function HomePage() {
               {appliedTopics.length === 0 && (
                 <div style={{ paddingBottom: 28 }}>
                   <p style={{ fontSize: 15, color: "#333", lineHeight: 1.85, margin: "4px 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    Augmented Radar maps emerging technology against consumer culture. Pick an industry and see what&apos;s actually moving — not trend reports, but the structural shifts that have strategic consequence for brands.
+                    Augmented Radar maps emerging technology against consumer culture. Pick an industry and see what&apos;s actually moving.
                   </p>
-                  <p style={{ fontSize: 13.5, color: "#777", lineHeight: 1.8, margin: "0 0 24px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    Each topic generates AI-analysed trends with signals drawn from media, research, and cultural conversation — written in the voice of a senior strategist, not a content tool.
+                  <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                    Vibe coded by Martina —{" "}
+                    <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
+                      Augmented Rarity
+                    </a>
                   </p>
-                  <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 16 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Made by</div>
-                    <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
-                      Martina Soles — founder of{" "}
-                      <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#111", textDecoration: "underline", textUnderlineOffset: 3 }}>
-                        Augmented Rarity
-                      </a>
-                      , a cultural intelligence practice for brands at the intersection of technology and creative industries.
-                    </p>
-                  </div>
                 </div>
               )}
 
