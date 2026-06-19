@@ -252,6 +252,29 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               <p style={{ fontSize: 13.5, color: "#111", lineHeight: 1.8, margin: 0 }}>{trend.whyRelevant}</p>
             </div>
 
+            {/* Cultural context */}
+            {trend.culturalContext && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
+                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.culturalContext}</p>
+              </div>
+            )}
+
+            {/* What brands are doing */}
+            {(trend.brandMoves ?? []).length > 0 && (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what brands are doing</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {(trend.brandMoves ?? []).map((move, i) => (
+                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
+                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: trend.color, flexShrink: 0, marginTop: 5 }} />
+                      <p style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0 }}>{move}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* What to do */}
             {trend.nextSteps.length > 0 && (
               <div style={{ marginBottom: 24 }}>

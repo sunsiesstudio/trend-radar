@@ -924,6 +924,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Soon (3-12 months): launch a branded resale or take-back program. Patagonia's Worn Wear is the model. Own the resale of your own product before someone else does.",
       "Bet (12-36 months): design for resale from the start. Products with provenance, repairability, and longevity built in command premium secondhand prices and drive first-sale demand.",
     ],
+    culturalContext: "Gen Z grew up through the financial crisis and came of age in a pandemic economy — scarcity mindset is built in. Combined with climate guilt and the dopamine of the find, secondhand shopping hits three values at once: financial, environmental, and experiential. Thrifting became identity before it became a market.",
+    brandMoves: [
+      "Levi's launches 'SecondHand' buyback and resale platform, taking brand control of the aftermarket",
+      "Patagonia's Worn Wear program becomes a standalone revenue channel generating $10M+ annually",
+      "Burberry partners with TheRealReal for authenticated luxury resale, adding provenance data to physical tags",
+      "Zara launches a Pre-Owned section on its app — mainstream fast fashion entering the circular economy",
+    ],
   },
   {
     id: "fashion-micro-trend-fatigue",
@@ -941,6 +948,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Now (0-3 months): audit your trend response time. If you can't ship in under 3 weeks, stop trying to chase micro-trends. Play a different game.",
       "Soon (3-12 months): invest in evergreen content and product that doesn't date. Build an aesthetic identity that doesn't require trend participation to stay relevant.",
       "Bet (12-36 months): brands with strong POV and consistent aesthetic are the ones people remember and return to. Define yours clearly enough that customers know immediately if something is 'you'.",
+    ],
+    culturalContext: "The algorithm's relentless optimisation for engagement accidentally killed the very thing that made fashion exciting: anticipation. When everything is a trend and trends last three weeks, nothing is aspirational anymore. Exhaustion is the inevitable output of a system designed for infinite scroll.",
+    brandMoves: [
+      "Loro Piana doubles down on 'no logo, no trend' positioning — searches for 'quiet luxury' hit 5 billion TikTok views",
+      "Uniqlo's LifeWear philosophy becomes a marketing cornerstone, selling timelessness as the differentiator",
+      "A.P.C. leans into 'never on trend, always relevant' as a brand truth, growing repeat purchase rate 40%",
+      "COS shifts to slow-drop collections with 12-month production windows instead of trend-reactive sprints",
     ],
   },
 
@@ -962,6 +976,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Soon (3-12 months): partner with a skin diagnostic platform or build your own. Use the data to drive recommendations and reorder triggers.",
       "Bet (12-36 months): move toward formulation-on-demand. The diagnostic data tells you exactly what someone's skin needs. The brand that can fulfill that precisely wins the loyalty.",
     ],
+    culturalContext: "The wellness boom convinced consumers that personalisation is their right, not a luxury. A generation that tracks sleep, macros, and HRV every day sees no reason their skincare shouldn't be equally data-driven. The dermatologist's authority hasn't disappeared — it's been democratised.",
+    brandMoves: [
+      "Neutrogena's Skin360 AI scanner reaches 10M users, feeding personalised product recommendations that drive 3x conversion",
+      "L'Oréal acquires AI skin diagnostics startup Syntilay to bring analysis tech into mass-market channels",
+      "Sephora integrates skin scanner booths in flagship stores, creating a diagnostic-to-purchase funnel in-store",
+      "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool",
+    ],
   },
   {
     id: "beauty-ingestible",
@@ -979,6 +1000,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Now (0-3 months): survey your existing customers on supplement habits. The overlap between beauty and wellness spend is probably higher than you think.",
       "Soon (3-12 months): launch one hero ingestible product. A collagen powder or skin supplement subscription is a proven format with strong retention mechanics.",
       "Bet (12-36 months): build a beauty nutrition platform. Brands that own both the topical and the ingestible routine have the most complete relationship with the skin-conscious consumer.",
+    ],
+    culturalContext: "The inside-out beauty concept is only possible because supplement culture went mainstream first. A generation that takes ashwagandha for stress and magnesium for sleep is primed to believe collagen peptides and biotin work — the trust in ingestibles was already there before beauty entered the category.",
+    brandMoves: [
+      "Hum Nutrition partners with Sephora, bringing ingestible beauty into prestige retail for the first time",
+      "Vital Proteins (Nestlé) grows to $200M revenue, mainstreaming collagen as a daily consumer habit",
+      "The Nue Co. launches a full skin supplement stack with clinical trial data, raising the bar on efficacy claims",
+      "Glossier launches its first supplement SKU — a clear signal the ingestible beauty category has arrived",
     ],
   },
 
@@ -1000,6 +1028,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Soon (3-12 months): design for human-AI collaboration, not replacement. Features that make people better at expressing themselves outperform features that express things for them.",
       "Bet (12-36 months): the dating app that cracks genuine compatibility matching, not just swiping optimization, restructures the whole category.",
     ],
+    culturalContext: "Dating app fatigue and the loneliness epidemic created a vacuum at the same time. People want connection but are exhausted by the mechanics of the search. AI steps in not as a replacement for human feeling but as infrastructure — reducing the friction between wanting connection and having it.",
+    brandMoves: [
+      "Hinge launches 'Your Turn' AI coach that reviews conversation patterns and suggests better openers",
+      "Match Group acquires AI relationship coaching startup Lara, integrating it across its entire app portfolio",
+      "Bumble adds AI profile review that scores bios and conversation starters, with suggested rewrites",
+      "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months",
+    ],
   },
   {
     id: "dating-slow",
@@ -1017,6 +1052,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Now (0-3 months): look at your engagement metrics. If you measure success by volume of interactions, you might be optimising for the wrong thing entirely.",
       "Soon (3-12 months): test a curated model. What happens to conversion and satisfaction when you give people fewer but better options?",
       "Bet (12-36 months): the platform that figures out intentional social connection at scale wins a generation actively rejecting the attention-drain model.",
+    ],
+    culturalContext: "The post-pandemic generation experienced what happens when life speeds up to the point of breaking. Slow dating is partly a wellness behaviour and partly a rejection of the commodification of connection — swiping culture made people feel like products in a catalogue.",
+    brandMoves: [
+      "Thursday app revives the single-day dating format: matches only available on Thursdays, building scarcity and anticipation",
+      "The League adds mandatory video dates before chat opens, forcing a minimum investment before swipe dynamics kick in",
+      "Feeld rebrands around 'intentional connection', positioning depth of interaction over volume of matches",
+      "Hinge's 'Most Compatible' feature surfaces one high-quality match per day, explicitly reducing decision fatigue",
     ],
   },
 
@@ -1038,6 +1080,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Soon (3-12 months): design an experience that works completely without alcohol: not a compromise version, a genuine alternative that stands on its own.",
       "Bet (12-36 months): hospitality brands built around social experience rather than drinking are positioned for the dominant consumer behaviour of the next decade.",
     ],
+    culturalContext: "Gen Z drinks less than any generation on record. The reasons stack: mental health awareness, wellness culture, financial pressure, and the sober curious movement normalising the choice. The social infrastructure of nightlife never caught up — it was still built for drinking. Sober venues are filling a gap that nobody built for.",
+    brandMoves: [
+      "Redemption Bar in London expands to three locations, proving premium alcohol-free nightlife is commercially viable",
+      "Heineken 0.0 becomes the official beer of UEFA, mainstream sport embracing non-alcoholic as primary placement",
+      "Seedlip reaches distribution in 25 countries, premium non-alcoholic spirits category achieves mass-market reach",
+      "Soberish Festival in New York sells 4,000 tickets in 48 hours, proving demand for large-scale sober social events",
+    ],
   },
   {
     id: "nightlife-immersive",
@@ -1055,6 +1104,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Now (0-3 months): audit your brand's experiential touchpoints. Is anything genuinely immersive or is it all standard activation formats that could belong to any brand?",
       "Soon (3-12 months): design one experience that couldn't exist as content. Something that requires presence to feel it. Even at small scale, the learning is valuable.",
       "Bet (12-36 months): brands that own flagship experiential venues will have an unfair advantage in the attention economy. The experience is the moat.",
+    ],
+    culturalContext: "A generation raised on video games and social media doesn't just want to watch — it wants to be inside the experience. Passive entertainment feels insufficient after years of interactive digital worlds. Immersive nightlife is the physical world finally catching up to that expectation.",
+    brandMoves: [
+      "Secret Cinema's events sell out in minutes at £100+ per ticket, proving the premium for participation over observation",
+      "Prada partners with artist collective Random International to create a sensory installation tour across five cities",
+      "Electric Gamebox expands to 20 cities, tech-powered group experience venues becoming a distinct nightlife format",
+      "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building",
     ],
   },
 
@@ -1076,6 +1132,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Soon (3-12 months): develop a functional beverage SKU or collab. The format (sachet, pods, premix) matters as much as the ingredient list for adoption.",
       "Bet (12-36 months): personalized functional beverage subscriptions tied to health data will be a major category. The brands building the data relationship now will own it.",
     ],
+    culturalContext: "The optimisation mindset that brought us biohacking and nootropics reached the coffee ritual. Caffeine was already functional — adding mushrooms or adaptogens is a small cognitive leap for a consumer who already sees their body as a system to tune. The morning ritual became the highest-leverage moment in the health stack.",
+    brandMoves: [
+      "Four Sigmatic's mushroom coffee line reaches $80M revenue, mainstreaming functional coffee as a standalone category",
+      "Starbucks adds adaptogens to its Customisation menu, bringing functional ingredients to mass-market coffee orders",
+      "MUD\\WTR raises $60M to scale its coffee alternative, converting mainstream coffee drinkers to functional blends",
+      "Clevr Blends (backed by Serena Williams) brings adaptogens to the latte format — wellness meets the morning convenience ritual",
+    ],
   },
   {
     id: "coffee-third-space",
@@ -1093,6 +1156,13 @@ const EXTENDED_TRENDS: Trend[] = [
       "Now (0-3 months): look at which coffee shops your audience is tagging. The aesthetic signals there are more reliable than any trend report.",
       "Soon (3-12 months): if you have physical retail, think about what the coffee shop achieves (dwell time, ritual, community) and whether you can borrow any of those mechanics.",
       "Bet (12-36 months): brands that create genuine third spaces, not just pop-ups, will have the stickiest communities. The physical world is underrated.",
+    ],
+    culturalContext: "Remote work destroyed the office but left workers without a neutral ground. The third space fills a genuine spatial need: somewhere that isn't domestic or corporate, where presence is optional and time is yours. Coffee shops always served this function — they're now consciously designing for it.",
+    brandMoves: [
+      "Blank Street Coffee designs all locations around 'deep work' seating and extended-stay intention, not just throughput",
+      "Blue Bottle's 'Slow Bar' experience creates destination coffee moments designed to last 45 minutes, not 4",
+      "Ace Hotel lobbies become work-friendly social spaces by design, the hotel-as-third-space model spreading to other brands",
+      "Aesop opens 'reading rooms' adjacent to select stores — retail as third space, borrowing the coffee shop playbook",
     ],
   },
 ];
