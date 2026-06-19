@@ -36,8 +36,8 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
   const crossLinked = (signal.crossLinks ?? []).map((id) => pool.find((s) => s.id === id)).filter(Boolean) as Signal[];
   const related = crossLinked.length > 0
     ? crossLinked
-    : pool.filter((s) => s.trendId === signal.trendId && s.id !== signal.id).slice(0, 4);
-  const relatedLabel = crossLinked.length > 0 ? "Connected signals" : "More from this trend";
+    : pool.filter((s) => s.trendId === signal.trendId && s.id !== signal.id).slice(0, 1);
+  const relatedLabel = crossLinked.length > 0 ? "Connected signals" : "Related signal";
   const textCol = accessibleTextColor(trendColor);
 
   const [isDesktop, setIsDesktop] = useState(false);
