@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Trend, Signal } from "@/types";
 import { SIGNALS, TRENDS, getSourceIcon } from "@/lib/trends";
 import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
@@ -171,7 +171,26 @@ ${trend.macroContext ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
   const [showReport, setShowReport] = useState(false);
+  const [enriched, setEnriched] = useState<Partial<Trend> | null>(null);
+  const [enriching, setEnriching] = useState(false);
   const textCol = accessibleTextColor(trend.color);
+
+  const needsContext = !trend.historicalContext && !trend.economicContext;
+
+  useEffect(() => {
+    if (!showReport || !needsContext || enriched || enriching) return;
+    setEnriching(true);
+    const topic = trend.topics?.[0] ?? trend.name;
+    fetch("/api/generate-trend-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trendName: trend.name, trendDescription: trend.description, topic }),
+    })
+      .then((r) => r.json())
+      .then((data) => { setEnriched(data); })
+      .catch(() => { /* silently skip — report still shows what it has */ })
+      .finally(() => setEnriching(false));
+  }, [showReport, needsContext, enriched, enriching, trend]);
   const signals = [
     ...SIGNALS.filter((s) => s.trendId === trend.id),
     ...EXTENDED_SIGNALS.filter((s) => s.trendId === trend.id),
@@ -279,51 +298,59 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 </div>
               </div>
 
+              {/* Loading state for context generation */}
+              {enriching && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 18px", background: `${trend.color}08`, borderRadius: 12, marginBottom: 24, border: `1px solid ${trend.color}18` }}>
+                  <div style={{ width: 16, height: 16, borderRadius: "50%", border: `2px solid ${trend.color}40`, borderTopColor: trend.color, animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: "#888", fontStyle: "italic" }}>Generating contextual analysis…</span>
+                </div>
+              )}
+
               {/* 01 — Historical */}
-              {trend.historicalContext && (
+              {(enriched?.historicalContext ?? trend.historicalContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="01" label="Historical Context" />
-                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.historicalContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{enriched?.historicalContext ?? trend.historicalContext}</p>
                 </div>
               )}
 
               {/* 02 — Economic */}
-              {trend.economicContext && (
+              {(enriched?.economicContext ?? trend.economicContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="02" label="Economic Context" />
-                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.economicContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{enriched?.economicContext ?? trend.economicContext}</p>
                 </div>
               )}
 
               {/* 03 — Macro */}
-              {trend.macroContext && (
+              {(enriched?.macroContext ?? trend.macroContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="03" label="Macroeconomic Forces" />
-                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.macroContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{enriched?.macroContext ?? trend.macroContext}</p>
                 </div>
               )}
 
               {/* 04 — Cultural */}
-              {trend.culturalContext && (
+              {(enriched?.culturalContext ?? trend.culturalContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="04" label="Cultural Dynamics" />
-                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{trend.culturalContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{enriched?.culturalContext ?? trend.culturalContext}</p>
                 </div>
               )}
 
               {/* 05 — Political */}
-              {trend.politicalContext && (
+              {(enriched?.politicalContext ?? trend.politicalContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="05" label="Political &amp; Regulatory" />
-                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{trend.politicalContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{enriched?.politicalContext ?? trend.politicalContext}</p>
                 </div>
               )}
 
               {/* 06 — Geographical */}
-              {trend.geographicalContext && (
+              {(enriched?.geographicalContext ?? trend.geographicalContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="06" label="Geographical Landscape" />
-                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{trend.geographicalContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{enriched?.geographicalContext ?? trend.geographicalContext}</p>
                 </div>
               )}
 
