@@ -743,18 +743,11 @@ export default function HomePage() {
               >×</button>
             </div>
 
-            <p style={{ fontSize: 14, color: "#444", lineHeight: 1.7, margin: "14px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
-              {appliedTopics.length === 0
-                ? "Pick a topic and the radar shows you where tech is genuinely moving in that space."
-                : (() => {
-                    const topics = appliedTopics;
-                    const phrase = topics.length === 1
-                      ? topics[0]
-                      : topics.slice(0, -1).join(", ") + " & " + topics[topics.length - 1];
-                    return `what's worth watching in ${phrase} right now.`;
-                  })()
-              }
-            </p>
+            {appliedTopics.length === 0 && (
+              <p style={{ fontSize: 14, color: "#444", lineHeight: 1.7, margin: "14px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                Pick a topic and the radar shows you where tech is genuinely moving in that space.
+              </p>
+            )}
 
             {/* Visible trend list */}
             <div style={{ marginTop: 20, marginBottom: 20 }}>
