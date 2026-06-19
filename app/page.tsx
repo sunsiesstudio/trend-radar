@@ -531,12 +531,11 @@ export default function HomePage() {
     return pa.x - pb.x;
   }), [visibleTrends]);
 
-  // Clamp focusIdx when visible trends change
-  useEffect(() => {
-    setFocusIdx(i => Math.min(i, Math.max(0, navTrends.length - 1)));
-  }, [navTrends.length]);
+  // Always clamp focusIdx at the point of use — setFocusIdx(9999) is used as "jump to last"
+  // so we derive the safe index here rather than fighting async clamp timing.
+  const safeIdx = navTrends.length > 0 ? Math.min(focusIdx, navTrends.length - 1) : 0;
 
-  const focusTrend = navTrends[Math.min(focusIdx, navTrends.length - 1)] ?? navTrends[0];
+  const focusTrend = navTrends[safeIdx] ?? navTrends[0];
   const focusTrendPos = TREND_POSITIONS[focusTrend?.id] ?? focusTrend?.position ?? { x: 0, y: 0 };
 
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
@@ -929,14 +928,14 @@ export default function HomePage() {
           <>
             <button
               onClick={prev}
-              disabled={focusIdx === 0}
+              disabled={safeIdx === 0}
               style={{
                 width: 44, height: 44, borderRadius: "50%",
                 border: "1.5px solid #e8e4de",
-                background: focusIdx === 0 ? "#f5f3ee" : "#fff",
-                fontSize: 20, color: focusIdx === 0 ? "#ccc" : "#333",
+                background: safeIdx === 0 ? "#f5f3ee" : "#fff",
+                fontSize: 20, color: safeIdx === 0 ? "#ccc" : "#333",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: focusIdx === 0 ? "default" : "pointer", flexShrink: 0,
+                cursor: safeIdx === 0 ? "default" : "pointer", flexShrink: 0,
               }}
             >‹</button>
 
@@ -949,20 +948,20 @@ export default function HomePage() {
                 {focusTrend?.name}
               </div>
               <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
-                {focusIdx + 1} / {navTrends.length}
+                {safeIdx + 1} / {navTrends.length}
               </div>
             </div>
 
             <button
               onClick={next}
-              disabled={focusIdx === navTrends.length - 1}
+              disabled={safeIdx === navTrends.length - 1}
               style={{
                 width: 44, height: 44, borderRadius: "50%",
                 border: "1.5px solid #e8e4de",
-                background: focusIdx === navTrends.length - 1 ? "#f5f3ee" : "#fff",
-                fontSize: 20, color: focusIdx === navTrends.length - 1 ? "#ccc" : "#333",
+                background: safeIdx === navTrends.length - 1 ? "#f5f3ee" : "#fff",
+                fontSize: 20, color: safeIdx === navTrends.length - 1 ? "#ccc" : "#333",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: focusIdx === navTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
+                cursor: safeIdx === navTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
               }}
             >›</button>
           </>
