@@ -803,7 +803,7 @@ export default function HomePage() {
               {appliedTopics.length === 0 && (
                 <div style={{ paddingBottom: 28 }}>
                   <p style={{ fontSize: 15, color: "#333", lineHeight: 1.85, margin: "4px 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    Augmented Radar maps emerging technology against consumer culture. Pick an industry and see what&apos;s actually moving.
+                    A research tool for emerging tech × anything. Pick a topic and see what's actually moving.
                   </p>
                   <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                     Vibe coded by Martina,{" "}
@@ -933,10 +933,10 @@ export default function HomePage() {
               ) : (
                 <>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    what are we into?
+                    what are we tracking?
                   </div>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
-                    pick something to dig into
+                    pick a topic to start.
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
                     {LIBRARY_TOPICS.map(t => (
@@ -1001,7 +1001,7 @@ export default function HomePage() {
                   pick a topic above to see what's actually moving.
                 </p>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  Vibe coded by Martina —{" "}
+                  a research tool for emerging tech × anything —{" "}
                   <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
                     Augmented Rarity
                   </a>
