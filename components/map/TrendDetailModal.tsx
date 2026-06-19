@@ -295,8 +295,8 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 onClick={() => setShowRelevanceInfo(false)}
                 style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
               >
-                <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>Cultural Relevance Index</div>
-                How much momentum this trend has right now. Scored by: volume and recency of signals captured, cross-category resonance (how many adjacent spaces it is touching), and how early or late we are in the adoption curve. Higher means more urgent to act on.
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>what's this score?</div>
+                how much momentum this trend actually has right now. we look at: how many signals we've picked up and how recent they are, how many different spaces it's touching, and where it sits on the adoption curve. higher score = more urgent to pay attention.
               </div>
             )}
           </div>
@@ -349,12 +349,12 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               {enriching && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: `${trend.color}08`, borderRadius: 12, marginBottom: 28, border: `1px solid ${trend.color}18` }}>
                   <div style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${trend.color}40`, borderTopColor: trend.color, animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: "#888" }}>Building full analysis. About 15 seconds.</span>
+                  <span style={{ fontSize: 12, color: "#888" }}>pulling the full breakdown together, give us a sec</span>
                 </div>
               )}
               {enrichError && !enriching && (
                 <div style={{ padding: "14px 16px", background: "#fff5f5", borderRadius: 12, marginBottom: 28, border: "1px solid #ffd0d0", display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ fontSize: 12, color: "#cc3333", flex: 1 }}>Context generation failed. {enrichError.includes("API key") ? "API key not set." : "Try again."}</span>
+                  <span style={{ fontSize: 12, color: "#cc3333", flex: 1 }}>{enrichError?.includes("API key") ? "API key not set up." : "that didn't load, give it another go"}</span>
                   <button onClick={runEnrich} style={{ fontSize: 11, fontWeight: 700, color: textCol, background: "none", border: `1.5px solid ${trend.color}50`, borderRadius: 8, padding: "5px 12px", cursor: "pointer", whiteSpace: "nowrap", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
                     Retry
                   </button>

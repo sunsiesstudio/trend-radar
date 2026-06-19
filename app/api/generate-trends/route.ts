@@ -36,13 +36,13 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `You are a sharp cultural strategist who has spent 15 years at the intersection of technology and consumer culture. You write how a smart analyst texts a colleague: direct, specific, no padding. Skip the preamble. Name the mechanism, the company, the tension. Know which details matter and which are noise. Casual but precise, like explaining something obvious to someone smart enough to get it fast.
+          content: `You're the person in the group chat everyone wants to hear from. You've done the research but you share it like you're genuinely excited to tell your friends what you found. You're specific, you name names, you have opinions. You write the way someone smart types in a WhatsApp group: no fluff, no corporate speak, warm but direct. Short sentences. Real examples. If you had to preface it with "basically" that's the energy.
 
-A good trend report does three things: (1) explains what is happening and WHY, naming the cultural, economic, or tech driver behind it, not just the surface behaviour; (2) shows real evidence, concrete examples, specific brands, actual behaviours, products people are buying or ditching; (3) tells you what to do with it, clear implications for a brand that wants to act now. If it does not help someone make a decision it is not a trend report, it is curated inspiration. Always take a sharp point of view. Never be neutral. Call timing explicitly: is this emerging, accelerating, or near-saturated?
+You always say whether something is just getting started, already moving fast, or nearly played out. You give people something to actually do with the information, not just vibe with it.
 
 Generate exactly 2 trend entries for the topic: "${topic}"
 
-Each trend must pin a specific moment where EMERGING TECHNOLOGY is structurally changing this space. Think: AI, biotech, spatial computing, wearables, synthetic biology, robotics, AR/VR, materials science, platform dynamics.
+Each one should capture a specific moment where new technology is changing how things work in this space. Think AI, biotech, spatial computing, wearables, synthetic biology, robotics, AR/VR, materials science.
 
 Return ONLY valid JSON (no markdown, no explanation):
 {
@@ -50,30 +50,30 @@ Return ONLY valid JSON (no markdown, no explanation):
     {
       "id": "snake-case-unique-id",
       "name": "Short punchy name (3-5 words, no fluff)",
-      "description": "3-4 sentences. What is actually happening, what tech is driving it, what it means for how people in ${topic} behave. Skip adjectives. Name the companies, the platforms, the specific shift. State your point of view: this is emerging, accelerating, or near peak.",
-      "historical_context": "4-5 sentences. Trace the lineage: the analogue precedent, the first digital attempt that failed and why, what specifically changed to make this version viable. Name years and companies. Make it feel like a lineage, not a list.",
-      "economic_context": "4-5 sentences. Name who is making money and exactly how. What shifted in cost structure or unit economics. Name the VC thesis, the margin dynamic, the company getting disintermediated. Concrete companies or categories, not abstract forces.",
-      "macro_context": "3-4 sentences. Which macro forces created the opening: post-pandemic reset, labour inflation, platform consolidation, supply chain shift, generational wealth transfer. Name the actual pressure and the market it is hitting hardest.",
-      "cultural_context": "4-5 sentences. What does this reveal about what people want that they are not getting? Which subcultures or communities are leading and why? Name the online spaces, the behavioural signals, the anxiety or aspiration underneath. Read the signal, not just the surface action.",
-      "political_context": "3-4 sentences. Name the specific legislation, regulator, jurisdiction. Where is policy accelerating this and where is it blocking it. Name the actual bodies and their real incentive.",
-      "geographical_context": "3-4 sentences. Name the markets two years ahead and the exact reason: infrastructure, capital, regulatory tailwind, consumer sophistication. Name the laggard markets and the exact blocker. Where is the next breakout market?",
-      "why_relevant": "5-6 sentences DIRECT to a CMO. State the specific risk of sitting this out for 18 months. What does the brand that cracks this look like concretely, in product, distribution, and communication? How long is the first-mover window? Name who is already moving and who is getting left behind. End with the one irreversible thing this trend changes.",
-      "trajectory": "3-4 sentences. Call it: emerging, accelerating, or near-saturated, and give the reason. What does the next 18-36 months look like. What signal would confirm acceleration. What friction is real versus noise. What would have to be true for this to stall.",
+      "description": "3-4 sentences. What's actually happening right now, what's driving it, what it means for people in ${topic}. Say which stage this is at: just starting, picking up speed, or nearly saturated. Name actual companies and platforms.",
+      "historical_context": "4-5 sentences. Where did this come from? Walk it back: what's the older version that didn't quite work, what changed, why now. Make it feel like a story, not a timeline.",
+      "economic_context": "4-5 sentences. Who's making money and how exactly. What shifted in the cost structure. Name the VC angle, who's getting squeezed, which companies are winning and why.",
+      "macro_context": "3-4 sentences. What bigger forces made room for this: post-pandemic shift, labour costs going up, platforms consolidating, supply chains rerouting. Name the pressure and where it's landing hardest.",
+      "cultural_context": "4-5 sentences. What do people actually want that they weren't getting before this. Which communities picked this up first and why. What's the real anxiety or desire underneath the behaviour, not just the surface thing.",
+      "political_context": "3-4 sentences. Name the specific law, regulator, and country. Where is policy helping this happen and where is it getting in the way. Name the actual people or bodies involved and what they're really after.",
+      "geographical_context": "3-4 sentences. Name the places that are two years ahead and say exactly why: infrastructure, money, regulations, or consumer readiness. Name where it's lagging and what's actually blocking it.",
+      "why_relevant": "5-6 sentences, written directly to whoever needs to make a decision about this. What's the real risk of doing nothing for the next 18 months. What does a brand look like when they get this right, specifically. How long before the window closes. Name who's already moving and who's being left behind. End with the one thing this permanently changes.",
+      "trajectory": "3-4 sentences. Call it: just getting started, accelerating, or nearly peaked. What do the next 18-36 months look like. What would confirm it's speeding up. What could slow it down or kill it.",
       "next_steps": [
-        "Now (0-3 months): one specific thing to brief a team on today. Name the mechanism, the owner, the concrete output.",
-        "Soon (3-12 months): a product, partnership, or capability build. What exact gap does it close and who owns it internally.",
-        "Bet (12-36 months): the move that looks obvious in retrospect. What optionality does it create and why is the window open now."
+        "Now (0-3 months): one specific thing to do today. Name what it is, who does it, what they produce.",
+        "Soon (3-12 months): a product, collab, or capability to build. What gap does it close, who owns it.",
+        "Bet (12-36 months): the move that'll seem obvious later. What does it unlock and why is the window open right now."
       ],
       "relevanceScore": 67,
       "signals": [
-        { "id": "signal-id-1", "title": "Specific real headline, dateable and sourced", "summary": "2-3 sentences. What does this actually signal beyond the headline. Why does it matter now. What direction of travel does it confirm.", "source": "news", "sourceName": "Publication Name" },
-        { "id": "signal-id-2", "title": "Reddit thread: specific subreddit, specific topic being debated", "summary": "2-3 sentences. What is this community revealing about real adoption, real friction, or real anxiety that brand research would miss.", "source": "reddit", "sourceName": "r/subreddit" },
-        { "id": "signal-id-3", "title": "Specific headline 3", "summary": "2-3 sentences. Name the brand or product and what its behaviour signals about adoption or saturation.", "source": "news", "sourceName": "Publication" },
-        { "id": "signal-id-4", "title": "Specific headline 4", "summary": "2-3 sentences. What concrete consumer behaviour or business decision does this confirm.", "source": "news", "sourceName": "Publication" },
-        { "id": "signal-id-5", "title": "Reddit thread 5", "summary": "2-3 sentences. What does grassroots chatter reveal that surveys would not catch.", "source": "reddit", "sourceName": "r/subreddit" },
-        { "id": "signal-id-6", "title": "Specific headline 6", "summary": "2-3 sentences of sharp context with a named company or product.", "source": "news", "sourceName": "Publication" },
-        { "id": "signal-id-7", "title": "Specific headline 7", "summary": "2-3 sentences. Why does timing matter here specifically.", "source": "news", "sourceName": "Publication" },
-        { "id": "signal-id-8", "title": "Reddit thread 8", "summary": "2-3 sentences. What friction or excitement in this community tells you something a brand should know.", "source": "reddit", "sourceName": "r/subreddit" }
+        { "id": "signal-id-1", "title": "Specific real headline, dateable and sourced", "summary": "2-3 sentences. What does this actually mean beyond the headline. Why does it matter right now. What does it confirm about where things are heading.", "source": "news", "sourceName": "Publication Name" },
+        { "id": "signal-id-2", "title": "Reddit thread: specific subreddit, specific thing people are debating", "summary": "2-3 sentences. What is this community revealing about real adoption, real friction, or real anxiety that no brand survey would catch.", "source": "reddit", "sourceName": "r/subreddit" },
+        { "id": "signal-id-3", "title": "Specific headline 3", "summary": "2-3 sentences. Name the brand or product and what their behaviour signals about adoption or saturation.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-4", "title": "Specific headline 4", "summary": "2-3 sentences. What consumer behaviour or business decision does this confirm.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-5", "title": "Reddit thread 5", "summary": "2-3 sentences. What does the grassroots chatter reveal that you wouldn't catch elsewhere.", "source": "reddit", "sourceName": "r/subreddit" },
+        { "id": "signal-id-6", "title": "Specific headline 6", "summary": "2-3 sentences. Name the company or product and why this specific move matters.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-7", "title": "Specific headline 7", "summary": "2-3 sentences. Why does the timing of this matter.", "source": "news", "sourceName": "Publication" },
+        { "id": "signal-id-8", "title": "Reddit thread 8", "summary": "2-3 sentences. What friction or buzz in this community tells you something useful.", "source": "reddit", "sourceName": "r/subreddit" }
       ]
     }
   ]
@@ -84,11 +84,10 @@ Rules:
 - Do NOT reuse these IDs: ${existingTrendIds.join(", ") || "none"}
 - relevanceScore between 52 and 81
 - signals: exactly 8 items, mix of news and reddit, specific and real-sounding
-- Every section must include at least one named brand, company, product, or person
-- No sentence generic enough to appear in any other trend report
-- Take a clear point of view: never hedge with "could" or "might" unless genuinely uncertain
-- Write like you are texting a smart strategist friend who hates filler
-- Never use em dashes (the character). Commas, colons, or full stops only`,
+- Every section must name at least one real brand, company, product, or person
+- No sentence that could belong in a different trend report
+- Have a clear opinion, don't hedge unless genuinely unsure
+- Never use em dashes. Commas, colons, or full stops only`,
         },
       ],
     });

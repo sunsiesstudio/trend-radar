@@ -22,9 +22,9 @@ async function attempt(trendName: string, trendDescription: string, industryLabe
     messages: [
       {
         role: "user",
-        content: `You are a sharp cultural strategist with 20 years tracking where technology, capital, and consumer culture collide. Write like you are explaining something to a smart colleague: direct, specific, no padding. Name the company, the regulator, the tension. Casual but precise. No MBA frameworks, no filler.
+        content: `You're the person in the group chat who always has the good intel. You write the way someone smart types in a WhatsApp group: warm, direct, specific, no corporate speak. You've done the research and you're genuinely excited to share it. Short sentences. Real examples. Name the brand, the regulation, the exact thing that changed. No fluff, no hedging, no intro phrases like "In today's landscape" or "This trend".
 
-Generate a full contextual analysis for this trend:
+Write a full contextual breakdown for this trend:
 
 TREND: "${trendName}"
 DESCRIPTION: "${trendDescription}"
@@ -33,19 +33,19 @@ INDUSTRY: "${industryLabel}"
 Return ONLY a valid JSON object. All values are strings. No arrays, no nested objects.
 
 {
-  "historical_context": "4-5 sentences tracing the lineage. The analogue precedent, the failed first attempt, the specific inflection point that made this version viable. Name years, companies, moments.",
-  "cultural_context": "4-5 sentences on what consumers actually want that they are not getting. Which subcultures or communities are leading and why. Name the online spaces, the behavioural signals, the cultural tension underneath.",
-  "economic_context": "4-5 sentences on who is making money and how. What changed in the unit economics or cost structure. Name the VC thesis, the margin dynamic, who is getting disintermediated.",
-  "macro_context": "3-4 sentences on which macro forces opened the door. Post-pandemic reset, labour inflation, platform consolidation, supply chain shift. Name the specific pressure and the market it is hitting hardest.",
-  "political_context": "3-4 sentences. Name the legislation, the regulatory body, the jurisdiction. Where policy is accelerating this and where it is blocking it. Name the actors and their actual incentive.",
-  "geographical_context": "3-4 sentences. Name the markets two years ahead and the exact reason. Name the laggard markets and the exact blocker. Where the next breakout market is and what would need to shift.",
-  "why_it_matters": "5-6 sentences direct to a CMO. Specific risk of ignoring this for 18 months. What the brand that gets it right does differently in product, distribution, communication. How long the first-mover window is. Who is already moving and who is getting left behind.",
-  "action_now": "One specific thing to brief a team on today (0-3 months). Name the mechanism, the owner, the deliverable.",
-  "action_soon": "One product, partnership, or capability build for 3-12 months. What gap it closes and who owns it internally.",
-  "action_bet": "The 12-36 month move that looks obvious in retrospect. What optionality it creates."
+  "historical_context": "4-5 sentences. Where did this come from? Walk it back: the older version that didn't quite work, the specific moment that made this version viable. Name years, companies, and the thing that actually changed.",
+  "cultural_context": "4-5 sentences. What do people actually want that they weren't getting before. Which communities picked this up first and why. Name the online spaces, the real behaviour signals, the anxiety or desire underneath.",
+  "economic_context": "4-5 sentences. Who's making money and exactly how. What shifted in the cost structure or unit economics. Name the VC angle, the margin story, who's getting squeezed.",
+  "macro_context": "3-4 sentences. What bigger forces made room for this: post-pandemic shift, labour costs, platform consolidation, supply chain changes. Name the pressure and where it's hitting hardest.",
+  "political_context": "3-4 sentences. Name the actual law, regulator, and country. Where is policy helping this happen and where is it getting in the way. Name the real players and what they're actually after.",
+  "geographical_context": "3-4 sentences. Name the places that are two years ahead and say exactly why. Name where it's lagging and what's actually blocking it. Where's the next place to watch?",
+  "why_it_matters": "5-6 sentences direct to whoever makes decisions. What's the real cost of sitting this out for 18 months. What does a brand look like when they get this right, in product and in communication. How long before the window closes. Who's already moving and who's getting left behind.",
+  "action_now": "One specific thing to do in the next 0-3 months. Name what it is, who does it, what they actually produce.",
+  "action_soon": "One product, collab, or capability to build in 3-12 months. What gap does it close and who owns it.",
+  "action_bet": "The 12-36 month move that'll seem obvious in retrospect. What does it unlock."
 }
 
-Rules: specific to THIS trend in ${industryLabel} only. Name companies, regulators, cities throughout. No sentence opens with "This trend", "In today's", "As we". No em dashes. Commas, colons, or full stops only.`,
+Rules: everything must be specific to this trend in ${industryLabel}. Name companies, regulators, cities throughout. No em dashes. Commas, colons, or full stops only.`,
       },
     ],
   });

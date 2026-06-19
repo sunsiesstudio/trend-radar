@@ -878,19 +878,19 @@ export default function HomePage() {
                 <>
                   <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #eee", borderTopColor: "#aaa", margin: "0 auto 16px", animation: "spin 0.9s linear infinite" }} />
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#555", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    Mapping {generatingTopic}…
+                    on it, digging into {generatingTopic}…
                   </div>
                   <div style={{ fontSize: 12, color: "#bbb", marginTop: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Finding where new tech is hitting this space
+                    give us a sec
                   </div>
                 </>
               ) : generationError ? (
                 <>
                   <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 8 }}>
-                    Couldn't load trends
+                    hmm, that didn't work
                   </div>
                   <div style={{ fontSize: 13, color: "#999", marginBottom: 16, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-                    Try one of the built-in topics below, or hit retry.
+                    try one of these or hit retry
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 18, pointerEvents: "all", maxWidth: 280 }}>
                     {LIBRARY_TOPICS.filter(t => !activeTopics.includes(t)).slice(0, 8).map(t => (
@@ -915,7 +915,7 @@ export default function HomePage() {
               ) : activeTopics.length > 0 ? (
                 <>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#bbb", fontFamily: "'EB Garamond', Georgia, serif", marginBottom: 8 }}>
-                    Nothing generated yet
+                    nothing here yet
                   </div>
                   <button
                     onClick={retryGeneration}
@@ -933,10 +933,10 @@ export default function HomePage() {
               ) : (
                 <>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    What are we tracking?
+                    what are we into?
                   </div>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
-                    Pick a topic to start
+                    pick something to dig into
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
                     {LIBRARY_TOPICS.map(t => (
@@ -993,12 +993,12 @@ export default function HomePage() {
           <div style={{ flex: 1, textAlign: "center", padding: "0 12px" }}>
             {generatingTopic ? (
               <div style={{ fontSize: 13, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                Generating {generatingTopic}…
+                on it… {generatingTopic}
               </div>
             ) : (
               <>
                 <p style={{ fontSize: 14, color: "#888", lineHeight: 1.7, margin: "0 0 6px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                  Augmented Radar maps emerging tech against consumer culture.
+                  pick a topic above to see what's actually moving.
                 </p>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   Vibe coded by Martina —{" "}
