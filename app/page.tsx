@@ -749,7 +749,7 @@ export default function HomePage() {
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    {appliedTopics.length > 0 ? "What you're tracking" : "About"}
+                    {appliedTopics.length > 0 ? "What we're tracking" : "About"}
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
                     {appliedTopics.length > 0 ? appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ") : "Augmented Radar"}
@@ -901,7 +901,7 @@ export default function HomePage() {
               ) : (
                 <>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    What are you tracking?
+                    What are we tracking?
                   </div>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
                     Pick a topic to start
