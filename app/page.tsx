@@ -727,15 +727,13 @@ export default function HomePage() {
 
             <p style={{ fontSize: 14, color: "#444", lineHeight: 1.7, margin: "14px 0 0", fontFamily: "'EB Garamond', Georgia, serif" }}>
               {appliedTopics.length === 0
-                ? "Add a topic above to start mapping where new technology is reshaping that space."
+                ? "Pick a topic and the radar shows you where tech is genuinely moving in that space."
                 : (() => {
                     const topics = appliedTopics;
                     const phrase = topics.length === 1
                       ? topics[0]
-                      : topics.length === 2
-                      ? `${topics[0]} and ${topics[1]}`
-                      : `${topics.slice(0, -1).join(", ")}, and ${topics[topics.length - 1]}`;
-                    return `${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"} tracking where new tech is hitting ${phrase} right now. Not predictions. Things that are actually moving.`;
+                      : topics.slice(0, -1).join(", ") + " & " + topics[topics.length - 1];
+                    return `what's worth watching in ${phrase} right now.`;
                   })()
               }
             </p>
