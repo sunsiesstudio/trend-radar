@@ -83,7 +83,8 @@ Rules:
 - relevanceScore between 52 and 81
 - signals array must have exactly 8 items — mix of news and reddit, specific real-sounding headlines
 - No sentence may be generic enough to appear in any other trend report — every claim must be specific to this trend in ${topic}
-- Write as if this report costs €5,000 and the client will notice if it reads like a language model`,
+- Write as if this report costs €5,000 and the client will notice if it reads like a language model
+- Never use em dashes (the — character). Use commas, colons, or full stops instead`,
         },
       ],
     });

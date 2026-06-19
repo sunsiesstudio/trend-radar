@@ -25,18 +25,6 @@ const ORBIT_R  = 160;
 const SIG_W    = 158;
 const SIG_H    = 44;
 
-const BLOB: Record<string, string> = {
-  "ai-creativity":         "65% 35% 40% 60% / 55% 45% 65% 35%",  // leans top-left
-  "digital-identity":      "25% 75% 55% 45% / 45% 55% 25% 75%",  // pointy TL + BR
-  "ar-commerce":           "75% 25% 50% 50% / 50% 50% 75% 25%",  // two sharp corners opposite
-  "biotech-beauty":        "50% 50% 30% 70% / 70% 30% 55% 45%",  // droops bottom-right
-  "sustainable-materials": "40% 60% 70% 30% / 30% 70% 40% 60%",  // diagonal S-curve
-  "3d-printing":           "60% 40% 60% 40% / 40% 60% 40% 60%",  // alternating wave
-  "wearables":             "70% 30% 45% 55% / 55% 45% 70% 30%",  // top-heavy
-  "neurotech":             "30% 70% 65% 35% / 65% 35% 30% 70%",  // bottom-heavy opposite
-  "spatial-computing":     "55% 45% 55% 45% / 25% 75% 75% 25%",  // vertically pinched
-  "longevity":             "45% 55% 35% 65% / 70% 30% 55% 45%",  // irregular organic
-};
 
 
 function darkenColor(hex: string, factor = 0.62): string {
@@ -135,7 +123,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
     <div style={{ position: "relative" }}>
       <div style={{
         width: data.d, height: data.d,
-        borderRadius: BLOB[data.id] ?? "50%",
+        borderRadius: blobFromId(data.id),
         background: blobColor,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
@@ -774,7 +762,7 @@ export default function HomePage() {
                     Augmented Radar maps emerging technology against consumer culture. Pick an industry and see what&apos;s actually moving.
                   </p>
                   <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Vibe coded by Martina —{" "}
+                    Vibe coded by Martina,{" "}
                     <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Augmented Rarity
                     </a>
@@ -811,7 +799,7 @@ export default function HomePage() {
               {appliedTopics.length > 0 && (
                 <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
                   <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Vibe coded by Martina —{" "}
+                    Vibe coded by Martina,{" "}
                     <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Augmented Rarity
                     </a>

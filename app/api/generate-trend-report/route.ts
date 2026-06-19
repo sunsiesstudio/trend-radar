@@ -41,7 +41,8 @@ Return ONLY valid JSON (no markdown, no explanation):
 Rules:
 - Every claim must be specific to THIS trend in ${industryLabel} — nothing generic enough to appear in any other report
 - Name companies, platforms, regulators, specific technologies, specific geographies
-- Write as if this costs €5,000 and the client will notice if it reads like a language model`,
+- Write as if this costs €5,000 and the client will notice if it reads like a language model
+- Never use em dashes (the — character). Use commas, colons, or full stops instead`,
         },
       ],
     });

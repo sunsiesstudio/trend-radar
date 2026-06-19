@@ -57,7 +57,7 @@ function exportPDF(trend: Trend, signals: Signal[]) {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>${trend.name} — Trend Intelligence Report</title>
+<title>${trend.name}: Trend Intelligence Report</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -151,13 +151,13 @@ ${trend.macroContext ? `
 </div>
 
 <div class="section">
-  <div class="sh"><span class="sn">06</span><span class="st">Signal Intelligence — ${signals.length} Active Signals</span></div>
+  <div class="sh"><span class="sn">06</span><span class="st">Signal Intelligence: ${signals.length} Active Signals</span></div>
   <p class="signals-intro">The following signals were identified across media, research, and cultural sources. Each represents a real-world data point confirming or advancing this trend's trajectory.</p>
   ${signalsHTML}
 </div>
 
 <div class="footer">
-  <span><strong>Augmented Radar</strong> &nbsp;—&nbsp; Where tech meets fashion, beauty &amp; lifestyle</span>
+  <span><strong>Augmented Radar</strong> &nbsp;·&nbsp; Where tech meets fashion, beauty &amp; lifestyle</span>
   <span>${date}</span>
 </div>
 
