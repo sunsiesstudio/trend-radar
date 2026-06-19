@@ -1030,10 +1030,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Dating app fatigue and the loneliness epidemic created a vacuum at the same time. People want connection but are exhausted by the mechanics of the search. AI steps in not as a replacement for human feeling but as infrastructure — reducing the friction between wanting connection and having it.",
     brandMoves: [
-      "Hinge launches 'Your Turn' AI coach that reviews conversation patterns and suggests better openers",
-      "Match Group acquires AI relationship coaching startup Lara, integrating it across its entire app portfolio",
-      "Bumble adds AI profile review that scores bios and conversation starters, with suggested rewrites",
-      "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months",
+      { label: "Hinge launches 'Your Turn' AI coach that reviews conversation patterns and suggests better openers", url: "https://hinge.co" },
+      { label: "Match Group acquires AI relationship coaching startup Lara, integrating it across its entire app portfolio", url: "https://mtch.com" },
+      { label: "Bumble adds AI profile review that scores bios and conversation starters, with suggested rewrites", url: "https://bumble.com" },
+      { label: "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months", url: "https://irisapp.ai" },
     ],
   },
   {
@@ -1055,10 +1055,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The post-pandemic generation experienced what happens when life speeds up to the point of breaking. Slow dating is partly a wellness behaviour and partly a rejection of the commodification of connection — swiping culture made people feel like products in a catalogue.",
     brandMoves: [
-      "Thursday app revives the single-day dating format: matches only available on Thursdays, building scarcity and anticipation",
-      "The League adds mandatory video dates before chat opens, forcing a minimum investment before swipe dynamics kick in",
-      "Feeld rebrands around 'intentional connection', positioning depth of interaction over volume of matches",
-      "Hinge's 'Most Compatible' feature surfaces one high-quality match per day, explicitly reducing decision fatigue",
+      { label: "Thursday app revives the single-day dating format: matches only available on Thursdays, building scarcity and anticipation", url: "https://thursday.dating" },
+      { label: "The League adds mandatory video dates before chat opens, forcing a minimum investment before swipe dynamics kick in", url: "https://theleague.com" },
+      { label: "Feeld rebrands around 'intentional connection', positioning depth of interaction over volume of matches", url: "https://feeld.co" },
+      { label: "Hinge's 'Most Compatible' feature surfaces one high-quality match per day, explicitly reducing decision fatigue", url: "https://hinge.co" },
     ],
   },
 
@@ -1082,10 +1082,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Gen Z drinks less than any generation on record. The reasons stack: mental health awareness, wellness culture, financial pressure, and the sober curious movement normalising the choice. The social infrastructure of nightlife never caught up — it was still built for drinking. Sober venues are filling a gap that nobody built for.",
     brandMoves: [
-      "Redemption Bar in London expands to three locations, proving premium alcohol-free nightlife is commercially viable",
-      "Heineken 0.0 becomes the official beer of UEFA, mainstream sport embracing non-alcoholic as primary placement",
-      "Seedlip reaches distribution in 25 countries, premium non-alcoholic spirits category achieves mass-market reach",
-      "Soberish Festival in New York sells 4,000 tickets in 48 hours, proving demand for large-scale sober social events",
+      { label: "Redemption Bar in London expands to three locations, proving premium alcohol-free nightlife is commercially viable", url: "https://redemptionbar.co.uk" },
+      { label: "Heineken 0.0 becomes the official beer of UEFA, mainstream sport embracing non-alcoholic as primary placement", url: "https://heineken.com" },
+      { label: "Seedlip reaches distribution in 25 countries, premium non-alcoholic spirits category achieves mass-market reach", url: "https://seedlipdrinks.com" },
+      { label: "Soberish Festival in New York sells 4,000 tickets in 48 hours, proving demand for large-scale sober social events", url: "https://soberishfestival.com" },
     ],
   },
   {
@@ -1107,10 +1107,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "A generation raised on video games and social media doesn't just want to watch — it wants to be inside the experience. Passive entertainment feels insufficient after years of interactive digital worlds. Immersive nightlife is the physical world finally catching up to that expectation.",
     brandMoves: [
-      "Secret Cinema's events sell out in minutes at £100+ per ticket, proving the premium for participation over observation",
-      "Prada partners with artist collective Random International to create a sensory installation tour across five cities",
-      "Electric Gamebox expands to 20 cities, tech-powered group experience venues becoming a distinct nightlife format",
-      "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building",
+      { label: "Secret Cinema's events sell out in minutes at £100+ per ticket, proving the premium for participation over observation", url: "https://secretcinema.org" },
+      { label: "Prada partners with artist collective Random International to create a sensory installation tour across five cities", url: "https://prada.com" },
+      { label: "Electric Gamebox expands to 20 cities, tech-powered group experience venues becoming a distinct nightlife format", url: "https://electricgamebox.com" },
+      { label: "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building", url: "https://dior.com" },
     ],
   },
 
@@ -1134,10 +1134,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The optimisation mindset that brought us biohacking and nootropics reached the coffee ritual. Caffeine was already functional — adding mushrooms or adaptogens is a small cognitive leap for a consumer who already sees their body as a system to tune. The morning ritual became the highest-leverage moment in the health stack.",
     brandMoves: [
-      "Four Sigmatic's mushroom coffee line reaches $80M revenue, mainstreaming functional coffee as a standalone category",
-      "Starbucks adds adaptogens to its Customisation menu, bringing functional ingredients to mass-market coffee orders",
-      "MUD\\WTR raises $60M to scale its coffee alternative, converting mainstream coffee drinkers to functional blends",
-      "Clevr Blends (backed by Serena Williams) brings adaptogens to the latte format — wellness meets the morning convenience ritual",
+      { label: "Four Sigmatic's mushroom coffee line reaches $80M revenue, mainstreaming functional coffee as a standalone category", url: "https://us.foursigmatic.com" },
+      { label: "Starbucks adds adaptogens to its Customisation menu, bringing functional ingredients to mass-market coffee orders", url: "https://starbucks.com" },
+      { label: "MUD\\WTR raises $60M to scale its coffee alternative, converting mainstream coffee drinkers to functional blends", url: "https://mudwtr.com" },
+      { label: "Clevr Blends (backed by Serena Williams) brings adaptogens to the latte format — wellness meets the morning convenience ritual", url: "https://clevrblends.com" },
     ],
   },
   {
@@ -1159,10 +1159,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Remote work destroyed the office but left workers without a neutral ground. The third space fills a genuine spatial need: somewhere that isn't domestic or corporate, where presence is optional and time is yours. Coffee shops always served this function — they're now consciously designing for it.",
     brandMoves: [
-      "Blank Street Coffee designs all locations around 'deep work' seating and extended-stay intention, not just throughput",
-      "Blue Bottle's 'Slow Bar' experience creates destination coffee moments designed to last 45 minutes, not 4",
-      "Ace Hotel lobbies become work-friendly social spaces by design, the hotel-as-third-space model spreading to other brands",
-      "Aesop opens 'reading rooms' adjacent to select stores — retail as third space, borrowing the coffee shop playbook",
+      { label: "Blank Street Coffee designs all locations around 'deep work' seating and extended-stay intention, not just throughput", url: "https://blankstreetcoffee.com" },
+      { label: "Blue Bottle's 'Slow Bar' experience creates destination coffee moments designed to last 45 minutes, not 4", url: "https://bluebottlecoffee.com" },
+      { label: "Ace Hotel lobbies become work-friendly social spaces by design, the hotel-as-third-space model spreading to other brands", url: "https://acehotel.com" },
+      { label: "Aesop opens 'reading rooms' adjacent to select stores — retail as third space, borrowing the coffee shop playbook", url: "https://aesop.com" },
     ],
   },
 
@@ -1186,10 +1186,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Hustle culture burned people out and the backlash is real. A generation that watched burnout destroy careers is approaching fitness with the same optimisation mindset applied to sustainability: push less, recover better, last longer. Recovery culture is anti-hustle cosplay for people who still want results.",
     brandMoves: [
-      "Whoop 4.0 reaches 1M+ subscribers with no screen, just biometric recovery coaching — hardware disappears into behaviour change",
-      "Theragun becomes a fixture in luxury hotel fitness suites, recovery technology normalised as a premium amenity",
-      "Oura Ring partners with NBA, NFL, and multiple national Olympic programs, elite sport legitimacy drives consumer adoption",
-      "Hyperice raises $300M to expand recovery tech into professional sports venues, gyms, and physical therapy clinics",
+      { label: "Whoop 4.0 reaches 1M+ subscribers with no screen, just biometric recovery coaching — hardware disappears into behaviour change", url: "https://whoop.com" },
+      { label: "Theragun becomes a fixture in luxury hotel fitness suites, recovery technology normalised as a premium amenity", url: "https://therabody.com" },
+      { label: "Oura Ring partners with NBA, NFL, and multiple national Olympic programs, elite sport legitimacy drives consumer adoption", url: "https://ouraring.com" },
+      { label: "Hyperice raises $300M to expand recovery tech into professional sports venues, gyms, and physical therapy clinics", url: "https://hyperice.com" },
     ],
   },
   {
@@ -1211,10 +1211,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Sports fandom was always identity-forming but the internet gave it infrastructure. A teenager who grew up watching their favourite athlete's daily YouTube vlog, following their brand on Instagram, and wearing their collab doesn't have a fan relationship — they have a parasocial one that operates at the intensity of friendship.",
     brandMoves: [
-      "LeBron James' SpringHill Company reaches $750M valuation, proving athlete-to-media-to-brand is a viable business model",
-      "Fanatics grows to $31B valuation by owning the licensed merchandise, trading card, and gambling verticals simultaneously",
-      "Socios fan token platform signs partnerships with 50 major sports clubs, financial fandom becomes a mainstream product",
-      "F1 Drive to Survive creates a new global fan base for a sport that was stagnating — content-led audience expansion works",
+      { label: "LeBron James' SpringHill Company reaches $750M valuation, proving athlete-to-media-to-brand is a viable business model", url: "https://thespringhillco.com" },
+      { label: "Fanatics grows to $31B valuation by owning the licensed merchandise, trading card, and gambling verticals simultaneously", url: "https://fanatics.com" },
+      { label: "Socios fan token platform signs partnerships with 50 major sports clubs, financial fandom becomes a mainstream product", url: "https://socios.com" },
+      { label: "F1 Drive to Survive creates a new global fan base for a sport that was stagnating — content-led audience expansion works", url: "https://formula1.com" },
     ],
   },
 
@@ -1238,10 +1238,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Declining birth rates, delayed family formation, and urban loneliness have made pets the primary relationship for a significant portion of young adults. That's not hyperbole — it changes what the product means. A dog supplement isn't pet care, it's care for the most important relationship in the house.",
     brandMoves: [
-      "The Farmer's Dog reaches $1B+ revenue with fresh, human-grade pet food subscriptions — premium nutrition goes mainstream",
-      "Ollie Pet Food raises $100M to expand personalised meal planning for dogs, nutrition-tech enters the pet market",
-      "Wild One launches pet wellness brand with design-forward supplements and anxiety products for urban dog owners",
-      "Chewy's CarePlus pet health insurance grows 200% as owners extend human healthcare logic to pets",
+      { label: "The Farmer's Dog reaches $1B+ revenue with fresh, human-grade pet food subscriptions — premium nutrition goes mainstream", url: "https://thefarmersdog.com" },
+      { label: "Ollie Pet Food raises $100M to expand personalised meal planning for dogs, nutrition-tech enters the pet market", url: "https://myollie.com" },
+      { label: "Wild One launches pet wellness brand with design-forward supplements and anxiety products for urban dog owners", url: "https://wildone.com" },
+      { label: "Chewy's CarePlus pet health insurance grows 200% as owners extend human healthcare logic to pets", url: "https://chewy.com" },
     ],
   },
   {
