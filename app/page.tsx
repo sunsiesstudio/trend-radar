@@ -611,7 +611,7 @@ export default function HomePage() {
       </div>
 
       {/* Topics bar */}
-      <div style={{
+      {activeTopics.length > 0 && <div style={{
         flexShrink: 0, zIndex: 9,
         height: 44, padding: "0 14px",
         display: "flex", alignItems: "center", gap: 6,
@@ -688,7 +688,7 @@ export default function HomePage() {
             generating {generatingTopic}…
           </div>
         )}
-      </div>
+      </div>}
 
       {/* Autocomplete dropdown */}
       {addingTopic && showSuggestions && topicSuggestions.length > 0 && (
