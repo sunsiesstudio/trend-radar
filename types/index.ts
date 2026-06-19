@@ -18,7 +18,7 @@ export interface Trend {
   politicalContext?: string;
   geographicalContext?: string;
   culturalContext?: string;
-  brandMoves?: string[];
+  brandMoves?: Array<{ label: string; url?: string }>;
 }
 
 export interface Signal {

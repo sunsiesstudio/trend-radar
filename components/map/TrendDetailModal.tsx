@@ -268,7 +268,13 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                   {(trend.brandMoves ?? []).map((move, i) => (
                     <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
                       <div style={{ width: 6, height: 6, borderRadius: "50%", background: trend.color, flexShrink: 0, marginTop: 5 }} />
-                      <p style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0 }}>{move}</p>
+                      {move.url ? (
+                        <a href={move.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0, textDecoration: "none", display: "block" }}>
+                          {move.label} <span style={{ color: textCol, fontSize: 11, fontWeight: 700 }}>→</span>
+                        </a>
+                      ) : (
+                        <p style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0 }}>{move.label}</p>
+                      )}
                     </div>
                   ))}
                 </div>

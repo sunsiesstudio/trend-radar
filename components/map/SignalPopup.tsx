@@ -144,11 +144,19 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
             }}>
               <span style={{ fontSize: 16 }}>{getSourceIcon(signal.source)}</span>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#333" }}>
-                  {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
-                  {" · "}
-                  <span style={{ fontWeight: 400, color: "#666" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
-                </div>
+                {effectiveUrl ? (
+                  <a href={effectiveUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12, fontWeight: 700, color: "#333", textDecoration: "none" }}>
+                    {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
+                    {" · "}
+                    <span style={{ fontWeight: 400, color: "#666" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
+                  </a>
+                ) : (
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#333" }}>
+                    {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
+                    {" · "}
+                    <span style={{ fontWeight: 400, color: "#666" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
+                  </div>
+                )}
                 {fmt(signal.date) && (
                   <div style={{ fontSize: 11, color: "#999", marginTop: 1 }}>Published {fmt(signal.date)}</div>
                 )}

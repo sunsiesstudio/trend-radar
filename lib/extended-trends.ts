@@ -926,10 +926,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Gen Z grew up through the financial crisis and came of age in a pandemic economy — scarcity mindset is built in. Combined with climate guilt and the dopamine of the find, secondhand shopping hits three values at once: financial, environmental, and experiential. Thrifting became identity before it became a market.",
     brandMoves: [
-      "Levi's launches 'SecondHand' buyback and resale platform, taking brand control of the aftermarket",
-      "Patagonia's Worn Wear program becomes a standalone revenue channel generating $10M+ annually",
-      "Burberry partners with TheRealReal for authenticated luxury resale, adding provenance data to physical tags",
-      "Zara launches a Pre-Owned section on its app — mainstream fast fashion entering the circular economy",
+      { label: "Levi's launches 'SecondHand' buyback and resale platform, taking brand control of the aftermarket", url: "https://levi.com" },
+      { label: "Patagonia's Worn Wear program becomes a standalone revenue channel generating $10M+ annually", url: "https://wornwear.patagonia.com" },
+      { label: "Burberry partners with TheRealReal for authenticated luxury resale, adding provenance data to physical tags", url: "https://therealreal.com" },
+      { label: "Zara launches a Pre-Owned section on its app — mainstream fast fashion entering the circular economy", url: "https://zara.com" },
     ],
   },
   {
@@ -951,10 +951,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The algorithm's relentless optimisation for engagement accidentally killed the very thing that made fashion exciting: anticipation. When everything is a trend and trends last three weeks, nothing is aspirational anymore. Exhaustion is the inevitable output of a system designed for infinite scroll.",
     brandMoves: [
-      "Loro Piana doubles down on 'no logo, no trend' positioning — searches for 'quiet luxury' hit 5 billion TikTok views",
-      "Uniqlo's LifeWear philosophy becomes a marketing cornerstone, selling timelessness as the differentiator",
-      "A.P.C. leans into 'never on trend, always relevant' as a brand truth, growing repeat purchase rate 40%",
-      "COS shifts to slow-drop collections with 12-month production windows instead of trend-reactive sprints",
+      { label: "Loro Piana doubles down on 'no logo, no trend' positioning — searches for 'quiet luxury' hit 5 billion TikTok views", url: "https://loropiana.com" },
+      { label: "Uniqlo's LifeWear philosophy becomes a marketing cornerstone, selling timelessness as the differentiator", url: "https://uniqlo.com" },
+      { label: "A.P.C. leans into 'never on trend, always relevant' as a brand truth, growing repeat purchase rate 40%", url: "https://apc.fr" },
+      { label: "COS shifts to slow-drop collections with 12-month production windows instead of trend-reactive sprints", url: "https://cos.com" },
     ],
   },
 
@@ -978,10 +978,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The wellness boom convinced consumers that personalisation is their right, not a luxury. A generation that tracks sleep, macros, and HRV every day sees no reason their skincare shouldn't be equally data-driven. The dermatologist's authority hasn't disappeared — it's been democratised.",
     brandMoves: [
-      "Neutrogena's Skin360 AI scanner reaches 10M users, feeding personalised product recommendations that drive 3x conversion",
-      "L'Oréal acquires AI skin diagnostics startup Syntilay to bring analysis tech into mass-market channels",
-      "Sephora integrates skin scanner booths in flagship stores, creating a diagnostic-to-purchase funnel in-store",
-      "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool",
+      { label: "Neutrogena's Skin360 AI scanner reaches 10M users, feeding personalised product recommendations that drive 3x conversion", url: "https://neutrogena.com" },
+      { label: "L'Oréal acquires AI skin diagnostics startup Syntilay to bring analysis tech into mass-market channels", url: "https://loreal.com" },
+      { label: "Sephora integrates skin scanner booths in flagship stores, creating a diagnostic-to-purchase funnel in-store", url: "https://sephora.com" },
+      { label: "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool", url: "https://esteelauder.com" },
     ],
   },
   {
@@ -1003,10 +1003,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The inside-out beauty concept is only possible because supplement culture went mainstream first. A generation that takes ashwagandha for stress and magnesium for sleep is primed to believe collagen peptides and biotin work — the trust in ingestibles was already there before beauty entered the category.",
     brandMoves: [
-      "Hum Nutrition partners with Sephora, bringing ingestible beauty into prestige retail for the first time",
-      "Vital Proteins (Nestlé) grows to $200M revenue, mainstreaming collagen as a daily consumer habit",
-      "The Nue Co. launches a full skin supplement stack with clinical trial data, raising the bar on efficacy claims",
-      "Glossier launches its first supplement SKU — a clear signal the ingestible beauty category has arrived",
+      { label: "Hum Nutrition partners with Sephora, bringing ingestible beauty into prestige retail for the first time", url: "https://humnutrition.com" },
+      { label: "Vital Proteins (Nestlé) grows to $200M revenue, mainstreaming collagen as a daily consumer habit", url: "https://vitalproteins.com" },
+      { label: "The Nue Co. launches a full skin supplement stack with clinical trial data, raising the bar on efficacy claims", url: "https://thenueco.com" },
+      { label: "Glossier launches its first supplement SKU — a clear signal the ingestible beauty category has arrived", url: "https://glossier.com" },
     ],
   },
 
