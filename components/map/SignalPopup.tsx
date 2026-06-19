@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Signal } from "@/types";
 import { SIGNALS, getSourceIcon } from "@/lib/trends";
 
@@ -37,25 +38,34 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
     .filter(Boolean) as Signal[];
   const textCol = accessibleTextColor(trendColor);
 
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const fmt = (d?: string) =>
     d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : null;
 
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
+      style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", alignItems: isDesktop ? "center" : "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
           backgroundColor: "#fff",
-          borderRadius: "24px 24px 0 0",
+          borderRadius: isDesktop ? "24px" : "24px 24px 0 0",
           width: "100%",
-          maxWidth: 680,
-          maxHeight: "88svh",
+          maxWidth: isDesktop ? 560 : 680,
+          maxHeight: isDesktop ? "85vh" : "88svh",
           display: "flex",
           flexDirection: "column",
-          boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",
+          boxShadow: isDesktop ? "0 24px 80px rgba(0,0,0,0.2)" : "0 -12px 80px rgba(0,0,0,0.15)",
           overflow: "hidden",
         }}
       >
