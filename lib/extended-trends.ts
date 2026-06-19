@@ -932,14 +932,15 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   retail:           EXTENDED_TRENDS.filter(t => t.topics?.includes("retail")),
   social:           EXTENDED_TRENDS.filter(t => t.topics?.includes("social")),
   education:        EXTENDED_TRENDS.filter(t => t.topics?.includes("education")),
-  // Consumer culture topics — AI-generated on demand
-  fashion:          [],
-  beauty:           [],
-  lifestyle:        [],
+  // Topics with cross-tagged extended trends
+  fashion:          EXTENDED_TRENDS.filter(t => t.topics?.includes("fashion")),
+  beauty:           EXTENDED_TRENDS.filter(t => t.topics?.includes("beauty")),
+  lifestyle:        EXTENDED_TRENDS.filter(t => t.topics?.includes("lifestyle")),
+  health:           EXTENDED_TRENDS.filter(t => t.topics?.includes("health")),
+  sustainability:   EXTENDED_TRENDS.filter(t => t.topics?.includes("sustainability")),
+  tech:             EXTENDED_TRENDS.filter(t => t.topics?.includes("tech")),
+  // Topics with no pre-built trends — AI-generated on demand
   sport:            [],
-  health:           [],
-  sustainability:   [],
-  tech:             [],
   dating:           [],
   pets:             [],
   finance:          [],
