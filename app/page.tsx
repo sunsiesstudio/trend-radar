@@ -997,9 +997,6 @@ export default function HomePage() {
               </div>
             ) : (
               <>
-                <p style={{ fontSize: 14, color: "#888", lineHeight: 1.7, margin: "0 0 6px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                  pick a topic above to see what's actually moving.
-                </p>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   a research tool for emerging tech × anything —{" "}
                   <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
