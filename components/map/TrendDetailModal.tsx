@@ -290,12 +290,17 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           ) : (
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8, padding: "14px 0" }}>
               {/* Report meta */}
-              <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: "2px solid #1a1a1a" }}>
+              <div style={{ marginBottom: 20, paddingBottom: 14, borderBottom: "1px solid #e8e4de" }}>
                 <div style={{ fontSize: 9, fontWeight: 800, color: "#999", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 4 }}>Trend Intelligence Report</div>
                 <div style={{ fontSize: 9, color: "#bbb", letterSpacing: "0.06em" }}>
                   {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
                   {" · "}Cultural Relevance Index: <strong style={{ color: "#555" }}>{trend.relevanceScore}/100</strong>
                 </div>
+              </div>
+
+              {/* Intro — always shown */}
+              <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: `2px solid #1a1a1a` }}>
+                <p style={{ fontSize: 15, color: "#222", lineHeight: 1.85, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.description}</p>
               </div>
 
               {/* Loading state for context generation */}
