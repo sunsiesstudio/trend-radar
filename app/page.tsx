@@ -802,7 +802,7 @@ export default function HomePage() {
               {appliedTopics.length === 0 && (
                 <div style={{ paddingBottom: 28 }}>
                   <p style={{ fontSize: 15, color: "#333", lineHeight: 1.85, margin: "4px 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    Augmented Radar catches signals where emerging tech meets your industry. Drop a topic. See what's actually moving.
+                    Each big blob is a trend. The smaller ones orbiting it are the signals — news, conversations, data points that prove it's real. Pick a topic and watch it come alive.
                   </p>
                   <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                     Vibe coded by Martina,{" "}
@@ -932,10 +932,10 @@ export default function HomePage() {
               ) : (
                 <>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    what's on your radar?
+                    what are we tracking?
                   </div>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
-                    drop a topic. see what's shifting.
+                    pick a topic to start
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
                     {LIBRARY_TOPICS.map(t => (
