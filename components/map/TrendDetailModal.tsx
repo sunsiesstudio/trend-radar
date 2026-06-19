@@ -163,7 +163,6 @@ ${trend.macroContext ? `
 }
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
-  const [showReport, setShowReport] = useState(false);
   const [showRelevanceInfo, setShowRelevanceInfo] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
@@ -206,29 +205,10 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         {/* Header */}
         <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <span style={{
-              fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase",
-              letterSpacing: "0.07em", background: `${trend.color}14`, padding: "3px 10px", borderRadius: 20,
-            }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.07em", background: `${trend.color}14`, padding: "3px 10px", borderRadius: 20 }}>
               Trend
             </span>
-            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ display: "flex", gap: 6 }}>
-                <button
-                  onClick={() => setShowReport(false)}
-                  style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: !showReport ? trend.color : "#f0f0f0", color: !showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                >
-                  Signals
-                </button>
-                <button
-                  onClick={() => setShowReport(true)}
-                  style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: showReport ? trend.color : "#f0f0f0", color: showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                >
-                  Report
-                </button>
-              </div>
-              <button onClick={onClose} style={{ width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
-            </div>
+            <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
           </div>
 
           <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
@@ -241,96 +221,85 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
                 <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
               </div>
-              <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>
-                {trend.relevanceScore}% relevance
-              </span>
+              <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>{trend.relevanceScore}% relevance</span>
               <button
                 onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
-                style={{ width: 18, height: 18, borderRadius: "50%", border: `1.5px solid #d0ccc6`, background: "#fff", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
-                aria-label="What is this score?"
+                style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#fff", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
               >i</button>
             </div>
             {showRelevanceInfo && (
-              <div
-                onClick={() => setShowRelevanceInfo(false)}
-                style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
-              >
+              <div onClick={() => setShowRelevanceInfo(false)} style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}>
                 <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>what's this score?</div>
-                how much momentum this trend actually has right now. we look at: how many signals we've picked up and how recent they are, how many different spaces it's touching, and where it sits on the adoption curve. higher score = more urgent to pay attention.
+                how much momentum this trend has right now: signal volume, recency, cross-category spread, and where it sits on the adoption curve. higher = more urgent.
               </div>
             )}
           </div>
         </div>
 
-        {/* Body — scrolls; touch-action pan-y overrides the body-level none */}
+        {/* Body */}
         <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 24px" } as React.CSSProperties}>
-          {!showReport ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "14px 0" }}>
-              {/* Description shown at top of body in signals view */}
-              <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6, margin: "0 0 4px" }}>{trend.description}</p>
-              {signals.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => onSelectSignal(s)}
-                  style={{ textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                    <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
-                    {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
-                    <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
-                  <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
-                  {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
-                </button>
-              ))}
-              <div style={{ height: 8 }} />
+          <div style={{ paddingTop: 4, paddingBottom: 16, display: "flex", flexDirection: "column", gap: 0 }}>
+
+            {/* What's happening */}
+            <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, margin: "0 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
+              {trend.description}
+            </p>
+
+            {/* Why it matters */}
+            <div style={{ background: `${trend.color}0c`, border: `1.5px solid ${trend.color}28`, borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
+              <div style={{ fontSize: 9, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why it matters</div>
+              <p style={{ fontSize: 13.5, color: "#111", lineHeight: 1.8, margin: 0 }}>{trend.whyRelevant}</p>
             </div>
-          ) : (
-            <div style={{ padding: "20px 0 8px" }}>
 
-              {/* What's happening */}
-              <p style={{ fontSize: 16, color: "#111", lineHeight: 1.85, margin: "0 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                {trend.description}
-              </p>
-
-              {/* Why it matters */}
-              <div style={{ background: `${trend.color}0c`, border: `1.5px solid ${trend.color}28`, borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
-                <div style={{ fontSize: 9, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why it matters</div>
-                <p style={{ fontSize: 13.5, color: "#111", lineHeight: 1.8, margin: 0 }}>{trend.whyRelevant}</p>
-              </div>
-
-              {/* What to do */}
-              {trend.nextSteps.length > 0 && (
-                <div style={{ marginBottom: 8 }}>
-                  <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what to do</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {trend.nextSteps.map((step, i) => (
-                      <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "13px 14px", background: "#faf9f6", borderRadius: 12, border: "1px solid #efefef" }}>
-                        <div style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, background: trend.color + "18", color: textCol, border: `1.5px solid ${trend.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
-                          {String(i + 1).padStart(2, "0")}
-                        </div>
-                        <p style={{ fontSize: 13, color: "#222", lineHeight: 1.7, margin: 0 }}>{step}</p>
+            {/* What to do */}
+            {trend.nextSteps.length > 0 && (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what to do</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {trend.nextSteps.map((step, i) => (
+                    <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 14px", background: "#faf9f6", borderRadius: 12, border: "1px solid #efefef" }}>
+                      <div style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, background: trend.color + "18", color: textCol, border: `1.5px solid ${trend.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
+                        {String(i + 1).padStart(2, "0")}
                       </div>
-                    ))}
-                  </div>
+                      <p style={{ fontSize: 13, color: "#222", lineHeight: 1.7, margin: 0 }}>{step}</p>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              <div style={{ height: 8 }} />
-            </div>
-          )}
+            {/* Signals */}
+            {signals.length > 0 && (
+              <>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>signals ({signals.length})</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {signals.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => onSelectSignal(s)}
+                      style={{ textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                        <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
+                        {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
+                        <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
+                      <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
+                      {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div style={{ height: 8 }} />
+          </div>
         </div>
 
         {/* Footer */}
-        <div style={{
-          padding: "12px 20px",
-          paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))",
-          borderTop: "1px solid #f0ede8",
-          flexShrink: 0,
-          background: "#fff",
-        }}>
+        <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#fff" }}>
           <button
             onClick={() => exportPDF(trend, signals)}
             style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
