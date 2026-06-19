@@ -112,6 +112,7 @@ ${trend.macroContext ? `
   <p>${trend.macroContext}</p>
 </div>` : ""}
 
+${(trend.socialContext || trend.politicalContext || trend.geographicalContext || trend.culturalContext) ? `
 <div class="section">
   <div class="sh"><span class="sn">02</span><span class="st">Social, Political, Geographical &amp; Cultural Landscape</span></div>
   <div class="two-col">
@@ -120,7 +121,7 @@ ${trend.macroContext ? `
     ${trend.geographicalContext ? `<div class="context-block"><div class="context-block-label">Geographical</div><p>${trend.geographicalContext}</p></div>` : ""}
     ${trend.culturalContext ? `<div class="context-block"><div class="context-block-label">Cultural</div><p>${trend.culturalContext}</p></div>` : ""}
   </div>
-</div>
+</div>` : ""}
 
 <div class="section">
   <div class="sh"><span class="sn">03</span><span class="st">Strategic Rationale</span></div>
@@ -150,7 +151,7 @@ ${trend.macroContext ? `
 </div>
 
 <div class="footer">
-  <span><strong>Augmented Radar</strong> &nbsp;·&nbsp; Where tech meets fashion, beauty &amp; lifestyle</span>
+  <span><strong>Augmented Radar</strong> maps emerging tech against culture. By Martina from <a href="https://open.substack.com/pub/augmentedrarity" style="color:${c}">Augmented Rarity</a></span>
   <span>${date}</span>
 </div>
 
@@ -306,6 +307,12 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           >
             Export as PDF
           </button>
+          <p style={{ fontSize: 10, color: "#ccc", margin: "10px 0 0", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+            Augmented Radar maps emerging tech against culture. By Martina from{" "}
+            <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
+              Augmented Rarity
+            </a>
+          </p>
         </div>
       </div>
     </div>

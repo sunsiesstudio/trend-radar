@@ -598,7 +598,10 @@ export default function HomePage() {
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)",
       }}>
-        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000" }}>Augmented Radar</span>
+        <button
+          onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
+          style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" }}
+        >Augmented Radar</button>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {lastUpdated && (
             <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
@@ -815,7 +818,7 @@ export default function HomePage() {
                     Each big blob is a trend. The smaller ones orbiting it are the signals — news, conversations, data points that prove it's real. Pick a topic and watch it come alive.
                   </p>
                   <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Vibe coded by Martina,{" "}
+                    Augmented Radar maps emerging tech against culture. By Martina from{" "}
                     <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Augmented Rarity
                     </a>
@@ -852,7 +855,7 @@ export default function HomePage() {
               {appliedTopics.length > 0 && (
                 <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
                   <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Vibe coded by Martina,{" "}
+                    Augmented Radar maps emerging tech against culture. By Martina from{" "}
                     <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Augmented Rarity
                     </a>
@@ -1075,7 +1078,7 @@ export default function HomePage() {
             ) : (
               <>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  Augmented Radar maps emerging tech against culture. —{" "}
+                  Augmented Radar maps emerging tech against culture. By Martina from{" "}
                   <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
                     Augmented Rarity
                   </a>
@@ -1141,7 +1144,9 @@ export default function HomePage() {
           signal={activeSignal}
           trendColor={activeTrendForSignal.color}
           trendName={activeTrendForSignal.name}
+          allSignals={allSignals}
           onClose={() => setActiveSignal(null)}
+          onSelectSignal={(s) => setActiveSignal(s)}
         />
       )}
 

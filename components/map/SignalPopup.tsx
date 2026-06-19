@@ -33,9 +33,11 @@ const SOURCE_LABELS: Record<string, string> = {
 
 export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose, onSelectSignal }: Props) {
   const pool = allSignals ?? SIGNALS;
-  const related = (signal.crossLinks ?? [])
-    .map((id) => pool.find((s) => s.id === id))
-    .filter(Boolean) as Signal[];
+  const crossLinked = (signal.crossLinks ?? []).map((id) => pool.find((s) => s.id === id)).filter(Boolean) as Signal[];
+  const related = crossLinked.length > 0
+    ? crossLinked
+    : pool.filter((s) => s.trendId === signal.trendId && s.id !== signal.id).slice(0, 4);
+  const relatedLabel = crossLinked.length > 0 ? "Connected signals" : "More from this trend";
   const textCol = accessibleTextColor(trendColor);
 
   const [isDesktop, setIsDesktop] = useState(false);
@@ -135,7 +137,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                 fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase",
                 letterSpacing: "0.1em", marginBottom: 10,
               }}>
-                Connected signals ({related.length})
+                {relatedLabel} ({related.length})
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {related.map((r) => (
@@ -166,6 +168,16 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
               </div>
             </div>
           )}
+        </div>
+
+        {/* Footer */}
+        <div style={{ padding: "10px 20px", paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))", borderTop: "1px solid #f0ede8", flexShrink: 0, textAlign: "center" } as React.CSSProperties}>
+          <p style={{ fontSize: 10, color: "#ccc", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+            Augmented Radar maps emerging tech against culture. By Martina from{" "}
+            <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
+              Augmented Rarity
+            </a>
+          </p>
         </div>
       </div>
     </div>
