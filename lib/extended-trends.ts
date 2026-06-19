@@ -954,6 +954,12 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
 // All topics available in the library, used for autocomplete suggestions
 export const LIBRARY_TOPICS = Object.keys(TOPIC_LIBRARY);
 
+// Curated topics shown on the initial empty state screen
+export const FEATURED_TOPICS = [
+  "fashion", "beauty", "gaming", "music", "food", "travel",
+  "wellness", "luxury", "dating", "nightlife", "skincare", "coffee",
+];
+
 // ─── Extended Signals ─────────────────────────────────────────────────────────
 
 export const EXTENDED_SIGNALS: Signal[] = [

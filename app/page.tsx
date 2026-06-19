@@ -12,7 +12,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
-import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS, TOPIC_DESCRIPTIONS } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_DESCRIPTIONS } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
@@ -938,7 +938,7 @@ export default function HomePage() {
                     pick a topic to start.
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
-                    {LIBRARY_TOPICS.map(t => (
+                    {FEATURED_TOPICS.map(t => (
                       <button key={t} onClick={() => addTopic(t)}
                         style={{
                           padding: "7px 16px",
