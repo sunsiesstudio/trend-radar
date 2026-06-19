@@ -207,7 +207,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d, latestDate } as TrendNodeData,
     });
 
-    const MAX_R = d / 2 + 110;
+    const MAX_R = d / 2 + 72;
 
     // Local list for this cluster only — used when building nodes/edges below.
     const placements: P[] = [];
@@ -219,8 +219,8 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       for (let k = 0; k < sig.id.length; k++) h2 = (h2 * 37 + sig.id.charCodeAt(k) * 17) >>> 0;
       // Fully hash-derived angle — each signal lands in a unique, organic direction
       const baseAngle = ((h & 0xffffff) / 0x1000000) * Math.PI * 2;
-      // Random start radius — signals scatter at different distances from the blob
-      const startR = d / 2 + GAP + ((h2 & 0xff) / 255) * (MAX_R * 0.4);
+      // Start right at the blob edge — small scatter keeps petals tight
+      const startR = d / 2 + GAP + ((h2 & 0xff) / 255) * 28;
       const charsPerLine = Math.ceil(sig.title.length / 4);
       const w = Math.max(90, Math.min(165, Math.round(charsPerLine * 5.8) + 20));
       // Height from text wrapping so text never overflows the blob
@@ -263,9 +263,8 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
         return false;
       };
 
-      // Start at the random radius, then fill in closer if needed
-      placed = tryPlace(startR, MAX_R, true);
-      if (!placed) placed = tryPlace(d / 2 + GAP, startR, true);
+      // Try from blob edge outward — fills closest slots first like petals
+      placed = tryPlace(d / 2 + GAP, MAX_R, true);
       if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
 
       const entry: P = { sig, w, h: sigH, fillAlpha, borderAlpha, isNew: !seenIds.has(sig.id), x, y };
