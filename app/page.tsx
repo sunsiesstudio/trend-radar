@@ -451,6 +451,15 @@ export default function HomePage() {
     );
   }, [topicInput, activeTopics]);
 
+  const emptySearchSuggestions = useMemo(() => {
+    const q = emptySearchInput.toLowerCase().trim();
+    if (!q) return [];
+    const all = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
+    return all.filter(t =>
+      t.includes(q) || t.replace(/-/g, " ").includes(q)
+    );
+  }, [emptySearchInput, activeTopics]);
+
   // Extracted so it can be called both on first add and on retry
   const runGeneration = useCallback(async (key: string, newTopics: string[]) => {
     setGeneratingTopic(key);
@@ -936,43 +945,72 @@ export default function HomePage() {
                     what are we tracking?
                   </div>
                   {/* Search bar */}
-                  <form
-                    onSubmit={(e) => { e.preventDefault(); if (emptySearchInput.trim()) { addTopic(emptySearchInput.trim()); setEmptySearchInput(""); } }}
-                    style={{ pointerEvents: "all", marginBottom: 28, width: "100%", maxWidth: 340 }}
-                  >
-                    <div style={{ position: "relative" }}>
-                      <input
-                        value={emptySearchInput}
-                        onChange={(e) => setEmptySearchInput(e.target.value)}
-                        placeholder="search any topic…"
-                        style={{
-                          width: "100%", boxSizing: "border-box",
-                          height: 48, padding: "0 52px 0 20px",
-                          border: "1.5px solid #e0ddd8", borderRadius: 30,
-                          fontSize: 14, fontWeight: 500, color: "#222",
-                          background: "#fff", outline: "none",
-                          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                          boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-                        }}
-                      />
-                      <button
-                        type="submit"
-                        disabled={!emptySearchInput.trim()}
-                        style={{
-                          position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)",
-                          width: 36, height: 36, borderRadius: "50%",
-                          background: emptySearchInput.trim() ? "#111" : "#eee",
-                          border: "none", cursor: emptySearchInput.trim() ? "pointer" : "default",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          transition: "background 0.15s",
-                        }}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                          <path d="M7 1L13 7L7 13M1 7H13" stroke={emptySearchInput.trim() ? "#fff" : "#bbb"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                    </div>
-                  </form>
+                  <div style={{ pointerEvents: "all", marginBottom: 28, width: "100%", maxWidth: 340, position: "relative" }}>
+                    <form onSubmit={(e) => { e.preventDefault(); if (emptySearchInput.trim()) { addTopic(emptySearchInput.trim()); setEmptySearchInput(""); } }}>
+                      <div style={{ position: "relative" }}>
+                        <input
+                          value={emptySearchInput}
+                          onChange={(e) => setEmptySearchInput(e.target.value)}
+                          onBlur={() => setTimeout(() => setEmptySearchInput(v => { return v; }), 150)}
+                          placeholder="search any topic…"
+                          style={{
+                            width: "100%", boxSizing: "border-box",
+                            height: 48, padding: "0 52px 0 20px",
+                            border: "1.5px solid #e0ddd8", borderRadius: emptySearchSuggestions.length > 0 ? "24px 24px 0 0" : 30,
+                            fontSize: 14, fontWeight: 500, color: "#222",
+                            background: "#fff", outline: "none",
+                            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+                          }}
+                        />
+                        <button
+                          type="submit"
+                          disabled={!emptySearchInput.trim()}
+                          style={{
+                            position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)",
+                            width: 36, height: 36, borderRadius: "50%",
+                            background: emptySearchInput.trim() ? "#111" : "#eee",
+                            border: "none", cursor: emptySearchInput.trim() ? "pointer" : "default",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            transition: "background 0.15s",
+                          }}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M7 1L13 7L7 13M1 7H13" stroke={emptySearchInput.trim() ? "#fff" : "#bbb"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </form>
+                    {/* Autocomplete dropdown */}
+                    {emptySearchSuggestions.length > 0 && (
+                      <div style={{
+                        position: "absolute", top: 48, left: 0, right: 0, zIndex: 30,
+                        background: "#fff",
+                        border: "1.5px solid #e0ddd8", borderTop: "1px solid #f0ede8",
+                        borderRadius: "0 0 20px 20px",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                        maxHeight: 220, overflowY: "auto",
+                        padding: "4px 0 8px",
+                      }}>
+                        {emptySearchSuggestions.map(t => (
+                          <button
+                            key={t}
+                            onMouseDown={() => { addTopic(t); setEmptySearchInput(""); }}
+                            style={{
+                              display: "flex", alignItems: "center", gap: 10,
+                              width: "100%", padding: "10px 18px",
+                              background: "none", border: "none", cursor: "pointer",
+                              textAlign: "left", fontSize: 13, fontWeight: 600, color: "#222",
+                              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            }}
+                          >
+                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0 }} />
+                            {t.replace(/-/g, " ")}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                   {/* Inspiration pills */}
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#ccc", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 12, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                     or try
