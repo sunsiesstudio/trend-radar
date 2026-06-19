@@ -106,15 +106,17 @@ function ageAlpha(date: string | undefined): { fillAlpha: string; borderAlpha: s
 }
 
 function blobFromId(id: string): string {
-  // Two independent hashes → 8 fully uncorrelated corner values
-  let h1 = 0, h2 = 0;
-  for (let i = 0; i < id.length; i++) {
-    h1 = (h1 * 31 + id.charCodeAt(i)) >>> 0;
-    h2 = (h2 * 37 + id.charCodeAt(i) * 17) >>> 0;
-  }
-  // Full 5-90% range for maximum blob wobble
-  const v = (h: number, n: number) => 5 + (((h >>> n) & 0xff) % 86);
-  return `${v(h1,0)}% ${v(h1,8)}% ${v(h1,16)}% ${v(h1,24)}% / ${v(h2,0)}% ${v(h2,8)}% ${v(h2,16)}% ${v(h2,24)}%`;
+  // FNV-1a forward pass
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  // Avalanche so single-char differences (signal-1 vs signal-2) scatter all bits
+  h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
+  // Second independent pass (reverse order + different seed)
+  let g = 0x811c9dc5 ^ id.length;
+  for (let i = id.length - 1; i >= 0; i--) { g ^= id.charCodeAt(i); g = Math.imul(g, 0x01000193) >>> 0; }
+  g ^= g >>> 16; g = Math.imul(g, 0x45d9f3b) >>> 0; g ^= g >>> 16;
+  const v = (seed: number) => 8 + (seed % 74);
+  return `${v(h & 0xff)}% ${v((h >> 8) & 0xff)}% ${v((h >> 16) & 0xff)}% ${v((h >>> 24) & 0xff)}% / ${v(g & 0xff)}% ${v((g >> 8) & 0xff)}% ${v((g >> 16) & 0xff)}% ${v((g >>> 24) & 0xff)}%`;
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
