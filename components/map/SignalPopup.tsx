@@ -3,6 +3,15 @@
 import { Signal } from "@/types";
 import { SIGNALS, getSourceIcon } from "@/lib/trends";
 
+function darkenHex(hex: string, f: number): string {
+  return "#" + ["1,3","3,5","5,7"].map(r => Math.round(parseInt(hex.slice(...r.split(",").map(Number)),16)*f).toString(16).padStart(2,"0")).join("");
+}
+function accessibleTextColor(hex: string): string {
+  const lin = (c: number) => { const v=c/255; return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4; };
+  const lum = (h: string) => 0.2126*lin(parseInt(h.slice(1,3),16))+0.7152*lin(parseInt(h.slice(3,5),16))+0.0722*lin(parseInt(h.slice(5,7),16));
+  let f=1.0; while(1.05/(lum(darkenHex(hex,f))+0.05)<4.5&&f>0.05)f-=0.02; return darkenHex(hex,f);
+}
+
 interface Props {
   signal: Signal;
   trendColor: string;
@@ -26,6 +35,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
   const related = (signal.crossLinks ?? [])
     .map((id) => pool.find((s) => s.id === id))
     .filter(Boolean) as Signal[];
+  const textCol = accessibleTextColor(trendColor);
 
   const fmt = (d?: string) =>
     d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : null;
@@ -57,7 +67,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           <div style={{ padding: "20px 24px 0" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
               <span style={{
-                fontSize: 11, fontWeight: 700, color: trendColor, textTransform: "uppercase",
+                fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase",
                 letterSpacing: "0.07em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20,
               }}>
                 {trendName}
@@ -92,7 +102,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   style={{
-                    marginLeft: "auto", fontSize: 11, fontWeight: 700, color: trendColor,
+                    marginLeft: "auto", fontSize: 11, fontWeight: 700, color: textCol,
                     textDecoration: "none", padding: "5px 12px", background: `${trendColor}14`,
                     borderRadius: 20, whiteSpace: "nowrap",
                   }}

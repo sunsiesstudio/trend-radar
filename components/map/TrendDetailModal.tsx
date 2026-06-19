@@ -5,6 +5,15 @@ import { Trend, Signal } from "@/types";
 import { SIGNALS, TRENDS, getSourceIcon } from "@/lib/trends";
 import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
 
+function darkenHex(hex: string, f: number): string {
+  return "#" + ["1,3","3,5","5,7"].map(r => Math.round(parseInt(hex.slice(...r.split(",").map(Number)),16)*f).toString(16).padStart(2,"0")).join("");
+}
+function accessibleTextColor(hex: string): string {
+  const lin = (c: number) => { const v=c/255; return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4; };
+  const lum = (h: string) => 0.2126*lin(parseInt(h.slice(1,3),16))+0.7152*lin(parseInt(h.slice(3,5),16))+0.0722*lin(parseInt(h.slice(5,7),16));
+  let f=1.0; while(1.05/(lum(darkenHex(hex,f))+0.05)<4.5&&f>0.05)f-=0.02; return darkenHex(hex,f);
+}
+
 interface Props {
   trend: Trend;
   extraSignals?: Signal[];
@@ -162,6 +171,7 @@ ${trend.macroContext ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
   const [showReport, setShowReport] = useState(false);
+  const textCol = accessibleTextColor(trend.color);
   const signals = [
     ...SIGNALS.filter((s) => s.trendId === trend.id),
     ...EXTENDED_SIGNALS.filter((s) => s.trendId === trend.id),
@@ -194,7 +204,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
             <span style={{
-              fontSize: 11, fontWeight: 700, color: trend.color, textTransform: "uppercase",
+              fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase",
               letterSpacing: "0.07em", background: `${trend.color}14`, padding: "3px 10px", borderRadius: 20,
             }}>
               Trend
@@ -247,7 +257,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                     <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: trend.color, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
                     {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
                     <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
                   </div>
@@ -272,7 +282,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               {/* 01 — Macro */}
               {trend.macroContext && (
                 <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={trend.color} num="01" label="Macroeconomic Context" />
+                  <SectionHeader color={textCol} num="01" label="Macroeconomic Context" />
                   <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{trend.macroContext}</p>
                 </div>
               )}
@@ -280,7 +290,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               {/* 02 — SPGC context */}
               {(trend.socialContext || trend.politicalContext || trend.geographicalContext || trend.culturalContext) && (
                 <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={trend.color} num="02" label="Social · Political · Geographical · Cultural" />
+                  <SectionHeader color={textCol} num="02" label="Social · Political · Geographical · Cultural" />
                   <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                     {([
                       ["Social", trend.socialContext],
@@ -289,7 +299,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                       ["Cultural", trend.culturalContext],
                     ] as [string, string | undefined][]).filter(([, v]) => v).map(([label, body]) => (
                       <div key={label} style={{ borderLeft: `3px solid ${trend.color}44`, paddingLeft: 14 }}>
-                        <div style={{ fontSize: 8, fontWeight: 800, color: trend.color, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 5 }}>{label}</div>
+                        <div style={{ fontSize: 8, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 5 }}>{label}</div>
                         <p style={{ fontSize: 13, color: "#444", lineHeight: 1.8, margin: 0 }}>{body}</p>
                       </div>
                     ))}
@@ -299,23 +309,23 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
               {/* 03 — Strategic rationale */}
               <div style={{ background: `${trend.color}09`, border: `1px solid ${trend.color}20`, borderRadius: 12, padding: "16px 18px", marginBottom: 28 }}>
-                <SectionHeader color={trend.color} num="03" label="Strategic Rationale" />
+                <SectionHeader color={textCol} num="03" label="Strategic Rationale" />
                 <p style={{ fontSize: 13.5, color: "#222", lineHeight: 1.8, margin: 0, fontWeight: 500 }}>{trend.whyRelevant}</p>
               </div>
 
               {/* 04 — Trajectory */}
               <div style={{ marginBottom: 28 }}>
-                <SectionHeader color={trend.color} num="04" label="Trajectory &amp; Outlook" />
+                <SectionHeader color={textCol} num="04" label="Trajectory &amp; Outlook" />
                 <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.8, margin: 0, fontStyle: "italic" }}>{trend.trajectory}</p>
               </div>
 
               {/* 05 — Actions */}
               <div style={{ marginBottom: 28 }}>
-                <SectionHeader color={trend.color} num="05" label="Recommended Actions" />
+                <SectionHeader color={textCol} num="05" label="Recommended Actions" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {trend.nextSteps.map((step, i) => (
                     <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                      <div style={{ width: 22, height: 22, borderRadius: 5, flexShrink: 0, background: trend.color + "18", color: trend.color, border: `1.5px solid ${trend.color}35`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
+                      <div style={{ width: 22, height: 22, borderRadius: 5, flexShrink: 0, background: trend.color + "18", color: textCol, border: `1.5px solid ${trend.color}35`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
                         {String(i + 1).padStart(2, "0")}
                       </div>
                       <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.75, margin: 0 }}>{step}</p>
@@ -326,7 +336,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
               {/* 06 — Signals */}
               <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 22 }}>
-                <SectionHeader color={trend.color} num="06" label={`Signal Intelligence · ${signals.length} active signals`} />
+                <SectionHeader color={textCol} num="06" label={`Signal Intelligence · ${signals.length} active signals`} />
                 <p style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6, margin: "0 0 18px", fontStyle: "italic" }}>
                   Real-world data points confirming and advancing this trend&apos;s trajectory, drawn from live and curated sources.
                 </p>
@@ -371,7 +381,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         }}>
           <button
             onClick={() => exportPDF(trend, signals)}
-            style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: trend.color, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+            style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
           >
             Export as PDF
           </button>

@@ -45,6 +45,23 @@ function darkenColor(hex: string, factor = 0.62): string {
   return `#${r.toString(16).padStart(2,"0")}${g.toString(16).padStart(2,"0")}${b.toString(16).padStart(2,"0")}`;
 }
 
+// Darkening factor for a trend blob based on age of its freshest signal.
+// New trends (0 days) → factor 0.78 (bright). 60+ days → factor 0.50 (dark).
+function blobAgeFactor(latestDate?: string): number {
+  const ageDays = latestDate ? (Date.now() - new Date(latestDate).getTime()) / 86_400_000 : 60;
+  const t = Math.min(1, Math.max(0, ageDays / 60));
+  return 0.78 - t * 0.28;
+}
+
+// Returns a darkened version of hex that meets WCAG AA (4.5:1) against white.
+function accessibleTextColor(hex: string): string {
+  const lin = (c: number) => { const v = c / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = (h: string) => 0.2126 * lin(parseInt(h.slice(1,3),16)) + 0.7152 * lin(parseInt(h.slice(3,5),16)) + 0.0722 * lin(parseInt(h.slice(5,7),16));
+  let f = 1.0;
+  while (1.05 / (lum(darkenColor(hex, f)) + 0.05) < 4.5 && f > 0.05) f -= 0.02;
+  return darkenColor(hex, f);
+}
+
 // Compact grid for dynamically added trends — 3 columns, 520 px apart.
 function computeTrendPosition(idx: number): { x: number; y: number } {
   return { x: 80 + (idx % 3) * 520, y: 80 + Math.floor(idx / 3) * 520 };
@@ -81,7 +98,7 @@ function saveSeen(ids: Set<string>) {
 
 // ─── Node types ───────────────────────────────────────────────────────────────
 
-type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number };
+type TrendNodeData = { id: string; name: string; color: string; score: number; newCount: number; d: number; latestDate?: string };
 type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string };
 
 // Newer signals are lighter; older signals are darker.
@@ -112,12 +129,13 @@ function blobFromId(id: string): string {
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
+  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   return (
     <div style={{ position: "relative" }}>
       <div style={{
         width: data.d, height: data.d,
         borderRadius: BLOB[data.id] ?? "50%",
-        background: darkenColor(data.color),
+        background: blobColor,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: 22,
@@ -183,6 +201,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
     const pos = TREND_POSITIONS[trend.id] ?? trend.position ?? { x: 0, y: 0 };
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
+    const latestDate = trendSignals.reduce<string | undefined>((acc, s) => s.date && (!acc || s.date > acc) ? s.date : acc, undefined);
     const d = Math.round(75 + (trend.relevanceScore / 100) * 140);
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
@@ -192,7 +211,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
     nodes.push({
       id: trend.id, type: "trendCircle",
       position: { x: cx - d / 2, y: cy - d / 2 },
-      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d } as TrendNodeData,
+      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d, latestDate } as TrendNodeData,
     });
 
     const MAX_R = d / 2 + 250;
