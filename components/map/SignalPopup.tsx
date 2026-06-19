@@ -173,7 +173,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
         {/* Footer */}
         <div style={{ padding: "10px 20px", paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))", borderTop: "1px solid #f0ede8", flexShrink: 0, textAlign: "center" } as React.CSSProperties}>
           <p style={{ fontSize: 10, color: "#ccc", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-            Augmented Radar maps emerging tech against culture. By Martina from{" "}
+            Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
             <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
               Augmented Rarity
             </a>

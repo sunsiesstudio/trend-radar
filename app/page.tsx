@@ -818,7 +818,7 @@ export default function HomePage() {
                     Each big blob is a trend. The smaller ones orbiting it are the signals — news, conversations, data points that prove it's real. Pick a topic and watch it come alive.
                   </p>
                   <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Augmented Radar maps emerging tech against culture. By Martina from{" "}
+                    Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
                     <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Augmented Rarity
                     </a>
@@ -855,7 +855,7 @@ export default function HomePage() {
               {appliedTopics.length > 0 && (
                 <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
                   <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    Augmented Radar maps emerging tech against culture. By Martina from{" "}
+                    Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
                     <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Augmented Rarity
                     </a>
@@ -1078,7 +1078,7 @@ export default function HomePage() {
             ) : (
               <>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  Augmented Radar maps emerging tech against culture. By Martina from{" "}
+                  Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
                   <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
                     Augmented Rarity
                   </a>
