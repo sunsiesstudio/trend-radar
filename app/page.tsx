@@ -305,11 +305,17 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
 
 // ─── Mobile: focus one trend cluster ─────────────────────────────────────────
 
-function BoardController({ fitViewRef }: { fitViewRef: React.MutableRefObject<(() => void) | null> }) {
+function BoardController({ fitViewRef, nodeCount }: { fitViewRef: React.MutableRefObject<(() => void) | null>; nodeCount: number }) {
   const { fitView } = useReactFlow();
   useEffect(() => {
-    fitViewRef.current = () => fitView({ duration: 420, padding: 0.18 });
+    fitViewRef.current = () => fitView({ duration: 420, padding: 0.22 });
   }, [fitView, fitViewRef]);
+  const prev = useRef(0);
+  useEffect(() => {
+    if (nodeCount === prev.current) return;
+    prev.current = nodeCount;
+    if (nodeCount > 0) setTimeout(() => fitView({ duration: 600, padding: 0.22 }), 80);
+  }, [nodeCount, fitView]);
   return null;
 }
 
@@ -363,6 +369,7 @@ export default function HomePage() {
   const [generationError,  setGenerationError]  = useState<string | null>(null);
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
+  const [isDesktop, setIsDesktop] = useState(false);
   const [addingTopic,   setAddingTopic]   = useState(false);
   const [topicInput,    setTopicInput]    = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -394,6 +401,14 @@ export default function HomePage() {
       .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
       .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
     return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const h = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
   }, []);
 
   const allTrends = useMemo(() => [...appliedDynamicTrends], [appliedDynamicTrends]);
@@ -706,9 +721,19 @@ export default function HomePage() {
         } as React.CSSProperties}
       >
         {appliedTopics.length > 0 && (
-          <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", whiteSpace: "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
-            {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
-          </p>
+          <>
+            <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: isDesktop ? 2 : 1, WebkitBoxOrient: "vertical", whiteSpace: isDesktop ? "normal" : "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
+              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
+            </p>
+            {isDesktop && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setSummaryOpen(true); }}
+                style={{ flexShrink: 0, fontSize: 11, fontWeight: 700, color: "#999", background: "none", border: "1.5px solid #e8e4de", borderRadius: 20, padding: "4px 12px", cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.04em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+              >
+                Show more
+              </button>
+            )}
+          </>
         )}
       </div>
 
@@ -933,7 +958,7 @@ export default function HomePage() {
           proOptions={{ hideAttribution: true }}
           style={{ background: "#ffffff" }}
         >
-          <BoardController fitViewRef={fitViewRef} />
+          <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} />
           {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
         </ReactFlow>
       </div>

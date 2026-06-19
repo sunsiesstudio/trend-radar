@@ -171,6 +171,14 @@ ${trend.macroContext ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
   const [showReport, setShowReport] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const h = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
+  }, []);
   const [enriched, setEnriched] = useState<{
     historicalContext?: string; culturalContext?: string; economicContext?: string;
     macroContext?: string; politicalContext?: string; geographicalContext?: string;
@@ -213,20 +221,20 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: isDesktop ? "center" : "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
           backgroundColor: "#fff",
-          borderRadius: "24px 24px 0 0",
+          borderRadius: isDesktop ? "24px" : "24px 24px 0 0",
           width: "100%",
-          maxWidth: 680,
-          maxHeight: "80svh",
+          maxWidth: isDesktop ? 640 : 680,
+          maxHeight: isDesktop ? "85vh" : "80svh",
           display: "flex",
           flexDirection: "column",
-          boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",
+          boxShadow: isDesktop ? "0 24px 80px rgba(0,0,0,0.2)" : "0 -12px 80px rgba(0,0,0,0.15)",
           overflow: "hidden",
         }}
       >
