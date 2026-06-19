@@ -861,11 +861,14 @@ export default function HomePage() {
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#bbb", letterSpacing: "0.04em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginBottom: 8 }}>
-                    What are you tracking?
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#bbb", letterSpacing: "0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginBottom: 10 }}>
+                    Augmented Radar
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 18 }}>
-                    Pick a topic to start
+                  <div style={{ fontSize: 24, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
+                    where is tech actually<br />changing this space?
+                  </div>
+                  <div style={{ fontSize: 13, color: "#888", lineHeight: 1.65, marginBottom: 24, maxWidth: 260, margin: "0 auto 24px", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                    pick a topic and the radar shows you the signals worth watching — no noise, no hype.
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
                     {LIBRARY_TOPICS.map(t => (
