@@ -31,6 +31,51 @@ const SOURCE_LABELS: Record<string, string> = {
   manual: "Manual",
 };
 
+const SOURCE_DOMAINS: Record<string, string> = {
+  "Forbes": "https://forbes.com",
+  "TechCrunch": "https://techcrunch.com",
+  "The Guardian": "https://theguardian.com",
+  "Business of Fashion": "https://businessoffashion.com",
+  "Wired": "https://wired.com",
+  "WIRED": "https://wired.com",
+  "Bloomberg": "https://bloomberg.com",
+  "New York Times": "https://nytimes.com",
+  "Financial Times": "https://ft.com",
+  "Reuters": "https://reuters.com",
+  "Wall Street Journal": "https://wsj.com",
+  "The Verge": "https://theverge.com",
+  "Dezeen": "https://dezeen.com",
+  "Wallpaper*": "https://wallpaper.com",
+  "Vogue": "https://vogue.com",
+  "Vogue Business": "https://voguebusiness.com",
+  "WWD": "https://wwd.com",
+  "Business Insider": "https://businessinsider.com",
+  "The Atlantic": "https://theatlantic.com",
+  "Washington Post": "https://washingtonpost.com",
+  "Vice": "https://vice.com",
+  "The Economist": "https://economist.com",
+  "Retail Week": "https://retail-week.com",
+  "Retail Gazette": "https://retailgazette.co.uk",
+  "Sports Business Journal": "https://sportsbusinessjournal.com",
+  "JD Power": "https://jdpower.com",
+  "Campaign": "https://campaignlive.co.uk",
+  "CoinDesk": "https://coindesk.com",
+  "The Block": "https://theblock.co",
+  "Skift": "https://skift.com",
+  "EdSurge": "https://edsurge.com",
+  "Education Week": "https://edweek.org",
+  "Publishers Weekly": "https://publishersweekly.com",
+  "HR Dive": "https://hrdive.com",
+  "Nation's Restaurant News": "https://nrn.com",
+  "Food Navigator": "https://foodnavigator.com",
+  "Curbed": "https://curbed.com",
+  "VentureBeat": "https://venturebeat.com",
+  "Grand View Research": "https://grandviewresearch.com",
+  "Le Monde": "https://lemonde.fr",
+  "ESPN": "https://espn.com",
+  "Variety": "https://variety.com",
+};
+
 export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose, onSelectSignal }: Props) {
   const pool = allSignals ?? SIGNALS;
   const crossLinked = (signal.crossLinks ?? []).map((id) => pool.find((s) => s.id === id)).filter(Boolean) as Signal[];
@@ -39,6 +84,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
     : pool.filter((s) => s.trendId === signal.trendId && s.id !== signal.id).slice(0, 1);
   const relatedLabel = crossLinked.length > 0 ? "Connected signals" : "Related signal";
   const textCol = accessibleTextColor(trendColor);
+  const effectiveUrl = signal.sourceUrl || SOURCE_DOMAINS[signal.sourceName ?? ""];
 
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
@@ -107,9 +153,9 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                   <div style={{ fontSize: 11, color: "#999", marginTop: 1 }}>Published {fmt(signal.date)}</div>
                 )}
               </div>
-              {signal.sourceUrl && (
+              {effectiveUrl && (
                 <a
-                  href={signal.sourceUrl}
+                  href={effectiveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
