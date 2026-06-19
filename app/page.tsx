@@ -937,19 +937,19 @@ export default function HomePage() {
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
                     pick a topic to start.
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", pointerEvents: "all", maxWidth: 380 }}>
                     {FEATURED_TOPICS.map(t => (
                       <button key={t} onClick={() => addTopic(t)}
                         style={{
-                          padding: "7px 16px",
-                          background: `${TOPIC_COLORS[t] ?? "#eee"}20`,
-                          border: `1.5px solid ${TOPIC_COLORS[t] ?? "#eee"}77`,
-                          borderRadius: 24, fontSize: 12, fontWeight: 700, color: "#333",
+                          padding: "9px 18px",
+                          background: `${TOPIC_COLORS[t] ?? "#eee"}18`,
+                          border: `1.5px solid ${TOPIC_COLORS[t] ?? "#eee"}88`,
+                          borderRadius: 30, fontSize: 13, fontWeight: 600, color: "#222",
                           cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                          display: "flex", alignItems: "center", gap: 7,
+                          display: "flex", alignItems: "center", gap: 8,
                         }}
                       >
-                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
                         {t.replace(/-/g, " ")}
                       </button>
                     ))}
