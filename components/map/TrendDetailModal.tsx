@@ -171,7 +171,11 @@ ${trend.macroContext ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
   const [showReport, setShowReport] = useState(false);
-  const [enriched, setEnriched] = useState<Partial<Trend> | null>(null);
+  const [enriched, setEnriched] = useState<{
+    historicalContext?: string; culturalContext?: string; economicContext?: string;
+    macroContext?: string; politicalContext?: string; geographicalContext?: string;
+    whyItMatters?: string; howToProceed?: string[];
+  } | null>(null);
   const [enriching, setEnriching] = useState(false);
   const textCol = accessibleTextColor(trend.color);
 
@@ -188,7 +192,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
     })
       .then((r) => r.json())
       .then((data) => { setEnriched(data); })
-      .catch(() => { /* silently skip — report still shows what it has */ })
+      .catch(() => {})
       .finally(() => setEnriching(false));
   }, [showReport, needsContext, enriched, enriching, trend]);
   const signals = [
@@ -289,8 +293,9 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </div>
           ) : (
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8, padding: "14px 0" }}>
-              {/* Report meta */}
-              <div style={{ marginBottom: 20, paddingBottom: 14, borderBottom: "1px solid #e8e4de" }}>
+
+              {/* Meta */}
+              <div style={{ marginBottom: 20, paddingBottom: 12, borderBottom: "1px solid #e8e4de" }}>
                 <div style={{ fontSize: 9, fontWeight: 800, color: "#999", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 4 }}>Trend Intelligence Report</div>
                 <div style={{ fontSize: 9, color: "#bbb", letterSpacing: "0.06em" }}>
                   {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
@@ -298,99 +303,102 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 </div>
               </div>
 
-              {/* Intro — always shown */}
-              <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: `2px solid #1a1a1a` }}>
-                <p style={{ fontSize: 15, color: "#222", lineHeight: 1.85, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.description}</p>
+              {/* Summary — always shown */}
+              <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "2px solid #1a1a1a" }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#999", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 10 }}>Summary</div>
+                <p style={{ fontSize: 16, color: "#111", lineHeight: 1.9, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.description}</p>
               </div>
 
-              {/* Loading state for context generation */}
+              {/* Loading */}
               {enriching && (
-                <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 18px", background: `${trend.color}08`, borderRadius: 12, marginBottom: 24, border: `1px solid ${trend.color}18` }}>
-                  <div style={{ width: 16, height: 16, borderRadius: "50%", border: `2px solid ${trend.color}40`, borderTopColor: trend.color, animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: "#888", fontStyle: "italic" }}>Generating contextual analysis…</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: `${trend.color}08`, borderRadius: 12, marginBottom: 28, border: `1px solid ${trend.color}18` }}>
+                  <div style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${trend.color}40`, borderTopColor: trend.color, animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: "#888" }}>Generating full contextual analysis. Takes about 15 seconds.</span>
                 </div>
               )}
 
-              {/* 01 — Historical */}
+              {/* 01 Historical */}
               {(enriched?.historicalContext ?? trend.historicalContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="01" label="Historical Context" />
-                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{enriched?.historicalContext ?? trend.historicalContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.85, margin: 0 }}>{enriched?.historicalContext ?? trend.historicalContext}</p>
                 </div>
               )}
 
-              {/* 02 — Economic */}
-              {(enriched?.economicContext ?? trend.economicContext) && (
-                <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={textCol} num="02" label="Economic Context" />
-                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{enriched?.economicContext ?? trend.economicContext}</p>
-                </div>
-              )}
-
-              {/* 03 — Macro */}
-              {(enriched?.macroContext ?? trend.macroContext) && (
-                <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={textCol} num="03" label="Macroeconomic Forces" />
-                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.82, margin: 0 }}>{enriched?.macroContext ?? trend.macroContext}</p>
-                </div>
-              )}
-
-              {/* 04 — Cultural */}
+              {/* 02 Cultural */}
               {(enriched?.culturalContext ?? trend.culturalContext) && (
                 <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={textCol} num="04" label="Cultural Dynamics" />
-                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{enriched?.culturalContext ?? trend.culturalContext}</p>
+                  <SectionHeader color={textCol} num="02" label="Cultural Insights" />
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.85, margin: 0 }}>{enriched?.culturalContext ?? trend.culturalContext}</p>
                 </div>
               )}
 
-              {/* 05 — Political */}
+              {/* 03 Economic */}
+              {(enriched?.economicContext ?? trend.economicContext) && (
+                <div style={{ marginBottom: 28 }}>
+                  <SectionHeader color={textCol} num="03" label="Economic Forces" />
+                  <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.85, margin: 0 }}>{enriched?.economicContext ?? trend.economicContext}</p>
+                </div>
+              )}
+
+              {/* 04 Macro */}
+              {(enriched?.macroContext ?? trend.macroContext) && (
+                <div style={{ marginBottom: 28 }}>
+                  <SectionHeader color={textCol} num="04" label="Macro Conditions" />
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.85, margin: 0 }}>{enriched?.macroContext ?? trend.macroContext}</p>
+                </div>
+              )}
+
+              {/* 05 Political */}
               {(enriched?.politicalContext ?? trend.politicalContext) && (
                 <div style={{ marginBottom: 28 }}>
                   <SectionHeader color={textCol} num="05" label="Political &amp; Regulatory" />
-                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{enriched?.politicalContext ?? trend.politicalContext}</p>
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.85, margin: 0 }}>{enriched?.politicalContext ?? trend.politicalContext}</p>
                 </div>
               )}
 
-              {/* 06 — Geographical */}
+              {/* 06 Geographical */}
               {(enriched?.geographicalContext ?? trend.geographicalContext) && (
                 <div style={{ marginBottom: 28 }}>
-                  <SectionHeader color={textCol} num="06" label="Geographical Landscape" />
-                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.82, margin: 0 }}>{enriched?.geographicalContext ?? trend.geographicalContext}</p>
+                  <SectionHeader color={textCol} num="06" label="Geographical Dynamics" />
+                  <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.85, margin: 0 }}>{enriched?.geographicalContext ?? trend.geographicalContext}</p>
                 </div>
               )}
 
-              {/* 07 — Strategic rationale */}
-              <div style={{ background: `${trend.color}09`, border: `1px solid ${trend.color}20`, borderRadius: 12, padding: "16px 18px", marginBottom: 28 }}>
-                <SectionHeader color={textCol} num="07" label="Strategic Rationale" />
-                <p style={{ fontSize: 13.5, color: "#222", lineHeight: 1.8, margin: 0, fontWeight: 500 }}>{trend.whyRelevant}</p>
+              {/* 07 Why it matters — prominent callout */}
+              <div style={{ background: `${trend.color}0c`, border: `1.5px solid ${trend.color}30`, borderRadius: 14, padding: "20px 20px", marginBottom: 28 }}>
+                <SectionHeader color={textCol} num="07" label="Why It Matters for Brands" />
+                <p style={{ fontSize: 14, color: "#111", lineHeight: 1.88, margin: 0, fontWeight: 500 }}>
+                  {enriched?.whyItMatters ?? trend.whyRelevant}
+                </p>
               </div>
 
-              {/* 08 — Trajectory */}
+              {/* 08 How to proceed */}
               <div style={{ marginBottom: 28 }}>
-                <SectionHeader color={textCol} num="08" label="Trajectory &amp; Outlook" />
-                <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.8, margin: 0, fontStyle: "italic" }}>{trend.trajectory}</p>
-              </div>
-
-              {/* 09 — Actions */}
-              <div style={{ marginBottom: 28 }}>
-                <SectionHeader color={textCol} num="09" label="Recommended Actions" />
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {trend.nextSteps.map((step, i) => (
-                    <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                      <div style={{ width: 22, height: 22, borderRadius: 5, flexShrink: 0, background: trend.color + "18", color: textCol, border: `1.5px solid ${trend.color}35`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
+                <SectionHeader color={textCol} num="08" label="How Brands Should Respond" />
+                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  {(enriched?.howToProceed ?? trend.nextSteps).map((step, i) => (
+                    <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: "#faf9f6", borderRadius: 12, border: "1px solid #efefef" }}>
+                      <div style={{ width: 24, height: 24, borderRadius: 6, flexShrink: 0, background: trend.color + "18", color: textCol, border: `1.5px solid ${trend.color}35`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
                         {String(i + 1).padStart(2, "0")}
                       </div>
-                      <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.75, margin: 0 }}>{step}</p>
+                      <p style={{ fontSize: 13.5, color: "#222", lineHeight: 1.78, margin: 0 }}>{step}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* 10 — Signals */}
+              {/* 09 Trajectory */}
+              <div style={{ marginBottom: 28 }}>
+                <SectionHeader color={textCol} num="09" label="Trajectory &amp; Outlook" />
+                <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.85, margin: 0 }}>{trend.trajectory}</p>
+              </div>
+
+              {/* 10 Signals */}
               <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 22 }}>
-                <SectionHeader color={textCol} num="10" label={`Signal Intelligence · ${signals.length} active signals`} />
-                <p style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6, margin: "0 0 18px", fontStyle: "italic" }}>
-                  Real-world data points confirming and advancing this trend&apos;s trajectory, drawn from live and curated sources.
+                <SectionHeader color={textCol} num="10" label={`Signal Intelligence: ${signals.length} active signals`} />
+                <p style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6, margin: "0 0 16px" }}>
+                  Real-world data points confirming this trend&apos;s trajectory, drawn from live and curated sources.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {signals.map((s, i) => (
