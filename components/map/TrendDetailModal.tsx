@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Trend, Signal } from "@/types";
 import { SIGNALS, TRENDS, getSourceIcon } from "@/lib/trends";
+import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
 
 interface Props {
   trend: Trend;
@@ -161,71 +162,79 @@ ${trend.macroContext ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal }: Props) {
   const [showReport, setShowReport] = useState(false);
-  const signals = [...SIGNALS.filter((s) => s.trendId === trend.id), ...extraSignals.filter(s => s.trendId === trend.id)];
+  const signals = [
+    ...SIGNALS.filter((s) => s.trendId === trend.id),
+    ...EXTENDED_SIGNALS.filter((s) => s.trendId === trend.id),
+    ...extraSignals.filter(s => s.trendId === trend.id),
+  ];
 
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
           backgroundColor: "#fff",
-          borderRadius: "20px 20px 0 0",
+          borderRadius: "24px 24px 0 0",
           width: "100%",
           maxWidth: 680,
-          /* svh = small viewport height, excludes iOS browser chrome */
-          maxHeight: "92svh",
+          maxHeight: "88svh",
           display: "flex",
           flexDirection: "column",
+          boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",
           overflow: "hidden",
-          boxShadow: "0 -8px 60px rgba(0,0,0,0.15)",
         }}
       >
-        {/* Color stripe */}
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}66)`, flexShrink: 0 }} />
+        {/* Color bar */}
+        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0 }} />
 
-        {/* Header — kept intentionally compact so body has room */}
-        <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.25, letterSpacing: "-0.02em", color: "#1a1a1a", flex: 1, margin: 0 }}>
-              {trend.name}
-            </h2>
-            {/* 44×44 tap target */}
-            <button
-              onClick={onClose}
-              style={{ width: 44, height: 44, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-            >×</button>
+        {/* Header */}
+        <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+            <span style={{
+              fontSize: 11, fontWeight: 700, color: trend.color, textTransform: "uppercase",
+              letterSpacing: "0.07em", background: `${trend.color}14`, padding: "3px 10px", borderRadius: 20,
+            }}>
+              Trend
+            </span>
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", gap: 6 }}>
+                <button
+                  onClick={() => setShowReport(false)}
+                  style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: !showReport ? trend.color : "#f0f0f0", color: !showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                >
+                  Signals
+                </button>
+                <button
+                  onClick={() => setShowReport(true)}
+                  style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: showReport ? trend.color : "#f0f0f0", color: showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                >
+                  Report
+                </button>
+              </div>
+              <button onClick={onClose} style={{ width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
+            </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-            <div style={{ flex: 1, height: 3, backgroundColor: "#f0ede8", borderRadius: 2 }}>
+          <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
+            {trend.name}
+          </h3>
+
+          {/* Relevance bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#f8f7f5", borderRadius: 10, marginBottom: 16 }}>
+            <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
               <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
             </div>
-            <span style={{ fontSize: 11, color: "#999", fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>
               {trend.relevanceScore}% relevance
             </span>
-          </div>
-
-          <div style={{ display: "flex", gap: 8 }}>
-            <button
-              onClick={() => setShowReport(false)}
-              style={{ padding: "7px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: !showReport ? trend.color : "#f5f3ee", color: !showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-            >
-              Signals ({signals.length})
-            </button>
-            <button
-              onClick={() => setShowReport(true)}
-              style={{ padding: "7px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: showReport ? trend.color : "#f5f3ee", color: showReport ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-            >
-              Full report
-            </button>
           </div>
         </div>
 
         {/* Body — scrolls; touch-action pan-y overrides the body-level none */}
-        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 20px" } as React.CSSProperties}>
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 24px" } as React.CSSProperties}>
           {!showReport ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "14px 0" }}>
               {/* Description shown at top of body in signals view */}

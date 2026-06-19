@@ -502,16 +502,26 @@ export default function HomePage() {
 
   const activeTrendForSignal = activeSignal ? allTrends.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
-  // Clamp focusIdx when visibleTrends shrinks after topics are applied
-  useEffect(() => {
-    setFocusIdx(i => Math.min(i, Math.max(0, visibleTrends.length - 1)));
-  }, [visibleTrends.length]);
+  // Sort trends by grid position: row (y) first, then column (x) — left-to-right, top-to-bottom
+  const navTrends = useMemo(() => [...visibleTrends].sort((a, b) => {
+    const pa = TREND_POSITIONS[a.id] ?? a.position ?? { x: 0, y: 0 };
+    const pb = TREND_POSITIONS[b.id] ?? b.position ?? { x: 0, y: 0 };
+    const rowA = Math.round(pa.y / 520);
+    const rowB = Math.round(pb.y / 520);
+    if (rowA !== rowB) return rowA - rowB;
+    return pa.x - pb.x;
+  }), [visibleTrends]);
 
-  const focusTrend = visibleTrends[Math.min(focusIdx, visibleTrends.length - 1)] ?? visibleTrends[0];
+  // Clamp focusIdx when visible trends change
+  useEffect(() => {
+    setFocusIdx(i => Math.min(i, Math.max(0, navTrends.length - 1)));
+  }, [navTrends.length]);
+
+  const focusTrend = navTrends[Math.min(focusIdx, navTrends.length - 1)] ?? navTrends[0];
   const focusTrendPos = TREND_POSITIONS[focusTrend?.id] ?? focusTrend?.position ?? { x: 0, y: 0 };
 
   const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
-  const next = () => setFocusIdx((i) => Math.min(visibleTrends.length - 1, i + 1));
+  const next = () => setFocusIdx((i) => Math.min(navTrends.length - 1, i + 1));
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -672,7 +682,9 @@ export default function HomePage() {
         } as React.CSSProperties}
       >
         <p style={{ flex: 1, fontSize: 13.5, fontWeight: 700, color: "#000", lineHeight: 1.45, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", whiteSpace: "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
-          {RADAR_OVERVIEW}
+          {appliedTopics.length > 0
+            ? `${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" × ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`
+            : RADAR_OVERVIEW}
         </p>
         <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #e8e4de", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#555", lineHeight: 1 }}>
           ↓
@@ -920,20 +932,20 @@ export default function HomePage() {
                 {focusTrend?.name}
               </div>
               <div style={{ fontSize: 10, color: "#bbb", marginTop: 3, fontFamily: "monospace" }}>
-                {focusIdx + 1} / {visibleTrends.length}
+                {focusIdx + 1} / {navTrends.length}
               </div>
             </div>
 
             <button
               onClick={next}
-              disabled={focusIdx === visibleTrends.length - 1}
+              disabled={focusIdx === navTrends.length - 1}
               style={{
                 width: 44, height: 44, borderRadius: "50%",
                 border: "1.5px solid #e8e4de",
-                background: focusIdx === visibleTrends.length - 1 ? "#f5f3ee" : "#fff",
-                fontSize: 20, color: focusIdx === visibleTrends.length - 1 ? "#ccc" : "#333",
+                background: focusIdx === navTrends.length - 1 ? "#f5f3ee" : "#fff",
+                fontSize: 20, color: focusIdx === navTrends.length - 1 ? "#ccc" : "#333",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: focusIdx === visibleTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
+                cursor: focusIdx === navTrends.length - 1 ? "default" : "pointer", flexShrink: 0,
               }}
             >›</button>
           </>
