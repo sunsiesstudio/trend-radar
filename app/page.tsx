@@ -803,7 +803,7 @@ export default function HomePage() {
               {appliedTopics.length === 0 && (
                 <div style={{ paddingBottom: 28 }}>
                   <p style={{ fontSize: 15, color: "#333", lineHeight: 1.85, margin: "4px 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    A research tool for emerging tech × anything. Pick a topic and see what's actually moving.
+                    Augmented Radar catches signals where emerging tech meets your industry. Drop a topic. See what's actually moving.
                   </p>
                   <p style={{ fontSize: 12, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                     Vibe coded by Martina,{" "}
@@ -878,19 +878,19 @@ export default function HomePage() {
                 <>
                   <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #eee", borderTopColor: "#aaa", margin: "0 auto 16px", animation: "spin 0.9s linear infinite" }} />
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#555", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    on it, digging into {generatingTopic}…
+                    scanning {generatingTopic} for signals…
                   </div>
                   <div style={{ fontSize: 12, color: "#bbb", marginTop: 6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    give us a sec
+                    running the radar
                   </div>
                 </>
               ) : generationError ? (
                 <>
                   <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.3, marginBottom: 8 }}>
-                    hmm, that didn't work
+                    signal lost
                   </div>
                   <div style={{ fontSize: 13, color: "#999", marginBottom: 16, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-                    try one of these or hit retry
+                    try a different topic or hit retry
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 18, pointerEvents: "all", maxWidth: 280 }}>
                     {LIBRARY_TOPICS.filter(t => !activeTopics.includes(t)).slice(0, 8).map(t => (
@@ -915,7 +915,7 @@ export default function HomePage() {
               ) : activeTopics.length > 0 ? (
                 <>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#bbb", fontFamily: "'EB Garamond', Georgia, serif", marginBottom: 8 }}>
-                    nothing here yet
+                    nothing on the radar yet
                   </div>
                   <button
                     onClick={retryGeneration}
@@ -927,16 +927,16 @@ export default function HomePage() {
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                     }}
                   >
-                    Generate trends
+                    Run it
                   </button>
                 </>
               ) : (
                 <>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    what are we tracking?
+                    what's on your radar?
                   </div>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 24, letterSpacing: "-0.02em" }}>
-                    pick a topic to start
+                    drop a topic. see what's shifting.
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", pointerEvents: "all", maxWidth: 320 }}>
                     {LIBRARY_TOPICS.map(t => (
@@ -993,12 +993,12 @@ export default function HomePage() {
           <div style={{ flex: 1, textAlign: "center", padding: "0 12px" }}>
             {generatingTopic ? (
               <div style={{ fontSize: 13, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                on it… {generatingTopic}
+                scanning {generatingTopic}…
               </div>
             ) : (
               <>
                 <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  a research tool for emerging tech × anything —{" "}
+                  emerging tech × any industry, decoded —{" "}
                   <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
                     Augmented Rarity
                   </a>
