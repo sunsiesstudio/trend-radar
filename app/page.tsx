@@ -371,6 +371,7 @@ export default function HomePage() {
   const [overlayTab,       setOverlayTab]       = useState<"trends" | "report">("trends");
   const [industryReports,  setIndustryReports]  = useState<Record<string, IndustryReport>>({});
   const [industryLoading,  setIndustryLoading]  = useState(false);
+  const [industryError,    setIndustryError]    = useState<string | null>(null);
   const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
@@ -516,6 +517,7 @@ export default function HomePage() {
   const fetchIndustryReport = useCallback(async (topic: string) => {
     if (industryReports[topic]) return;
     setIndustryLoading(true);
+    setIndustryError(null);
     try {
       const res = await fetch("/api/generate-industry-report", {
         method: "POST",
@@ -523,8 +525,14 @@ export default function HomePage() {
         body: JSON.stringify({ topic }),
       });
       const data = await res.json();
-      if (data.report) setIndustryReports(prev => ({ ...prev, [topic]: data.report }));
-    } catch { /* silent */ } finally {
+      if (data.report) {
+        setIndustryReports(prev => ({ ...prev, [topic]: data.report }));
+      } else {
+        setIndustryError(data.error ?? "Generation failed.");
+      }
+    } catch (e) {
+      setIndustryError(String(e));
+    } finally {
       setIndustryLoading(false);
     }
   }, [industryReports]);
@@ -836,8 +844,20 @@ export default function HomePage() {
                   </div>
                 );
                 if (!report) return (
-                  <div style={{ padding: "40px 0", textAlign: "center" }}>
-                    <div style={{ fontSize: 12, color: "#bbb" }}>No report yet. Try again.</div>
+                  <div style={{ padding: "40px 0", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+                    <div style={{ fontSize: 12, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                      {industryError ? `Error: ${industryError}` : "Report not generated yet."}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIndustryError(null);
+                        setIndustryReports(prev => { const next = { ...prev }; delete next[appliedTopics[0]]; return next; });
+                        fetchIndustryReport(appliedTopics[0]);
+                      }}
+                      style={{ padding: "10px 22px", borderRadius: 20, border: "none", background: "#111", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+                    >
+                      Generate report
+                    </button>
                   </div>
                 );
                 const topicLabel = appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1);
