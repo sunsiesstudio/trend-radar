@@ -223,7 +223,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           borderRadius: "24px 24px 0 0",
           width: "100%",
           maxWidth: 680,
-          maxHeight: "88svh",
+          maxHeight: "80svh",
           display: "flex",
           flexDirection: "column",
           boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",

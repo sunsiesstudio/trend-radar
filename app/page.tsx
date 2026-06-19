@@ -227,7 +227,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       const innerW = w - 16;
       const estCharsPerLine = Math.max(1, Math.floor(innerW / 6.0));
       const estLines = Math.ceil(sig.title.length / estCharsPerLine);
-      const sigH = Math.round(Math.max(w * 0.75, estLines * 13.5 + 20));
+      const sigH = Math.round(Math.min(78, Math.max(w * 0.72, estLines * 13 + 18)));
       // Opacity tracks signal age: newer = lighter, older = darker
       const { fillAlpha, borderAlpha } = ageAlpha(sig.date);
 
