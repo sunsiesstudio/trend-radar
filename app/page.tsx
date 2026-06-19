@@ -441,7 +441,7 @@ export default function HomePage() {
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(prev => [...prev, ...items.flatMap(i => i.signals)]);
         setGenerationError(null);
-        setTimeout(() => setFocusIdx(9999), 60);
+        setTimeout(() => setFocusIdx(0), 60);
       } else {
         const errData = await res.json().catch(() => ({})) as { error?: string };
         setGenerationError(errData.error ?? "Generation failed. Please try again.");
