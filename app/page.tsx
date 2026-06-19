@@ -15,14 +15,6 @@ import { TRENDS, SIGNALS, RADAR_OVERVIEW } from "@/lib/trends";
 import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS, TOPIC_DESCRIPTIONS } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
-interface IndustryReport {
-  overview: string;
-  tech_curve: string;
-  forces: string;
-  tensions: Array<{ label: string; body: string }>;
-  outlook: string;
-  watch: string[];
-}
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
@@ -189,7 +181,7 @@ const NODE_TYPES = { trendCircle: TrendCircleNode, signalOrbit: SignalOrbitNode 
 
 // ─── Build graph ──────────────────────────────────────────────────────────────
 
-function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends: Trend[]): { nodes: Node[]; edges: Edge[] } {
+function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends: Trend[], topicAddedAt: Record<string, string>): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   const allSignals = [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals];
@@ -210,7 +202,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
     const pos = TREND_POSITIONS[trend.id] ?? trend.position ?? { x: 0, y: 0 };
     const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
-    const latestDate = trendSignals.reduce<string | undefined>((acc, s) => s.date && (!acc || s.date > acc) ? s.date : acc, undefined);
+    // Use the date when the topic was added to the radar (persisted in localStorage) for color aging
+    const topicKey = trend.topics?.[0];
+    const latestDate = topicKey ? topicAddedAt[topicKey] : undefined;
     const d = Math.round(75 + (trend.relevanceScore / 100) * 140);
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
@@ -368,10 +362,10 @@ export default function HomePage() {
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [focusIdx,      setFocusIdx]      = useState(0);
   const [summaryOpen,      setSummaryOpen]      = useState(false);
-  const [overlayTab,       setOverlayTab]       = useState<"trends" | "report">("trends");
-  const [industryReports,  setIndustryReports]  = useState<Record<string, IndustryReport>>({});
-  const [industryLoading,  setIndustryLoading]  = useState(false);
-  const [industryError,    setIndustryError]    = useState<string | null>(null);
+  const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
+    if (typeof window === "undefined") return {};
+    try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
+  });
   const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
@@ -423,7 +417,7 @@ export default function HomePage() {
 
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
-  const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends), [allExtraSignals, seenIds, visibleTrends]);
+  const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends, topicAddedAt), [allExtraSignals, seenIds, visibleTrends, topicAddedAt]);
   const fitViewRef = useRef<(() => void) | null>(null);
 
   const topicSuggestions = useMemo(() => {
@@ -483,6 +477,14 @@ export default function HomePage() {
     setAddingTopic(false);
     setGenerationError(null);
 
+    // Stamp when this topic was first added — persists across sessions for color aging
+    if (!topicAddedAt[key]) {
+      const today = new Date().toISOString().split("T")[0];
+      const next = { ...topicAddedAt, [key]: today };
+      setTopicAddedAt(next);
+      try { localStorage.setItem("ar_topicAddedAt", JSON.stringify(next)); } catch { /* ignore */ }
+    }
+
     // Use pre-built library first — apply immediately, overriding stored positions
     const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
       !dynamicTrends.find(e => e.id === t.id)
@@ -497,7 +499,7 @@ export default function HomePage() {
     }
 
     await runGeneration(key, newTopics);
-  }, [activeTopics, dynamicTrends, runGeneration]);
+  }, [activeTopics, dynamicTrends, runGeneration, topicAddedAt]);
 
   const removeTopic = useCallback((topic: string) => {
     setActiveTopics(prev => {
@@ -514,30 +516,6 @@ export default function HomePage() {
     });
   }, []);
 
-  const fetchIndustryReport = useCallback(async (topic: string) => {
-    if (industryReports[topic]) return;
-    setIndustryLoading(true);
-    setIndustryError(null);
-    try {
-      const res = await fetch("/api/generate-industry-report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
-      });
-      const data = await res.json();
-      if (data.report) {
-        setIndustryReports(prev => ({ ...prev, [topic]: data.report }));
-      } else {
-        setIndustryError(data.error ?? "Generation failed.");
-      }
-    } catch (e) {
-      setIndustryError(String(e));
-    } finally {
-      setIndustryLoading(false);
-    }
-  }, [industryReports]);
-
-  useEffect(() => { setOverlayTab("trends"); }, [appliedTopics.join(",")]);
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
@@ -785,26 +763,6 @@ export default function HomePage() {
                 >×</button>
               </div>
 
-              {/* Tabs — only when topics are active */}
-              {appliedTopics.length > 0 && (
-                <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
-                  <button
-                    onClick={() => setOverlayTab("trends")}
-                    style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: overlayTab === "trends" ? "#111" : "#f0f0f0", color: overlayTab === "trends" ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                  >
-                    Trends
-                  </button>
-                  <button
-                    onClick={() => {
-                      setOverlayTab("report");
-                      if (appliedTopics.length > 0) fetchIndustryReport(appliedTopics[0]);
-                    }}
-                    style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", backgroundColor: overlayTab === "report" ? "#111" : "#f0f0f0", color: overlayTab === "report" ? "#fff" : "#888", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                  >
-                    Industry Report
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Scrollable body */}
@@ -825,8 +783,8 @@ export default function HomePage() {
                 </div>
               )}
 
-              {/* ── Trends tab (topic selected) ── */}
-              {overlayTab === "trends" && appliedTopics.length > 0 && (
+              {/* ── Trends (topic selected) ── */}
+              {appliedTopics.length > 0 && (
                 <>
                   {(() => {
                     const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
@@ -850,97 +808,6 @@ export default function HomePage() {
                 </>
               )}
 
-              {/* ── Industry Report tab ── */}
-              {overlayTab === "report" && appliedTopics.length > 0 && (() => {
-                const report = industryReports[appliedTopics[0]];
-                if (industryLoading && !report) return (
-                  <div style={{ padding: "40px 0", textAlign: "center" }}>
-                    <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                      Generating industry briefing…
-                    </div>
-                  </div>
-                );
-                if (!report) return (
-                  <div style={{ padding: "40px 0", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-                    <div style={{ fontSize: 12, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                      {industryError ? `Error: ${industryError}` : "Report not generated yet."}
-                    </div>
-                    <button
-                      onClick={() => {
-                        setIndustryError(null);
-                        setIndustryReports(prev => { const next = { ...prev }; delete next[appliedTopics[0]]; return next; });
-                        fetchIndustryReport(appliedTopics[0]);
-                      }}
-                      style={{ padding: "10px 22px", borderRadius: 20, border: "none", background: "#111", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
-                    >
-                      Generate report
-                    </button>
-                  </div>
-                );
-                const topicLabel = appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1);
-                return (
-                  <div style={{ paddingBottom: 28 }}>
-                    {/* meta */}
-                    <div style={{ marginBottom: 20, paddingBottom: 14, borderBottom: "1.5px solid #111" }}>
-                      <div style={{ fontSize: 9, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 3, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Industry Intelligence Briefing</div>
-                      <div style={{ fontSize: 9, color: "#bbb", letterSpacing: "0.06em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{topicLabel} · {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long" })}</div>
-                    </div>
-
-                    {/* Overview */}
-                    <p style={{ fontSize: 14.5, color: "#222", lineHeight: 1.8, margin: "0 0 24px", fontFamily: "'EB Garamond', Georgia, serif" }}>{report.overview}</p>
-
-                    {/* Tech curve */}
-                    <div style={{ marginBottom: 22 }}>
-                      <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 8, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>The technology curve</div>
-                      <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{report.tech_curve}</p>
-                    </div>
-
-                    {/* Forces */}
-                    <div style={{ marginBottom: 22 }}>
-                      <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 8, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Forces at play</div>
-                      <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{report.forces}</p>
-                    </div>
-
-                    {/* Tensions */}
-                    {report.tensions?.length > 0 && (
-                      <div style={{ marginBottom: 22 }}>
-                        <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Key tensions</div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                          {report.tensions.map((t, i) => (
-                            <div key={i} style={{ borderLeft: "2px solid #e8e4de", paddingLeft: 12 }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, color: "#111", marginBottom: 3, letterSpacing: "-0.01em" }}>{t.label}</div>
-                              <p style={{ fontSize: 12.5, color: "#666", lineHeight: 1.7, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.body}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Outlook */}
-                    <div style={{ marginBottom: 22, background: "#f8f7f5", borderRadius: 12, padding: "14px 16px" }}>
-                      <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 8, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Strategic outlook · 18 months</div>
-                      <p style={{ fontSize: 13.5, color: "#333", lineHeight: 1.8, margin: 0, fontStyle: "italic", fontFamily: "'EB Garamond', Georgia, serif" }}>{report.outlook}</p>
-                    </div>
-
-                    {/* Watch */}
-                    {report.watch?.length > 0 && (
-                      <div>
-                        <div style={{ fontSize: 8, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #f0ede8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Three things to watch</div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                          {report.watch.map((item, i) => (
-                            <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                              <div style={{ width: 20, height: 20, borderRadius: 5, flexShrink: 0, background: "#f0ede8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#999", fontFamily: "monospace", marginTop: 1 }}>
-                                {String(i + 1).padStart(2, "0")}
-                              </div>
-                              <p style={{ fontSize: 13, color: "#444", lineHeight: 1.7, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{item}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
 
               {appliedTopics.length > 0 && (
                 <div style={{ borderTop: "1px solid #f0ede8", padding: "14px 0 20px", textAlign: "center" }}>
@@ -1092,10 +959,24 @@ export default function HomePage() {
         padding: "0 24px", gap: 16,
       }}>
         {visibleTrends.length === 0 ? (
-          <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontSize: 13, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-              {generatingTopic ? `Generating ${generatingTopic}…` : "Add a topic above to begin"}
-            </div>
+          <div style={{ flex: 1, textAlign: "center", padding: "0 12px" }}>
+            {generatingTopic ? (
+              <div style={{ fontSize: 13, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                Generating {generatingTopic}…
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: 14, color: "#888", lineHeight: 1.7, margin: "0 0 6px", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                  Augmented Radar maps emerging tech against consumer culture.
+                </p>
+                <p style={{ fontSize: 11, color: "#bbb", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  Vibe coded by Martina —{" "}
+                  <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", textDecoration: "underline", textUnderlineOffset: 2 }}>
+                    Augmented Rarity
+                  </a>
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <>
