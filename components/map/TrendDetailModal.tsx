@@ -323,18 +323,7 @@ ${related.length > 0 ? `
   </div>
 </div>` : ""}
 
-<!-- 07 RECOMMENDED ACTIONS -->
-<div class="section">
-  <div class="sh"><span class="sn">${sn()}</span><span class="st">Recommended Actions</span></div>
-  <div class="steps">
-    ${trend.nextSteps.map((s, i) => `<div class="step">
-      <div class="snum">${String(i + 1).padStart(2, "0")}</div>
-      <div class="stext">${s}</div>
-    </div>`).join("")}
-  </div>
-</div>
-
-<!-- 08 SIGNAL INTELLIGENCE -->
+<!-- 07 SIGNAL INTELLIGENCE -->
 ${signals.length > 0 ? `
 <div class="section">
   <div class="sh"><span class="sn">${sn()}</span><span class="st">Signal Intelligence: ${signals.length} Signals Tracked</span></div>

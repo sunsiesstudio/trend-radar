@@ -239,16 +239,17 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
               <button
                 onClick={() => { onClose(); onOpenTrend(); }}
                 style={{
-                  display: "flex", alignItems: "center", gap: 8, marginBottom: 14,
-                  background: "none", border: "none", padding: 0, cursor: "pointer",
-                  textAlign: "left", width: "100%",
+                  display: "flex", alignItems: "center", gap: 10, marginBottom: 16,
+                  background: `${trendColor}0E`, border: `1.5px solid ${trendColor}30`,
+                  borderRadius: 12, padding: "10px 14px", cursor: "pointer",
+                  textAlign: "left", width: "100%", boxSizing: "border-box",
                 }}
               >
-                <div style={{ width: 10, height: 10, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: textCol, textDecoration: "underline", textUnderlineOffset: 3 }}>
+                <div style={{ width: 12, height: 12, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
+                <span style={{ fontSize: 13, fontWeight: 700, color: textCol, flex: 1 }}>
                   {trendName}
                 </span>
-                <span style={{ fontSize: 11, color: "#bbb", marginLeft: "auto" }}>Open trend →</span>
+                <span style={{ fontSize: 11, color: textCol, opacity: 0.6, fontWeight: 600 }}>View trend →</span>
               </button>
             )}
 

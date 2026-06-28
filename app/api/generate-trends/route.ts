@@ -59,11 +59,6 @@ Return ONLY valid JSON (no markdown, no explanation):
       "geographical_context": "3-4 sentences. Name the places that are two years ahead and say exactly why: infrastructure, money, regulations, or consumer readiness. Name where it's lagging and what's actually blocking it.",
       "why_relevant": "5-6 sentences, written directly to whoever needs to make a decision about this. What's the real risk of doing nothing for the next 18 months. What does a brand look like when they get this right, specifically. How long before the window closes. Name who's already moving and who's being left behind. End with the one thing this permanently changes.",
       "trajectory": "3-4 sentences. Call it: just getting started, accelerating, or nearly peaked. What do the next 18-36 months look like. What would confirm it's speeding up. What could slow it down or kill it.",
-      "next_steps": [
-        "Now (0-3 months): one specific thing to do today. Name what it is, who does it, what they produce.",
-        "Soon (3-12 months): a product, collab, or capability to build. What gap does it close, who owns it.",
-        "Bet (12-36 months): the move that'll seem obvious later. What does it unlock and why is the window open right now."
-      ],
       "brand_moves": [
         { "label": "Brand name: what they did and why it worked (1 sentence)", "url": "https://example.com/optional-source" },
         { "label": "Another brand name: specific product, collab, or campaign (1 sentence)" },
@@ -107,7 +102,7 @@ Rules:
       id: string; name: string; description: string;
       historical_context?: string; economic_context?: string;
       macro_context?: string; cultural_context?: string; political_context?: string; geographical_context?: string;
-      why_relevant: string; trajectory: string; next_steps: string[];
+      why_relevant: string; trajectory: string;
       brand_moves?: Array<{ label: string; url?: string }>;
       relevanceScore: number;
       signals: Array<{ id: string; title: string; summary: string; source: string; sourceName: string }>;
@@ -130,7 +125,7 @@ Rules:
         geographicalContext: t.geographical_context,
         whyRelevant: t.why_relevant,
         trajectory: t.trajectory,
-        nextSteps: t.next_steps ?? [],
+        nextSteps: [],
         brandMoves: t.brand_moves ?? [],
       },
       signals: t.signals.map((s) => ({
