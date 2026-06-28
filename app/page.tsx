@@ -645,7 +645,7 @@ export default function HomePage() {
               borderRadius: 20, padding: "3px 10px 3px 12px", cursor: "default",
             }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: darkenColor(color, 0.55), letterSpacing: "0.03em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                <span style={{ opacity: 0.6, fontWeight: 500 }}>Emerging Tech ×</span> {topic}
+                {topic}
               </span>
               <button
                 onClick={() => removeTopic(topic)}
