@@ -526,18 +526,6 @@ export default function HomePage() {
       return;
     }
 
-    // Multi-topic: check if library has trends covering ALL topics
-    const allLibrary = Object.values(TOPIC_LIBRARY).flat();
-    const libraryIntersection = allLibrary
-      .filter(t => topics.every(tp => (t.topics ?? []).includes(tp)))
-      .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
-    if (libraryIntersection.length) {
-      setDynamicTrends(libraryIntersection);
-      setAppliedDynamicTrends(libraryIntersection);
-      setTimeout(() => setFocusIdx(0), 60);
-      return;
-    }
-
     // Generate trends specifically for the topic combination
     const combinedTopic = topics.join(" and ");
     setGeneratingTopic(combinedTopic);
