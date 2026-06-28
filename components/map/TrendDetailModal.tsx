@@ -23,28 +23,168 @@ interface Props {
 }
 
 
-function exportPDF(trend: Trend, signals: Signal[]) {
+function quarterLabel(dateStr: string): string {
+  const d = new Date(dateStr);
+  return `Q${Math.ceil((d.getMonth() + 1) / 3)} ${d.getFullYear()}`;
+}
+
+function exportPDF(trend: Trend, signals: Signal[], brief = false) {
   const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   const c = trend.color;
 
-  const signalsHTML = signals.map((s, i) => {
-    const crossTrends = (s.crossLinks ?? []).map((id) => {
-      const t = TRENDS.find((x) => x.id === id.split("-").slice(0, -1).join("-") || SIGNALS.find(sig => sig.id === id)?.trendId === x.id);
-      return t?.name ?? id;
-    }).filter(Boolean);
+  // Sort newest-first
+  const sorted = [...signals].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+
+  // Pull quote: pick the signal with the longest summary (most editorial weight)
+  const pullSignal = sorted.reduce((best, s) => (s.summary.length > best.summary.length ? s : best), sorted[0]);
+
+  // Source diversity
+  const newsCount = signals.filter(s => s.source === "news").length;
+  const redditCount = signals.filter(s => s.source === "reddit").length;
+  const otherCount = signals.length - newsCount - redditCount;
+  const total = signals.length || 1;
+
+  // Group signals by quarter for timeline
+  const byQuarter: Record<string, Signal[]> = {};
+  sorted.forEach(s => {
+    if (!s.date) return;
+    const q = quarterLabel(s.date);
+    (byQuarter[q] = byQuarter[q] || []).push(s);
+  });
+  const quarters = Object.keys(byQuarter).sort().reverse();
+
+  const sourceDiversityBar = signals.length > 0 ? `
+  <div class="diversity-row">
+    <div class="diversity-bar">
+      ${newsCount > 0 ? `<div class="diversity-seg" style="width:${(newsCount/total*100).toFixed(1)}%;background:${c}"></div>` : ""}
+      ${redditCount > 0 ? `<div class="diversity-seg" style="width:${(redditCount/total*100).toFixed(1)}%;background:${c}88"></div>` : ""}
+      ${otherCount > 0 ? `<div class="diversity-seg" style="width:${(otherCount/total*100).toFixed(1)}%;background:${c}44"></div>` : ""}
+    </div>
+    <div class="diversity-legend">
+      ${newsCount > 0 ? `<span><span class="dot" style="background:${c}"></span>${newsCount} news</span>` : ""}
+      ${redditCount > 0 ? `<span><span class="dot" style="background:${c}88"></span>${redditCount} community</span>` : ""}
+      ${otherCount > 0 ? `<span><span class="dot" style="background:${c}44"></span>${otherCount} other</span>` : ""}
+    </div>
+  </div>` : "";
+
+  const signalTimelineHTML = quarters.map(q => {
+    const qSignals = byQuarter[q];
     return `
-    <div class="signal">
-      <div class="signal-header">
-        <span class="signal-num">${String(i + 1).padStart(2, "0")}</span>
-        <div class="signal-meta">
-          <div class="signal-title">${s.title}${s.isLive ? ' <span class="live-badge">LIVE</span>' : ""}</div>
-          <div class="signal-source">${getSourceIcon(s.source)} ${s.sourceName ?? ""}${s.date ? ` · ${new Date(s.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}` : ""}${s.sourceUrl ? ` · <a href="${s.sourceUrl}" style="color:${c}">source</a>` : ""}</div>
-        </div>
+    <div class="quarter-block">
+      <div class="quarter-label">${q}</div>
+      <div class="quarter-signals">
+        ${qSignals.map((s, i) => {
+          const crossTrends = (s.crossLinks ?? []).map((id) => {
+            const t = TRENDS.find((x) => x.id === id.split("-").slice(0, -1).join("-") || SIGNALS.find(sig => sig.id === id)?.trendId === x.id);
+            return t?.name ?? id;
+          }).filter(Boolean);
+          const sigNum = sorted.indexOf(s) + 1;
+          const signalUrl = s.sourceUrl || "";
+          return `
+          <div class="signal">
+            <div class="signal-header">
+              <span class="signal-num">${String(sigNum).padStart(2, "0")}</span>
+              <div class="signal-meta">
+                <div class="signal-title">${s.title}${s.isLive ? ' <span class="live-badge">LIVE</span>' : ""}</div>
+                <div class="signal-source">${getSourceIcon(s.source)} ${s.sourceName ?? ""}${s.date ? ` · ${new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}${signalUrl ? ` · <a href="${signalUrl}" style="color:${c}">source ↗</a>` : ""}</div>
+              </div>
+            </div>
+            <p class="signal-summary">${s.summary}</p>
+            ${crossTrends.length > 0 ? `<div class="cross-links">↔ Cross-trend: ${crossTrends.join(", ")}</div>` : ""}
+          </div>`;
+        }).join("")}
       </div>
-      <p class="signal-summary">${s.summary}</p>
-      ${crossTrends.length > 0 ? `<div class="cross-links">↔ Cross-trend: ${crossTrends.join(", ")}</div>` : ""}
     </div>`;
   }).join("");
+
+  const brandMovesHTML = (trend.brandMoves ?? []).length > 0 ? `
+<div class="section">
+  <div class="sh"><span class="sn">06</span><span class="st">Brand Moves &amp; Market Activity</span></div>
+  <p style="font-size:13px;color:#888;margin-bottom:18px;font-style:italic">Real-world examples of brands, products, and campaigns already acting on this trend.</p>
+  <div class="brand-moves">
+    ${(trend.brandMoves ?? []).map(m => `
+    <div class="brand-move">
+      <span class="brand-dot" style="background:${c}"></span>
+      <span class="brand-label">${m.url ? `<a href="${m.url}" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${m.label}</a>` : m.label}</span>
+    </div>`).join("")}
+  </div>
+</div>` : "";
+
+  if (brief) {
+    // ── 1-PAGE BRIEF ───────────────────────────────────────────────
+    const topSignals = sorted.slice(0, 3);
+    const topMoves = (trend.brandMoves ?? []).slice(0, 2);
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${trend.name}: Trend Brief</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,sans-serif;color:#1a1a1a;background:#fff;padding:52px 64px;max-width:820px;margin:0 auto;font-size:13px;line-height:1.7}
+@media print{body{padding:32px 44px}@page{margin:1cm 1.5cm;size:A4}}
+.bar{height:4px;background:${c};border-radius:2px;margin-bottom:28px;width:60px}
+.label{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#bbb;margin-bottom:10px}
+h1{font-family:'EB Garamond',Georgia,serif;font-size:40px;font-weight:600;letter-spacing:-.02em;line-height:1.05;color:#1a1a1a;margin-bottom:8px}
+.desc{font-size:14px;color:#555;line-height:1.75;font-family:'EB Garamond',Georgia,serif;font-style:italic;margin-bottom:20px;max-width:620px}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid #e8e8e8}
+.score-track{flex:1;height:3px;background:#f0f0f0;border-radius:2px;max-width:160px}
+.score-fill{height:100%;width:${trend.relevanceScore}%;background:${c};border-radius:2px}
+.score-label{font-size:9px;font-weight:700;color:#999;letter-spacing:.06em}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
+.cell{padding:16px 18px;border:1px solid #efefef;border-radius:10px}
+.cell-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:${c};margin-bottom:8px}
+.cell p{font-size:12.5px;color:#444;line-height:1.72;margin:0}
+.signal-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.sig{border-left:3px solid ${c};padding:10px 14px;background:#faf9f6;border-radius:0 8px 8px 0}
+.sig-title{font-size:12.5px;font-weight:600;color:#111;line-height:1.35;margin-bottom:3px}
+.sig-meta{font-size:10px;color:#bbb}
+.moves{display:flex;flex-direction:column;gap:6px;margin-bottom:28px}
+.move{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#333;line-height:1.6}
+.move::before{content:"→";color:${c};font-weight:700;flex-shrink:0;margin-top:1px}
+.action{background:${c}0d;border-left:4px solid ${c};padding:14px 18px;border-radius:0 10px 10px 0;font-size:13.5px;color:#111;font-weight:500;line-height:1.7;margin-bottom:28px}
+.footer{padding-top:16px;border-top:1px solid #efefef;display:flex;justify-content:space-between;font-size:9px;color:#ccc;letter-spacing:.03em}
+.footer strong{color:${c}}
+.section-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#bbb;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="label">Trend Brief &nbsp;·&nbsp; ${date}</div>
+<h1>${trend.name}</h1>
+<p class="desc">${trend.description}</p>
+<div class="score-row">
+  <div class="score-track"><div class="score-fill"></div></div>
+  <div class="score-label">Cultural Relevance &nbsp;${trend.relevanceScore}/100</div>
+</div>
+<div class="grid">
+  <div class="cell"><div class="cell-label">Why it matters</div><p>${trend.whyRelevant}</p></div>
+  <div class="cell"><div class="cell-label">Trajectory</div><p style="font-style:italic">${trend.trajectory}</p></div>
+</div>
+${topSignals.length > 0 ? `<div class="section-label">Top Signals (${signals.length} total)</div>
+<div class="signal-list">
+  ${topSignals.map(s => `<div class="sig"><div class="sig-title">${s.title}</div><div class="sig-meta">${s.sourceName ?? ""}${s.date ? " · " + new Date(s.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""}</div></div>`).join("")}
+</div>` : ""}
+${topMoves.length > 0 ? `<div class="section-label">Brand Moves</div>
+<div class="moves">${topMoves.map(m => `<div class="move">${m.label}</div>`).join("")}</div>` : ""}
+<div class="section-label">Recommended Action</div>
+<div class="action">${trend.nextSteps[0] ?? ""}</div>
+<div class="footer">
+  <span><strong>Augmented Radar</strong> — emerging tech × culture</span>
+  <span>${date}</span>
+</div>
+<script>window.onload=()=>{setTimeout(()=>window.print(),400)}</script>
+</body>
+</html>`;
+    const win = window.open("", "_blank");
+    if (win) { win.document.write(html); win.document.close(); }
+    return;
+  }
+
+  // ── FULL DEEP REPORT ──────────────────────────────────────────────
+  let sectionNum = 1;
+  const sn = () => String(sectionNum++).padStart(2, "0");
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -60,14 +200,17 @@ body{font-family:'DM Sans',system-ui,sans-serif;color:#1a1a1a;background:#fff;pa
 .report-label{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#aaa;margin-bottom:20px}
 h1{font-family:'EB Garamond',Georgia,serif;font-size:52px;font-weight:600;letter-spacing:-.02em;line-height:1.05;color:#1a1a1a;margin-bottom:14px}
 .trend-color-bar{height:5px;width:80px;background:${c};border-radius:2px;margin-bottom:20px}
-.desc{font-size:16px;color:#444;line-height:1.8;max-width:680px;font-family:'EB Garamond',Georgia,serif;font-style:italic}
-.score-row{display:flex;align-items:center;gap:12px;margin:18px 0 0}
+.desc{font-size:16px;color:#444;line-height:1.8;max-width:680px;font-family:'EB Garamond',Georgia,serif;font-style:italic;margin-bottom:24px}
+.pull-quote{margin:28px 0 0;padding:24px 28px;border-left:4px solid ${c};background:${c}08;border-radius:0 12px 12px 0}
+.pull-quote-text{font-family:'EB Garamond',Georgia,serif;font-size:19px;font-style:italic;color:#111;line-height:1.65;margin-bottom:8px}
+.pull-quote-attr{font-size:9px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.12em}
+.score-row{display:flex;align-items:center;gap:12px;margin:22px 0 0}
 .score-bar{flex:1;height:3px;background:#f0f0f0;border-radius:2px;max-width:200px}
 .score-fill{height:100%;width:${trend.relevanceScore}%;background:${c};border-radius:2px}
 .score-label{font-size:10px;font-weight:700;color:#888;white-space:nowrap;letter-spacing:.06em}
 .section{margin:48px 0}
 .sh{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #e8e8e8}
-.sn{font-family:'DM Sans',monospace;font-size:9px;font-weight:700;color:${c};letter-spacing:.1em}
+.sn{font-family:monospace;font-size:9px;font-weight:700;color:${c};letter-spacing:.1em}
 .st{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#999}
 p{font-size:15px;color:#2a2a2a;line-height:1.85;margin-bottom:10px}
 .callout{background:${c}0d;border-left:4px solid ${c};padding:20px 24px;border-radius:0 10px 10px 0;margin:4px 0}
@@ -80,10 +223,23 @@ p{font-size:15px;color:#2a2a2a;line-height:1.85;margin-bottom:10px}
 .step{display:flex;gap:16px;align-items:flex-start}
 .snum{width:26px;height:26px;border-radius:6px;background:${c}15;border:1.5px solid ${c}35;color:${c};font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .stext{font-size:14.5px;color:#333;line-height:1.78;padding-top:3px}
-.signals-intro{font-size:13.5px;color:#888;margin-bottom:22px;line-height:1.7;font-style:italic}
-.signal{border:1px solid #ececec;border-left:3px solid ${c};border-radius:0 12px 12px 0;padding:18px 20px;margin-bottom:16px;break-inside:avoid}
+.brand-moves{display:flex;flex-direction:column;gap:10px}
+.brand-move{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border:1px solid #efefef;border-radius:10px;font-size:14px;color:#333;line-height:1.6}
+.brand-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.brand-label{flex:1}
+.diversity-row{margin-bottom:20px}
+.diversity-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:#f0f0f0;margin-bottom:8px}
+.diversity-seg{height:100%}
+.diversity-legend{display:flex;gap:16px;font-size:10px;color:#888}
+.diversity-legend span{display:flex;align-items:center;gap:4px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.quarter-block{margin-bottom:32px}
+.quarter-label{font-size:9px;font-weight:800;color:${c};text-transform:uppercase;letter-spacing:.16em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid ${c}22}
+.quarter-signals{display:flex;flex-direction:column;gap:12px}
+.signal{border:1px solid #ececec;border-left:3px solid ${c};border-radius:0 12px 12px 0;padding:18px 20px;break-inside:avoid}
 .signal-header{display:flex;gap:14px;margin-bottom:10px}
 .signal-num{font-family:monospace;font-size:9px;color:#ccc;font-weight:900;padding-top:3px;flex-shrink:0}
+.signal-meta{flex:1}
 .signal-title{font-size:14px;font-weight:600;color:#111;line-height:1.4;margin-bottom:4px}
 .signal-source{font-size:10px;color:#bbb;letter-spacing:.02em}
 .signal-summary{font-size:13px;color:#555;line-height:1.78}
@@ -100,6 +256,11 @@ p{font-size:15px;color:#2a2a2a;line-height:1.85;margin-bottom:10px}
   <h1>${trend.name}</h1>
   <div class="trend-color-bar"></div>
   <p class="desc">${trend.description}</p>
+  ${pullSignal ? `
+  <div class="pull-quote">
+    <div class="pull-quote-text">"${pullSignal.summary}"</div>
+    <div class="pull-quote-attr">${pullSignal.sourceName ?? ""}${pullSignal.date ? " · " + new Date(pullSignal.date).toLocaleDateString("en-US", { month: "long", year: "numeric" }) : ""}</div>
+  </div>` : ""}
   <div class="score-row">
     <div class="score-bar"><div class="score-fill"></div></div>
     <div class="score-label">Cultural Relevance Index &nbsp;${trend.relevanceScore} / 100</div>
@@ -108,13 +269,13 @@ p{font-size:15px;color:#2a2a2a;line-height:1.85;margin-bottom:10px}
 
 ${trend.macroContext ? `
 <div class="section">
-  <div class="sh"><span class="sn">01</span><span class="st">Macroeconomic Context</span></div>
+  <div class="sh"><span class="sn">${sn()}</span><span class="st">Macroeconomic Context</span></div>
   <p>${trend.macroContext}</p>
 </div>` : ""}
 
 ${(trend.socialContext || trend.politicalContext || trend.geographicalContext || trend.culturalContext) ? `
 <div class="section">
-  <div class="sh"><span class="sn">02</span><span class="st">Social, Political, Geographical &amp; Cultural Landscape</span></div>
+  <div class="sh"><span class="sn">${sn()}</span><span class="st">Social, Political, Geographical &amp; Cultural Landscape</span></div>
   <div class="two-col">
     ${trend.socialContext ? `<div class="context-block"><div class="context-block-label">Social</div><p>${trend.socialContext}</p></div>` : ""}
     ${trend.politicalContext ? `<div class="context-block"><div class="context-block-label">Political</div><p>${trend.politicalContext}</p></div>` : ""}
@@ -124,17 +285,17 @@ ${(trend.socialContext || trend.politicalContext || trend.geographicalContext ||
 </div>` : ""}
 
 <div class="section">
-  <div class="sh"><span class="sn">03</span><span class="st">Strategic Rationale</span></div>
+  <div class="sh"><span class="sn">${sn()}</span><span class="st">Strategic Rationale</span></div>
   <div class="callout"><p>${trend.whyRelevant}</p></div>
 </div>
 
 <div class="section">
-  <div class="sh"><span class="sn">04</span><span class="st">Trajectory &amp; Outlook</span></div>
+  <div class="sh"><span class="sn">${sn()}</span><span class="st">Trajectory &amp; Outlook</span></div>
   <p style="font-style:italic;color:#555">${trend.trajectory}</p>
 </div>
 
 <div class="section">
-  <div class="sh"><span class="sn">05</span><span class="st">Recommended Actions</span></div>
+  <div class="sh"><span class="sn">${sn()}</span><span class="st">Recommended Actions</span></div>
   <div class="steps">
     ${trend.nextSteps.map((s, i) => `
     <div class="step">
@@ -144,11 +305,15 @@ ${(trend.socialContext || trend.politicalContext || trend.geographicalContext ||
   </div>
 </div>
 
+${brandMovesHTML}
+
+${signals.length > 0 ? `
 <div class="section">
-  <div class="sh"><span class="sn">06</span><span class="st">Signal Intelligence: ${signals.length} Active Signals</span></div>
-  <p class="signals-intro">The following signals were identified across media, research, and cultural sources. Each represents a real-world data point confirming or advancing this trend's trajectory.</p>
-  ${signalsHTML}
-</div>
+  <div class="sh"><span class="sn">${sn()}</span><span class="st">Signal Intelligence: ${signals.length} Signals</span></div>
+  ${sourceDiversityBar}
+  <p style="font-size:13px;color:#888;margin-bottom:24px;font-style:italic;line-height:1.7">Signals identified across media, research, and cultural sources — ordered by quarter to show momentum building over time.</p>
+  ${signalTimelineHTML}
+</div>` : ""}
 
 <div class="footer">
   <span><strong>Augmented Radar</strong> maps emerging tech against culture.<br>By Martina from <a href="https://open.substack.com/pub/augmentedrarity" style="color:${c}">Augmented Rarity</a></span>
@@ -340,12 +505,20 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
         {/* Footer */}
         <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#fff" }}>
-          <button
-            onClick={() => exportPDF(trend, signals)}
-            style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-          >
-            Export as PDF
-          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => exportPDF(trend, signals, true)}
+              style={{ flex: 1, padding: "13px 0", borderRadius: 14, border: `1.5px solid ${textCol}33`, backgroundColor: "transparent", color: textCol, fontSize: 12, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+            >
+              1-Page Brief
+            </button>
+            <button
+              onClick={() => exportPDF(trend, signals, false)}
+              style={{ flex: 2, padding: "13px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+            >
+              Full Report
+            </button>
+          </div>
           <p style={{ fontSize: 10, color: "#ccc", margin: "10px 0 0", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
             Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
             <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
