@@ -20,6 +20,7 @@ interface Props {
   allSignals?: Signal[];
   onClose: () => void;
   onSelectSignal?: (s: Signal) => void;
+  onOpenTrend?: () => void;
 }
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -170,7 +171,7 @@ const SOURCE_DOMAINS: Record<string, string> = {
   "arXiv": "https://arxiv.org",
 };
 
-export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose, onSelectSignal }: Props) {
+export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose, onSelectSignal, onOpenTrend }: Props) {
   const pool = allSignals ?? SIGNALS;
   const crossLinked = (signal.crossLinks ?? []).map((id) => pool.find((s) => s.id === id)).filter(Boolean) as Signal[];
   const related = crossLinked.length > 0
@@ -224,14 +225,32 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                 fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase",
                 letterSpacing: "0.07em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20,
               }}>
-                {trendName}
+                Signal
               </span>
               <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
             </div>
 
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 14, letterSpacing: "-0.02em" }}>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 12, letterSpacing: "-0.02em" }}>
               {signal.title}
             </h3>
+
+            {/* Trend link */}
+            {onOpenTrend && (
+              <button
+                onClick={() => { onClose(); onOpenTrend(); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 8, marginBottom: 14,
+                  background: "none", border: "none", padding: 0, cursor: "pointer",
+                  textAlign: "left", width: "100%",
+                }}
+              >
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: textCol, textDecoration: "underline", textUnderlineOffset: 3 }}>
+                  {trendName}
+                </span>
+                <span style={{ fontSize: 11, color: "#bbb", marginLeft: "auto" }}>Open trend →</span>
+              </button>
+            )}
 
             {/* Source + date row */}
             <div style={{

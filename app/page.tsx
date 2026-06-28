@@ -91,14 +91,14 @@ type TrendNodeData = { id: string; name: string; color: string; score: number; n
 type SignalNodeData = { id: string; title: string; color: string; source?: string; isLive?: boolean; isNew?: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string };
 
 // Newer signals are lighter; older signals are darker.
-// 0 days → ~18% fill, 30+ days → ~75% fill.
-// Quadratic ease-in keeps today/this-week visually similar;
-// darkening accelerates in the final stretch toward 30 days.
+// 0 days → ~18% fill, 30 days → ~39%, 90 days → ~59%, 180 days (6 mo) → ~80%.
+// Power curve (0.6 exponent) keeps fresh signals visually similar;
+// darkening accelerates toward the 6-month cap, staying below full-opacity trend blobs.
 function ageAlpha(date: string | undefined): { fillAlpha: string; borderAlpha: string } {
   const ageDays = date ? (Date.now() - new Date(date).getTime()) / 86_400_000 : 30;
-  const t = Math.pow(Math.min(1, Math.max(0, ageDays / 30)), 2);
-  const fill   = Math.round(0x2E + t * (0xBF - 0x2E));
-  const border = Math.round(0x44 + t * (0xCC - 0x44));
+  const t = Math.pow(Math.min(1, Math.max(0, ageDays / 180)), 0.6);
+  const fill   = Math.round(0x2E + t * (0xCC - 0x2E));
+  const border = Math.round(0x44 + t * (0xDD - 0x44));
   return {
     fillAlpha:   fill.toString(16).padStart(2, "0"),
     borderAlpha: border.toString(16).padStart(2, "0"),
@@ -1197,6 +1197,7 @@ export default function HomePage() {
           allSignals={allSignals}
           onClose={() => setActiveSignal(null)}
           onSelectSignal={(s) => setActiveSignal(s)}
+          onOpenTrend={() => { setActiveSignal(null); setActiveTrend(activeTrendForSignal); }}
         />
       )}
 

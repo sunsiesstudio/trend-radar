@@ -64,6 +64,11 @@ Return ONLY valid JSON (no markdown, no explanation):
         "Soon (3-12 months): a product, collab, or capability to build. What gap does it close, who owns it.",
         "Bet (12-36 months): the move that'll seem obvious later. What does it unlock and why is the window open right now."
       ],
+      "brand_moves": [
+        { "label": "Brand name: what they did and why it worked (1 sentence)", "url": "https://example.com/optional-source" },
+        { "label": "Another brand name: specific product, collab, or campaign (1 sentence)" },
+        { "label": "Third brand: what they launched or partnered on (1 sentence)" }
+      ],
       "relevanceScore": 67,
       "signals": [
         { "id": "signal-id-1", "title": "Specific real headline, dateable and sourced", "summary": "2-3 sentences. What does this actually mean beyond the headline. Why does it matter right now. What does it confirm about where things are heading.", "source": "news", "sourceName": "Publication Name" },
@@ -103,6 +108,7 @@ Rules:
       historical_context?: string; economic_context?: string;
       macro_context?: string; cultural_context?: string; political_context?: string; geographical_context?: string;
       why_relevant: string; trajectory: string; next_steps: string[];
+      brand_moves?: Array<{ label: string; url?: string }>;
       relevanceScore: number;
       signals: Array<{ id: string; title: string; summary: string; source: string; sourceName: string }>;
     }>).map((t, i) => ({
@@ -125,6 +131,7 @@ Rules:
         whyRelevant: t.why_relevant,
         trajectory: t.trajectory,
         nextSteps: t.next_steps ?? [],
+        brandMoves: t.brand_moves ?? [],
       },
       signals: t.signals.map((s) => ({
         id: s.id,
