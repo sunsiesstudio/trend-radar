@@ -497,14 +497,11 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {clusters.map((cluster, ci) => {
                       const s = cluster[0];
-                      const globalIdx = sorted.indexOf(s);
-                      const ageFactor = sorted.length > 1 ? globalIdx / (sorted.length - 1) : 0;
-                      const opacity = 1 - ageFactor * 0.55;
                       const sigYear = s.date ? new Date(s.date).getFullYear() : null;
                       const dateFmt = s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", ...(sigYear !== now ? { year: "2-digit" } : {}) }) : "";
                       const corroborated = cluster.length > 1;
                       return (
-                        <div key={ci} style={{ opacity }}>
+                        <div key={ci}>
                           {corroborated && (
                             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, paddingLeft: 2 }}>
                               <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 20, padding: "2px 8px", letterSpacing: "0.06em" }}>
