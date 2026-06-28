@@ -230,28 +230,9 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
               <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
             </div>
 
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 12, letterSpacing: "-0.02em" }}>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 14, letterSpacing: "-0.02em" }}>
               {signal.title}
             </h3>
-
-            {/* Trend link */}
-            {onOpenTrend && (
-              <button
-                onClick={() => { onClose(); onOpenTrend(); }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 10, marginBottom: 16,
-                  background: `${trendColor}0E`, border: `1.5px solid ${trendColor}30`,
-                  borderRadius: 12, padding: "10px 14px", cursor: "pointer",
-                  textAlign: "left", width: "100%", boxSizing: "border-box",
-                }}
-              >
-                <div style={{ width: 12, height: 12, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
-                <span style={{ fontSize: 13, fontWeight: 700, color: textCol, flex: 1 }}>
-                  {trendName}
-                </span>
-                <span style={{ fontSize: 11, color: textCol, opacity: 0.6, fontWeight: 600 }}>View trend →</span>
-              </button>
-            )}
 
             {/* Source + date row */}
             <div style={{
@@ -299,6 +280,27 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           <div style={{ padding: "0 24px 20px" }}>
             <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: 0 }}>{signal.summary}</p>
           </div>
+
+          {/* Trend link */}
+          {onOpenTrend && (
+            <div style={{ padding: "0 24px 16px" }}>
+              <button
+                onClick={() => { onClose(); onOpenTrend(); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  background: `${trendColor}0E`, border: `1.5px solid ${trendColor}30`,
+                  borderRadius: 12, padding: "10px 14px", cursor: "pointer",
+                  textAlign: "left", width: "100%", boxSizing: "border-box",
+                }}
+              >
+                <div style={{ width: 12, height: 12, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
+                <span style={{ fontSize: 13, fontWeight: 700, color: textCol, flex: 1 }}>
+                  {trendName}
+                </span>
+                <span style={{ fontSize: 11, color: textCol, opacity: 0.6, fontWeight: 600 }}>View trend →</span>
+              </button>
+            </div>
+          )}
 
           {/* Related signals */}
           {related.length > 0 && (
