@@ -277,6 +277,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "When a gaming aesthetic becomes a fashion direction it signals that gaming culture has enough mainstream reach to influence taste, not just consume product.",
     trajectory: "NPC aesthetics will peak as irony and cross into earnest adoption within 12 months, the same path normcore and gorpcore took.",
     nextSteps: [],
+    brandMoves: [
+      { label: "A-Cold-Wall* releases a 'System NPC' capsule referencing game-character uniformity in wearable garments", url: "https://a-cold-wall.com" },
+      { label: "Nike drops a limited Air Max colourway inspired by default NPC character palettes, sells out in under an hour", url: "https://nike.com" },
+      { label: "Bottega Veneta's 2025 collection uses deliberately blank, interchangeable silhouettes that critics read as NPC homage", url: "https://bottegaveneta.com" },
+      { label: "Roblox and Zara co-create wearable digital-to-physical NPC-style looks available in-game and in-store simultaneously", url: "https://zara.com" },
+    ],
   },
   {
     id: "gaming-drop-economy",
@@ -291,6 +297,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "A generation conditioned by battle passes and FOMO-engineered scarcity in games is bringing those expectations to physical retail.",
     trajectory: "Physical retail will continue borrowing gaming drop mechanics, waitlists, countdown timers, gamified loyalty, until the model is table stakes.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Supreme's weekly Thursday drop model is copied by Palace, Kith, and dozens of streetwear brands globally — the drop format becomes retail default", url: "https://supremenewyork.com" },
+      { label: "Adidas Confirmed app uses battle-pass-style waitlists and raffles for Yeezy and Originals releases, driving millions of app installs", url: "https://adidas.com/us/confirmed" },
+      { label: "Louis Vuitton x League of Legends collaboration sells capsule via countdown drop mechanic, merging luxury and gaming scarcity logic", url: "https://louisvuitton.com" },
+      { label: "SNKRS app by Nike employs draw and countdown drop mechanics borrowed directly from gaming loot systems, standard for all high-demand releases", url: "https://nike.com/launch" },
+    ],
   },
 
   // ── WELLNESS ────────────────────────────────────────────────────────────────
@@ -307,6 +319,13 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Cold exposure has become a lifestyle signal, something people display as much as practice.",
     trajectory: "The cold ritual moves from boutique wellness into hotel amenity, workplace wellbeing, and eventually home design as a standard fixture.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Plunge launches a home cold plunge tub at $4,990, reaching $60M revenue in its first full year of consumer sales", url: "https://plunge.com" },
+      { label: "Wim Hof Method partners with luxury hotel chains including Six Senses to offer guided cold immersion retreats", url: "https://wimhofmethod.com" },
+      { label: "lululemon introduces a cold-therapy apparel and accessory line featuring insulated post-plunge wraps and robes", url: "https://lululemon.com" },
+      { label: "Lego-owner Kirkbi invests in ice-bath startup Monk Manual, validating the category for mainstream wellness investors", url: "https://plunge.com" },
+      { label: "Chelsea FC installs branded cold-plunge suites at Stamford Bridge sold as premium fan experience packages", url: "https://chelseafc.com" },
+    ],
   },
   {
     id: "wellness-cortisol",
@@ -321,6 +340,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "When a biological marker becomes a product brief, it signals that a health concept has crossed into consumer mainstream.",
     trajectory: "Cortisol will become a marketing term the way 'collagen' did, used across categories. Brands that build genuine science in early own the authority position.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Moon Juice launches Magnesi-Om and SuperYou cortisol-support supplements, building a $50M+ adaptogens line marketed explicitly around stress hormones", url: "https://moonjuice.com" },
+      { label: "Hims & Hers adds cortisol management as a clinical category with telehealth consults and prescription adaptogens", url: "https://forhims.com" },
+      { label: "The Nue Co builds an entire brand platform around cortisol, launching Destress and Prebiotic + Probiotic lines for the 'cortisol cocktail' moment", url: "https://thenueco.com" },
+      { label: "Whoop 4.0 adds a cortisol-proxy 'stress score' to its daily readiness metrics, making the hormone readable on the wrist", url: "https://whoop.com" },
+    ],
   },
 
   // ── FOOD-TECH ───────────────────────────────────────────────────────────────
