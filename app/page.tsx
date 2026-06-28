@@ -434,10 +434,9 @@ export default function HomePage() {
 
   const allTrends = useMemo(() => [...appliedDynamicTrends], [appliedDynamicTrends]);
   const visibleTrends = useMemo(() =>
-    allTrends.filter(t =>
-      !t.topics?.length ||
-      t.topics.some(tp => appliedTopics.includes(tp))
-    ),
+    appliedTopics.length === 0
+      ? allTrends
+      : allTrends.filter(t => appliedTopics.every(tp => (t.topics ?? []).includes(tp))),
     [allTrends, appliedTopics]
   );
 
@@ -503,6 +502,75 @@ export default function HomePage() {
     if (failedTopic) runGeneration(failedTopic, activeTopics);
   }, [activeTopics, dynamicTrends, runGeneration]);
 
+  // Load the board for a given topic set — always replaces current trends.
+  // Single topic: check library first, else generate. Multi-topic: generate for combination.
+  const loadTrendsForTopics = useCallback(async (topics: string[]) => {
+    setAppliedTopics(topics);
+    if (topics.length === 0) {
+      setDynamicTrends([]);
+      setAppliedDynamicTrends([]);
+      setGeneratedSignals([]);
+      return;
+    }
+
+    if (topics.length === 1) {
+      const key = topics[0];
+      const libraryTrends = (TOPIC_LIBRARY[key] ?? []).map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+      if (libraryTrends.length) {
+        setDynamicTrends(libraryTrends);
+        setAppliedDynamicTrends(libraryTrends);
+        setTimeout(() => setFocusIdx(0), 60);
+        return;
+      }
+      await runGeneration(key, topics);
+      return;
+    }
+
+    // Multi-topic: check if library has trends covering ALL topics
+    const allLibrary = Object.values(TOPIC_LIBRARY).flat();
+    const libraryIntersection = allLibrary
+      .filter(t => topics.every(tp => (t.topics ?? []).includes(tp)))
+      .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+    if (libraryIntersection.length) {
+      setDynamicTrends(libraryIntersection);
+      setAppliedDynamicTrends(libraryIntersection);
+      setTimeout(() => setFocusIdx(0), 60);
+      return;
+    }
+
+    // Generate trends specifically for the topic combination
+    const combinedTopic = topics.join(" and ");
+    setGeneratingTopic(combinedTopic);
+    setGenerationError(null);
+    setDynamicTrends([]);
+    setAppliedDynamicTrends([]);
+    setGeneratedSignals([]);
+    try {
+      const res = await fetch("/api/generate-trends", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: combinedTopic, existingTrendIds: [], positionOffset: 0 }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
+        // Tag every trend with ALL active topics so AND filter matches them
+        const taggedTrends = items.map(i => ({ ...i.trend, topics }));
+        setDynamicTrends(taggedTrends);
+        setAppliedDynamicTrends(taggedTrends);
+        setGeneratedSignals(items.flatMap(i => i.signals));
+        setTimeout(() => setFocusIdx(0), 60);
+      } else {
+        const errData = await res.json().catch(() => ({})) as { error?: string };
+        setGenerationError(errData.error ?? "Generation failed. Please try again.");
+      }
+    } catch {
+      setGenerationError("Network error. Check connection and try again.");
+    } finally {
+      setGeneratingTopic(null);
+    }
+  }, [runGeneration]);
+
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
     if (!key || activeTopics.includes(key)) return;
@@ -520,36 +588,14 @@ export default function HomePage() {
       try { localStorage.setItem("ar_topicAddedAt", JSON.stringify(next)); } catch { /* ignore */ }
     }
 
-    // Use pre-built library first — apply immediately, overriding stored positions
-    const libraryTrends = (TOPIC_LIBRARY[key] ?? []).filter(t =>
-      !dynamicTrends.find(e => e.id === t.id)
-    ).map((t, i) => ({ ...t, position: computeTrendPosition(dynamicTrends.length + i) }));
-    if (libraryTrends.length) {
-      const newDynamic = [...dynamicTrends, ...libraryTrends];
-      setDynamicTrends(newDynamic);
-      setAppliedTopics(newTopics);
-      setAppliedDynamicTrends(newDynamic);
-      setTimeout(() => setFocusIdx(0), 60);
-      return;
-    }
-
-    await runGeneration(key, newTopics);
-  }, [activeTopics, dynamicTrends, runGeneration, topicAddedAt]);
+    await loadTrendsForTopics(newTopics);
+  }, [activeTopics, loadTrendsForTopics, topicAddedAt]);
 
   const removeTopic = useCallback((topic: string) => {
-    setActiveTopics(prev => {
-      const next = prev.filter(t => t !== topic);
-      setAppliedTopics(next);
-      setDynamicTrends(dt => {
-        const kept = dt.filter(t => t.topics?.some(tp => next.includes(tp)));
-        setAppliedDynamicTrends(kept);
-        const removedIds = new Set(dt.filter(t => !kept.includes(t)).map(t => t.id));
-        setGeneratedSignals(gs => gs.filter(s => !removedIds.has(s.trendId ?? "")));
-        return kept;
-      });
-      return next;
-    });
-  }, []);
+    const next = activeTopics.filter(t => t !== topic);
+    setActiveTopics(next);
+    loadTrendsForTopics(next);
+  }, [activeTopics, loadTrendsForTopics]);
 
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
@@ -848,13 +894,14 @@ export default function HomePage() {
                     const exclusives = appliedTopics.map(tp => visibleTrends.filter(t => (t.topics ?? []).includes(tp) && !appliedTopics.filter(x => x !== tp).every(x => (t.topics ?? []).includes(x))));
 
                     const TrendRow = ({ t }: { t: Trend }) => (
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, paddingBottom: 10, borderBottom: "1px solid #f5f3ef" }}>
+                      <button onClick={() => { setActiveTrend(t); setSummaryOpen(false); }} style={{ display: "flex", alignItems: "flex-start", gap: 10, background: "none", border: "none", borderBottom: "1px solid #f5f3ef", textAlign: "left", width: "100%", cursor: "pointer", padding: "0 0 10px" }}>
                         <div style={{ width: 7, height: 7, borderRadius: "50%", background: darkenColor(t.color), marginTop: 5, flexShrink: 0 }} />
-                        <div>
+                        <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
                           <div style={{ fontSize: 11, color: "#888", lineHeight: 1.5, marginTop: 2 }}>{t.description}</div>
                         </div>
-                      </div>
+                        <span style={{ fontSize: 10, color: "#ccc", marginTop: 3, flexShrink: 0 }}>→</span>
+                      </button>
                     );
 
                     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -886,15 +933,16 @@ export default function HomePage() {
                       </div>
                     );
                   })() : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingBottom: 20 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 0, paddingBottom: 20 }}>
                       {visibleTrends.map(t => (
-                        <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                        <button key={t.id} onClick={() => { setActiveTrend(t); setSummaryOpen(false); }} style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "none", border: "none", borderBottom: "1px solid #f5f3ef", textAlign: "left", width: "100%", cursor: "pointer", padding: "0 0 12px", marginBottom: 12 }}>
                           <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
-                          <div>
+                          <div style={{ flex: 1 }}>
                             <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
                             <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
                           </div>
-                        </div>
+                          <span style={{ fontSize: 10, color: "#ccc", marginTop: 5, flexShrink: 0 }}>→</span>
+                        </button>
                       ))}
                     </div>
                   )}
