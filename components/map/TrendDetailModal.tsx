@@ -28,7 +28,7 @@ function quarterLabel(dateStr: string): string {
   return `Q${Math.ceil((d.getMonth() + 1) / 3)} ${d.getFullYear()}`;
 }
 
-function exportPDF(trend: Trend, signals: Signal[], brief = false) {
+function exportPDF(trend: Trend, signals: Signal[]) {
   const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   const c = trend.color;
 
@@ -110,79 +110,6 @@ function exportPDF(trend: Trend, signals: Signal[], brief = false) {
   </div>
 </div>` : "";
 
-  if (brief) {
-    // ── 1-PAGE BRIEF ───────────────────────────────────────────────
-    const topSignals = sorted.slice(0, 3);
-    const topMoves = (trend.brandMoves ?? []).slice(0, 2);
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>${trend.name}: Trend Brief</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',system-ui,sans-serif;color:#1a1a1a;background:#fff;padding:52px 64px;max-width:820px;margin:0 auto;font-size:13px;line-height:1.7}
-@media print{body{padding:32px 44px}@page{margin:1cm 1.5cm;size:A4}}
-.bar{height:4px;background:${c};border-radius:2px;margin-bottom:28px;width:60px}
-.label{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#bbb;margin-bottom:10px}
-h1{font-family:'EB Garamond',Georgia,serif;font-size:40px;font-weight:600;letter-spacing:-.02em;line-height:1.05;color:#1a1a1a;margin-bottom:8px}
-.desc{font-size:14px;color:#555;line-height:1.75;font-family:'EB Garamond',Georgia,serif;font-style:italic;margin-bottom:20px;max-width:620px}
-.score-row{display:flex;align-items:center;gap:10px;margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid #e8e8e8}
-.score-track{flex:1;height:3px;background:#f0f0f0;border-radius:2px;max-width:160px}
-.score-fill{height:100%;width:${trend.relevanceScore}%;background:${c};border-radius:2px}
-.score-label{font-size:9px;font-weight:700;color:#999;letter-spacing:.06em}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
-.cell{padding:16px 18px;border:1px solid #efefef;border-radius:10px}
-.cell-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:${c};margin-bottom:8px}
-.cell p{font-size:12.5px;color:#444;line-height:1.72;margin:0}
-.signal-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
-.sig{border-left:3px solid ${c};padding:10px 14px;background:#faf9f6;border-radius:0 8px 8px 0}
-.sig-title{font-size:12.5px;font-weight:600;color:#111;line-height:1.35;margin-bottom:3px}
-.sig-meta{font-size:10px;color:#bbb}
-.moves{display:flex;flex-direction:column;gap:6px;margin-bottom:28px}
-.move{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#333;line-height:1.6}
-.move::before{content:"→";color:${c};font-weight:700;flex-shrink:0;margin-top:1px}
-.action{background:${c}0d;border-left:4px solid ${c};padding:14px 18px;border-radius:0 10px 10px 0;font-size:13.5px;color:#111;font-weight:500;line-height:1.7;margin-bottom:28px}
-.footer{padding-top:16px;border-top:1px solid #efefef;display:flex;justify-content:space-between;font-size:9px;color:#ccc;letter-spacing:.03em}
-.footer strong{color:${c}}
-.section-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#bbb;margin-bottom:10px}
-</style>
-</head>
-<body>
-<div class="bar"></div>
-<div class="label">Trend Brief &nbsp;·&nbsp; ${date}</div>
-<h1>${trend.name}</h1>
-<p class="desc">${trend.description}</p>
-<div class="score-row">
-  <div class="score-track"><div class="score-fill"></div></div>
-  <div class="score-label">Cultural Relevance &nbsp;${trend.relevanceScore}/100</div>
-</div>
-<div class="grid">
-  <div class="cell"><div class="cell-label">Why it matters</div><p>${trend.whyRelevant}</p></div>
-  <div class="cell"><div class="cell-label">Trajectory</div><p style="font-style:italic">${trend.trajectory}</p></div>
-</div>
-${topSignals.length > 0 ? `<div class="section-label">Top Signals (${signals.length} total)</div>
-<div class="signal-list">
-  ${topSignals.map(s => `<div class="sig"><div class="sig-title">${s.title}</div><div class="sig-meta">${s.sourceName ?? ""}${s.date ? " · " + new Date(s.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""}</div></div>`).join("")}
-</div>` : ""}
-${topMoves.length > 0 ? `<div class="section-label">Brand Moves</div>
-<div class="moves">${topMoves.map(m => `<div class="move">${m.label}</div>`).join("")}</div>` : ""}
-<div class="section-label">Recommended Action</div>
-<div class="action">${trend.nextSteps[0] ?? ""}</div>
-<div class="footer">
-  <span><strong>Augmented Radar</strong> — emerging tech × culture</span>
-  <span>${date}</span>
-</div>
-<script>window.onload=()=>{setTimeout(()=>window.print(),400)}</script>
-</body>
-</html>`;
-    const win = window.open("", "_blank");
-    if (win) { win.document.write(html); win.document.close(); }
-    return;
-  }
-
-  // ── FULL DEEP REPORT ──────────────────────────────────────────────
   let sectionNum = 1;
   const sn = () => String(sectionNum++).padStart(2, "0");
 
@@ -467,31 +394,78 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             {signals.length > 0 && (() => {
               const sorted = [...signals].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
               const now = new Date().getFullYear();
+
+              // Cluster signals by keyword overlap
+              const STOP = new Set(["the","a","an","is","are","of","in","to","for","with","and","or","that","this","it","as","by","on","at","from","its","their","has","have","been","will","new","says","more","most","how","what","which","when","who","all","can","into","over","after","now","first","per","cent","year","just","but","not","its","our","was","were","one","two","three","s"]);
+              const tokenize = (t: string) => new Set(t.toLowerCase().split(/\W+/).filter(w => w.length > 3 && !STOP.has(w)));
+              const claimed = new Set<number>();
+              const clusters: Signal[][] = [];
+              for (let i = 0; i < sorted.length; i++) {
+                if (claimed.has(i)) continue;
+                const cluster: Signal[] = [sorted[i]];
+                const pool = tokenize(sorted[i].title);
+                for (let j = i + 1; j < sorted.length; j++) {
+                  if (claimed.has(j)) continue;
+                  const toks = tokenize(sorted[j].title);
+                  const shared = [...toks].filter(t => pool.has(t)).length;
+                  if (shared >= 2) { cluster.push(sorted[j]); claimed.add(j); toks.forEach(t => pool.add(t)); }
+                }
+                claimed.add(i);
+                clusters.push(cluster);
+              }
+
               return (
                 <>
                   <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>signals ({sorted.length})</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {sorted.map((s, i) => {
-                      const ageFactor = sorted.length > 1 ? i / (sorted.length - 1) : 0;
+                    {clusters.map((cluster, ci) => {
+                      const s = cluster[0];
+                      const globalIdx = sorted.indexOf(s);
+                      const ageFactor = sorted.length > 1 ? globalIdx / (sorted.length - 1) : 0;
                       const opacity = 1 - ageFactor * 0.55;
                       const sigYear = s.date ? new Date(s.date).getFullYear() : null;
                       const dateFmt = s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", ...(sigYear !== now ? { year: "2-digit" } : {}) }) : "";
+                      const corroborated = cluster.length > 1;
                       return (
-                        <button
-                          key={s.id}
-                          onClick={() => onSelectSignal(s)}
-                          style={{ opacity, textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                            <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
-                            <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
-                            {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
-                            <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{dateFmt}</span>
-                          </div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
-                          <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
-                          {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
-                        </button>
+                        <div key={ci} style={{ opacity }}>
+                          {corroborated && (
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, paddingLeft: 2 }}>
+                              <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 20, padding: "2px 8px", letterSpacing: "0.06em" }}>
+                                ✓ {cluster.length} sources reporting this
+                              </span>
+                            </div>
+                          )}
+                          <button
+                            onClick={() => onSelectSignal(s)}
+                            style={{ textAlign: "left", background: "#faf9f6", border: corroborated ? `1.5px solid ${trend.color}44` : "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: corroborated ? "12px 12px 0 0" : 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                              <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
+                              <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
+                              {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
+                              <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{dateFmt}</span>
+                            </div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
+                            <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
+                            {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
+                          </button>
+                          {corroborated && (
+                            <div style={{ background: `${trend.color}08`, border: `1.5px solid ${trend.color}44`, borderTop: "none", borderRadius: "0 0 12px 12px", padding: "8px 14px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+                              <span style={{ fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", marginRight: 2 }}>Also reported by</span>
+                              {cluster.slice(1).map((cs, k) => {
+                                const csYear = cs.date ? new Date(cs.date).getFullYear() : null;
+                                const csFmt = cs.date ? new Date(cs.date).toLocaleDateString("en-US", { month: "short", ...(csYear !== now ? { year: "2-digit" } : {}) }) : "";
+                                return (
+                                  <button key={k} onClick={() => onSelectSignal(cs)} style={{ display: "flex", alignItems: "center", gap: 4, background: "#fff", border: "1px solid #eee", borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontSize: 10, color: "#555", fontWeight: 600, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
+                                    <span>{getSourceIcon(cs.source)}</span>
+                                    <span>{cs.sourceName}</span>
+                                    {csFmt && <span style={{ color: "#bbb", fontWeight: 400 }}>· {csFmt}</span>}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -505,20 +479,12 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
         {/* Footer */}
         <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#fff" }}>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button
-              onClick={() => exportPDF(trend, signals, true)}
-              style={{ flex: 1, padding: "13px 0", borderRadius: 14, border: `1.5px solid ${textCol}33`, backgroundColor: "transparent", color: textCol, fontSize: 12, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-            >
-              1-Page Brief
-            </button>
-            <button
-              onClick={() => exportPDF(trend, signals, false)}
-              style={{ flex: 2, padding: "13px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-            >
-              Full Report
-            </button>
-          </div>
+          <button
+            onClick={() => exportPDF(trend, signals)}
+            style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+          >
+            Export as PDF
+          </button>
           <p style={{ fontSize: 10, color: "#ccc", margin: "10px 0 0", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
             Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
             <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
