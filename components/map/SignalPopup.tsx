@@ -218,126 +218,115 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
         <div style={{ height: 4, background: `linear-gradient(90deg, ${trendColor}, ${trendColor}44)`, flexShrink: 0 }} />
 
         <div style={{ overflowY: "auto", flex: 1, WebkitOverflowScrolling: "touch", touchAction: "pan-y", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))" } as React.CSSProperties}>
-          {/* Header */}
-          <div style={{ padding: "20px 24px 0" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-              <span style={{
-                fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase",
-                letterSpacing: "0.07em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20,
-              }}>
-                Signal
-              </span>
-              <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
-            </div>
 
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 14, letterSpacing: "-0.02em" }}>
+          {/* Tag + close */}
+          <div style={{ padding: "20px 24px 16px", display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{
+              fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase",
+              letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20,
+            }}>
+              Signal
+            </span>
+            <button onClick={onClose} style={{ marginLeft: "auto", width: 34, height: 34, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
+          </div>
+
+          {/* Title — hero */}
+          <div style={{ padding: "0 24px 14px" }}>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: "#111", lineHeight: 1.2, margin: 0, letterSpacing: "-0.03em" }}>
               {signal.title}
             </h3>
+          </div>
 
-            {/* Source + date row */}
-            <div style={{
-              display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
-              padding: "10px 14px", background: "#f8f7f5", borderRadius: 10, marginBottom: 16,
-            }}>
-              <span style={{ fontSize: 16 }}>{getSourceIcon(signal.source)}</span>
-              <div>
-                {effectiveUrl ? (
-                  <a href={effectiveUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12, fontWeight: 700, color: "#333", textDecoration: "none" }}>
-                    {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
-                    {" · "}
-                    <span style={{ fontWeight: 400, color: "#666" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
-                  </a>
-                ) : (
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#333" }}>
-                    {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
-                    {" · "}
-                    <span style={{ fontWeight: 400, color: "#666" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
-                  </div>
-                )}
-                {fmt(signal.date) && (
-                  <div style={{ fontSize: 11, color: "#999", marginTop: 1 }}>Published {fmt(signal.date)}</div>
-                )}
-              </div>
-              {effectiveUrl && (
-                <a
-                  href={effectiveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
+          {/* Source metadata — light byline, no card */}
+          <div style={{ padding: "0 24px 18px", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 15, lineHeight: 1 }}>{getSourceIcon(signal.source)}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
+              {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
+            </span>
+            <span style={{ fontSize: 12, color: "#bbb" }}>·</span>
+            <span style={{ fontSize: 12, color: "#999" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
+            {fmt(signal.date) && (
+              <>
+                <span style={{ fontSize: 12, color: "#bbb" }}>·</span>
+                <span style={{ fontSize: 12, color: "#999" }}>{fmt(signal.date)}</span>
+              </>
+            )}
+            {effectiveUrl && (
+              <a
+                href={effectiveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: textCol, textDecoration: "none", padding: "4px 11px", background: `${trendColor}14`, borderRadius: 20, whiteSpace: "nowrap" }}
+              >
+                View source →
+              </a>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div style={{ margin: "0 24px 18px", height: 1, background: "#f0ede8" }} />
+
+          {/* Summary — primary content */}
+          <div style={{ padding: "0 24px 24px" }}>
+            <p style={{ fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{signal.summary}</p>
+          </div>
+
+          {/* Trend link + related — grouped at bottom */}
+          {(onOpenTrend || related.length > 0) && (
+            <div style={{ margin: "0 24px 24px", borderRadius: 14, border: "1px solid #efefef", overflow: "hidden" }}>
+
+              {/* Trend link */}
+              {onOpenTrend && (
+                <button
+                  onClick={() => { onClose(); onOpenTrend(); }}
                   style={{
-                    marginLeft: "auto", fontSize: 11, fontWeight: 700, color: textCol,
-                    textDecoration: "none", padding: "5px 12px", background: `${trendColor}14`,
-                    borderRadius: 20, whiteSpace: "nowrap",
+                    display: "flex", alignItems: "center", gap: 10,
+                    background: `${trendColor}08`, borderBottom: related.length > 0 ? "1px solid #efefef" : "none",
+                    padding: "12px 16px", cursor: "pointer",
+                    textAlign: "left", width: "100%", boxSizing: "border-box", border: "none",
                   }}
                 >
-                  View source →
-                </a>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 2 }}>Trend</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: textCol }}>{trendName}</div>
+                  </div>
+                  <span style={{ fontSize: 11, color: "#bbb", fontWeight: 600 }}>View →</span>
+                </button>
               )}
-            </div>
-          </div>
 
-          {/* Summary */}
-          <div style={{ padding: "0 24px 20px" }}>
-            <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: 0 }}>{signal.summary}</p>
-          </div>
-
-          {/* Trend link */}
-          {onOpenTrend && (
-            <div style={{ padding: "0 24px 16px" }}>
-              <button
-                onClick={() => { onClose(); onOpenTrend(); }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 10,
-                  background: `${trendColor}0E`, border: `1.5px solid ${trendColor}30`,
-                  borderRadius: 12, padding: "10px 14px", cursor: "pointer",
-                  textAlign: "left", width: "100%", boxSizing: "border-box",
-                }}
-              >
-                <div style={{ width: 12, height: 12, borderRadius: "50%", background: trendColor, flexShrink: 0 }} />
-                <span style={{ fontSize: 13, fontWeight: 700, color: textCol, flex: 1 }}>
-                  {trendName}
-                </span>
-                <span style={{ fontSize: 11, color: textCol, opacity: 0.6, fontWeight: 600 }}>View trend →</span>
-              </button>
-            </div>
-          )}
-
-          {/* Related signals */}
-          {related.length > 0 && (
-            <div style={{ padding: "0 24px 24px" }}>
-              <div style={{
-                fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase",
-                letterSpacing: "0.1em", marginBottom: 10,
-              }}>
-                {relatedLabel} ({related.length})
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-                {related.map((r) => (
-                  <button
-                    key={r.id}
-                    onClick={() => onSelectSignal?.(r)}
-                    style={{
-                      textAlign: "left", background: "#faf9f6", border: "1px solid #eee",
-                      borderRadius: 10, padding: "10px 14px", cursor: "pointer", width: "100%",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ fontSize: 12 }}>{getSourceIcon(r.source)}</span>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: "#222", flex: 1 }}>{r.title}</span>
-                      <span style={{ fontSize: 10, color: "#bbb" }}>→</span>
-                    </div>
-                    {r.summary && (
-                      <p style={{
-                        fontSize: 11, color: "#999", margin: "5px 0 0 22px",
-                        lineHeight: 1.5,
-                        display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-                      }}>
-                        {r.summary}
-                      </p>
-                    )}
-                  </button>
-                ))}
-              </div>
+              {/* Related signals */}
+              {related.length > 0 && (
+                <div>
+                  <div style={{ padding: "10px 16px 8px", fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    {relatedLabel}
+                  </div>
+                  {related.map((r) => (
+                    <button
+                      key={r.id}
+                      onClick={() => onSelectSignal?.(r)}
+                      style={{
+                        textAlign: "left", background: "#fff", borderTop: "1px solid #f5f4f2",
+                        padding: "10px 16px", cursor: "pointer", width: "100%", boxSizing: "border-box", border: "none", borderTop: "1px solid #f5f4f2",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                        <span style={{ fontSize: 13, marginTop: 1 }}>{getSourceIcon(r.source)}</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: "#222", lineHeight: 1.4 }}>{r.title}</div>
+                          {r.summary && (
+                            <p style={{ fontSize: 11, color: "#999", margin: "4px 0 0", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                              {r.summary}
+                            </p>
+                          )}
+                        </div>
+                        <span style={{ fontSize: 10, color: "#ccc", marginTop: 2 }}>→</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
