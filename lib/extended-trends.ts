@@ -697,6 +697,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Personalisation in skincare reduces churn and increases basket size simultaneously. The brands that own the diagnostic layer own the relationship, which is worth more than any single product.",
     trajectory: "AI skin diagnostics will move from premium brand differentiator to mass-market standard feature within 24 months, driven by smartphone camera improvement and falling AI inference costs.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Proven Skincare uses a 47-question AI quiz backed by 20,000+ academic papers to formulate personalised three-step routines for each customer", url: "https://provenskincare.com" },
+      { label: "Shiseido launches Optune, an AI-powered skincare device that adjusts serum formulations daily based on skin sensor readings and weather data", url: "https://shiseido.com" },
+      { label: "La Roche-Posay's SkinChecker AI tool analyses uploaded selfies for early signs of skin cancer, building diagnostic authority in mass skincare", url: "https://laroche-posay.co.uk" },
+      { label: "Curology uses AI-driven dermatology consultations to prescribe personalised tretinoin formulas, scaling to 600K+ subscribers", url: "https://curology.com" },
+    ],
   },
 
   // ── LUXURY ──────────────────────────────────────────────────────────────────
@@ -713,6 +719,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Provenance is the core value proposition of luxury. Digital product passports make provenance machine-verifiable, unlocking resale value, anti-counterfeiting, and circular business models simultaneously.",
     trajectory: "EU Digital Product Passport regulation (2027) will make blockchain provenance mandatory for luxury goods sold in Europe. The brands that build infrastructure now will define the standard for everyone else.",
     nextSteps: [],
+    brandMoves: [
+      { label: "LVMH, Prada, and Cartier launch the Aura Blockchain Consortium, the first cross-brand luxury blockchain for product authentication with 40+ members", url: "https://auraluxuryblockchain.com" },
+      { label: "Breitling attaches NFC-powered digital passports to every watch, enabling ownership transfer and service history on the blockchain", url: "https://breitling.com" },
+      { label: "Arianee powers digital product passports for Richemont brands including Cartier and Vacheron Constantin, reaching 3M digital certificates issued", url: "https://arianee.com" },
+      { label: "Pangaia integrates QR-code digital passports on all garments, linking customers to fibre origin, manufacturing location, and carbon footprint data", url: "https://pangaia.com" },
+    ],
   },
   {
     id: "luxury-ai-personalisation",
@@ -727,6 +739,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Luxury was always about feeling uniquely seen. AI makes that feeling scalable. The brands that deploy AI-powered personalisation without losing the human warmth of the luxury service experience will win the next decade.",
     trajectory: "AI personal shoppers for luxury will be standard at the top 20 luxury groups within 18 months. The differentiation will be in training data quality and human-AI handoff design.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Net-a-Porter's AI stylist analyses purchase history and browsing to send weekly personal edit emails with 3x higher open rates than standard newsletters", url: "https://net-a-porter.com" },
+      { label: "Farfetch Dream Assembler tool enables one-to-one bespoke product configuration for handbags and footwear across its luxury brand network", url: "https://farfetch.com" },
+      { label: "Dior deploys AI-powered clienteling tools in boutiques, giving sales associates real-time preference profiles of VIP customers before they enter the store", url: "https://dior.com" },
+      { label: "Gucci's My Gucci monogramming service powered by AI design assistance allows fully bespoke product customisation at accessible luxury price points", url: "https://gucci.com" },
+    ],
   },
 
   // ── CREATIVITY ──────────────────────────────────────────────────────────────
@@ -743,6 +761,13 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "AI creative tools are not augmenting creative production, they're restructuring it. Studios that adapt their workflow are producing at 5-10x the pace. Those that don't will be out-produced.",
     trajectory: "Within 18 months AI creative tools will be as standard as Adobe Creative Suite. The competitive question moves from 'do you use AI' to 'how sophisticated is your AI workflow and proprietary training data'.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Adobe Firefly integrates generative AI directly into Photoshop and Illustrator, adding 'Generative Fill' to 30M+ professional users overnight", url: "https://adobe.com/products/firefly" },
+      { label: "Runway ML's Gen-3 video model is adopted by major advertising agencies including WPP's Hogarth for high-volume commercial production", url: "https://runwayml.com" },
+      { label: "Midjourney reaches 16M Discord users and is cited in campaigns by Nestlé, Heinz, and Volkswagen as primary moodboard and concept visualisation tool", url: "https://midjourney.com" },
+      { label: "WPP launches Open, a proprietary AI creative production platform built on Adobe, Getty, and OpenAI partnerships to serve all its agency brands", url: "https://wpp.com" },
+      { label: "Canva integrates Magic Studio AI tools including text-to-image and Magic Write into its 170M-user platform, democratising generative creative tools", url: "https://canva.com" },
+    ],
   },
   {
     id: "creativity-human-ai-authorship",
@@ -757,6 +782,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Creative industry contracts written before AI are already inadequate. The authorship question is both a legal issue and a cultural one, and how it resolves will determine how creative value is distributed for the next decade.",
     trajectory: "Copyright law for AI-assisted work will be clarified in most major jurisdictions by 2027. Until then, IP risk falls on creators and agencies, creating an opening for platforms that offer AI creative tools with built-in rights clarity.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Getty Images launches its own generative AI image tool trained exclusively on licensed content, offering indemnified outputs to commercial clients", url: "https://gettyimages.com/ai" },
+      { label: "Adobe Content Credentials (C2PA) roll out across Creative Cloud apps, embedding provenance metadata to distinguish AI-assisted from human-only work", url: "https://contentcredentials.org" },
+      { label: "Universal Music Group signs AI collaboration agreements with Anthropic and Google, establishing royalty frameworks for AI trained on label catalogues", url: "https://umusicgroup.com" },
+      { label: "Stability AI releases an 'Enterprise' tier with contractual IP indemnification, making authorship liability a commercial product differentiator", url: "https://stability.ai" },
+    ],
   },
 
   // ── PHOTOGRAPHY ─────────────────────────────────────────────────────────────
@@ -773,6 +804,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The documentary value of photography was always its anchor. When that's gone, the entire chain of trust, from journalism to social proof in advertising, needs rebuilding. Brands and media that get ahead of verification will own the credibility premium.",
     trajectory: "Content authenticity standards (C2PA, Adobe Content Credentials) will become mandatory for editorial and advertising photography within 3 years. The brands that adopt early will have a transparency advantage.",
     nextSteps: [],
+    brandMoves: [
+      { label: "AP, Reuters, and AFP publish joint policy banning AI-generated images from news wires, establishing editorial photography's documentary standard", url: "https://ap.org" },
+      { label: "Leica Camera launches the M11-P with built-in Content Credentials (C2PA) chip — the first camera to cryptographically sign every image at capture", url: "https://leica-camera.com" },
+      { label: "Adobe's Content Authenticity Initiative reaches 3,500 member organisations committing to provenance transparency in visual media", url: "https://contentauthenticity.org" },
+      { label: "Nikon announces Content Credentials integration across its Z-series mirrorless lineup, bringing cryptographic image authentication to pro photographers", url: "https://nikon.com" },
+    ],
   },
   {
     id: "photography-computational",
@@ -787,6 +824,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "When a phone camera beats a professional DSLR in most use cases, the value of professional photography shifts entirely to judgement, vision, and direction, not technical execution. That's a profound change in what photographers sell.",
     trajectory: "Computational photography capabilities will reach diminishing returns on the hardware side and shift to AI editing: automatic style application, scene-aware post-processing, and real-time cinematic grade.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Google Pixel 9's 'Add Me' and 'Best Take' AI features use computational photography to solve group-shot problems that no DSLR can match", url: "https://store.google.com/product/pixel_9" },
+      { label: "Apple's iPhone 16 Pro shoots spatial video for Apple Vision Pro — computational photography enabling a new content category at consumer price points", url: "https://apple.com/iphone-16-pro" },
+      { label: "Lightroom's AI Masking and Denoise features, powered by Adobe Sensei, process professional-grade edits in seconds that previously required hours", url: "https://lightroom.adobe.com" },
+      { label: "Sony launches AI-AF (autofocus) across its Alpha mirrorless lineup, using machine learning to track subjects that previously required manual focus pullers", url: "https://sony.com/en/articles/alpha-1" },
+    ],
   },
 
   // ── FILM ────────────────────────────────────────────────────────────────────
@@ -803,6 +846,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "AI production tools are restructuring film economics, lower budgets for comparable production values is the promise. The tension is with talent unions whose members' likenesses and work are the training data.",
     trajectory: "The SAG-AFTRA agreement will define how AI is used in production for the next 5 years. Studios that build compliant AI workflows now will have a cost and speed advantage when the rules become clear.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Industrial Light & Magic deploys Deepfake/de-aging AI on Indiana Jones and the Dial of Destiny, de-aging Harrison Ford 45 years for the opening sequence", url: "https://ilm.com" },
+      { label: "Disney's VP of virtual production cites AI LED volume stages as cutting location shooting budgets by 30% across Mandalorian-era productions", url: "https://disneyplus.com" },
+      { label: "Runway ML's Gen-3 is used for background extension and VFX cleanup on multiple Netflix originals, cutting post-production time by weeks", url: "https://runwayml.com" },
+      { label: "SAG-AFTRA's 2023 AI consent framework sets industry precedent: actors must now explicitly licence digital likenesses for AI training separately from performance contracts", url: "https://sagaftra.org" },
+    ],
   },
   {
     id: "film-algorithmic-culture",
@@ -817,6 +866,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Understanding how algorithms shape content preferences is now a strategic input for any brand doing content marketing, not just studios. The same mechanics that drove The Crown's pacing are shaping branded video performance.",
     trajectory: "The backlash against algorithmic storytelling is already building, in both critical culture and consumer behaviour (podcast and newsletter growth). Brands that can deliver non-algorithmic depth will find an underserved audience.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Netflix's algorithm-driven greenlight of Squid Game Season 1 (based on data signals from similar content) becomes the most-watched show in platform history", url: "https://netflix.com" },
+      { label: "A24 doubles down on anti-algorithm positioning — no data-driven commissioning, strong director vision — differentiating itself as auteur cinema against Netflix's data approach", url: "https://a24films.com" },
+      { label: "YouTube's algorithmic recommendations drive 70% of watch time, forcing brands to design video content with algorithm-friendly hooks in the first 3 seconds", url: "https://youtube.com" },
+      { label: "Substack's anti-algorithmic newsletter platform reaches 35M paid subscribers, as writers and readers opt out of engagement-optimised recommendation systems", url: "https://substack.com" },
+    ],
   },
 
   // ── BRANDING ────────────────────────────────────────────────────────────────
@@ -833,6 +888,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Brand consistency at scale has always been the hardest problem for large organisations. AI brand systems solve it, but also raise the question of what brand creativity means when the system generates the executions.",
     trajectory: "AI brand identity systems will be standard agency output within 3 years. The differentiator will shift from 'making brand assets' to 'training the AI on the right brand intelligence to generate the right assets'.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Coca-Cola's 'Create Real Magic' campaign uses DALL-E and GPT-4 to let fans generate on-brand artwork using Coke's visual archive as source material", url: "https://coca-cola.com" },
+      { label: "Heinz runs an AI image generation experiment prompting 'ketchup' in Midjourney — every output looks like Heinz, validating the brand's visual dominance", url: "https://heinz.com" },
+      { label: "Pentagram designs a generative identity for the Cooper Hewitt design museum that produces thousands of unique logo variations from a single algorithmic brief", url: "https://pentagram.com" },
+      { label: "Interbrand launches 'Sonic Branding AI' service generating brand-consistent audio identities at scale, reducing audio production costs by 70%", url: "https://interbrand.com" },
+    ],
   },
   {
     id: "branding-cultural-intelligence",
@@ -847,6 +908,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Real-time cultural intelligence is a structural advantage, brands that see shifts earlier can respond faster and more precisely. The question is whether the AI signal adds more than the noise it introduces.",
     trajectory: "AI cultural intelligence tools will consolidate around 3-4 platforms within 24 months. The winners will be those with proprietary cultural data sets, not just better models.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Brandwatch's Consumer Research AI analyses 500M+ social signals daily, used by Unilever and P&G to spot trend shifts weeks before competitors", url: "https://brandwatch.com" },
+      { label: "Samba TV's AI cultural intelligence platform is used by Netflix and Disney to predict which cultural moments to activate around for marketing campaigns", url: "https://samba.tv" },
+      { label: "Pulsar Platform's audience intelligence tools power strategy for Spotify Wrapped and Levi's campaign planning, processing cultural data at scale", url: "https://pulsarplatform.com" },
+      { label: "Kyu Collective builds cultural intelligence as a dedicated strategic practice, serving luxury and FMCG brands with proprietary AI-assisted cultural analysis", url: "https://kyu.com" },
+    ],
   },
 
   // ── FOOD (general) ──────────────────────────────────────────────────────────
@@ -863,6 +930,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Cultivated protein is a structural shift in the food system, not a diet trend. The brands that position within this category now, whether as producers, retailers, or ingredient suppliers, are making category-defining bets.",
     trajectory: "Price parity with conventional meat for cultivated protein is 3-5 years away. The consumer behaviour change will follow price, not persuasion. The early period is about supply chain and regulatory position.",
     nextSteps: [],
+    brandMoves: [
+      { label: "GOOD Meat (Eat Just) becomes the first company to sell cultivated chicken commercially in the US following FDA and USDA approval in 2023", url: "https://eat.just.com/products/good-meat" },
+      { label: "Upside Foods secures USDA grant of inspection for cultivated chicken, partnering with José Andrés restaurants for its first commercial service", url: "https://upsidefoods.com" },
+      { label: "Quorn reaches £250M revenue with mycoprotein products available in 17 countries, demonstrating commercial scale for non-animal protein mainstream adoption", url: "https://quorn.co.uk" },
+      { label: "Nature's Fynd's Fy protein (fermented fungi) launches in Whole Foods across the US, backed by $350M from SoftBank and Bill Gates", url: "https://naturesfynd.com" },
+    ],
   },
   {
     id: "food-ai-flavour",
@@ -877,6 +950,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "AI flavour development is reducing new product development cycles from 18 months to 3 months. The first brands to systematically use AI for NPD will have a compound advantage in speed and iteration.",
     trajectory: "AI-assisted flavour development will be standard in top-50 FMCG companies within 3 years. The competitive question is whether the AI advantage goes to manufacturers or to the platforms that sit above them.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Givaudan's CARTO AI platform analyses 1.6 trillion flavour data points to predict winning flavour combinations, used by Mars, Nestlé, and PepsiCo", url: "https://givaudan.com" },
+      { label: "Firmenich's INSPIRE AI tool generates novel flavour accords from molecular data, cutting formulation time for new beverages from 18 months to 90 days", url: "https://firmenich.com" },
+      { label: "McCormick uses IBM's AI platform to develop new product concepts in weeks rather than years, launching a flavour predicted by AI as a bestseller", url: "https://mccormick.com" },
+      { label: "Tastewise's food intelligence platform uses AI to analyse 1B+ consumer data points across social, menus, and reviews to predict the next trend flavour", url: "https://tastewise.io" },
+    ],
   },
   // ── FRAGRANCE ───────────────────────────────────────────────────────────────
   {
@@ -892,6 +971,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Fragrance formulation is being accelerated by AI in ways that open entirely new olfactory territories, and compress development timelines from years to months. Brands with AI-assisted R&D will out-innovate at pace.",
     trajectory: "AI fragrance formulation moves from R&D tool to consumer-facing story within 3 years, 'AI-developed accord' becomes a marketing differentiator the same way 'microbiome-tested' did in skincare.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Givaudan's Carto AI formulation tool is used by Symrise, IFF, and Firmenich to generate novel fragrance accords not reachable by human perfumers alone", url: "https://givaudan.com" },
+      { label: "Philyra — IBM and Symrise's AI system — creates two commercially sold Brazilian perfumes, the first AI-authored fragrances to reach market", url: "https://ibm.com/ibm/philyra" },
+      { label: "Dior uses AI-assisted analysis of 250 years of Dior fragrance archive data to inform the development of Miss Dior Blooming Bouquet reformulation", url: "https://dior.com/en_gb/fragrance" },
+      { label: "Buly 1803 launches a personalised fragrance service using AI profiling to recommend a unique accord from 70,000 possible combinations", url: "https://buly1803.com" },
+    ],
   },
   {
     id: "fragrance-emotional-tech",
@@ -906,6 +991,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Scent is the only sense that bypasses the rational brain entirely, making fragrance one of the most powerful tools in the emotional design toolkit. Brands that understand this are building ambient scent strategies with rigour, not just aesthetics.",
     trajectory: "Olfactory design will become standard in premium retail, hospitality, and residential property development within 5 years, driven by evidence-based wellbeing research and consumer demand for multi-sensory environments.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Singapore Airlines' proprietary cabin scent 'Stefan Floridian Waters' is scientifically designed to reduce anxiety and is applied to hot towels and crew uniforms", url: "https://singaporeair.com" },
+      { label: "Abercrombie & Fitch's Fierce scent ambient pumping strategy generates documented 20% uplift in dwell time and was copied across the retail industry", url: "https://abercrombie.com" },
+      { label: "Moodo smart diffuser uses an app and interchangeable scent pods to personalise home olfactory environment, raising $5M to expand its emotional scent platform", url: "https://moodo.co" },
+      { label: "Selfridges commissions bespoke olfactory design from The Perfume Society for its Body Studio floor, treating scent as integral to the spatial retail experience", url: "https://selfridges.com" },
+    ],
   },
 
   // ── JEWELLERY ────────────────────────────────────────────────────────────────
@@ -922,6 +1013,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Lab-grown stones are not a trend, they're a structural market shift. The brands that reposition fastest (around craftsmanship, design, heritage, and emotional storytelling rather than material scarcity) will survive the transition.",
     trajectory: "Lab-grown diamonds will hold 30%+ of the diamond market within 5 years. Mined diamonds will stratify into a ultra-premium heritage category while lab-grown captures the fashion and accessible luxury segments.",
     nextSteps: [],
+    brandMoves: [
+      { label: "De Beers launches Lightbox, a lab-grown diamond jewellery brand at $800/carat — explicitly separating lab-grown from natural diamonds by price and positioning", url: "https://lightboxjewelry.com" },
+      { label: "Pandora commits to using 100% lab-grown diamonds across its entire jewellery range from 2022, making it the world's largest lab-grown diamond jewellery brand", url: "https://pandora.net" },
+      { label: "Brilliant Earth reaches $400M revenue building its brand on conflict-free and lab-grown stones for ethically-minded millennial buyers", url: "https://brilliantearth.com" },
+      { label: "Signet Jewelers (owner of Zales and Kay) invests $490M in lab-grown diamond supply chain infrastructure, betting on category growth at accessible price points", url: "https://signetjewelers.com" },
+    ],
   },
   {
     id: "jewellery-digital-identity",
@@ -936,6 +1033,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Digital identity expression is a real consumer behaviour, people spend on skins, avatars, and digital accessories. Jewellery brands that understand this as an extension of their category will reach younger audiences in their native environments.",
     trajectory: "Digital jewellery becomes a standard product extension for luxury houses within 5 years, driven by gaming and social platform integrations rather than standalone NFT projects.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Tiffany & Co. sells 250 NFTiffs — custom CryptoPunk pendants in physical form, with matching digital necklace NFTs — at $50,000 each, selling out in minutes", url: "https://tiffany.com" },
+      { label: "Bulgari creates digital jewellery NFTs worn by avatars in The Sandbox metaverse, extending its jewellery into gaming environments without requiring physical product", url: "https://bulgari.com" },
+      { label: "Roblox users spend $3B annually on avatar accessories including digital jewellery, validating the market size for digital wearable identity expression", url: "https://roblox.com" },
+      { label: "RTFKT (acquired by Nike) creates virtual jewellery and accessories for CloneX avatars, integrating digital jewellery into a collectible avatar ecosystem", url: "https://rtfkt.com" },
+    ],
   },
 
   // ── RETAIL ──────────────────────────────────────────────────────────────────
@@ -952,6 +1055,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "AI personalisation is compounding, every click refines the model. The brands that invested in data infrastructure 3 years ago are now seeing conversion advantages that are structurally impossible for new entrants to close quickly.",
     trajectory: "AI personalisation in retail will reach commodity status, it will be expected, not differentiated. The next frontier is personalised pricing, personalised inventory, and personalised physical retail experiences.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Amazon's recommendation engine drives 35% of total revenue, the most-studied AI personalisation system in retail history", url: "https://amazon.com" },
+      { label: "ASOS StyleMatch uses visual AI to recommend products based on uploaded outfit photos, converting inspiration into purchase in a single flow", url: "https://asos.com" },
+      { label: "Stitch Fix's algorithmic styling engine processes 85+ data points per customer to select personalised clothing boxes, building a $2B revenue business on AI curation", url: "https://stitchfix.com" },
+      { label: "Zalando's AI recommendation system — built with 50M customer preference signals — personalises search results and homepage for every visitor in real time", url: "https://zalando.com" },
+    ],
   },
   {
     id: "retail-immersive-commerce",
@@ -966,6 +1075,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Immersive commerce formats have proven conversion rates 6-10x higher than static product pages in Asian markets, and that gap is now arriving in Western retail. The window to build capability before it's expected is closing.",
     trajectory: "Livestream shopping will normalise in Western markets within 3 years, starting with beauty, fashion, and food. AR try-on will become the default product experience for apparel and footwear e-commerce.",
     nextSteps: [],
+    brandMoves: [
+      { label: "TikTok Shop reaches $20B GMV in its first full year globally, making livestream commerce a mainstream western retail channel for the first time", url: "https://shop.tiktok.com" },
+      { label: "L'Oréal deploys AR try-on across 23 brands via Modiface technology, achieving 2.5x conversion uplift vs standard product pages", url: "https://loreal.com" },
+      { label: "Snap's AR shopping lenses are used by 250M Snapchatters, with fashion and beauty brands seeing 94% higher purchase intent from try-on lens users", url: "https://snap.com/en-US/lens-studio" },
+      { label: "Farfetch's Store of the Future concept integrates AR mirrors, connected clothing rails, and real-time inventory in a single in-store immersive commerce environment", url: "https://farfetch.com" },
+    ],
   },
 
   // ── SOCIAL MEDIA ────────────────────────────────────────────────────────────
@@ -982,6 +1097,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The content velocity advantage of AI is real, and so is the risk of brand dilution when AI produces content without genuine brand intelligence. The brands that use AI as an execution layer on top of strong creative direction will win.",
     trajectory: "AI-generated social content will be the default production method for tier-2 and tier-3 content within 18 months. The premium will shift to human-created, high-intent cultural content that AI cannot replicate.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Persado's AI copywriting platform is used by Marks & Spencer, Verizon, and Chase to generate emotionally optimised ad copy at scale, reporting 68% conversion lift", url: "https://persado.com" },
+      { label: "Coca-Cola deploys an AI content studio with WPP, using generative AI to produce localised campaign assets across 90 markets simultaneously", url: "https://coca-cola.com" },
+      { label: "Jasper AI reaches $1.5B valuation serving 100,000+ brand teams generating marketing copy at scale, with integrations into HubSpot and Salesforce", url: "https://jasper.ai" },
+      { label: "Klarna uses AI to replace 700 marketing agency contractors, producing social content in-house at higher output volume and lower cost", url: "https://klarna.com" },
+    ],
   },
   {
     id: "social-creator-economy",
@@ -996,6 +1117,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The creator economy is not a marketing channel, it's an alternative media system. Brands that understand it build creator relationships as media partnerships, not influencer campaigns.",
     trajectory: "Creator economy revenue will exceed traditional media advertising revenue in fashion and beauty within 5 years. The brands that built genuine creator partnerships (not just paid posts) will have the most durable position.",
     nextSteps: [],
+    brandMoves: [
+      { label: "YouTube Shorts Fund distributes $100M to creators in its first year, followed by the Partner Programme expansion making monetisation accessible to 1M+ smaller creators", url: "https://youtube.com/creators" },
+      { label: "Spotify signs exclusive podcast deals with creators including Joe Rogan ($200M) and The Ringer, building a creator-to-platform infrastructure model for audio", url: "https://spotify.com/podcasts" },
+      { label: "Patreon reaches $1B in creator payouts annually, establishing the subscription infrastructure for independent creator businesses", url: "https://patreon.com" },
+      { label: "L'Oréal's creators-first 'Open to All' model builds a 35,000-creator network with dedicated production tools, educational resources, and co-creation briefs", url: "https://loreal.com" },
+    ],
   },
 
   // ── EDUCATION ────────────────────────────────────────────────────────────────
@@ -1012,6 +1139,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Personalised AI tutoring is not a supplement to education, it's a structural alternative that will reshape the education industry the same way streaming reshaped television. The institutions that understand this early will adapt; the rest will be displaced.",
     trajectory: "AI tutoring reaches parity with human tutoring for most academic subjects within 3 years, measured by outcome metrics. The premium human tutoring market will shrink to high-touch coaching and social-emotional support.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Khan Academy's Khanmigo AI tutor is deployed in 50,000+ US classrooms, using GPT-4 to guide students through problems with Socratic questioning rather than answers", url: "https://khanacademy.org/khan-labs" },
+      { label: "Duolingo Max launches with GPT-4 powered Explain My Answer and Roleplay features, demonstrating AI tutoring in the world's most-used language learning app", url: "https://duolingo.com/max" },
+      { label: "Chegg's AI Cheggmate service launches as a 24/7 homework help assistant, reaching 3.5M users in its first semester despite disruption concerns from competitors", url: "https://chegg.com" },
+      { label: "Google's LearnLM model is integrated into Gemini specifically for tutoring use cases, optimising for learning outcomes rather than just question answering", url: "https://deepmind.google/discover/blog/learnlm" },
+    ],
   },
   {
     id: "education-skills-credentials",
@@ -1026,6 +1159,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The credential inflation that made degrees compulsory is reversing, employer skill-based hiring is growing, and the 4-year degree ROI calculation is under active scrutiny. Brands that hire on skills over credentials will access better-fit talent faster.",
     trajectory: "Blockchain-verified micro-credentials will be accepted by 50% of major employers within 5 years, creating parallel credentialing infrastructure that competes directly with university degrees.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Google Career Certificates launch in data analytics, project management, and UX design — completing in 6 months and accepted by 150+ employer partners including Walmart and Infosys", url: "https://grow.google/certificates" },
+      { label: "LinkedIn Learning integrates skills assessments and badges directly into recruiter search filters, making micro-credentials searchable hiring signals at scale", url: "https://linkedin.com/learning" },
+      { label: "IBM SkillsBuild offers 30,000 free courses with digital badges, partnering with universities in 60 countries to stack credentials alongside degrees", url: "https://skillsbuild.org" },
+      { label: "Salesforce's Trailhead platform issues 8M+ credentials to users who complete modular learning paths, making it the world's largest employer-specific credentialing system", url: "https://trailhead.salesforce.com" },
+    ],
   },
 
   // ── FASHION ─────────────────────────────────────────────────────────────────
