@@ -1822,7 +1822,6 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   lifestyle:        EXTENDED_TRENDS.filter(t => t.topics?.includes("lifestyle")),
   health:           EXTENDED_TRENDS.filter(t => t.topics?.includes("health")),
   sustainability:   EXTENDED_TRENDS.filter(t => t.topics?.includes("sustainability")),
-  tech:             EXTENDED_TRENDS.filter(t => t.topics?.includes("tech")),
   // Topics with pre-built trends via topic tag
   dating:           EXTENDED_TRENDS.filter(t => t.topics?.includes("dating")),
   nightlife:        EXTENDED_TRENDS.filter(t => t.topics?.includes("nightlife")),

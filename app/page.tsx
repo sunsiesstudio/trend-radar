@@ -495,13 +495,6 @@ export default function HomePage() {
     }
   }, [dynamicTrends]);
 
-  const retryGeneration = useCallback(() => {
-    const failedTopic = activeTopics.find(topic =>
-      !dynamicTrends.some(t => t.topics?.includes(topic))
-    );
-    if (failedTopic) runGeneration(failedTopic, activeTopics);
-  }, [activeTopics, dynamicTrends, runGeneration]);
-
   // Load the board for a given topic set — always replaces current trends.
   // Single topic: check library first, else generate. Multi-topic: generate for combination.
   const loadTrendsForTopics = useCallback(async (topics: string[]) => {
@@ -559,6 +552,17 @@ export default function HomePage() {
     }
   }, [runGeneration]);
 
+  const retryGeneration = useCallback(() => {
+    if (activeTopics.length >= 2) {
+      loadTrendsForTopics(activeTopics);
+    } else {
+      const failedTopic = activeTopics.find(topic =>
+        !dynamicTrends.some(t => t.topics?.includes(topic))
+      );
+      if (failedTopic) runGeneration(failedTopic, activeTopics);
+    }
+  }, [activeTopics, dynamicTrends, runGeneration, loadTrendsForTopics]);
+
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
     if (!key || activeTopics.includes(key)) return;
@@ -607,14 +611,9 @@ export default function HomePage() {
   const activeTrendForSignal = activeSignal ? allTrends.find((t) => t.id === activeSignal.trendId) ?? null : null;
 
   // Sort trends by grid position: row (y) first, then column (x) — left-to-right, top-to-bottom
-  const navTrends = useMemo(() => [...visibleTrends].sort((a, b) => {
-    const pa = TREND_POSITIONS[a.id] ?? a.position ?? { x: 0, y: 0 };
-    const pb = TREND_POSITIONS[b.id] ?? b.position ?? { x: 0, y: 0 };
-    const rowA = Math.round(pa.y / 520);
-    const rowB = Math.round(pb.y / 520);
-    if (rowA !== rowB) return rowA - rowB;
-    return pa.x - pb.x;
-  }), [visibleTrends]);
+  const navTrends = useMemo(() =>
+    [...visibleTrends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)),
+  [visibleTrends]);
 
   // Always clamp focusIdx at the point of use — setFocusIdx(9999) is used as "jump to last"
   // so we derive the safe index here rather than fighting async clamp timing.
@@ -988,7 +987,9 @@ export default function HomePage() {
                     signal lost
                   </div>
                   <div style={{ fontSize: 13, color: "#999", marginBottom: 16, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-                    try a different topic or hit retry
+                    {generationError && generationError !== "Generation failed. Please try again." && generationError !== "Network error. Check connection and try again."
+                      ? generationError
+                      : "try a different topic or hit retry"}
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 18, pointerEvents: "all", maxWidth: 280 }}>
                     {LIBRARY_TOPICS.filter(t => !activeTopics.includes(t)).slice(0, 8).map(t => (
