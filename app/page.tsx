@@ -833,7 +833,7 @@ export default function HomePage() {
               {/* ── Trends (topic selected) ── */}
               {appliedTopics.length > 0 && (
                 <>
-                  {(() => {
+                  {appliedTopics.length === 1 && (() => {
                     const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
                     return desc ? (
                       <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: "4px 0 16px", fontFamily: "'EB Garamond', Georgia, serif" }}>
@@ -841,17 +841,63 @@ export default function HomePage() {
                       </p>
                     ) : null;
                   })()}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingBottom: 20 }}>
-                    {visibleTrends.map(t => (
-                      <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                        <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
+
+                  {appliedTopics.length >= 2 ? (() => {
+                    // Venn grouping: for each trend, check which applied topics it belongs to
+                    const intersection = visibleTrends.filter(t => appliedTopics.every(tp => (t.topics ?? []).includes(tp)));
+                    const exclusives = appliedTopics.map(tp => visibleTrends.filter(t => (t.topics ?? []).includes(tp) && !appliedTopics.filter(x => x !== tp).every(x => (t.topics ?? []).includes(x))));
+
+                    const TrendRow = ({ t }: { t: Trend }) => (
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, paddingBottom: 10, borderBottom: "1px solid #f5f3ef" }}>
+                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: darkenColor(t.color), marginTop: 5, flexShrink: 0 }} />
                         <div>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
-                          <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
+                          <div style={{ fontSize: 11, color: "#888", lineHeight: 1.5, marginTop: 2 }}>{t.description}</div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    );
+
+                    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+                    return (
+                      <div style={{ marginBottom: 20 }}>
+                        {intersection.length > 0 && (
+                          <div style={{ marginBottom: 20 }}>
+                            <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                              <span style={{ width: 16, height: 2, background: "#111", display: "inline-block", borderRadius: 1 }} />
+                              {appliedTopics.map(cap).join(" × ")} — intersection
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                              {intersection.map(t => <TrendRow key={t.id} t={t} />)}
+                            </div>
+                          </div>
+                        )}
+                        {exclusives.map((group, gi) => group.length > 0 && (
+                          <div key={gi} style={{ marginBottom: 16 }}>
+                            <div style={{ fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                              <span style={{ width: 12, height: 2, background: "#ccc", display: "inline-block", borderRadius: 1 }} />
+                              Only {cap(appliedTopics[gi])}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                              {group.map(t => <TrendRow key={t.id} t={t} />)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })() : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingBottom: 20 }}>
+                      {visibleTrends.map(t => (
+                        <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                          <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
+                          <div>
+                            <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
+                            <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </>
               )}
 
