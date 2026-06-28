@@ -362,6 +362,13 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "When food becomes a signifier rather than just sustenance, it enters fashion logic, scarcity, visible display, brand affiliation.",
     trajectory: "Functional food will follow the same premiumisation arc as coffee, moving from health-store niche to everyday premium.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Erewhon x Hailey Bieber 'Strawberry Glaze Skin Smoothie' collaboration sells out in hours — the smoothie as status object", url: "https://erewhonmarket.com" },
+      { label: "Liquid Death reaches $263M revenue, proving water can carry brand identity as strong as energy drinks or soda", url: "https://liquiddeath.com" },
+      { label: "Athletic Brewing non-alcoholic craft beer becomes the visible drink of choice at fitness events, tech conferences, and premium workplaces", url: "https://athleticbrewing.com" },
+      { label: "Kin Euphorics launches a nootropic social drink positioned for display at dinner parties and boutique hotel minibars", url: "https://kineuphoric.com" },
+      { label: "Gorilla Mind and AG1 (Athletic Greens) dominate podcast-to-purchase funnels, turning supplement shakers into gym-bag identity markers", url: "https://drinkag1.com" },
+    ],
   },
   {
     id: "foodtech-precision",
@@ -376,6 +383,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Personalisation is the most powerful word in consumer marketing right now, and precision nutrition delivers it at a biological level.",
     trajectory: "Genomic sequencing costs dropped 90% in five years. Within 24 months, DNA-based nutrition guidance will be available at mass market price points.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Zoe raises $45M Series B to expand its microbiome-based personalised nutrition service to US and Europe", url: "https://joinzoe.com" },
+      { label: "Viome offers full-body intelligence tests combining gut microbiome, blood, and gene expression for hyper-personalised supplement plans", url: "https://viome.com" },
+      { label: "Nestlé launches Nestlé Health Science division specifically targeting precision nutrition and microbiome-based products", url: "https://nestlehealthscience.com" },
+      { label: "Day Two brings CGM-based personalised nutrition out of diabetes management into consumer wellness subscriptions", url: "https://daytwo.com" },
+    ],
   },
 
   // ── MENTAL-HEALTH ───────────────────────────────────────────────────────────
@@ -392,6 +405,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Dopamine design is neuroscience applied to commercial psychology. Making it explicit as a design brief is a competitive edge.",
     trajectory: "Dopamine design moves from UX/digital into physical retail and product design as a standard brief element.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Glossier's flagship store redesign uses dopamine dressing colour theory throughout, bright pinks and greens explicitly to trigger positive emotional states", url: "https://glossier.com" },
+      { label: "Duolingo's product team publicly describes streak mechanics and confetti animations as 'dopamine loops' — transparency about the design intent drives press and user growth", url: "https://duolingo.com" },
+      { label: "Jacquemus designs unboxing experiences and campaign visuals explicitly for dopaminergic colour response, driving viral shareability", url: "https://jacquemus.com" },
+      { label: "BeReal's anti-dopamine design (no likes, no filters) becomes its marketing hook — the counterpoint validates the trend's centrality", url: "https://bereal.com" },
+    ],
   },
   {
     id: "mentalhealth-therapeutic",
@@ -406,6 +425,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Therapeutic aesthetics is a cultural response to digital overstimulation, a collective nervous system expressing a need for less.",
     trajectory: "Therapeutic aesthetics will peak as a conscious trend and then become baseline expectation, the same way 'clean beauty' moved from positioning to category standard.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Aesop's store design philosophy — muted terracotta, botanical scent, deliberate quiet — becomes a retail benchmark for therapeutic sensory environments", url: "https://aesop.com" },
+      { label: "Muji expands its global footprint on an explicit 'anti-stimulation' visual identity, earning premium positioning through restraint", url: "https://muji.com" },
+      { label: "Headspace partners with Nike to design calming colour palettes and softer material textures into recovery-wear collections", url: "https://headspace.com" },
+      { label: "Selfridges dedicates its 'Superself' wellness floor to therapeutic-aesthetic brands, curated around calm, texture, and sensory decompression", url: "https://selfridges.com" },
+    ],
   },
 
   // ── INTERIOR DESIGN ─────────────────────────────────────────────────────────
@@ -422,6 +447,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Design is being unbundled from its production bottlenecks by AI. What used to require weeks of rendering time is now accessible to anyone with a prompt. Competition shifts from production quality to creative vision.",
     trajectory: "AI design tools will be standard in every studio within 24 months, not replacing designers but redefining what 'design work' actually is. Winners will be those who understand both the tool and the taste.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Autodesk integrates Stable Diffusion-based rendering directly into Revit, putting AI visualisation inside the architect's existing workflow", url: "https://autodesk.com" },
+      { label: "Interior AI raises seed funding to build an AI-generated room redesign tool reaching 3M users in its first six months", url: "https://interiorai.com" },
+      { label: "Zaha Hadid Architects adopts generative AI for parametric form exploration, publishing case studies on AI-accelerated design development", url: "https://zaha-hadid.com" },
+      { label: "Havenly integrates AI layout generation into its e-design service, reducing turnaround from two weeks to 48 hours", url: "https://havenly.com" },
+    ],
   },
   {
     id: "interiordesign-ar-preview",
@@ -436,6 +467,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Purchase hesitation in home categories is almost entirely driven by fit uncertainty. AR removes that barrier at the point of consideration. Brands that deploy it see return rates drop and conversion rise.",
     trajectory: "Apple Vision Pro and cheaper AR headsets will push spatial commerce in home design from novelty to expected default. Brands without it will feel like e-commerce without product photography.",
     nextSteps: [],
+    brandMoves: [
+      { label: "IKEA Place app reaches 30M downloads, proving AR room preview drives measurable conversion lift and reduces return rates", url: "https://ikea.com" },
+      { label: "Wayfair's View in Room 3D AR feature cited as a key driver of its DTC e-commerce growth, reducing return rates by 22%", url: "https://wayfair.com" },
+      { label: "Apple Vision Pro launch includes spatial shopping apps from Wayfair and Lowe's as day-one partners, validating room-scale AR retail", url: "https://apple.com/apple-vision-pro" },
+      { label: "Houzz Pro AR tool allows designers to present full room simulations to clients in real time during consultation calls", url: "https://houzz.com/pro" },
+    ],
   },
   {
     id: "interiordesign-smart-materials",
@@ -450,6 +487,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The intersection of material science and interior design is producing products that change the performance of spaces at a fundamental level. These are infrastructure innovations with aesthetic implications.",
     trajectory: "Smart and biophilic materials move from high-end commercial into residential premium within 3 years, driven by cost decreases and EU regulatory pressure on building materials.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Ecovative Design scales mycelium packaging and insulation panels into premium interior design applications in collaboration with Ikea and Hermès", url: "https://ecovativedesign.com" },
+      { label: "Interface Carpet launches carbon-negative carpet tiles made from bio-based materials, targeting LEED-certified commercial interiors", url: "https://interface.com" },
+      { label: "Biohm develops mycelium insulation blocks as a building material, partnering with UK housebuilders on pilot residential projects", url: "https://biohm.co.uk" },
+      { label: "Samsung SmartThings integrates with living wall systems from Naava to create air-quality-responsive biophilic installations for office design", url: "https://naava.io" },
+    ],
   },
 
   // ── TRAVEL ──────────────────────────────────────────────────────────────────
@@ -466,6 +509,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The friction cost of trip planning is collapsing. Brands that own the AI planning layer own the consideration moment, and that's where intent converts to booking.",
     trajectory: "Within 18 months AI travel planning will be table stakes. The differentiation moves to data quality, personalisation depth, and cross-category integration (loyalty, dining, experiences).",
     nextSteps: [],
+    brandMoves: [
+      { label: "Booking.com launches AI Trip Planner integrated into its app, enabling full itinerary generation with real-time pricing and booking in a single flow", url: "https://booking.com" },
+      { label: "Airbnb's AI-powered search allows natural-language trip requests ('beach house for 6 with surf, May half-term') to return curated results", url: "https://airbnb.com" },
+      { label: "Google Travel's Gemini integration enables conversational itinerary building across Maps, Hotels, and Flights simultaneously", url: "https://travel.google.com" },
+      { label: "Tripadvisor launches an AI travel assistant that generates personalised day-by-day itineraries based on past reviews and preferences", url: "https://tripadvisor.com" },
+    ],
   },
   {
     id: "travel-immersive-tourism",
@@ -480,6 +529,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Immersive tech is extending the value of physical destinations beyond what the eye can see, deepening engagement and increasing dwell time. Destinations that invest in AR layers become harder to replicate and easier to return to.",
     trajectory: "AR tourism moves from experimental museum projects into mainstream city tourism within 3 years, led by destinations with strong historical IP and high Chinese and Korean tourist flows (who have highest AR adoption).",
     nextSteps: [],
+    brandMoves: [
+      { label: "The Smithsonian deploys AI-guided AR tours across its National Museum of Natural History, layering extinct animal animations over fossil displays", url: "https://si.edu" },
+      { label: "Athens launches AR app showing classical-era reconstructions overlaid on the Acropolis ruins, developed with Google Arts & Culture", url: "https://artsandculture.google.com" },
+      { label: "Visit Dubai commissions a full AR walking experience across the historic Al Fahidi district, available through the Dubai Tourism app", url: "https://visitdubai.com" },
+      { label: "MSC Cruises integrates AR port-of-call experiences into its cruise app, enabling passengers to access immersive historical layers at each destination", url: "https://msccruises.com" },
+    ],
   },
 
   // ── FITNESS ─────────────────────────────────────────────────────────────────
@@ -496,6 +551,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The physiological feedback loop that used to require a team of sports scientists is now on your wrist. Brands that help consumers act on that data, rather than just display it, will win the next fitness decade.",
     trajectory: "CGM for non-diabetics moves into mainstream fitness within 24 months. The question is whether the insight layer (what to do with the data) or the hardware layer (the sensor) captures more value.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Whoop 4.0 integrates HRV-based workout recommendations, pushing from data display into prescriptive AI coaching for 5M+ members", url: "https://whoop.com" },
+      { label: "Oura Ring Generation 4 adds readiness and training load scores endorsed by NBA and Premier League performance teams", url: "https://ouraring.com" },
+      { label: "Supersapiens CGM for athletes (Abbott Libre Sense powered) becomes standard kit at elite triathlon and cycling events", url: "https://supersapiens.com" },
+      { label: "Garmin's AI Training Status feature uses HRV, sleep, and load data to recommend rest or hard days — adopted across its entire Forerunner and Fenix lineup", url: "https://garmin.com" },
+    ],
   },
   {
     id: "fitness-social-performance",
@@ -510,6 +571,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Fitness data has become identity expression. The platform that owns the social layer owns the retention loop, and retention is where fitness brands make their real margin.",
     trajectory: "Social fitness tech consolidates around 3-4 major platforms. The brands that build native integrations into Strava and Whoop ecosystems will have distribution advantages that are hard to replicate.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Strava reaches 125M registered athletes and becomes the de facto social network for running and cycling identity expression", url: "https://strava.com" },
+      { label: "Hyrox global fitness race series builds its entire spectator and entry experience around Strava and Whoop data sharing, fuelling viral growth", url: "https://hyrox.com" },
+      { label: "Lululemon Studio (Mirror acquisition) pivots to social-first group workout features after hardware struggles, betting on community over equipment", url: "https://lululemon.com/en-us/studio" },
+      { label: "Nike Run Club adds 'Pace Groups' and competitive challenges, integrating social fitness mechanics directly into its free app to retain 50M users", url: "https://nike.com/nrc-app" },
+    ],
   },
 
   // ── MUSIC ───────────────────────────────────────────────────────────────────
@@ -526,6 +593,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "AI music generation is the fastest-moving creative AI category after image generation. The sync licensing and background music markets will be fundamentally restructured within 24 months.",
     trajectory: "AI music will become the default for low-stakes use cases (brand video, UGC, game soundtrack) within 2 years, freeing human music for high-value cultural moments. The fight is over what counts as 'high value'.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Suno AI reaches 10M users generating full songs from text prompts, signing a licensing deal with major labels for training data", url: "https://suno.com" },
+      { label: "Epidemic Sound launches AI-assisted music creation tools for its library of 40,000 tracks, targeting content creators and brand teams", url: "https://epidemicsound.com" },
+      { label: "YouTube introduces AI music generation via Dream Track in Shorts, letting creators generate original soundtracks from text descriptions", url: "https://youtube.com" },
+      { label: "AWAL (Sony Music) partners with AI music startup Boomy to develop artist-friendly AI creation tools that retain royalties for human artists", url: "https://awal.com" },
+    ],
   },
   {
     id: "music-spatial-audio",
@@ -540,6 +613,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Spatial audio is the first meaningful upgrade in listening experience since stereo. It's also finding unexpected applications in wellness, focus, and sleep, categories with high willingness to pay.",
     trajectory: "As spatial audio headphones become standard at sub-$200, spatial mixing becomes the baseline expectation for new music, and the wellness audio category (sleep sounds, focus music) doubles in size.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Apple adds Spatial Audio and head-tracking to AirPods Pro, making Dolby Atmos a standard consumer feature across its 100M+ AirPods user base", url: "https://apple.com/airpods-pro" },
+      { label: "Spotify partners with Dolby to roll out Dolby Atmos music across its 600M users, making spatial audio the new streaming default", url: "https://spotify.com" },
+      { label: "Calm launches a binaural audio sleep series, achieving 3M plays in the first month and validating spatial audio as a wellness format", url: "https://calm.com" },
+      { label: "Coldplay's Music of the Spheres world tour becomes the highest-grossing ever in part by delivering a proprietary spatial audio mix at every venue", url: "https://coldplay.com" },
+    ],
   },
 
   // ── ART ─────────────────────────────────────────────────────────────────────
@@ -556,6 +635,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "When institutions buy, markets form. The AI art legitimacy debate is now a market structure question, who controls provenance, authentication, and value attribution in an age of infinite generation.",
     trajectory: "AI art will split into two markets: high-value institutional pieces with explicit AI authorship and human curation, and a commoditised tier for commercial use. The middle market will be squeezed hardest.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Christie's 'Augmented Intelligence' auction series sells AI-generated works by Refik Anadol and Holly Herndon at prices exceeding $200K, signalling institutional market formation", url: "https://christies.com" },
+      { label: "MoMA acquires works by artist and AI researcher Sofia Crespo, becoming the first major US museum to formally collect AI-native art", url: "https://moma.org" },
+      { label: "Refik Anadol's 'Unsupervised' installation at MoMA draws 3M visitors, the most-attended single work in the museum's recent history", url: "https://refikanadol.com" },
+      { label: "Sotheby's launches a dedicated 'Digital Art & AI' sale category, separating AI works from NFTs and creating a standalone market designation", url: "https://sothebys.com" },
+    ],
   },
   {
     id: "art-phygital-objects",
@@ -570,6 +655,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "The phygital art object solves the scarcity problem of digital art and the friction problem of physical art. It's a new product category, not just a format, and the collectors who understand it earliest build the best positions.",
     trajectory: "Phygital art moves from crypto-native collectors into mainstream luxury art buyers within 3 years, driven by brands (Louis Vuitton, Nike, Gucci) who are already investing in the format.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Damien Hirst's 'The Currency' project lets buyers choose between physical paintings or NFTs — 5,149 choose NFT, the physical versions are burned on camera", url: "https://heni.com" },
+      { label: "Louis Vuitton's 'Via Trunk' NFT collection includes physical trunk access and exclusive events, blending collectible object with digital token", url: "https://louisvuitton.com" },
+      { label: "Verisart provides blockchain certificates of authenticity for physical artworks by over 100,000 artists, building phygital provenance infrastructure", url: "https://verisart.com" },
+      { label: "Pace Gallery launches Pace Verso platform enabling artists to attach digital twins and AR layers to physical editions sold through the gallery", url: "https://pacegallery.com" },
+    ],
   },
 
   // ── SKINCARE ────────────────────────────────────────────────────────────────
@@ -586,6 +677,12 @@ const EXTENDED_TRENDS: Trend[] = [
     whyRelevant: "Biotech actives are to skincare what organic farming was to food, a genuine performance difference with a story that justifies premium pricing. The brands that own biotech provenance will own the next decade of prestige skincare.",
     trajectory: "Exosome skincare, currently priced as ultra-premium, will reach accessible luxury price points within 3 years as fermentation and biotech manufacturing scales. The race is for formulation IP.",
     nextSteps: [],
+    brandMoves: [
+      { label: "Augustinus Bader builds a $200M brand on TFC8 biotech active, turning a single proprietary ingredient into a global prestige franchise", url: "https://augustinusbader.com" },
+      { label: "111SKIN launches an exosome-based serum developed with stem cell scientists at University College London, bridging clinical and consumer markets", url: "https://111skin.com" },
+      { label: "L'Oréal's Active Cosmetics division acquires Skinbetter Science for $1.2B, betting on biotech-adjacent clinical actives as the future of mass prestige", url: "https://loreal.com" },
+      { label: "Allies of Skin launches a fermentation-first positioning platform, building its entire product architecture around biofermented actives at accessible luxury price points", url: "https://alliesofskin.com" },
+    ],
   },
   {
     id: "skincare-ai-personalisation",

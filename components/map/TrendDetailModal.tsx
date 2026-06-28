@@ -444,13 +444,15 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               <p style={{ fontSize: 13.5, color: "#111", lineHeight: 1.8, margin: 0 }}>{trend.whyRelevant}</p>
             </div>
 
-            {/* Cultural context */}
-            {trend.culturalContext && (
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
+            {/* Cultural context — always shown */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
+              {trend.culturalContext ? (
                 <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.culturalContext}</p>
-              </div>
-            )}
+              ) : (
+                <p style={{ fontSize: 12, color: "#ccc", margin: 0, fontStyle: "italic" }}>Cultural context not yet tracked.</p>
+              )}
+            </div>
 
             {/* What brands are doing */}
             <div style={{ marginBottom: 24 }}>
@@ -475,22 +477,6 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               )}
             </div>
 
-            {/* What to do */}
-            {trend.nextSteps.length > 0 && (
-              <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what to do</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {trend.nextSteps.map((step, i) => (
-                    <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 14px", background: "#faf9f6", borderRadius: 12, border: "1px solid #efefef" }}>
-                      <div style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, background: trend.color + "18", color: textCol, border: `1.5px solid ${trend.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, fontFamily: "monospace", marginTop: 1 }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </div>
-                      <p style={{ fontSize: 13, color: "#222", lineHeight: 1.7, margin: 0 }}>{step}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Signals */}
             {signals.length > 0 && (() => {
