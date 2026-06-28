@@ -299,30 +299,40 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             )}
 
             {/* Signals */}
-            {signals.length > 0 && (
-              <>
-                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>signals ({signals.length})</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {signals.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => onSelectSignal(s)}
-                      style={{ textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                        <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
-                        <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
-                        {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
-                        <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
-                      </div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
-                      <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
-                      {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+            {signals.length > 0 && (() => {
+              const sorted = [...signals].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+              const now = new Date().getFullYear();
+              return (
+                <>
+                  <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>signals ({sorted.length})</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {sorted.map((s, i) => {
+                      const ageFactor = sorted.length > 1 ? i / (sorted.length - 1) : 0;
+                      const opacity = 1 - ageFactor * 0.55;
+                      const sigYear = s.date ? new Date(s.date).getFullYear() : null;
+                      const dateFmt = s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", ...(sigYear !== now ? { year: "2-digit" } : {}) }) : "";
+                      return (
+                        <button
+                          key={s.id}
+                          onClick={() => onSelectSignal(s)}
+                          style={{ opacity, textAlign: "left", background: "#faf9f6", border: "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                            <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
+                            <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
+                            {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
+                            <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{dateFmt}</span>
+                          </div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
+                          <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
+                          {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })()}
 
             <div style={{ height: 8 }} />
           </div>
