@@ -453,9 +453,9 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             )}
 
             {/* What brands are doing */}
-            {(trend.brandMoves ?? []).length > 0 && (
-              <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what brands are doing</div>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what brands are doing</div>
+              {(trend.brandMoves ?? []).length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {(trend.brandMoves ?? []).map((move, i) => (
                     <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
@@ -470,8 +470,10 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p style={{ fontSize: 12, color: "#ccc", margin: 0, fontStyle: "italic" }}>No brand activity tracked yet.</p>
+              )}
+            </div>
 
             {/* What to do */}
             {trend.nextSteps.length > 0 && (
