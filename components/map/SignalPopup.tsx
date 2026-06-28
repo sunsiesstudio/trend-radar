@@ -307,7 +307,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                       key={r.id}
                       onClick={() => onSelectSignal?.(r)}
                       style={{
-                        textAlign: "left", background: "#fff", borderTop: "1px solid #f5f4f2",
+                        textAlign: "left", background: "#fff",
                         padding: "10px 16px", cursor: "pointer", width: "100%", boxSizing: "border-box", border: "none", borderTop: "1px solid #f5f4f2",
                       }}
                     >

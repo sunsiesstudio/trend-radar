@@ -422,6 +422,39 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 24px" } as React.CSSProperties}>
           <div style={{ paddingTop: 4, paddingBottom: 16, display: "flex", flexDirection: "column", gap: 0 }}>
 
+            {/* Topic Venn diagram */}
+            {(trend.topics ?? []).length > 0 && (() => {
+              const topics = trend.topics ?? [];
+              const fmtTopic = (t: string) => t.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              const topicLabel = topics.map(fmtTopic).join(" · ");
+              const uid = `venn-${trend.id.replace(/\W/g, "")}`;
+              // Two overlapping ellipses; cx1=105 cx2=175 rx=85 ry=38
+              return (
+                <div style={{ marginBottom: 22 }}>
+                  <svg viewBox="0 0 280 88" style={{ width: "100%", display: "block" }} aria-hidden="true">
+                    <defs>
+                      <clipPath id={uid}>
+                        <ellipse cx="105" cy="44" rx="85" ry="38" />
+                      </clipPath>
+                    </defs>
+                    {/* Left circle — Emerging Tech */}
+                    <ellipse cx="105" cy="44" rx="85" ry="38" fill={`${trend.color}0d`} stroke={`${trend.color}40`} strokeWidth="1.5" />
+                    {/* Right circle — Topic */}
+                    <ellipse cx="175" cy="44" rx="85" ry="38" fill={`${trend.color}0d`} stroke={`${trend.color}40`} strokeWidth="1.5" />
+                    {/* Intersection fill */}
+                    <ellipse cx="175" cy="44" rx="85" ry="38" fill={`${trend.color}22`} stroke="none" clipPath={`url(#${uid})`} />
+                    {/* Left label */}
+                    <text x="60" y="41" textAnchor="middle" fill="#aaa" fontSize="9.5" fontWeight="700" fontFamily="'Helvetica Neue',sans-serif" letterSpacing="0.02em">Emerging</text>
+                    <text x="60" y="54" textAnchor="middle" fill="#aaa" fontSize="9.5" fontWeight="700" fontFamily="'Helvetica Neue',sans-serif" letterSpacing="0.02em">Tech</text>
+                    {/* Right label */}
+                    <text x="220" y="47" textAnchor="middle" fill="#aaa" fontSize="9.5" fontWeight="700" fontFamily="'Helvetica Neue',sans-serif" letterSpacing="0.02em">{topicLabel}</text>
+                    {/* Intersection dot */}
+                    <circle cx="140" cy="44" r="5" fill={trend.color} opacity="0.7" />
+                  </svg>
+                </div>
+              );
+            })()}
+
             {/* What's happening */}
             <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, margin: "0 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
               {trend.description}
