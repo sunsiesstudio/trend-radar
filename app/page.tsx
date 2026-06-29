@@ -907,16 +907,15 @@ export default function HomePage() {
       {/* Summary expanded overlay */}
       {summaryOpen && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
+          className="summary-overlay"
+          style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
           onClick={() => setSummaryOpen(false)}
         >
           <div
+            className="summary-panel"
             onClick={(e) => e.stopPropagation()}
             style={{
               backgroundColor: "#fff",
-              borderRadius: "24px 24px 0 0",
-              width: "100%",
-              maxWidth: 680,
               maxHeight: "80svh",
               display: "flex", flexDirection: "column",
               boxShadow: "0 -12px 80px rgba(0,0,0,0.15)",
