@@ -457,7 +457,11 @@ export default function HomePage() {
     liveTrendsRef.current = appliedDynamicTrends.map(t => ({ id: t.id, name: t.name, description: t.description }));
   }, [appliedDynamicTrends]);
 
+  // Restart the interval (and do an immediate fetch) whenever the topic set changes.
+  // Using a serialised key as the dependency keeps the ref-based fetch function stable.
+  const topicsKey = appliedTopics.join(",");
   useEffect(() => {
+    if (!topicsKey) return;
     let cancelled = false;
     const fetchLive = () => {
       const topics = liveTopicsRef.current;
@@ -476,7 +480,8 @@ export default function HomePage() {
     fetchLive();
     const interval = setInterval(fetchLive, 10 * 60 * 1000);
     return () => { cancelled = true; clearInterval(interval); };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topicsKey]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -536,6 +541,13 @@ export default function HomePage() {
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(sorted.flatMap(i => i.signals));
         setGenerationError(null);
+        // Stamp the generation time so the 48 h staleness check knows when to refresh
+        try {
+          const stored = localStorage.getItem("ar_trendGeneratedAt");
+          const ts: Record<string, number> = stored ? JSON.parse(stored) : {};
+          ts[key] = Date.now();
+          localStorage.setItem("ar_trendGeneratedAt", JSON.stringify(ts));
+        } catch { /* ignore */ }
         if (baseTrends.length > 0) {
           setTimeout(() => fitViewRef.current?.(), 100);
         } else {
@@ -577,6 +589,23 @@ export default function HomePage() {
     );
     if (failedTopic) runGeneration(failedTopic, [failedTopic]);
   }, [activeTopics, dynamicTrends, runGeneration]);
+
+  // Silently regenerate AI trends that are >48 h old on mount.
+  // Library topics are skipped — their trends are curated, not time-sensitive.
+  const TREND_TTL_MS = 48 * 60 * 60 * 1000;
+  useEffect(() => {
+    const stored = localStorage.getItem("ar_trendGeneratedAt");
+    const timestamps: Record<string, number> = stored ? JSON.parse(stored) : {};
+    const now = Date.now();
+    activeTopics.forEach(topic => {
+      const hasLibrary = (TOPIC_LIBRARY[topic] ?? []).length > 0;
+      if (hasLibrary) return;
+      const last = timestamps[topic] ?? 0;
+      if (now - last > TREND_TTL_MS) runGeneration(topic, [topic], []);
+    });
+  // Run once on mount only
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
