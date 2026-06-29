@@ -51,7 +51,7 @@ function matchTrend(text: string, trends: Array<{ id: string; name: string; desc
     const score = words.filter(w => lower.includes(w)).length;
     if (score > best.score) best = { id: t.id, score };
   }
-  return best.score >= 1 ? best.id : null;
+  return best.score >= 2 ? best.id : null;
 }
 
 async function fetchReddit(queries: string[], trends: Array<{ id: string; name: string; description: string }>): Promise<Signal[]> {
@@ -135,14 +135,34 @@ async function fetchRSS(feeds: { url: string; name: string }[], trends: Array<{ 
 }
 
 const TOPIC_FEEDS: Record<string, { url: string; name: string }[]> = {
-  fashion:    [{ url: "https://www.businessoffashion.com/feed", name: "Business of Fashion" }, { url: "https://www.vogue.com/feed/rss", name: "Vogue" }],
-  beauty:     [{ url: "https://www.allure.com/feed/rss", name: "Allure" }, { url: "https://www.glamour.com/feed/rss", name: "Glamour" }],
-  gaming:     [{ url: "https://www.polygon.com/rss/index.xml", name: "Polygon" }, { url: "https://kotaku.com/rss", name: "Kotaku" }],
-  wellness:   [{ url: "https://www.mindbodygreen.com/rss", name: "MindBodyGreen" }],
-  music:      [{ url: "https://pitchfork.com/rss/news/", name: "Pitchfork" }],
-  luxury:     [{ url: "https://www.wallpaper.com/rss", name: "Wallpaper*" }],
-  design:     [{ url: "https://www.dezeen.com/feed/", name: "Dezeen" }],
-  tech:       [{ url: "https://www.theverge.com/rss/index.xml", name: "The Verge" }, { url: "https://techcrunch.com/rss", name: "TechCrunch" }],
+  fashion:          [{ url: "https://www.businessoffashion.com/feed", name: "Business of Fashion" }, { url: "https://www.vogue.com/feed/rss", name: "Vogue" }],
+  beauty:           [{ url: "https://www.allure.com/feed/rss", name: "Allure" }, { url: "https://www.glamour.com/feed/rss", name: "Glamour" }],
+  gaming:           [{ url: "https://www.polygon.com/rss/index.xml", name: "Polygon" }, { url: "https://kotaku.com/rss", name: "Kotaku" }],
+  wellness:         [{ url: "https://www.mindbodygreen.com/rss", name: "MindBodyGreen" }],
+  music:            [{ url: "https://pitchfork.com/rss/news/", name: "Pitchfork" }, { url: "https://www.nme.com/feed", name: "NME" }],
+  luxury:           [{ url: "https://www.wallpaper.com/rss", name: "Wallpaper*" }, { url: "https://www.businessoffashion.com/feed", name: "Business of Fashion" }],
+  design:           [{ url: "https://www.dezeen.com/feed/", name: "Dezeen" }, { url: "https://www.itsnicethat.com/rss", name: "It's Nice That" }],
+  tech:             [{ url: "https://www.theverge.com/rss/index.xml", name: "The Verge" }, { url: "https://techcrunch.com/rss", name: "TechCrunch" }],
+  branding:         [{ url: "https://www.marketingweek.com/feed/", name: "Marketing Week" }, { url: "https://www.campaignlive.co.uk/rss", name: "Campaign" }],
+  retail:           [{ url: "https://www.retailgazette.co.uk/feed/", name: "Retail Gazette" }, { url: "https://www.glossy.co/feed/", name: "Glossy" }],
+  social:           [{ url: "https://www.socialmediatoday.com/rss.xml", name: "Social Media Today" }, { url: "https://digiday.com/feed/", name: "Digiday" }],
+  sustainability:   [{ url: "https://www.greenbiz.com/rss.xml", name: "GreenBiz" }],
+  fitness:          [{ url: "https://www.runnersworld.com/rss/all.xml/", name: "Runner's World" }],
+  travel:           [{ url: "https://skift.com/feed/", name: "Skift" }],
+  food:             [{ url: "https://www.eater.com/rss/index.xml", name: "Eater" }],
+  "food-tech":      [{ url: "https://www.eater.com/rss/index.xml", name: "Eater" }],
+  art:              [{ url: "https://hyperallergic.com/feed/", name: "Hyperallergic" }],
+  "interior-design":[{ url: "https://www.dezeen.com/feed/", name: "Dezeen" }],
+  skincare:         [{ url: "https://www.allure.com/feed/rss", name: "Allure" }],
+  film:             [{ url: "https://variety.com/feed/", name: "Variety" }, { url: "https://deadline.com/feed/", name: "Deadline" }],
+  health:           [{ url: "https://www.statnews.com/feed/", name: "STAT News" }],
+  "mental-health":  [{ url: "https://www.mindbodygreen.com/rss", name: "MindBodyGreen" }],
+  sport:            [{ url: "https://www.espn.com/espn/rss/news", name: "ESPN" }],
+  pets:             [{ url: "https://www.akc.org/rss/news-and-events/", name: "AKC" }],
+  creativity:       [{ url: "https://www.itsnicethat.com/rss", name: "It's Nice That" }, { url: "https://www.dezeen.com/feed/", name: "Dezeen" }],
+  photography:      [{ url: "https://petapixel.com/feed/", name: "PetaPixel" }],
+  education:        [{ url: "https://edsurge.com/news.rss", name: "EdSurge" }],
+  finance:          [{ url: "https://feeds.bloomberg.com/markets/news.rss", name: "Bloomberg Markets" }],
 };
 
 const DEFAULT_FEEDS = [
