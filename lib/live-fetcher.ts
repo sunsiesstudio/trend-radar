@@ -1,30 +1,40 @@
 import { Signal } from "@/types";
 
-const TREND_KEYWORDS: Record<string, string[]> = {
-  "ai-creativity":          ["AI fashion", "generative", "midjourney", "stable diffusion", "gpt fashion", "machine learning design", "creative AI", "DALL-E", "Sora fashion", "AI designer", "AI model campaign", "fashion AI"],
-  "digital-identity":       ["avatar fashion", "digital fashion", "virtual wardrobe", "digital clothing", "NFT fashion", "digital self", "Ready Player Me", "DressX", "roblox fashion", "fortnite fashion", "virtual item fashion"],
-  "ar-commerce":            ["AR try-on", "augmented reality shopping", "virtual try-on", "Vision Pro shopping", "spatial commerce", "AR fitting", "virtual fitting room", "AR beauty", "mixed reality retail"],
-  "biotech-beauty":         ["microbiome skincare", "probiotic skincare", "fermented beauty", "exosome serum", "lab-grown collagen", "bioprinted skin", "peptide skincare", "biotech beauty", "skin microbiome", "postbiotic"],
-  "sustainable-materials":  ["mycelium leather", "sustainable fashion material", "algae fabric", "bio-based material", "recycled fashion", "circular fashion", "digital product passport", "piñatex", "econyl", "carbon fabric"],
-  "3d-printing":            ["3D printing fashion", "3D printed shoe", "additive manufacturing fashion", "Zellerfeld", "printed garment", "3D wearable"],
-  "wearables":              ["smart ring", "Oura ring", "health wearable", "Whoop band", "fitness wearable", "smart fabric health", "glucose monitor fashion", "wearable health tech", "CGM wearable"],
-  "neurotech":              ["neurotech beauty", "brain-computer interface consumer", "EEG wellness", "adaptogen skincare", "nootropic skin", "neurocosmetic", "stress skincare", "Neuralink consumer"],
-  "spatial-computing":      ["Vision Pro fashion", "visionOS brand", "spatial computing retail", "Apple Vision fashion", "Galaxy XR fashion", "spatial commerce", "Decentraland fashion", "immersive retail"],
-  "longevity":              ["longevity supplement", "anti-aging biohack", "NAD+ longevity", "rapamycin lifestyle", "biological age test", "Bryan Johnson protocol", "longevity clinic", "VO2 max trend", "centenarian lifestyle"],
+const TOPIC_QUERIES: Record<string, string[]> = {
+  fashion:         ["fashion technology 2025", "fashion innovation trend", "sustainable fashion brand"],
+  beauty:          ["beauty tech trend 2025", "skincare innovation brand", "beauty industry news"],
+  gaming:          ["gaming trend 2025", "video game industry news", "esports gaming culture"],
+  wellness:        ["wellness trend 2025", "health wellness innovation", "mental wellbeing brand"],
+  "food-tech":     ["food technology innovation", "food tech startup trend", "alternative protein news"],
+  "mental-health": ["mental health awareness brand", "mental health tech 2025", "therapy wellness platform"],
+  music:           ["music technology trend", "music industry innovation", "artist tech platform"],
+  travel:          ["travel trend 2025", "hospitality innovation tech", "travel experience brand"],
+  luxury:          ["luxury brand innovation 2025", "premium market trend", "luxury consumer insight"],
+  sustainability:  ["sustainability brand innovation", "circular economy trend", "green tech consumer"],
+  skincare:        ["skincare ingredient trend 2025", "dermatology innovation brand", "skin health tech"],
+  art:             ["art technology trend", "creative industry AI", "digital art platform"],
+  fitness:         ["fitness tech trend 2025", "sport performance innovation", "health fitness brand"],
+  "interior-design":["interior design trend 2025", "home decor innovation", "living space tech"],
+  photography:     ["photography technology trend", "camera innovation 2025", "visual media brand"],
+  film:            ["film industry technology", "cinema streaming trend", "content creation innovation"],
+  branding:        ["brand strategy trend 2025", "marketing innovation", "brand identity design"],
+  fragrance:       ["fragrance trend 2025", "perfume industry innovation", "scent technology brand"],
+  jewellery:       ["jewellery trend 2025", "accessories innovation brand", "fine jewellery design"],
+  retail:          ["retail technology trend", "commerce innovation 2025", "store experience brand"],
+  social:          ["social media trend 2025", "creator economy innovation", "platform behaviour brand"],
+  education:       ["education technology trend", "edtech innovation 2025", "learning platform brand"],
+  creativity:      ["creative technology trend", "design innovation AI", "creative industry brand"],
+  food:            ["food trend 2025", "culinary innovation brand", "food culture consumer"],
+  dating:          ["dating app trend 2025", "relationship technology", "social connection platform"],
+  nightlife:       ["nightlife trend 2025", "entertainment venue innovation", "clubbing experience brand"],
+  coffee:          ["coffee trend 2025", "specialty coffee innovation", "coffee brand consumer"],
+  sport:           ["sport technology trend", "athletic innovation brand", "performance sport tech"],
+  pets:            ["pet industry trend 2025", "pet tech innovation brand", "pet care consumer"],
+  parenting:       ["parenting technology trend", "family innovation brand", "child development tech"],
+  kids:            ["children technology trend", "kids brand innovation", "educational toy tech"],
+  health:          ["health technology trend 2025", "medical innovation consumer", "preventive health brand"],
+  lifestyle:       ["lifestyle trend 2025", "consumer behaviour innovation", "culture lifestyle brand"],
 };
-
-function scoreTrend(text: string): string | null {
-  const lower = text.toLowerCase();
-  let best = { id: "", score: 0 };
-  for (const [trendId, keywords] of Object.entries(TREND_KEYWORDS)) {
-    let score = 0;
-    for (const kw of keywords) {
-      if (lower.includes(kw.toLowerCase())) score++;
-    }
-    if (score > best.score) best = { id: trendId, score };
-  }
-  return best.score >= 1 ? best.id : null;
-}
 
 function makeId(url: string): string {
   let h = 0;
@@ -32,24 +42,38 @@ function makeId(url: string): string {
   return `live-${h.toString(36)}`;
 }
 
-async function fetchReddit(queries: string[]): Promise<Signal[]> {
+function matchTrend(text: string, trends: Array<{ id: string; name: string; description: string }>): string | null {
+  if (!trends.length) return null;
+  const lower = text.toLowerCase();
+  let best = { id: "", score: 0 };
+  for (const t of trends) {
+    const words = `${t.name} ${t.description}`.toLowerCase().split(/\W+/).filter(w => w.length > 4);
+    const score = words.filter(w => lower.includes(w)).length;
+    if (score > best.score) best = { id: t.id, score };
+  }
+  return best.score >= 2 ? best.id : (trends[0]?.id ?? null);
+}
+
+async function fetchReddit(queries: string[], trends: Array<{ id: string; name: string; description: string }>): Promise<Signal[]> {
   const signals: Signal[] = [];
+  const seen = new Set<string>();
   for (const query of queries) {
     try {
-      const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=hot&limit=10&t=week`;
+      const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=hot&limit=8&t=month`;
       const res = await fetch(url, {
         headers: { "User-Agent": "TrendRadar/1.0 research-tool" },
-        next: { revalidate: 7200 },
+        next: { revalidate: 3600 },
       });
       if (!res.ok) continue;
       const data = await res.json();
-      const posts: Array<{ data: { title: string; permalink: string; subreddit: string; selftext: string; created_utc: number; score: number } }> = data?.data?.children ?? [];
+      const posts: Array<{ data: { title: string; permalink: string; subreddit: string; selftext: string; created_utc: number } }> = data?.data?.children ?? [];
       for (const { data: p } of posts) {
         if (!p.title || !p.permalink) continue;
-        const trendId = scoreTrend(`${p.title} ${p.selftext ?? ""}`);
-        if (!trendId) continue;
         const id = makeId(`https://reddit.com${p.permalink}`);
-        if (signals.find((s) => s.id === id)) continue;
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const trendId = matchTrend(`${p.title} ${p.selftext ?? ""}`, trends);
+        if (!trendId) continue;
         signals.push({
           id,
           trendId,
@@ -62,20 +86,21 @@ async function fetchReddit(queries: string[]): Promise<Signal[]> {
           isLive: true,
         });
       }
-    } catch { /* skip on error */ }
+    } catch { /* skip */ }
   }
   return signals;
 }
 
-async function fetchRSS(feeds: { url: string; name: string }[]): Promise<Signal[]> {
+async function fetchRSS(feeds: { url: string; name: string }[], trends: Array<{ id: string; name: string; description: string }>): Promise<Signal[]> {
   const signals: Signal[] = [];
+  const seen = new Set<string>();
   for (const feed of feeds) {
     try {
-      const res = await fetch(feed.url, { next: { revalidate: 7200 } });
+      const res = await fetch(feed.url, { next: { revalidate: 3600 } });
       if (!res.ok) continue;
       const text = await res.text();
       const items = text.match(/<item>([\s\S]*?)<\/item>/g) ?? [];
-      for (const item of items.slice(0, 20)) {
+      for (const item of items.slice(0, 15)) {
         const title = (
           item.match(/<title><!\[CDATA\[(.+?)\]\]><\/title>/) ??
           item.match(/<title>([^<]+)<\/title>/)
@@ -87,10 +112,11 @@ async function fetchRSS(feeds: { url: string; name: string }[]): Promise<Signal[
         )?.[1]?.replace(/<[^>]+>/g, "").trim().slice(0, 300) ?? "";
         const pubDate = item.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1] ?? "";
         if (!title || !link) continue;
-        const trendId = scoreTrend(`${title} ${desc}`);
-        if (!trendId) continue;
         const id = makeId(link);
-        if (signals.find((s) => s.id === id)) continue;
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const trendId = matchTrend(`${title} ${desc}`, trends);
+        if (!trendId) continue;
         signals.push({
           id,
           trendId,
@@ -103,29 +129,46 @@ async function fetchRSS(feeds: { url: string; name: string }[]): Promise<Signal[
           isLive: true,
         });
       }
-    } catch { /* skip on error */ }
+    } catch { /* skip */ }
   }
   return signals;
 }
 
-export async function fetchLiveSignals(): Promise<Signal[]> {
+const TOPIC_FEEDS: Record<string, { url: string; name: string }[]> = {
+  fashion:    [{ url: "https://www.businessoffashion.com/feed", name: "Business of Fashion" }, { url: "https://www.vogue.com/feed/rss", name: "Vogue" }],
+  beauty:     [{ url: "https://www.allure.com/feed/rss", name: "Allure" }, { url: "https://www.glamour.com/feed/rss", name: "Glamour" }],
+  gaming:     [{ url: "https://www.polygon.com/rss/index.xml", name: "Polygon" }, { url: "https://kotaku.com/rss", name: "Kotaku" }],
+  wellness:   [{ url: "https://www.mindbodygreen.com/rss", name: "MindBodyGreen" }],
+  music:      [{ url: "https://pitchfork.com/rss/news/", name: "Pitchfork" }],
+  luxury:     [{ url: "https://www.wallpaper.com/rss", name: "Wallpaper*" }],
+  design:     [{ url: "https://www.dezeen.com/feed/", name: "Dezeen" }],
+  tech:       [{ url: "https://www.theverge.com/rss/index.xml", name: "The Verge" }, { url: "https://techcrunch.com/rss", name: "TechCrunch" }],
+};
+
+const DEFAULT_FEEDS = [
+  { url: "https://www.wired.com/feed/rss", name: "Wired" },
+  { url: "https://techcrunch.com/rss", name: "TechCrunch" },
+  { url: "https://feeds.bbci.co.uk/news/technology/rss.xml", name: "BBC Tech" },
+];
+
+export async function fetchLiveSignals(
+  topics: string[] = [],
+  trends: Array<{ id: string; name: string; description: string }> = []
+): Promise<Signal[]> {
+  const queries = topics.length > 0
+    ? topics.flatMap(t => TOPIC_QUERIES[t] ?? [`${t} trend 2025`, `${t} innovation brand`])
+    : ["emerging tech fashion", "AI design innovation", "biotech beauty brand"];
+
+  const feeds = topics.length > 0
+    ? [...new Map([
+        ...topics.flatMap(t => (TOPIC_FEEDS[t] ?? []).map(f => [f.url, f] as [string, typeof f])),
+        ...DEFAULT_FEEDS.map(f => [f.url, f] as [string, typeof f]),
+      ]).values()]
+    : DEFAULT_FEEDS;
+
   const [redditResult, rssResult] = await Promise.allSettled([
-    fetchReddit([
-      "AI fashion design generative creative campaign",
-      "longevity anti-aging biohacking NAD supplement protocol",
-      "skincare microbiome biotech beauty ingredient science",
-      "sustainable fashion materials mycelium algae recycled circular",
-      "smart wearables health ring Oura Whoop fitness tracker",
-      "avatar digital fashion NFT virtual wardrobe metaverse",
-      "AR try-on augmented reality shopping Vision Pro spatial",
-      "3D printing fashion footwear shoe manufacturing",
-      "neurotech nootropics brain wellness adaptogen stress skincare",
-    ]),
-    fetchRSS([
-      { url: "https://www.wired.com/feed/rss", name: "Wired" },
-      { url: "https://techcrunch.com/rss", name: "TechCrunch" },
-      { url: "https://feeds.bbci.co.uk/news/technology/rss.xml", name: "BBC Tech" },
-    ]),
+    fetchReddit(queries.slice(0, 6), trends),
+    fetchRSS(feeds.slice(0, 5), trends),
   ]);
 
   const all: Signal[] = [
@@ -134,9 +177,5 @@ export async function fetchLiveSignals(): Promise<Signal[]> {
   ];
 
   const seen = new Set<string>();
-  return all.filter((s) => {
-    if (seen.has(s.id)) return false;
-    seen.add(s.id);
-    return true;
-  });
+  return all.filter(s => { if (seen.has(s.id)) return false; seen.add(s.id); return true; });
 }

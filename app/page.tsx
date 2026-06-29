@@ -414,10 +414,28 @@ export default function HomePage() {
     });
   }, []);
 
+  const liveTopicsRef = useRef<string[]>([]);
+  const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
+
+  useEffect(() => {
+    liveTopicsRef.current = appliedTopics;
+  }, [appliedTopics]);
+
+  useEffect(() => {
+    liveTrendsRef.current = appliedDynamicTrends.map(t => ({ id: t.id, name: t.name, description: t.description }));
+  }, [appliedDynamicTrends]);
+
   useEffect(() => {
     let cancelled = false;
     const fetchLive = () => {
-      fetch("/api/live-signals")
+      const topics = liveTopicsRef.current;
+      const trends = liveTrendsRef.current;
+      if (topics.length === 0) return;
+      fetch("/api/live-signals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topics, trends }),
+      })
         .then((r) => r.json())
         .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
         .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
