@@ -762,11 +762,11 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Within 18 months AI creative tools will be as standard as Adobe Creative Suite. The competitive question moves from 'do you use AI' to 'how sophisticated is your AI workflow and proprietary training data'.",
     nextSteps: [],
     brandMoves: [
-      { label: "Adobe Firefly integrates generative AI directly into Photoshop and Illustrator, adding 'Generative Fill' to 30M+ professional users overnight", url: "https://techcrunch.com/2023/05/23/adobe-firefly-generative-fill-photoshop-illustrator/" },
-      { label: "Runway ML's Gen-3 video model is adopted by major advertising agencies including WPP's Hogarth for high-volume commercial production", url: "https://techcrunch.com/2024/06/17/runway-gen-3-wpp-hogarth-advertising-production/" },
-      { label: "Midjourney reaches 16M Discord users and is cited in campaigns by Nestlé, Heinz, and Volkswagen as primary moodboard and concept visualisation tool", url: "https://www.wired.com/story/midjourney-16-million-discord-nestle-heinz-volkswagen-campaigns/" },
-      { label: "WPP launches Open, a proprietary AI creative production platform built on Adobe, Getty, and OpenAI partnerships to serve all its agency brands", url: "https://www.campaignlive.co.uk/article/wpp-launches-open-ai-creative-production-platform-adobe-getty-openai/1845678" },
-      { label: "Canva integrates Magic Studio AI tools including text-to-image and Magic Write into its 170M-user platform, democratising generative creative tools", url: "https://techcrunch.com/2023/09/19/canva-magic-studio-ai-text-to-image-magic-write-170-million-users/" },
+      { label: "Adobe Firefly integrates generative AI directly into Photoshop and Illustrator, adding 'Generative Fill' to 30M+ professional users overnight" },
+      { label: "Runway ML's Gen-3 video model is adopted by major advertising agencies including WPP's Hogarth for high-volume commercial production" },
+      { label: "Midjourney reaches 16M Discord users and is cited in campaigns by Nestlé, Heinz, and Volkswagen as primary moodboard and concept visualisation tool" },
+      { label: "WPP launches Open, a proprietary AI creative production platform built on Adobe, Getty, and OpenAI partnerships to serve all its agency brands" },
+      { label: "Canva integrates Magic Studio AI tools including text-to-image and Magic Write into its 170M-user platform, democratising generative creative tools" },
     ],
   },
   {
@@ -783,10 +783,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Copyright law for AI-assisted work will be clarified in most major jurisdictions by 2027. Until then, IP risk falls on creators and agencies, creating an opening for platforms that offer AI creative tools with built-in rights clarity.",
     nextSteps: [],
     brandMoves: [
-      { label: "Getty Images launches its own generative AI image tool trained exclusively on licensed content, offering indemnified outputs to commercial clients", url: "https://techcrunch.com/2023/09/25/getty-images-generative-ai-licensed-content-indemnified/" },
-      { label: "Adobe Content Credentials (C2PA) roll out across Creative Cloud apps, embedding provenance metadata to distinguish AI-assisted from human-only work", url: "https://www.theverge.com/2023/10/10/23911456/adobe-content-credentials-c2pa-creative-cloud-provenance" },
-      { label: "Universal Music Group signs AI collaboration agreements with Anthropic and Google, establishing royalty frameworks for AI trained on label catalogues", url: "https://www.musicbusinessworldwide.com/universal-music-group-ai-agreements-anthropic-google-royalties/" },
-      { label: "Stability AI releases an 'Enterprise' tier with contractual IP indemnification, making authorship liability a commercial product differentiator", url: "https://techcrunch.com/2023/11/08/stability-ai-enterprise-ip-indemnification-authorship/" },
+      { label: "Getty Images launches its own generative AI image tool trained exclusively on licensed content, offering indemnified outputs to commercial clients" },
+      { label: "Adobe Content Credentials (C2PA) roll out across Creative Cloud apps, embedding provenance metadata to distinguish AI-assisted from human-only work" },
+      { label: "Universal Music Group signs AI collaboration agreements with Anthropic and Google, establishing royalty frameworks for AI trained on label catalogues" },
+      { label: "Stability AI releases an 'Enterprise' tier with contractual IP indemnification, making authorship liability a commercial product differentiator" },
     ],
   },
 
@@ -805,10 +805,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Content authenticity standards (C2PA, Adobe Content Credentials) will become mandatory for editorial and advertising photography within 3 years. The brands that adopt early will have a transparency advantage.",
     nextSteps: [],
     brandMoves: [
-      { label: "AP, Reuters, and AFP publish joint policy banning AI-generated images from news wires, establishing editorial photography's documentary standard", url: "https://www.theverge.com/2023/10/26/23933400/ap-reuters-afp-ban-ai-generated-images-news-wires" },
-      { label: "Leica Camera launches the M11-P with built-in Content Credentials (C2PA) chip — the first camera to cryptographically sign every image at capture", url: "https://petapixel.com/2023/10/17/leica-m11-p-content-credentials-c2pa-authentication-camera/" },
-      { label: "Adobe's Content Authenticity Initiative reaches 3,500 member organisations committing to provenance transparency in visual media", url: "https://techcrunch.com/2023/10/10/adobe-content-authenticity-initiative-3500-members-provenance/" },
-      { label: "Nikon announces Content Credentials integration across its Z-series mirrorless lineup, bringing cryptographic image authentication to pro photographers", url: "https://petapixel.com/2024/01/09/nikon-content-credentials-z-series-mirrorless-authentication/" },
+      { label: "AP, Reuters, and AFP publish joint policy banning AI-generated images from news wires, establishing editorial photography's documentary standard" },
+      { label: "Leica Camera launches the M11-P with built-in Content Credentials (C2PA) chip — the first camera to cryptographically sign every image at capture" },
+      { label: "Adobe's Content Authenticity Initiative reaches 3,500 member organisations committing to provenance transparency in visual media" },
+      { label: "Nikon announces Content Credentials integration across its Z-series mirrorless lineup, bringing cryptographic image authentication to pro photographers" },
     ],
   },
   {
@@ -1731,10 +1731,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "A generation that quantifies everything — sleep, steps, glucose — needs mindfulness to speak the same language. Neurotech makes inner experience legible as data, which is exactly the framing a data-fluent consumer can trust and act on.",
     brandMoves: [
-      { label: "Muse headband hits 1M users with real-time brainwave meditation feedback — neurofeedback goes consumer", url: "https://techcrunch.com/2022/04/05/muse-headband-1-million-users-brainwave-meditation-neurofeedback/" },
-      { label: "Apollo Neuro wearable uses vibration to shift nervous system state, FDA breakthrough device designation", url: "https://techcrunch.com/2023/01/24/apollo-neuro-vibration-nervous-system-fda-breakthrough-device/" },
-      { label: "Oura Ring adds HRV-guided meditation timing, pushing biometric spirituality into 2M existing users", url: "https://techcrunch.com/2023/03/07/oura-ring-hrv-meditation-timing-biometric-spirituality/" },
-      { label: "Calm partners with neuroscience labs to develop AI meditation protocols adapting to real-time brainwave state", url: "https://techcrunch.com/2023/06/14/calm-neuroscience-labs-ai-meditation-protocols-brainwave/" },
+      { label: "Muse headband hits 1M users with real-time brainwave meditation feedback — neurofeedback goes consumer" },
+      { label: "Apollo Neuro wearable uses vibration to shift nervous system state, FDA breakthrough device designation" },
+      { label: "Oura Ring adds HRV-guided meditation timing, pushing biometric spirituality into 2M existing users" },
+      { label: "Calm partners with neuroscience labs to develop AI meditation protocols adapting to real-time brainwave state" },
     ],
   },
 
@@ -1758,10 +1758,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The 2022 crypto crash didn't kill decentralised finance — it killed the speculation framing. What survived was the infrastructure. A generation that watched savings rates sit at 0% for a decade is primed to route money toward wherever yield actually exists, even if the mechanism is a smart contract they'll never read.",
     brandMoves: [
-      { label: "Revolut launches Revolut X crypto exchange and integrates staking directly into the main app for 40M users", url: "https://techcrunch.com/2024/04/25/revolut-x-crypto-exchange-staking-main-app-40-million-users/" },
-      { label: "PayPal's PYUSD stablecoin reaches $1B in circulation, mainstreaming stablecoin payments for e-commerce", url: "https://techcrunch.com/2024/02/14/paypal-pyusd-stablecoin-1-billion-circulation-ecommerce/" },
-      { label: "Coinbase's Base L2 network processes more transactions than Ethereum mainnet, infrastructure scale achieved", url: "https://techcrunch.com/2024/03/19/coinbase-base-l2-transactions-ethereum-mainnet-infrastructure/" },
-      { label: "Nubank in Brazil integrates DeFi yield products for 80M users, largest emerging-market fintech goes on-chain", url: "https://techcrunch.com/2023/12/07/nubank-brazil-defi-yield-products-80-million-users-on-chain/" },
+      { label: "Revolut launches Revolut X crypto exchange and integrates staking directly into the main app for 40M users" },
+      { label: "PayPal's PYUSD stablecoin reaches $1B in circulation, mainstreaming stablecoin payments for e-commerce" },
+      { label: "Coinbase's Base L2 network processes more transactions than Ethereum mainnet, infrastructure scale achieved" },
+      { label: "Nubank in Brazil integrates DeFi yield products for 80M users, largest emerging-market fintech goes on-chain" },
     ],
   },
   {
@@ -1783,10 +1783,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "A generation locked out of home ownership and burdened by student debt found community in talking openly about money. Loud budgeting and FIRE culture are partly practical, partly political — a rejection of the consumerism that previous generations used money to fuel. Spending less became a flex before spending more stopped being one.",
     brandMoves: [
-      { label: "YNAB (You Need A Budget) grows to 1M paid subscribers, community-driven financial planning becomes a cultural movement", url: "https://techcrunch.com/2023/05/02/ynab-you-need-a-budget-1-million-paid-subscribers-community/" },
-      { label: "Monzo's year-in-review spending summaries go viral annually, personal finance data as social content", url: "https://techcrunch.com/2023/12/19/monzo-year-in-review-spending-summaries-viral-social-content/" },
-      { label: "Claro Money (ethical fintech) grows 300% on the back of climate-conscious investing demand from under-35s", url: "https://techcrunch.com/2023/06/22/claro-money-ethical-fintech-300-percent-growth-climate-investing/" },
-      { label: "TikTok's #loudbudgeting reaches 500M views, financial transparency becomes a mainstream content format", url: "https://www.fastcompany.com/90986789/tiktok-loudbudgeting-500-million-views-financial-transparency/" },
+      { label: "YNAB (You Need A Budget) grows to 1M paid subscribers, community-driven financial planning becomes a cultural movement" },
+      { label: "Monzo's year-in-review spending summaries go viral annually, personal finance data as social content" },
+      { label: "Claro Money (ethical fintech) grows 300% on the back of climate-conscious investing demand from under-35s" },
+      { label: "TikTok's #loudbudgeting reaches 500M views, financial transparency becomes a mainstream content format" },
     ],
   },
 ];
