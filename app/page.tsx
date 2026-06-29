@@ -386,6 +386,8 @@ export default function HomePage() {
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [addingTopic, setAddingTopic] = useState(false);
+  const [topicInput, setTopicInput] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [emptySearchInput, setEmptySearchInput] = useState("");
   const [randomTopics] = useState<string[]>(() => {
@@ -414,12 +416,16 @@ export default function HomePage() {
 
   useEffect(() => {
     let cancelled = false;
+    const fetchLive = () => {
+      fetch("/api/live-signals")
+        .then((r) => r.json())
+        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
+        .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
+    };
     setLiveLoading(true);
-    fetch("/api/live-signals")
-      .then((r) => r.json())
-      .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
-      .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
-    return () => { cancelled = true; };
+    fetchLive();
+    const interval = setInterval(fetchLive, 10 * 60 * 1000);
+    return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
   useEffect(() => {
@@ -440,6 +446,13 @@ export default function HomePage() {
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends, topicAddedAt), [allExtraSignals, seenIds, visibleTrends, topicAddedAt]);
   const fitViewRef = useRef<(() => void) | null>(null);
 
+
+  const topicSuggestions = useMemo(() => {
+    const q = topicInput.toLowerCase().trim();
+    const all = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
+    if (!q) return all;
+    return all.filter(t => t.includes(q) || t.replace(/-/g, " ").includes(q));
+  }, [topicInput, activeTopics]);
 
   const emptySearchSuggestions = useMemo(() => {
     const q = emptySearchInput.toLowerCase().trim();
@@ -464,10 +477,12 @@ export default function HomePage() {
       if (res.ok) {
         const data = await res.json();
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
-        const newDynamic = [...dynamicTrends, ...items.map(i => i.trend)];
+        const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
+        const offset = dynamicTrends.length;
+        const newDynamic = [...dynamicTrends, ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(offset + i) }))];
         setDynamicTrends(newDynamic);
         setAppliedDynamicTrends(newDynamic);
-        setGeneratedSignals(prev => [...prev, ...items.flatMap(i => i.signals)]);
+        setGeneratedSignals(prev => [...prev, ...sorted.flatMap(i => i.signals)]);
         setGenerationError(null);
         setTimeout(() => setFocusIdx(0), 60);
       } else {
@@ -484,7 +499,9 @@ export default function HomePage() {
 
   const loadTopic = useCallback(async (key: string) => {
     setAppliedTopics([key]);
-    const libraryTrends = (TOPIC_LIBRARY[key] ?? []).map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+    const libraryTrends = [...(TOPIC_LIBRARY[key] ?? [])]
+      .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+      .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
     if (libraryTrends.length) {
       setDynamicTrends(libraryTrends);
       setAppliedDynamicTrends(libraryTrends);
@@ -624,6 +641,42 @@ export default function HomePage() {
             </div>
           );
         })}
+        {addingTopic ? (
+          <input
+            autoFocus
+            value={topicInput}
+            onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && topicInput.trim()) { addTopic(topicInput.trim()); setTopicInput(""); setAddingTopic(false); setShowSuggestions(false); }
+              if (e.key === "Escape") { setAddingTopic(false); setTopicInput(""); setShowSuggestions(false); }
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => { setShowSuggestions(false); setAddingTopic(false); setTopicInput(""); }, 150)}
+            placeholder="switch topic…"
+            style={{
+              flexShrink: 0, height: 28, padding: "0 10px",
+              border: "1.5px dashed #ccc", borderRadius: 20,
+              fontSize: 11, fontWeight: 600, color: "#555",
+              background: "transparent", outline: "none",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              width: 140,
+            }}
+          />
+        ) : (
+          <button
+            onClick={() => setAddingTopic(true)}
+            style={{
+              flexShrink: 0, height: 28, padding: "0 12px",
+              border: "1.5px dashed #ccc", borderRadius: 20,
+              fontSize: 11, fontWeight: 700, color: "#aaa",
+              background: "transparent", cursor: "pointer",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              display: "flex", alignItems: "center", gap: 4,
+            }}
+          >
+            <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> topic
+          </button>
+        )}
         {generatingTopic && (
           <div style={{
             flexShrink: 0, height: 28, padding: "0 12px",
@@ -638,6 +691,40 @@ export default function HomePage() {
           </div>
         )}
       </div>}
+
+      {/* Autocomplete dropdown for topic switcher */}
+      {addingTopic && showSuggestions && topicSuggestions.length > 0 && (
+        <div style={{
+          position: "absolute", top: 96, left: 0, right: 0, zIndex: 20,
+          background: "#fff",
+          borderBottom: "1px solid rgba(0,0,0,0.08)",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+          padding: "6px 0",
+          maxHeight: 240, overflowY: "auto",
+        }}>
+          {topicSuggestions.map(topic => (
+            <button
+              key={topic}
+              onMouseDown={() => { addTopic(topic); setTopicInput(""); setAddingTopic(false); setShowSuggestions(false); }}
+              style={{
+                display: "block", width: "100%",
+                padding: "10px 20px", textAlign: "left",
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: 13, fontWeight: 600, color: "#222",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                borderBottom: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <span style={{
+                display: "inline-block", width: 8, height: 8, borderRadius: "50%",
+                background: TOPIC_COLORS[topic] ?? "#ccc",
+                marginRight: 10, verticalAlign: "middle",
+              }} />
+              {topic.replace(/-/g, " ")}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Summary strip — click anywhere to open */}
       <div
