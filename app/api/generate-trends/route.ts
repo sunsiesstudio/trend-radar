@@ -60,9 +60,9 @@ Return ONLY valid JSON (no markdown, no explanation):
       "why_relevant": "5-6 sentences, written directly to whoever needs to make a decision about this. What's the real risk of doing nothing for the next 18 months. What does a brand look like when they get this right, specifically. How long before the window closes. Name who's already moving and who's being left behind. End with the one thing this permanently changes.",
       "trajectory": "3-4 sentences. Call it: just getting started, accelerating, or nearly peaked. What do the next 18-36 months look like. What would confirm it's speeding up. What could slow it down or kill it.",
       "brand_moves": [
-        { "label": "Brand name: what they did and why it worked (1 sentence)", "url": "https://www.theverge.com/example-article-about-this-brand-move" },
-        { "label": "Another brand name: specific product, collab, or campaign (1 sentence)", "url": "https://techcrunch.com/example-article" },
-        { "label": "Third brand: what they launched or partnered on (1 sentence)", "url": "https://wired.com/example-article" }
+        { "label": "Brand name: what they did and why it worked (1 sentence)", "url": "https://brandname.com" },
+        { "label": "Another brand name: specific product, collab, or campaign (1 sentence)", "url": "https://otherbrand.com" },
+        { "label": "Third brand: what they launched or partnered on (1 sentence)", "url": "https://thirdbrand.com" }
       ],
       "relevanceScore": 67,
       "signals": [
@@ -84,7 +84,7 @@ Rules:
 - Do NOT reuse these IDs: ${existingTrendIds.join(", ") || "none"}
 - relevanceScore between 52 and 81
 - signals: exactly 8 items, mix of news and reddit, specific and real-sounding
-- brand_moves: every entry MUST include a url pointing to a real news article or press release about that specific brand move, not the brand's homepage
+- brand_moves: every entry MUST include a url pointing to the brand's main homepage (e.g. https://nike.com, https://lululemon.com)
 - Every section must name at least one real brand, company, product, or person
 - No sentence that could belong in a different trend report
 - Have a clear opinion, don't hedge unless genuinely unsure
