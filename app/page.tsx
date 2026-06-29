@@ -213,7 +213,16 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
 
   visibleTrends.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? trend.position ?? { x: 0, y: 0 };
-    const trendSignals = allSignals.filter((s) => s.trendId === trend.id);
+    // Oldest signals first so they claim the inner slots closest to the core;
+    // newer signals get pushed outward naturally by the placement loop.
+    const trendSignals = allSignals
+      .filter((s) => s.trendId === trend.id)
+      .sort((a, b) => {
+        if (!a.date && !b.date) return 0;
+        if (!a.date) return 1;
+        if (!b.date) return -1;
+        return a.date.localeCompare(b.date);
+      });
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
     // Use the date when the topic was added to the radar (persisted in localStorage) for color aging
     const topicKey = trend.topics?.[0];
