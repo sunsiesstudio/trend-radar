@@ -386,8 +386,6 @@ export default function HomePage() {
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [addingTopic,   setAddingTopic]   = useState(false);
-  const [topicInput,    setTopicInput]    = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [emptySearchInput, setEmptySearchInput] = useState("");
   const [randomTopics] = useState<string[]>(() => {
@@ -433,11 +431,8 @@ export default function HomePage() {
   }, []);
 
   const allTrends = useMemo(() => [...appliedDynamicTrends], [appliedDynamicTrends]);
-  const visibleTrends = useMemo(() =>
-    appliedTopics.length === 0
-      ? allTrends
-      : allTrends.filter(t => appliedTopics.every(tp => (t.topics ?? []).includes(tp))),
-    [allTrends, appliedTopics]
+  const visibleTrends = useMemo(() => allTrends,
+    [allTrends]
   );
 
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS, ...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
@@ -445,14 +440,6 @@ export default function HomePage() {
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends, topicAddedAt), [allExtraSignals, seenIds, visibleTrends, topicAddedAt]);
   const fitViewRef = useRef<(() => void) | null>(null);
 
-  const topicSuggestions = useMemo(() => {
-    const q = topicInput.toLowerCase().trim();
-    const all = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
-    if (!q) return all;
-    return all.filter(t =>
-      t.includes(q) || t.replace(/-/g, " ").includes(q)
-    );
-  }, [topicInput, activeTopics]);
 
   const emptySearchSuggestions = useMemo(() => {
     const q = emptySearchInput.toLowerCase().trim();
@@ -495,84 +482,31 @@ export default function HomePage() {
     }
   }, [dynamicTrends]);
 
-  // Load the board for a given topic set — always replaces current trends.
-  // Single topic: check library first, else generate. Multi-topic: generate for combination.
-  const loadTrendsForTopics = useCallback(async (topics: string[]) => {
-    setAppliedTopics(topics);
-    if (topics.length === 0) {
-      setDynamicTrends([]);
-      setAppliedDynamicTrends([]);
-      setGeneratedSignals([]);
+  const loadTopic = useCallback(async (key: string) => {
+    setAppliedTopics([key]);
+    const libraryTrends = (TOPIC_LIBRARY[key] ?? []).map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+    if (libraryTrends.length) {
+      setDynamicTrends(libraryTrends);
+      setAppliedDynamicTrends(libraryTrends);
+      setTimeout(() => setFocusIdx(0), 60);
       return;
     }
-
-    if (topics.length === 1) {
-      const key = topics[0];
-      const libraryTrends = (TOPIC_LIBRARY[key] ?? []).map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
-      if (libraryTrends.length) {
-        setDynamicTrends(libraryTrends);
-        setAppliedDynamicTrends(libraryTrends);
-        setTimeout(() => setFocusIdx(0), 60);
-        return;
-      }
-      await runGeneration(key, topics);
-      return;
-    }
-
-    // Generate trends specifically for the topic combination
-    const combinedTopic = topics.join(" and ");
-    setGeneratingTopic(combinedTopic);
-    setGenerationError(null);
-    setDynamicTrends([]);
-    setAppliedDynamicTrends([]);
-    setGeneratedSignals([]);
-    try {
-      const res = await fetch("/api/generate-trends", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: combinedTopic, existingTrendIds: [], positionOffset: 0 }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
-        // Tag every trend with ALL active topics so AND filter matches them
-        const taggedTrends = items.map(i => ({ ...i.trend, topics }));
-        setDynamicTrends(taggedTrends);
-        setAppliedDynamicTrends(taggedTrends);
-        setGeneratedSignals(items.flatMap(i => i.signals));
-        setTimeout(() => setFocusIdx(0), 60);
-      } else {
-        const errData = await res.json().catch(() => ({})) as { error?: string };
-        setGenerationError(errData.error ?? "Generation failed. Please try again.");
-      }
-    } catch {
-      setGenerationError("Network error. Check connection and try again.");
-    } finally {
-      setGeneratingTopic(null);
-    }
+    await runGeneration(key, [key]);
   }, [runGeneration]);
 
   const retryGeneration = useCallback(() => {
-    if (activeTopics.length >= 2) {
-      loadTrendsForTopics(activeTopics);
-    } else {
-      const failedTopic = activeTopics.find(topic =>
-        !dynamicTrends.some(t => t.topics?.includes(topic))
-      );
-      if (failedTopic) runGeneration(failedTopic, activeTopics);
-    }
-  }, [activeTopics, dynamicTrends, runGeneration, loadTrendsForTopics]);
+    const failedTopic = activeTopics.find(topic =>
+      !dynamicTrends.some(t => t.topics?.includes(topic))
+    );
+    if (failedTopic) runGeneration(failedTopic, [failedTopic]);
+  }, [activeTopics, dynamicTrends, runGeneration]);
 
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
-    if (!key || activeTopics.includes(key)) return;
-    const newTopics = [...activeTopics, key];
-    setActiveTopics(newTopics);
-    setTopicInput("");
-    setAddingTopic(false);
+    if (!key || (activeTopics.length === 1 && activeTopics[0] === key)) return;
+    setActiveTopics([key]);
     setGenerationError(null);
 
-    // Stamp when this topic was first added — persists across sessions for color aging
     if (!topicAddedAt[key]) {
       const today = new Date().toISOString().split("T")[0];
       const next = { ...topicAddedAt, [key]: today };
@@ -580,14 +514,16 @@ export default function HomePage() {
       try { localStorage.setItem("ar_topicAddedAt", JSON.stringify(next)); } catch { /* ignore */ }
     }
 
-    await loadTrendsForTopics(newTopics);
-  }, [activeTopics, loadTrendsForTopics, topicAddedAt]);
+    await loadTopic(key);
+  }, [activeTopics, loadTopic, topicAddedAt]);
 
-  const removeTopic = useCallback((topic: string) => {
-    const next = activeTopics.filter(t => t !== topic);
-    setActiveTopics(next);
-    loadTrendsForTopics(next);
-  }, [activeTopics, loadTrendsForTopics]);
+  const removeTopic = useCallback(() => {
+    setActiveTopics([]);
+    setAppliedTopics([]);
+    setDynamicTrends([]);
+    setAppliedDynamicTrends([]);
+    setGeneratedSignals([]);
+  }, []);
 
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
@@ -681,49 +617,13 @@ export default function HomePage() {
                 {topic}
               </span>
               <button
-                onClick={() => removeTopic(topic)}
+                onClick={() => removeTopic()}
                 style={{ background: "none", border: "none", padding: 0, marginLeft: 2, cursor: "pointer", fontSize: 13, color: darkenColor(color, 0.55), lineHeight: 1, display: "flex", alignItems: "center" }}
                 aria-label={`Remove ${topic}`}
               >×</button>
             </div>
           );
         })}
-        {addingTopic ? (
-          <input
-            autoFocus
-            value={topicInput}
-            onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && topicInput.trim()) { addTopic(topicInput.trim()); setShowSuggestions(false); }
-              if (e.key === "Escape") { setAddingTopic(false); setTopicInput(""); setShowSuggestions(false); }
-            }}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-            placeholder="e.g. travel, music…"
-            style={{
-              flexShrink: 0, height: 28, padding: "0 10px",
-              border: "1.5px dashed #ccc", borderRadius: 20,
-              fontSize: 11, fontWeight: 600, color: "#555",
-              background: "transparent", outline: "none",
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              width: 160,
-            }}
-          />
-        ) : (
-          <button
-            onClick={() => setAddingTopic(true)}
-            style={{
-              flexShrink: 0, height: 28, padding: "0 12px",
-              border: "1.5px dashed #ccc", borderRadius: 20,
-              fontSize: 11, fontWeight: 700, color: "#aaa",
-              background: "transparent", cursor: "pointer",
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              display: "flex", alignItems: "center", gap: 4,
-            }}
-          >
-            <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> topic
-          </button>
-        )}
         {generatingTopic && (
           <div style={{
             flexShrink: 0, height: 28, padding: "0 12px",
@@ -738,40 +638,6 @@ export default function HomePage() {
           </div>
         )}
       </div>}
-
-      {/* Autocomplete dropdown */}
-      {addingTopic && showSuggestions && topicSuggestions.length > 0 && (
-        <div style={{
-          position: "absolute", top: 96, left: 0, right: 0, zIndex: 20,
-          background: "#fff",
-          borderBottom: "1px solid rgba(0,0,0,0.08)",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-          padding: "6px 0",
-          maxHeight: 240, overflowY: "auto",
-        }}>
-          {topicSuggestions.map(topic => (
-            <button
-              key={topic}
-              onMouseDown={() => { addTopic(topic); setShowSuggestions(false); }}
-              style={{
-                display: "block", width: "100%",
-                padding: "10px 20px", textAlign: "left",
-                background: "none", border: "none", cursor: "pointer",
-                fontSize: 13, fontWeight: 600, color: "#222",
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                borderBottom: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <span style={{
-                display: "inline-block", width: 8, height: 8, borderRadius: "50%",
-                background: TOPIC_COLORS[topic] ?? "#ccc",
-                marginRight: 10, verticalAlign: "middle",
-              }} />
-              {topic.replace(/-/g, " ")}
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Summary strip — click anywhere to open */}
       <div
@@ -789,7 +655,7 @@ export default function HomePage() {
         {appliedTopics.length > 0 && (
           <>
             <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: isDesktop ? 2 : 1, WebkitBoxOrient: "vertical", whiteSpace: isDesktop ? "normal" : "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
-              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `Emerging Tech × ${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" & ")} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
+              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"} tracked`}
             </p>
             {isDesktop && (
               <button
@@ -833,7 +699,7 @@ export default function HomePage() {
                     {appliedTopics.length > 0 ? "What we're tracking" : "About"}
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                    {appliedTopics.length > 0 ? `Emerging Tech × ${appliedTopics.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(" & ")}` : "Augmented Radar"}
+                    {appliedTopics.length > 0 ? `${appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1)}` : "Augmented Radar"}
                   </h3>
                 </div>
                 <button
@@ -866,7 +732,7 @@ export default function HomePage() {
               {/* ── Trends (topic selected) ── */}
               {appliedTopics.length > 0 && (
                 <>
-                  {appliedTopics.length === 1 && (() => {
+                  {(() => {
                     const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
                     return desc ? (
                       <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: "4px 0 16px", fontFamily: "'EB Garamond', Georgia, serif" }}>
@@ -874,65 +740,18 @@ export default function HomePage() {
                       </p>
                     ) : null;
                   })()}
-
-                  {appliedTopics.length >= 2 ? (() => {
-                    // Venn grouping: for each trend, check which applied topics it belongs to
-                    const intersection = visibleTrends.filter(t => appliedTopics.every(tp => (t.topics ?? []).includes(tp)));
-                    const exclusives = appliedTopics.map(tp => visibleTrends.filter(t => (t.topics ?? []).includes(tp) && !appliedTopics.filter(x => x !== tp).every(x => (t.topics ?? []).includes(x))));
-
-                    const TrendRow = ({ t }: { t: Trend }) => (
-                      <button onClick={() => { setActiveTrend(t); setSummaryOpen(false); }} style={{ display: "flex", alignItems: "flex-start", gap: 10, background: "none", border: "none", borderBottom: "1px solid #f5f3ef", textAlign: "left", width: "100%", cursor: "pointer", padding: "0 0 10px" }}>
-                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: darkenColor(t.color), marginTop: 5, flexShrink: 0 }} />
+                  <div style={{ display: "flex", flexDirection: "column", gap: 0, paddingBottom: 20 }}>
+                    {visibleTrends.map(t => (
+                      <button key={t.id} onClick={() => { setActiveTrend(t); setSummaryOpen(false); }} style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "none", border: "none", borderBottom: "1px solid #f5f3ef", textAlign: "left", width: "100%", cursor: "pointer", padding: "0 0 12px", marginBottom: 12 }}>
+                        <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
-                          <div style={{ fontSize: 11, color: "#888", lineHeight: 1.5, marginTop: 2 }}>{t.description}</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
+                          <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
                         </div>
-                        <span style={{ fontSize: 10, color: "#ccc", marginTop: 3, flexShrink: 0 }}>→</span>
+                        <span style={{ fontSize: 10, color: "#ccc", marginTop: 5, flexShrink: 0 }}>→</span>
                       </button>
-                    );
-
-                    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-                    return (
-                      <div style={{ marginBottom: 20 }}>
-                        {intersection.length > 0 && (
-                          <div style={{ marginBottom: 20 }}>
-                            <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
-                              <span style={{ width: 16, height: 2, background: "#111", display: "inline-block", borderRadius: 1 }} />
-                              {appliedTopics.map(cap).join(" × ")} — intersection
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-                              {intersection.map(t => <TrendRow key={t.id} t={t} />)}
-                            </div>
-                          </div>
-                        )}
-                        {exclusives.map((group, gi) => group.length > 0 && (
-                          <div key={gi} style={{ marginBottom: 16 }}>
-                            <div style={{ fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
-                              <span style={{ width: 12, height: 2, background: "#ccc", display: "inline-block", borderRadius: 1 }} />
-                              Only {cap(appliedTopics[gi])}
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-                              {group.map(t => <TrendRow key={t.id} t={t} />)}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })() : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 0, paddingBottom: 20 }}>
-                      {visibleTrends.map(t => (
-                        <button key={t.id} onClick={() => { setActiveTrend(t); setSummaryOpen(false); }} style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "none", border: "none", borderBottom: "1px solid #f5f3ef", textAlign: "left", width: "100%", cursor: "pointer", padding: "0 0 12px", marginBottom: 12 }}>
-                          <div style={{ width: 9, height: 9, borderRadius: "50%", background: darkenColor(t.color), marginTop: 6, flexShrink: 0 }} />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 14, fontWeight: 700, color: "#111", lineHeight: 1.25, fontFamily: "'EB Garamond', Georgia, serif" }}>{t.name}</div>
-                            <div style={{ fontSize: 12, color: "#777", lineHeight: 1.55, marginTop: 3 }}>{t.description}</div>
-                          </div>
-                          <span style={{ fontSize: 10, color: "#ccc", marginTop: 5, flexShrink: 0 }}>→</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </>
               )}
 

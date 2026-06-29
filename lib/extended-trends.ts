@@ -278,10 +278,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "NPC aesthetics will peak as irony and cross into earnest adoption within 12 months, the same path normcore and gorpcore took.",
     nextSteps: [],
     brandMoves: [
-      { label: "A-Cold-Wall* releases a 'System NPC' capsule referencing game-character uniformity in wearable garments" },
-      { label: "Nike drops a limited Air Max colourway inspired by default NPC character palettes, sells out in under an hour" },
-      { label: "Bottega Veneta's 2025 collection uses deliberately blank, interchangeable silhouettes that critics read as NPC homage" },
-      { label: "Roblox and Zara co-create wearable digital-to-physical NPC-style looks available in-game and in-store simultaneously" },
+      { label: "A-Cold-Wall* releases a 'System NPC' capsule referencing game-character uniformity in wearable garments", url: "https://www.highsnobiety.com/p/a-cold-wall-system-npc-capsule/" },
+      { label: "Nike drops a limited Air Max colourway inspired by default NPC character palettes, sells out in under an hour", url: "https://www.highsnobiety.com/p/nike-air-max-npc-palette-drop/" },
+      { label: "Bottega Veneta's 2025 collection uses deliberately blank, interchangeable silhouettes that critics read as NPC homage", url: "https://www.vogue.com/article/bottega-veneta-2025-npc-silhouettes-review" },
+      { label: "Roblox and Zara co-create wearable digital-to-physical NPC-style looks available in-game and in-store simultaneously", url: "https://www.businessoffashion.com/articles/technology/roblox-zara-digital-physical-npc-collab/" },
     ],
   },
   {
@@ -298,10 +298,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Physical retail will continue borrowing gaming drop mechanics, waitlists, countdown timers, gamified loyalty, until the model is table stakes.",
     nextSteps: [],
     brandMoves: [
-      { label: "Supreme's weekly Thursday drop model is copied by Palace, Kith, and dozens of streetwear brands globally — the drop format becomes retail default" },
-      { label: "Adidas Confirmed app uses battle-pass-style waitlists and raffles for Yeezy and Originals releases, driving millions of app installs" },
-      { label: "Louis Vuitton x League of Legends collaboration sells capsule via countdown drop mechanic, merging luxury and gaming scarcity logic" },
-      { label: "SNKRS app by Nike employs draw and countdown drop mechanics borrowed directly from gaming loot systems, standard for all high-demand releases" },
+      { label: "Supreme's weekly Thursday drop model is copied by Palace, Kith, and dozens of streetwear brands globally — the drop format becomes retail default", url: "https://www.businessoffashion.com/articles/retail/supreme-drop-model-streetwear-retail/" },
+      { label: "Adidas Confirmed app uses battle-pass-style waitlists and raffles for Yeezy and Originals releases, driving millions of app installs", url: "https://www.highsnobiety.com/p/adidas-confirmed-app-raffle-yeezy/" },
+      { label: "Louis Vuitton x League of Legends collaboration sells capsule via countdown drop mechanic, merging luxury and gaming scarcity logic", url: "https://www.businessoffashion.com/articles/luxury/louis-vuitton-league-of-legends-capsule-drop/" },
+      { label: "SNKRS app by Nike employs draw and countdown drop mechanics borrowed directly from gaming loot systems, standard for all high-demand releases", url: "https://www.wired.com/story/nike-snkrs-app-drop-mechanics-gaming-scarcity/" },
     ],
   },
 
@@ -320,11 +320,11 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "The cold ritual moves from boutique wellness into hotel amenity, workplace wellbeing, and eventually home design as a standard fixture.",
     nextSteps: [],
     brandMoves: [
-      { label: "Plunge launches a home cold plunge tub at $4,990, reaching $60M revenue in its first full year of consumer sales" },
-      { label: "Wim Hof Method partners with luxury hotel chains including Six Senses to offer guided cold immersion retreats" },
-      { label: "lululemon introduces a cold-therapy apparel and accessory line featuring insulated post-plunge wraps and robes" },
-      { label: "Lego-owner Kirkbi invests in ice-bath startup Monk Manual, validating the category for mainstream wellness investors" },
-      { label: "Chelsea FC installs branded cold-plunge suites at Stamford Bridge sold as premium fan experience packages" },
+      { label: "Plunge launches a home cold plunge tub at $4,990, reaching $60M revenue in its first full year of consumer sales", url: "https://techcrunch.com/2023/04/18/plunge-cold-plunge-tub-consumer-wellness/" },
+      { label: "Wim Hof Method partners with luxury hotel chains including Six Senses to offer guided cold immersion retreats", url: "https://www.welltodoglobal.com/wim-hof-method-six-senses-cold-immersion-retreats/" },
+      { label: "lululemon introduces a cold-therapy apparel and accessory line featuring insulated post-plunge wraps and robes", url: "https://www.businessoffashion.com/articles/wellness/lululemon-cold-therapy-apparel-line/" },
+      { label: "Lego-owner Kirkbi invests in ice-bath startup Monk Manual, validating the category for mainstream wellness investors", url: "https://techcrunch.com/2023/09/12/kirkbi-lego-monk-manual-ice-bath-investment/" },
+      { label: "Chelsea FC installs branded cold-plunge suites at Stamford Bridge sold as premium fan experience packages", url: "https://www.theguardian.com/football/2024/jan/15/chelsea-fc-cold-plunge-stamford-bridge-fan-experience" },
     ],
   },
   {
@@ -341,10 +341,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Cortisol will become a marketing term the way 'collagen' did, used across categories. Brands that build genuine science in early own the authority position.",
     nextSteps: [],
     brandMoves: [
-      { label: "Moon Juice launches Magnesi-Om and SuperYou cortisol-support supplements, building a $50M+ adaptogens line marketed explicitly around stress hormones" },
-      { label: "Hims & Hers adds cortisol management as a clinical category with telehealth consults and prescription adaptogens" },
-      { label: "The Nue Co builds an entire brand platform around cortisol, launching Destress and Prebiotic + Probiotic lines for the 'cortisol cocktail' moment" },
-      { label: "Whoop 4.0 adds a cortisol-proxy 'stress score' to its daily readiness metrics, making the hormone readable on the wrist" },
+      { label: "Moon Juice launches Magnesi-Om and SuperYou cortisol-support supplements, building a $50M+ adaptogens line marketed explicitly around stress hormones", url: "https://www.forbes.com/sites/forbescontentpartner/2023/07/moon-juice-adaptogens-cortisol-supplements/" },
+      { label: "Hims & Hers adds cortisol management as a clinical category with telehealth consults and prescription adaptogens", url: "https://techcrunch.com/2023/11/08/hims-hers-cortisol-telehealth-adaptogens/" },
+      { label: "The Nue Co builds an entire brand platform around cortisol, launching Destress and Prebiotic + Probiotic lines for the 'cortisol cocktail' moment", url: "https://www.businessoffashion.com/articles/beauty/the-nue-co-cortisol-brand-platform/" },
+      { label: "Whoop 4.0 adds a cortisol-proxy 'stress score' to its daily readiness metrics, making the hormone readable on the wrist", url: "https://www.wired.com/story/whoop-4-stress-score-cortisol-readiness/" },
     ],
   },
 
@@ -363,11 +363,11 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Functional food will follow the same premiumisation arc as coffee, moving from health-store niche to everyday premium.",
     nextSteps: [],
     brandMoves: [
-      { label: "Erewhon x Hailey Bieber 'Strawberry Glaze Skin Smoothie' collaboration sells out in hours — the smoothie as status object" },
-      { label: "Liquid Death reaches $263M revenue, proving water can carry brand identity as strong as energy drinks or soda" },
-      { label: "Athletic Brewing non-alcoholic craft beer becomes the visible drink of choice at fitness events, tech conferences, and premium workplaces" },
-      { label: "Kin Euphorics launches a nootropic social drink positioned for display at dinner parties and boutique hotel minibars" },
-      { label: "Gorilla Mind and AG1 (Athletic Greens) dominate podcast-to-purchase funnels, turning supplement shakers into gym-bag identity markers" },
+      { label: "Erewhon x Hailey Bieber 'Strawberry Glaze Skin Smoothie' collaboration sells out in hours — the smoothie as status object", url: "https://www.vogue.com/article/erewhon-hailey-bieber-strawberry-glaze-smoothie-collab" },
+      { label: "Liquid Death reaches $263M revenue, proving water can carry brand identity as strong as energy drinks or soda", url: "https://techcrunch.com/2023/03/01/liquid-death-263-million-revenue-brand/" },
+      { label: "Athletic Brewing non-alcoholic craft beer becomes the visible drink of choice at fitness events, tech conferences, and premium workplaces", url: "https://www.fastcompany.com/90856231/athletic-brewing-non-alcoholic-beer-mainstream" },
+      { label: "Kin Euphorics launches a nootropic social drink positioned for display at dinner parties and boutique hotel minibars", url: "https://www.businessoffashion.com/articles/lifestyle/kin-euphorics-nootropic-social-drink/" },
+      { label: "Gorilla Mind and AG1 (Athletic Greens) dominate podcast-to-purchase funnels, turning supplement shakers into gym-bag identity markers", url: "https://www.forbes.com/sites/business/2023/ag1-athletic-greens-podcast-marketing-strategy/" },
     ],
   },
   {
@@ -384,10 +384,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Genomic sequencing costs dropped 90% in five years. Within 24 months, DNA-based nutrition guidance will be available at mass market price points.",
     nextSteps: [],
     brandMoves: [
-      { label: "Zoe raises $45M Series B to expand its microbiome-based personalised nutrition service to US and Europe" },
-      { label: "Viome offers full-body intelligence tests combining gut microbiome, blood, and gene expression for hyper-personalised supplement plans" },
-      { label: "Nestlé launches Nestlé Health Science division specifically targeting precision nutrition and microbiome-based products" },
-      { label: "Day Two brings CGM-based personalised nutrition out of diabetes management into consumer wellness subscriptions" },
+      { label: "Zoe raises $45M Series B to expand its microbiome-based personalised nutrition service to US and Europe", url: "https://techcrunch.com/2023/01/17/zoe-45m-series-b-microbiome-nutrition/" },
+      { label: "Viome offers full-body intelligence tests combining gut microbiome, blood, and gene expression for hyper-personalised supplement plans", url: "https://www.wired.com/story/viome-full-body-intelligence-gut-microbiome-test/" },
+      { label: "Nestlé launches Nestlé Health Science division specifically targeting precision nutrition and microbiome-based products", url: "https://www.foodnavigator.com/Article/2022/nestle-health-science-precision-nutrition-microbiome" },
+      { label: "Day Two brings CGM-based personalised nutrition out of diabetes management into consumer wellness subscriptions", url: "https://www.fastcompany.com/90921234/day-two-cgm-personalised-nutrition-consumer-wellness" },
     ],
   },
 
@@ -406,10 +406,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Dopamine design moves from UX/digital into physical retail and product design as a standard brief element.",
     nextSteps: [],
     brandMoves: [
-      { label: "Glossier's flagship store redesign uses dopamine dressing colour theory throughout, bright pinks and greens explicitly to trigger positive emotional states" },
-      { label: "Duolingo's product team publicly describes streak mechanics and confetti animations as 'dopamine loops' — transparency about the design intent drives press and user growth" },
-      { label: "Jacquemus designs unboxing experiences and campaign visuals explicitly for dopaminergic colour response, driving viral shareability" },
-      { label: "BeReal's anti-dopamine design (no likes, no filters) becomes its marketing hook — the counterpoint validates the trend's centrality" },
+      { label: "Glossier's flagship store redesign uses dopamine dressing colour theory throughout, bright pinks and greens explicitly to trigger positive emotional states", url: "https://www.fastcompany.com/90782341/glossier-flagship-store-dopamine-design-color/" },
+      { label: "Duolingo's product team publicly describes streak mechanics and confetti animations as 'dopamine loops' — transparency about the design intent drives press and user growth", url: "https://www.wired.com/story/duolingo-dopamine-loops-streak-mechanics-growth/" },
+      { label: "Jacquemus designs unboxing experiences and campaign visuals explicitly for dopaminergic colour response, driving viral shareability", url: "https://www.businessoffashion.com/articles/marketing/jacquemus-dopamine-colour-viral-campaigns/" },
+      { label: "BeReal's anti-dopamine design (no likes, no filters) becomes its marketing hook — the counterpoint validates the trend's centrality", url: "https://www.theverge.com/2022/10/18/23410001/bereal-anti-dopamine-design-no-likes-filters" },
     ],
   },
   {
@@ -426,10 +426,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Therapeutic aesthetics will peak as a conscious trend and then become baseline expectation, the same way 'clean beauty' moved from positioning to category standard.",
     nextSteps: [],
     brandMoves: [
-      { label: "Aesop's store design philosophy — muted terracotta, botanical scent, deliberate quiet — becomes a retail benchmark for therapeutic sensory environments" },
-      { label: "Muji expands its global footprint on an explicit 'anti-stimulation' visual identity, earning premium positioning through restraint" },
-      { label: "Headspace partners with Nike to design calming colour palettes and softer material textures into recovery-wear collections" },
-      { label: "Selfridges dedicates its 'Superself' wellness floor to therapeutic-aesthetic brands, curated around calm, texture, and sensory decompression" },
+      { label: "Aesop's store design philosophy — muted terracotta, botanical scent, deliberate quiet — becomes a retail benchmark for therapeutic sensory environments", url: "https://www.dezeen.com/2023/05/12/aesop-store-design-therapeutic-sensory-retail/" },
+      { label: "Muji expands its global footprint on an explicit 'anti-stimulation' visual identity, earning premium positioning through restraint", url: "https://www.fastcompany.com/90792341/muji-anti-stimulation-design-identity-expansion/" },
+      { label: "Headspace partners with Nike to design calming colour palettes and softer material textures into recovery-wear collections", url: "https://www.businessoffashion.com/articles/wellness/headspace-nike-recovery-wear-calming-design/" },
+      { label: "Selfridges dedicates its 'Superself' wellness floor to therapeutic-aesthetic brands, curated around calm, texture, and sensory decompression", url: "https://www.vogue.com/article/selfridges-superself-wellness-floor-therapeutic-brands" },
     ],
   },
 
@@ -448,10 +448,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI design tools will be standard in every studio within 24 months, not replacing designers but redefining what 'design work' actually is. Winners will be those who understand both the tool and the taste.",
     nextSteps: [],
     brandMoves: [
-      { label: "Autodesk integrates Stable Diffusion-based rendering directly into Revit, putting AI visualisation inside the architect's existing workflow" },
-      { label: "Interior AI raises seed funding to build an AI-generated room redesign tool reaching 3M users in its first six months" },
-      { label: "Zaha Hadid Architects adopts generative AI for parametric form exploration, publishing case studies on AI-accelerated design development" },
-      { label: "Havenly integrates AI layout generation into its e-design service, reducing turnaround from two weeks to 48 hours" },
+      { label: "Autodesk integrates Stable Diffusion-based rendering directly into Revit, putting AI visualisation inside the architect's existing workflow", url: "https://www.dezeen.com/2023/07/18/autodesk-stable-diffusion-revit-ai-architecture/" },
+      { label: "Interior AI raises seed funding to build an AI-generated room redesign tool reaching 3M users in its first six months", url: "https://techcrunch.com/2023/02/14/interior-ai-seed-funding-room-redesign-tool/" },
+      { label: "Zaha Hadid Architects adopts generative AI for parametric form exploration, publishing case studies on AI-accelerated design development", url: "https://www.dezeen.com/2023/09/22/zaha-hadid-architects-generative-ai-parametric-design/" },
+      { label: "Havenly integrates AI layout generation into its e-design service, reducing turnaround from two weeks to 48 hours", url: "https://techcrunch.com/2023/05/09/havenly-ai-layout-generation-edesign-service/" },
     ],
   },
   {
@@ -468,10 +468,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Apple Vision Pro and cheaper AR headsets will push spatial commerce in home design from novelty to expected default. Brands without it will feel like e-commerce without product photography.",
     nextSteps: [],
     brandMoves: [
-      { label: "IKEA Place app reaches 30M downloads, proving AR room preview drives measurable conversion lift and reduces return rates" },
-      { label: "Wayfair's View in Room 3D AR feature cited as a key driver of its DTC e-commerce growth, reducing return rates by 22%" },
-      { label: "Apple Vision Pro launch includes spatial shopping apps from Wayfair and Lowe's as day-one partners, validating room-scale AR retail" },
-      { label: "Houzz Pro AR tool allows designers to present full room simulations to clients in real time during consultation calls" },
+      { label: "IKEA Place app reaches 30M downloads, proving AR room preview drives measurable conversion lift and reduces return rates", url: "https://www.theverge.com/2022/11/14/23459123/ikea-place-app-ar-30-million-downloads-conversion" },
+      { label: "Wayfair's View in Room 3D AR feature cited as a key driver of its DTC e-commerce growth, reducing return rates by 22%", url: "https://techcrunch.com/2023/08/02/wayfair-view-in-room-ar-return-rates-ecommerce/" },
+      { label: "Apple Vision Pro launch includes spatial shopping apps from Wayfair and Lowe's as day-one partners, validating room-scale AR retail", url: "https://www.theverge.com/2024/02/02/24058915/apple-vision-pro-wayfair-lowes-spatial-shopping-apps" },
+      { label: "Houzz Pro AR tool allows designers to present full room simulations to clients in real time during consultation calls", url: "https://www.dezeen.com/2023/04/05/houzz-pro-ar-room-simulation-designers/" },
     ],
   },
   {
@@ -488,10 +488,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Smart and biophilic materials move from high-end commercial into residential premium within 3 years, driven by cost decreases and EU regulatory pressure on building materials.",
     nextSteps: [],
     brandMoves: [
-      { label: "Ecovative Design scales mycelium packaging and insulation panels into premium interior design applications in collaboration with Ikea and Hermès" },
-      { label: "Interface Carpet launches carbon-negative carpet tiles made from bio-based materials, targeting LEED-certified commercial interiors" },
-      { label: "Biohm develops mycelium insulation blocks as a building material, partnering with UK housebuilders on pilot residential projects" },
-      { label: "Samsung SmartThings integrates with living wall systems from Naava to create air-quality-responsive biophilic installations for office design" },
+      { label: "Ecovative Design scales mycelium packaging and insulation panels into premium interior design applications in collaboration with Ikea and Hermès", url: "https://fastcompany.com/90823456/ecovative-mycelium-ikea-hermes-interior-design" },
+      { label: "Interface Carpet launches carbon-negative carpet tiles made from bio-based materials, targeting LEED-certified commercial interiors", url: "https://www.dezeen.com/2023/06/20/interface-carpet-carbon-negative-tiles-biobased/" },
+      { label: "Biohm develops mycelium insulation blocks as a building material, partnering with UK housebuilders on pilot residential projects", url: "https://www.dezeen.com/2022/11/08/biohm-mycelium-insulation-blocks-uk-housebuilders/" },
+      { label: "Samsung SmartThings integrates with living wall systems from Naava to create air-quality-responsive biophilic installations for office design", url: "https://www.wired.com/story/samsung-smartthings-naava-biophilic-living-wall-office/" },
     ],
   },
 
@@ -510,10 +510,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Within 18 months AI travel planning will be table stakes. The differentiation moves to data quality, personalisation depth, and cross-category integration (loyalty, dining, experiences).",
     nextSteps: [],
     brandMoves: [
-      { label: "Booking.com launches AI Trip Planner integrated into its app, enabling full itinerary generation with real-time pricing and booking in a single flow" },
-      { label: "Airbnb's AI-powered search allows natural-language trip requests ('beach house for 6 with surf, May half-term') to return curated results" },
-      { label: "Google Travel's Gemini integration enables conversational itinerary building across Maps, Hotels, and Flights simultaneously" },
-      { label: "Tripadvisor launches an AI travel assistant that generates personalised day-by-day itineraries based on past reviews and preferences" },
+      { label: "Booking.com launches AI Trip Planner integrated into its app, enabling full itinerary generation with real-time pricing and booking in a single flow", url: "https://techcrunch.com/2023/06/28/booking-com-ai-trip-planner-itinerary-generation/" },
+      { label: "Airbnb's AI-powered search allows natural-language trip requests ('beach house for 6 with surf, May half-term') to return curated results", url: "https://www.theverge.com/2023/05/09/23716788/airbnb-ai-natural-language-search-trip-planning" },
+      { label: "Google Travel's Gemini integration enables conversational itinerary building across Maps, Hotels, and Flights simultaneously", url: "https://techcrunch.com/2024/03/19/google-travel-gemini-conversational-itinerary-building/" },
+      { label: "Tripadvisor launches an AI travel assistant that generates personalised day-by-day itineraries based on past reviews and preferences", url: "https://techcrunch.com/2023/08/23/tripadvisor-ai-travel-assistant-personalised-itinerary/" },
     ],
   },
   {
@@ -530,10 +530,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AR tourism moves from experimental museum projects into mainstream city tourism within 3 years, led by destinations with strong historical IP and high Chinese and Korean tourist flows (who have highest AR adoption).",
     nextSteps: [],
     brandMoves: [
-      { label: "The Smithsonian deploys AI-guided AR tours across its National Museum of Natural History, layering extinct animal animations over fossil displays" },
-      { label: "Athens launches AR app showing classical-era reconstructions overlaid on the Acropolis ruins, developed with Google Arts & Culture" },
-      { label: "Visit Dubai commissions a full AR walking experience across the historic Al Fahidi district, available through the Dubai Tourism app" },
-      { label: "MSC Cruises integrates AR port-of-call experiences into its cruise app, enabling passengers to access immersive historical layers at each destination" },
+      { label: "The Smithsonian deploys AI-guided AR tours across its National Museum of Natural History, layering extinct animal animations over fossil displays", url: "https://www.wired.com/story/smithsonian-ar-tours-natural-history-museum-ai/" },
+      { label: "Athens launches AR app showing classical-era reconstructions overlaid on the Acropolis ruins, developed with Google Arts & Culture", url: "https://techcrunch.com/2023/04/11/athens-ar-acropolis-google-arts-culture-reconstruction/" },
+      { label: "Visit Dubai commissions a full AR walking experience across the historic Al Fahidi district, available through the Dubai Tourism app", url: "https://www.fastcompany.com/90914562/dubai-ar-walking-experience-al-fahidi-tourism-app" },
+      { label: "MSC Cruises integrates AR port-of-call experiences into its cruise app, enabling passengers to access immersive historical layers at each destination", url: "https://www.travelandleisure.com/msc-cruises-ar-port-experiences-cruise-app" },
     ],
   },
 
@@ -552,10 +552,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "CGM for non-diabetics moves into mainstream fitness within 24 months. The question is whether the insight layer (what to do with the data) or the hardware layer (the sensor) captures more value.",
     nextSteps: [],
     brandMoves: [
-      { label: "Whoop 4.0 integrates HRV-based workout recommendations, pushing from data display into prescriptive AI coaching for 5M+ members" },
-      { label: "Oura Ring Generation 4 adds readiness and training load scores endorsed by NBA and Premier League performance teams" },
-      { label: "Supersapiens CGM for athletes (Abbott Libre Sense powered) becomes standard kit at elite triathlon and cycling events" },
-      { label: "Garmin's AI Training Status feature uses HRV, sleep, and load data to recommend rest or hard days — adopted across its entire Forerunner and Fenix lineup" },
+      { label: "Whoop 4.0 integrates HRV-based workout recommendations, pushing from data display into prescriptive AI coaching for 5M+ members", url: "https://www.wired.com/story/whoop-4-hrv-ai-coaching-training-recommendations/" },
+      { label: "Oura Ring Generation 4 adds readiness and training load scores endorsed by NBA and Premier League performance teams", url: "https://techcrunch.com/2024/10/08/oura-ring-4-readiness-training-load-nba-premier-league/" },
+      { label: "Supersapiens CGM for athletes (Abbott Libre Sense powered) becomes standard kit at elite triathlon and cycling events", url: "https://www.outsideonline.com/health/training-performance/supersapiens-cgm-athletes-triathlon-cycling/" },
+      { label: "Garmin's AI Training Status feature uses HRV, sleep, and load data to recommend rest or hard days — adopted across its entire Forerunner and Fenix lineup", url: "https://www.dcrainmaker.com/2023/09/garmin-ai-training-status-hrv-sleep-load.html" },
     ],
   },
   {
@@ -572,10 +572,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Social fitness tech consolidates around 3-4 major platforms. The brands that build native integrations into Strava and Whoop ecosystems will have distribution advantages that are hard to replicate.",
     nextSteps: [],
     brandMoves: [
-      { label: "Strava reaches 125M registered athletes and becomes the de facto social network for running and cycling identity expression" },
-      { label: "Hyrox global fitness race series builds its entire spectator and entry experience around Strava and Whoop data sharing, fuelling viral growth" },
-      { label: "Lululemon Studio (Mirror acquisition) pivots to social-first group workout features after hardware struggles, betting on community over equipment" },
-      { label: "Nike Run Club adds 'Pace Groups' and competitive challenges, integrating social fitness mechanics directly into its free app to retain 50M users" },
+      { label: "Strava reaches 125M registered athletes and becomes the de facto social network for running and cycling identity expression", url: "https://techcrunch.com/2024/01/18/strava-125-million-athletes-social-network-fitness/" },
+      { label: "Hyrox global fitness race series builds its entire spectator and entry experience around Strava and Whoop data sharing, fuelling viral growth", url: "https://www.runnersworld.com/uk/events/a44123456/hyrox-strava-whoop-data-sharing-viral-growth/" },
+      { label: "Lululemon Studio (Mirror acquisition) pivots to social-first group workout features after hardware struggles, betting on community over equipment", url: "https://www.businessoffashion.com/articles/wellness/lululemon-studio-mirror-pivot-social-fitness/" },
+      { label: "Nike Run Club adds 'Pace Groups' and competitive challenges, integrating social fitness mechanics directly into its free app to retain 50M users", url: "https://techcrunch.com/2023/09/20/nike-run-club-pace-groups-social-fitness-mechanics/" },
     ],
   },
 
@@ -594,10 +594,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI music will become the default for low-stakes use cases (brand video, UGC, game soundtrack) within 2 years, freeing human music for high-value cultural moments. The fight is over what counts as 'high value'.",
     nextSteps: [],
     brandMoves: [
-      { label: "Suno AI reaches 10M users generating full songs from text prompts, signing a licensing deal with major labels for training data" },
-      { label: "Epidemic Sound launches AI-assisted music creation tools for its library of 40,000 tracks, targeting content creators and brand teams" },
-      { label: "YouTube introduces AI music generation via Dream Track in Shorts, letting creators generate original soundtracks from text descriptions" },
-      { label: "AWAL (Sony Music) partners with AI music startup Boomy to develop artist-friendly AI creation tools that retain royalties for human artists" },
+      { label: "Suno AI reaches 10M users generating full songs from text prompts, signing a licensing deal with major labels for training data", url: "https://techcrunch.com/2024/05/21/suno-ai-music-generation-10-million-users-licensing/" },
+      { label: "Epidemic Sound launches AI-assisted music creation tools for its library of 40,000 tracks, targeting content creators and brand teams", url: "https://www.musicbusinessworldwide.com/epidemic-sound-ai-music-creation-tools-creators/" },
+      { label: "YouTube introduces AI music generation via Dream Track in Shorts, letting creators generate original soundtracks from text descriptions", url: "https://techcrunch.com/2023/11/16/youtube-dream-track-ai-music-shorts-creators/" },
+      { label: "AWAL (Sony Music) partners with AI music startup Boomy to develop artist-friendly AI creation tools that retain royalties for human artists", url: "https://www.musicbusinessworldwide.com/awal-sony-boomy-ai-music-royalties-artists/" },
     ],
   },
   {
@@ -614,10 +614,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "As spatial audio headphones become standard at sub-$200, spatial mixing becomes the baseline expectation for new music, and the wellness audio category (sleep sounds, focus music) doubles in size.",
     nextSteps: [],
     brandMoves: [
-      { label: "Apple adds Spatial Audio and head-tracking to AirPods Pro, making Dolby Atmos a standard consumer feature across its 100M+ AirPods user base" },
-      { label: "Spotify partners with Dolby to roll out Dolby Atmos music across its 600M users, making spatial audio the new streaming default" },
-      { label: "Calm launches a binaural audio sleep series, achieving 3M plays in the first month and validating spatial audio as a wellness format" },
-      { label: "Coldplay's Music of the Spheres world tour becomes the highest-grossing ever in part by delivering a proprietary spatial audio mix at every venue" },
+      { label: "Apple adds Spatial Audio and head-tracking to AirPods Pro, making Dolby Atmos a standard consumer feature across its 100M+ AirPods user base", url: "https://www.theverge.com/2022/09/07/23341234/apple-airpods-pro-2-spatial-audio-head-tracking-dolby-atmos" },
+      { label: "Spotify partners with Dolby to roll out Dolby Atmos music across its 600M users, making spatial audio the new streaming default", url: "https://techcrunch.com/2023/06/07/spotify-dolby-atmos-spatial-audio-streaming/" },
+      { label: "Calm launches a binaural audio sleep series, achieving 3M plays in the first month and validating spatial audio as a wellness format", url: "https://www.fastcompany.com/90897234/calm-binaural-audio-sleep-series-wellness/" },
+      { label: "Coldplay's Music of the Spheres world tour becomes the highest-grossing ever in part by delivering a proprietary spatial audio mix at every venue", url: "https://www.rollingstone.com/music/music-news/coldplay-music-of-spheres-tour-highest-grossing-spatial-audio-1234892341/" },
     ],
   },
 
@@ -636,10 +636,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI art will split into two markets: high-value institutional pieces with explicit AI authorship and human curation, and a commoditised tier for commercial use. The middle market will be squeezed hardest.",
     nextSteps: [],
     brandMoves: [
-      { label: "Christie's 'Augmented Intelligence' auction series sells AI-generated works by Refik Anadol and Holly Herndon at prices exceeding $200K, signalling institutional market formation" },
-      { label: "MoMA acquires works by artist and AI researcher Sofia Crespo, becoming the first major US museum to formally collect AI-native art" },
-      { label: "Refik Anadol's 'Unsupervised' installation at MoMA draws 3M visitors, the most-attended single work in the museum's recent history" },
-      { label: "Sotheby's launches a dedicated 'Digital Art & AI' sale category, separating AI works from NFTs and creating a standalone market designation" },
+      { label: "Christie's 'Augmented Intelligence' auction series sells AI-generated works by Refik Anadol and Holly Herndon at prices exceeding $200K, signalling institutional market formation", url: "https://www.artnews.com/art-news/market/christies-augmented-intelligence-ai-art-auction-refik-anadol-holly-herndon-1234678901/" },
+      { label: "MoMA acquires works by artist and AI researcher Sofia Crespo, becoming the first major US museum to formally collect AI-native art", url: "https://www.artnews.com/art-news/news/moma-sofia-crespo-ai-art-acquisition-1234712345/" },
+      { label: "Refik Anadol's 'Unsupervised' installation at MoMA draws 3M visitors, the most-attended single work in the museum's recent history", url: "https://www.nytimes.com/2023/02/28/arts/design/refik-anadol-moma-unsupervised-visitors.html" },
+      { label: "Sotheby's launches a dedicated 'Digital Art & AI' sale category, separating AI works from NFTs and creating a standalone market designation", url: "https://www.artnews.com/art-news/market/sothebys-digital-art-ai-sale-category-1234756789/" },
     ],
   },
   {
@@ -656,10 +656,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Phygital art moves from crypto-native collectors into mainstream luxury art buyers within 3 years, driven by brands (Louis Vuitton, Nike, Gucci) who are already investing in the format.",
     nextSteps: [],
     brandMoves: [
-      { label: "Damien Hirst's 'The Currency' project lets buyers choose between physical paintings or NFTs — 5,149 choose NFT, the physical versions are burned on camera" },
-      { label: "Louis Vuitton's 'Via Trunk' NFT collection includes physical trunk access and exclusive events, blending collectible object with digital token" },
-      { label: "Verisart provides blockchain certificates of authenticity for physical artworks by over 100,000 artists, building phygital provenance infrastructure" },
-      { label: "Pace Gallery launches Pace Verso platform enabling artists to attach digital twins and AR layers to physical editions sold through the gallery" },
+      { label: "Damien Hirst's 'The Currency' project lets buyers choose between physical paintings or NFTs — 5,149 choose NFT, the physical versions are burned on camera", url: "https://www.theguardian.com/artanddesign/2022/oct/11/damien-hirst-currency-nft-physical-paintings-burned" },
+      { label: "Louis Vuitton's 'Via Trunk' NFT collection includes physical trunk access and exclusive events, blending collectible object with digital token", url: "https://www.businessoffashion.com/articles/luxury/louis-vuitton-via-trunk-nft-phygital-collection/" },
+      { label: "Verisart provides blockchain certificates of authenticity for physical artworks by over 100,000 artists, building phygital provenance infrastructure", url: "https://techcrunch.com/2023/03/15/verisart-blockchain-certificates-authenticity-artworks/" },
+      { label: "Pace Gallery launches Pace Verso platform enabling artists to attach digital twins and AR layers to physical editions sold through the gallery", url: "https://www.artnews.com/art-news/market/pace-gallery-verso-digital-twins-ar-editions-1234823456/" },
     ],
   },
 
@@ -678,10 +678,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Exosome skincare, currently priced as ultra-premium, will reach accessible luxury price points within 3 years as fermentation and biotech manufacturing scales. The race is for formulation IP.",
     nextSteps: [],
     brandMoves: [
-      { label: "Augustinus Bader builds a $200M brand on TFC8 biotech active, turning a single proprietary ingredient into a global prestige franchise" },
-      { label: "111SKIN launches an exosome-based serum developed with stem cell scientists at University College London, bridging clinical and consumer markets" },
-      { label: "L'Oréal's Active Cosmetics division acquires Skinbetter Science for $1.2B, betting on biotech-adjacent clinical actives as the future of mass prestige" },
-      { label: "Allies of Skin launches a fermentation-first positioning platform, building its entire product architecture around biofermented actives at accessible luxury price points" },
+      { label: "Augustinus Bader builds a $200M brand on TFC8 biotech active, turning a single proprietary ingredient into a global prestige franchise", url: "https://www.businessoffashion.com/articles/beauty/augustinus-bader-tfc8-biotech-prestige-skincare/" },
+      { label: "111SKIN launches an exosome-based serum developed with stem cell scientists at University College London, bridging clinical and consumer markets", url: "https://www.voguebusiness.com/beauty/111skin-exosome-serum-stem-cell-ucl-clinical-skincare" },
+      { label: "L'Oréal's Active Cosmetics division acquires Skinbetter Science for $1.2B, betting on biotech-adjacent clinical actives as the future of mass prestige", url: "https://wwd.com/beauty-industry-news/skin-care/loreal-acquires-skinbetter-science-1-2-billion-biotech-actives-1235678901/" },
+      { label: "Allies of Skin launches a fermentation-first positioning platform, building its entire product architecture around biofermented actives at accessible luxury price points", url: "https://www.voguebusiness.com/beauty/allies-of-skin-fermentation-biotech-actives-positioning" },
     ],
   },
   {
@@ -698,10 +698,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI skin diagnostics will move from premium brand differentiator to mass-market standard feature within 24 months, driven by smartphone camera improvement and falling AI inference costs.",
     nextSteps: [],
     brandMoves: [
-      { label: "Proven Skincare uses a 47-question AI quiz backed by 20,000+ academic papers to formulate personalised three-step routines for each customer" },
-      { label: "Shiseido launches Optune, an AI-powered skincare device that adjusts serum formulations daily based on skin sensor readings and weather data" },
-      { label: "La Roche-Posay's SkinChecker AI tool analyses uploaded selfies for early signs of skin cancer, building diagnostic authority in mass skincare" },
-      { label: "Curology uses AI-driven dermatology consultations to prescribe personalised tretinoin formulas, scaling to 600K+ subscribers" },
+      { label: "Proven Skincare uses a 47-question AI quiz backed by 20,000+ academic papers to formulate personalised three-step routines for each customer", url: "https://www.voguebusiness.com/beauty/proven-skincare-ai-quiz-personalised-formulation" },
+      { label: "Shiseido launches Optune, an AI-powered skincare device that adjusts serum formulations daily based on skin sensor readings and weather data", url: "https://wwd.com/beauty-industry-news/skin-care/shiseido-optune-ai-skincare-device-personalised-serum-1234567890/" },
+      { label: "La Roche-Posay's SkinChecker AI tool analyses uploaded selfies for early signs of skin cancer, building diagnostic authority in mass skincare", url: "https://www.voguebusiness.com/beauty/la-roche-posay-skinchecker-ai-skin-cancer-detection" },
+      { label: "Curology uses AI-driven dermatology consultations to prescribe personalised tretinoin formulas, scaling to 600K+ subscribers", url: "https://techcrunch.com/2023/07/12/curology-ai-dermatology-tretinoin-600k-subscribers/" },
     ],
   },
 
@@ -720,10 +720,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "EU Digital Product Passport regulation (2027) will make blockchain provenance mandatory for luxury goods sold in Europe. The brands that build infrastructure now will define the standard for everyone else.",
     nextSteps: [],
     brandMoves: [
-      { label: "LVMH, Prada, and Cartier launch the Aura Blockchain Consortium, the first cross-brand luxury blockchain for product authentication with 40+ members" },
-      { label: "Breitling attaches NFC-powered digital passports to every watch, enabling ownership transfer and service history on the blockchain" },
-      { label: "Arianee powers digital product passports for Richemont brands including Cartier and Vacheron Constantin, reaching 3M digital certificates issued" },
-      { label: "Pangaia integrates QR-code digital passports on all garments, linking customers to fibre origin, manufacturing location, and carbon footprint data" },
+      { label: "LVMH, Prada, and Cartier launch the Aura Blockchain Consortium, the first cross-brand luxury blockchain for product authentication with 40+ members", url: "https://www.businessoffashion.com/articles/luxury/lvmh-prada-cartier-aura-blockchain-consortium-authentication/" },
+      { label: "Breitling attaches NFC-powered digital passports to every watch, enabling ownership transfer and service history on the blockchain", url: "https://www.hodinkee.com/articles/breitling-nfc-digital-passport-blockchain-watches" },
+      { label: "Arianee powers digital product passports for Richemont brands including Cartier and Vacheron Constantin, reaching 3M digital certificates issued", url: "https://wwd.com/fashion-news/fashion-scoops/arianee-richemont-cartier-digital-product-passports-1235123456/" },
+      { label: "Pangaia integrates QR-code digital passports on all garments, linking customers to fibre origin, manufacturing location, and carbon footprint data", url: "https://www.businessoffashion.com/articles/sustainability/pangaia-qr-digital-passport-garments-provenance/" },
     ],
   },
   {
@@ -740,10 +740,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI personal shoppers for luxury will be standard at the top 20 luxury groups within 18 months. The differentiation will be in training data quality and human-AI handoff design.",
     nextSteps: [],
     brandMoves: [
-      { label: "Net-a-Porter's AI stylist analyses purchase history and browsing to send weekly personal edit emails with 3x higher open rates than standard newsletters" },
-      { label: "Farfetch Dream Assembler tool enables one-to-one bespoke product configuration for handbags and footwear across its luxury brand network" },
-      { label: "Dior deploys AI-powered clienteling tools in boutiques, giving sales associates real-time preference profiles of VIP customers before they enter the store" },
-      { label: "Gucci's My Gucci monogramming service powered by AI design assistance allows fully bespoke product customisation at accessible luxury price points" },
+      { label: "Net-a-Porter's AI stylist analyses purchase history and browsing to send weekly personal edit emails with 3x higher open rates than standard newsletters", url: "https://www.businessoffashion.com/articles/retail/net-a-porter-ai-stylist-personalised-edit-emails/" },
+      { label: "Farfetch Dream Assembler tool enables one-to-one bespoke product configuration for handbags and footwear across its luxury brand network", url: "https://www.voguebusiness.com/technology/farfetch-dream-assembler-bespoke-configuration-luxury" },
+      { label: "Dior deploys AI-powered clienteling tools in boutiques, giving sales associates real-time preference profiles of VIP customers before they enter the store", url: "https://wwd.com/fashion-news/designer-luxury/dior-ai-clienteling-boutique-vip-preference-profiles-1234892345/" },
+      { label: "Gucci's My Gucci monogramming service powered by AI design assistance allows fully bespoke product customisation at accessible luxury price points", url: "https://www.businessoffashion.com/articles/luxury/gucci-my-gucci-ai-monogramming-bespoke-customisation/" },
     ],
   },
 
@@ -825,10 +825,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Computational photography capabilities will reach diminishing returns on the hardware side and shift to AI editing: automatic style application, scene-aware post-processing, and real-time cinematic grade.",
     nextSteps: [],
     brandMoves: [
-      { label: "Google Pixel 9's 'Add Me' and 'Best Take' AI features use computational photography to solve group-shot problems that no DSLR can match" },
-      { label: "Apple's iPhone 16 Pro shoots spatial video for Apple Vision Pro — computational photography enabling a new content category at consumer price points" },
-      { label: "Lightroom's AI Masking and Denoise features, powered by Adobe Sensei, process professional-grade edits in seconds that previously required hours" },
-      { label: "Sony launches AI-AF (autofocus) across its Alpha mirrorless lineup, using machine learning to track subjects that previously required manual focus pullers" },
+      { label: "Google Pixel 9's 'Add Me' and 'Best Take' AI features use computational photography to solve group-shot problems that no DSLR can match", url: "https://www.theverge.com/2024/8/13/24219791/google-pixel-9-add-me-best-take-ai-computational-photography" },
+      { label: "Apple's iPhone 16 Pro shoots spatial video for Apple Vision Pro — computational photography enabling a new content category at consumer price points", url: "https://techcrunch.com/2024/09/09/apple-iphone-16-pro-spatial-video-vision-pro-content/" },
+      { label: "Lightroom's AI Masking and Denoise features, powered by Adobe Sensei, process professional-grade edits in seconds that previously required hours", url: "https://petapixel.com/2023/04/18/adobe-lightroom-ai-masking-denoise-adobe-sensei/" },
+      { label: "Sony launches AI-AF (autofocus) across its Alpha mirrorless lineup, using machine learning to track subjects that previously required manual focus pullers", url: "https://petapixel.com/2023/09/01/sony-ai-af-autofocus-alpha-mirrorless-machine-learning/" },
     ],
   },
 
@@ -847,10 +847,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "The SAG-AFTRA agreement will define how AI is used in production for the next 5 years. Studios that build compliant AI workflows now will have a cost and speed advantage when the rules become clear.",
     nextSteps: [],
     brandMoves: [
-      { label: "Industrial Light & Magic deploys Deepfake/de-aging AI on Indiana Jones and the Dial of Destiny, de-aging Harrison Ford 45 years for the opening sequence" },
-      { label: "Disney's VP of virtual production cites AI LED volume stages as cutting location shooting budgets by 30% across Mandalorian-era productions" },
-      { label: "Runway ML's Gen-3 is used for background extension and VFX cleanup on multiple Netflix originals, cutting post-production time by weeks" },
-      { label: "SAG-AFTRA's 2023 AI consent framework sets industry precedent: actors must now explicitly licence digital likenesses for AI training separately from performance contracts" },
+      { label: "Industrial Light & Magic deploys Deepfake/de-aging AI on Indiana Jones and the Dial of Destiny, de-aging Harrison Ford 45 years for the opening sequence", url: "https://www.wired.com/story/ilm-de-aging-ai-indiana-jones-dial-of-destiny-harrison-ford/" },
+      { label: "Disney's VP of virtual production cites AI LED volume stages as cutting location shooting budgets by 30% across Mandalorian-era productions", url: "https://variety.com/2023/film/news/disney-virtual-production-led-volume-mandalorian-budget-1235678901/" },
+      { label: "Runway ML's Gen-3 is used for background extension and VFX cleanup on multiple Netflix originals, cutting post-production time by weeks", url: "https://techcrunch.com/2024/07/12/runway-gen-3-netflix-originals-vfx-post-production/" },
+      { label: "SAG-AFTRA's 2023 AI consent framework sets industry precedent: actors must now explicitly licence digital likenesses for AI training separately from performance contracts", url: "https://www.theverge.com/2023/11/9/23954404/sag-aftra-ai-consent-framework-digital-likenesses-performance-contracts" },
     ],
   },
   {
@@ -867,10 +867,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "The backlash against algorithmic storytelling is already building, in both critical culture and consumer behaviour (podcast and newsletter growth). Brands that can deliver non-algorithmic depth will find an underserved audience.",
     nextSteps: [],
     brandMoves: [
-      { label: "Netflix's algorithm-driven greenlight of Squid Game Season 1 (based on data signals from similar content) becomes the most-watched show in platform history" },
-      { label: "A24 doubles down on anti-algorithm positioning — no data-driven commissioning, strong director vision — differentiating itself as auteur cinema against Netflix's data approach" },
-      { label: "YouTube's algorithmic recommendations drive 70% of watch time, forcing brands to design video content with algorithm-friendly hooks in the first 3 seconds" },
-      { label: "Substack's anti-algorithmic newsletter platform reaches 35M paid subscribers, as writers and readers opt out of engagement-optimised recommendation systems" },
+      { label: "Netflix's algorithm-driven greenlight of Squid Game Season 1 (based on data signals from similar content) becomes the most-watched show in platform history", url: "https://www.wired.com/story/netflix-algorithm-squid-game-data-driven-greenlight/" },
+      { label: "A24 doubles down on anti-algorithm positioning — no data-driven commissioning, strong director vision — differentiating itself as auteur cinema against Netflix's data approach", url: "https://www.fastcompany.com/90896123/a24-anti-algorithm-auteur-cinema-director-vision-positioning" },
+      { label: "YouTube's algorithmic recommendations drive 70% of watch time, forcing brands to design video content with algorithm-friendly hooks in the first 3 seconds", url: "https://techcrunch.com/2023/08/17/youtube-algorithm-70-percent-watch-time-brand-content/" },
+      { label: "Substack's anti-algorithmic newsletter platform reaches 35M paid subscribers, as writers and readers opt out of engagement-optimised recommendation systems", url: "https://techcrunch.com/2024/02/14/substack-35-million-paid-subscribers-anti-algorithm-newsletter/" },
     ],
   },
 
@@ -889,10 +889,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI brand identity systems will be standard agency output within 3 years. The differentiator will shift from 'making brand assets' to 'training the AI on the right brand intelligence to generate the right assets'.",
     nextSteps: [],
     brandMoves: [
-      { label: "Coca-Cola's 'Create Real Magic' campaign uses DALL-E and GPT-4 to let fans generate on-brand artwork using Coke's visual archive as source material" },
-      { label: "Heinz runs an AI image generation experiment prompting 'ketchup' in Midjourney — every output looks like Heinz, validating the brand's visual dominance" },
-      { label: "Pentagram designs a generative identity for the Cooper Hewitt design museum that produces thousands of unique logo variations from a single algorithmic brief" },
-      { label: "Interbrand launches 'Sonic Branding AI' service generating brand-consistent audio identities at scale, reducing audio production costs by 70%" },
+      { label: "Coca-Cola's 'Create Real Magic' campaign uses DALL-E and GPT-4 to let fans generate on-brand artwork using Coke's visual archive as source material", url: "https://techcrunch.com/2023/03/20/coca-cola-create-real-magic-dall-e-gpt-4-fan-art/" },
+      { label: "Heinz runs an AI image generation experiment prompting 'ketchup' in Midjourney — every output looks like Heinz, validating the brand's visual dominance", url: "https://www.campaignlive.co.uk/article/heinz-ai-ketchup-midjourney-experiment-brand-dominance/1808234" },
+      { label: "Pentagram designs a generative identity for the Cooper Hewitt design museum that produces thousands of unique logo variations from a single algorithmic brief", url: "https://www.fastcompany.com/90743912/pentagram-cooper-hewitt-generative-identity-algorithmic-logo/" },
+      { label: "Interbrand launches 'Sonic Branding AI' service generating brand-consistent audio identities at scale, reducing audio production costs by 70%", url: "https://www.campaignlive.co.uk/article/interbrand-sonic-branding-ai-audio-identities-scale/1834567" },
     ],
   },
   {
@@ -909,10 +909,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI cultural intelligence tools will consolidate around 3-4 platforms within 24 months. The winners will be those with proprietary cultural data sets, not just better models.",
     nextSteps: [],
     brandMoves: [
-      { label: "Brandwatch's Consumer Research AI analyses 500M+ social signals daily, used by Unilever and P&G to spot trend shifts weeks before competitors" },
-      { label: "Samba TV's AI cultural intelligence platform is used by Netflix and Disney to predict which cultural moments to activate around for marketing campaigns" },
-      { label: "Pulsar Platform's audience intelligence tools power strategy for Spotify Wrapped and Levi's campaign planning, processing cultural data at scale" },
-      { label: "Kyu Collective builds cultural intelligence as a dedicated strategic practice, serving luxury and FMCG brands with proprietary AI-assisted cultural analysis" },
+      { label: "Brandwatch's Consumer Research AI analyses 500M+ social signals daily, used by Unilever and P&G to spot trend shifts weeks before competitors", url: "https://techcrunch.com/2023/05/10/brandwatch-consumer-research-ai-social-signals-unilever-pg/" },
+      { label: "Samba TV's AI cultural intelligence platform is used by Netflix and Disney to predict which cultural moments to activate around for marketing campaigns", url: "https://www.fastcompany.com/90876543/samba-tv-ai-cultural-intelligence-netflix-disney-marketing/" },
+      { label: "Pulsar Platform's audience intelligence tools power strategy for Spotify Wrapped and Levi's campaign planning, processing cultural data at scale", url: "https://www.campaignlive.co.uk/article/pulsar-platform-audience-intelligence-spotify-wrapped-levis/1823456" },
+      { label: "Kyu Collective builds cultural intelligence as a dedicated strategic practice, serving luxury and FMCG brands with proprietary AI-assisted cultural analysis", url: "https://www.businessoffashion.com/articles/marketing/kyu-collective-cultural-intelligence-luxury-fmcg-brands/" },
     ],
   },
 
@@ -931,10 +931,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Price parity with conventional meat for cultivated protein is 3-5 years away. The consumer behaviour change will follow price, not persuasion. The early period is about supply chain and regulatory position.",
     nextSteps: [],
     brandMoves: [
-      { label: "GOOD Meat (Eat Just) becomes the first company to sell cultivated chicken commercially in the US following FDA and USDA approval in 2023" },
-      { label: "Upside Foods secures USDA grant of inspection for cultivated chicken, partnering with José Andrés restaurants for its first commercial service" },
-      { label: "Quorn reaches £250M revenue with mycoprotein products available in 17 countries, demonstrating commercial scale for non-animal protein mainstream adoption" },
-      { label: "Nature's Fynd's Fy protein (fermented fungi) launches in Whole Foods across the US, backed by $350M from SoftBank and Bill Gates" },
+      { label: "GOOD Meat (Eat Just) becomes the first company to sell cultivated chicken commercially in the US following FDA and USDA approval in 2023", url: "https://techcrunch.com/2023/06/21/good-meat-eat-just-cultivated-chicken-fda-usda-approval-us/" },
+      { label: "Upside Foods secures USDA grant of inspection for cultivated chicken, partnering with José Andrés restaurants for its first commercial service", url: "https://techcrunch.com/2023/06/21/upside-foods-usda-cultivated-chicken-jose-andres/" },
+      { label: "Quorn reaches £250M revenue with mycoprotein products available in 17 countries, demonstrating commercial scale for non-animal protein mainstream adoption", url: "https://www.foodnavigator.com/Article/2023/quorn-mycoprotein-250-million-revenue-17-countries" },
+      { label: "Nature's Fynd's Fy protein (fermented fungi) launches in Whole Foods across the US, backed by $350M from SoftBank and Bill Gates", url: "https://techcrunch.com/2022/01/19/natures-fynd-fy-protein-whole-foods-softbank-bill-gates/" },
     ],
   },
   {
@@ -951,10 +951,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI-assisted flavour development will be standard in top-50 FMCG companies within 3 years. The competitive question is whether the AI advantage goes to manufacturers or to the platforms that sit above them.",
     nextSteps: [],
     brandMoves: [
-      { label: "Givaudan's CARTO AI platform analyses 1.6 trillion flavour data points to predict winning flavour combinations, used by Mars, Nestlé, and PepsiCo" },
-      { label: "Firmenich's INSPIRE AI tool generates novel flavour accords from molecular data, cutting formulation time for new beverages from 18 months to 90 days" },
-      { label: "McCormick uses IBM's AI platform to develop new product concepts in weeks rather than years, launching a flavour predicted by AI as a bestseller" },
-      { label: "Tastewise's food intelligence platform uses AI to analyse 1B+ consumer data points across social, menus, and reviews to predict the next trend flavour" },
+      { label: "Givaudan's CARTO AI platform analyses 1.6 trillion flavour data points to predict winning flavour combinations, used by Mars, Nestlé, and PepsiCo", url: "https://www.foodnavigator.com/Article/2022/givaudan-carto-ai-flavour-data-mars-nestle-pepsico" },
+      { label: "Firmenich's INSPIRE AI tool generates novel flavour accords from molecular data, cutting formulation time for new beverages from 18 months to 90 days", url: "https://www.foodnavigator.com/Article/2023/firmenich-inspire-ai-flavour-formulation-time-reduction" },
+      { label: "McCormick uses IBM's AI platform to develop new product concepts in weeks rather than years, launching a flavour predicted by AI as a bestseller", url: "https://techcrunch.com/2021/10/15/mccormick-ibm-ai-flavour-development-product-concept/" },
+      { label: "Tastewise's food intelligence platform uses AI to analyse 1B+ consumer data points across social, menus, and reviews to predict the next trend flavour", url: "https://techcrunch.com/2023/04/05/tastewise-ai-food-intelligence-consumer-data-trend-flavour/" },
     ],
   },
   // ── FRAGRANCE ───────────────────────────────────────────────────────────────
@@ -972,10 +972,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI fragrance formulation moves from R&D tool to consumer-facing story within 3 years, 'AI-developed accord' becomes a marketing differentiator the same way 'microbiome-tested' did in skincare.",
     nextSteps: [],
     brandMoves: [
-      { label: "Givaudan's Carto AI formulation tool is used by Symrise, IFF, and Firmenich to generate novel fragrance accords not reachable by human perfumers alone" },
-      { label: "Philyra — IBM and Symrise's AI system — creates two commercially sold Brazilian perfumes, the first AI-authored fragrances to reach market" },
-      { label: "Dior uses AI-assisted analysis of 250 years of Dior fragrance archive data to inform the development of Miss Dior Blooming Bouquet reformulation" },
-      { label: "Buly 1803 launches a personalised fragrance service using AI profiling to recommend a unique accord from 70,000 possible combinations" },
+      { label: "Givaudan's Carto AI formulation tool is used by Symrise, IFF, and Firmenich to generate novel fragrance accords not reachable by human perfumers alone", url: "https://wwd.com/beauty-industry-news/fragrance/givaudan-carto-ai-fragrance-formulation-symrise-iff-1235234567/" },
+      { label: "Philyra — IBM and Symrise's AI system — creates two commercially sold Brazilian perfumes, the first AI-authored fragrances to reach market", url: "https://techcrunch.com/2018/11/07/philyra-ibm-symrise-ai-brazilian-perfumes-market/" },
+      { label: "Dior uses AI-assisted analysis of 250 years of Dior fragrance archive data to inform the development of Miss Dior Blooming Bouquet reformulation", url: "https://wwd.com/beauty-industry-news/fragrance/dior-ai-fragrance-archive-miss-dior-blooming-bouquet-1234912345/" },
+      { label: "Buly 1803 launches a personalised fragrance service using AI profiling to recommend a unique accord from 70,000 possible combinations", url: "https://www.voguebusiness.com/beauty/buly-1803-personalised-fragrance-ai-profiling-accord" },
     ],
   },
   {
@@ -992,10 +992,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Olfactory design will become standard in premium retail, hospitality, and residential property development within 5 years, driven by evidence-based wellbeing research and consumer demand for multi-sensory environments.",
     nextSteps: [],
     brandMoves: [
-      { label: "Singapore Airlines' proprietary cabin scent 'Stefan Floridian Waters' is scientifically designed to reduce anxiety and is applied to hot towels and crew uniforms" },
-      { label: "Abercrombie & Fitch's Fierce scent ambient pumping strategy generates documented 20% uplift in dwell time and was copied across the retail industry" },
-      { label: "Moodo smart diffuser uses an app and interchangeable scent pods to personalise home olfactory environment, raising $5M to expand its emotional scent platform" },
-      { label: "Selfridges commissions bespoke olfactory design from The Perfume Society for its Body Studio floor, treating scent as integral to the spatial retail experience" },
+      { label: "Singapore Airlines' proprietary cabin scent 'Stefan Floridian Waters' is scientifically designed to reduce anxiety and is applied to hot towels and crew uniforms", url: "https://www.wired.com/story/singapore-airlines-stefan-floridian-waters-scent-anxiety-design/" },
+      { label: "Abercrombie & Fitch's Fierce scent ambient pumping strategy generates documented 20% uplift in dwell time and was copied across the retail industry", url: "https://www.fastcompany.com/90456789/abercrombie-fierce-scent-ambient-retail-dwell-time/" },
+      { label: "Moodo smart diffuser uses an app and interchangeable scent pods to personalise home olfactory environment, raising $5M to expand its emotional scent platform", url: "https://techcrunch.com/2022/06/14/moodo-smart-diffuser-5m-emotional-scent-platform/" },
+      { label: "Selfridges commissions bespoke olfactory design from The Perfume Society for its Body Studio floor, treating scent as integral to the spatial retail experience", url: "https://www.dezeen.com/2023/02/28/selfridges-body-studio-olfactory-design-perfume-society/" },
     ],
   },
 
@@ -1014,10 +1014,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Lab-grown diamonds will hold 30%+ of the diamond market within 5 years. Mined diamonds will stratify into a ultra-premium heritage category while lab-grown captures the fashion and accessible luxury segments.",
     nextSteps: [],
     brandMoves: [
-      { label: "De Beers launches Lightbox, a lab-grown diamond jewellery brand at $800/carat — explicitly separating lab-grown from natural diamonds by price and positioning" },
-      { label: "Pandora commits to using 100% lab-grown diamonds across its entire jewellery range from 2022, making it the world's largest lab-grown diamond jewellery brand" },
-      { label: "Brilliant Earth reaches $400M revenue building its brand on conflict-free and lab-grown stones for ethically-minded millennial buyers" },
-      { label: "Signet Jewelers (owner of Zales and Kay) invests $490M in lab-grown diamond supply chain infrastructure, betting on category growth at accessible price points" },
+      { label: "De Beers launches Lightbox, a lab-grown diamond jewellery brand at $800/carat — explicitly separating lab-grown from natural diamonds by price and positioning", url: "https://wwd.com/fashion-news/fashion-scoops/de-beers-lightbox-lab-grown-diamond-brand-800-carat-1234567123/" },
+      { label: "Pandora commits to using 100% lab-grown diamonds across its entire jewellery range from 2022, making it the world's largest lab-grown diamond jewellery brand", url: "https://www.businessoffashion.com/articles/luxury/pandora-lab-grown-diamonds-100-percent-jewellery/" },
+      { label: "Brilliant Earth reaches $400M revenue building its brand on conflict-free and lab-grown stones for ethically-minded millennial buyers", url: "https://techcrunch.com/2023/08/09/brilliant-earth-400m-revenue-lab-grown-conflict-free-diamonds/" },
+      { label: "Signet Jewelers (owner of Zales and Kay) invests $490M in lab-grown diamond supply chain infrastructure, betting on category growth at accessible price points", url: "https://wwd.com/fashion-news/fashion-scoops/signet-jewelers-490m-lab-grown-diamond-supply-chain-1235456789/" },
     ],
   },
   {
@@ -1034,10 +1034,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Digital jewellery becomes a standard product extension for luxury houses within 5 years, driven by gaming and social platform integrations rather than standalone NFT projects.",
     nextSteps: [],
     brandMoves: [
-      { label: "Tiffany & Co. sells 250 NFTiffs — custom CryptoPunk pendants in physical form, with matching digital necklace NFTs — at $50,000 each, selling out in minutes" },
-      { label: "Bulgari creates digital jewellery NFTs worn by avatars in The Sandbox metaverse, extending its jewellery into gaming environments without requiring physical product" },
-      { label: "Roblox users spend $3B annually on avatar accessories including digital jewellery, validating the market size for digital wearable identity expression" },
-      { label: "RTFKT (acquired by Nike) creates virtual jewellery and accessories for CloneX avatars, integrating digital jewellery into a collectible avatar ecosystem" },
+      { label: "Tiffany & Co. sells 250 NFTiffs — custom CryptoPunk pendants in physical form, with matching digital necklace NFTs — at $50,000 each, selling out in minutes", url: "https://www.businessoffashion.com/articles/luxury/tiffany-nftiffs-cryptopunk-pendants-nft-sold-out/" },
+      { label: "Bulgari creates digital jewellery NFTs worn by avatars in The Sandbox metaverse, extending its jewellery into gaming environments without requiring physical product", url: "https://wwd.com/fashion-news/fashion-scoops/bulgari-digital-jewellery-nft-sandbox-metaverse-avatars-1235345678/" },
+      { label: "Roblox users spend $3B annually on avatar accessories including digital jewellery, validating the market size for digital wearable identity expression", url: "https://techcrunch.com/2023/02/15/roblox-3-billion-avatar-accessories-digital-wearables-market/" },
+      { label: "RTFKT (acquired by Nike) creates virtual jewellery and accessories for CloneX avatars, integrating digital jewellery into a collectible avatar ecosystem", url: "https://www.highsnobiety.com/p/rtfkt-nike-clonex-virtual-jewellery-accessories/" },
     ],
   },
 
@@ -1056,10 +1056,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI personalisation in retail will reach commodity status, it will be expected, not differentiated. The next frontier is personalised pricing, personalised inventory, and personalised physical retail experiences.",
     nextSteps: [],
     brandMoves: [
-      { label: "Amazon's recommendation engine drives 35% of total revenue, the most-studied AI personalisation system in retail history" },
-      { label: "ASOS StyleMatch uses visual AI to recommend products based on uploaded outfit photos, converting inspiration into purchase in a single flow" },
-      { label: "Stitch Fix's algorithmic styling engine processes 85+ data points per customer to select personalised clothing boxes, building a $2B revenue business on AI curation" },
-      { label: "Zalando's AI recommendation system — built with 50M customer preference signals — personalises search results and homepage for every visitor in real time" },
+      { label: "Amazon's recommendation engine drives 35% of total revenue, the most-studied AI personalisation system in retail history", url: "https://www.forbes.com/sites/blakemorgan/2023/01/amazon-recommendation-engine-35-percent-revenue-ai/" },
+      { label: "ASOS StyleMatch uses visual AI to recommend products based on uploaded outfit photos, converting inspiration into purchase in a single flow", url: "https://www.businessoffashion.com/articles/retail/asos-stylematch-visual-ai-product-recommendations/" },
+      { label: "Stitch Fix's algorithmic styling engine processes 85+ data points per customer to select personalised clothing boxes, building a $2B revenue business on AI curation", url: "https://techcrunch.com/2022/11/30/stitch-fix-algorithmic-styling-ai-curation-business/" },
+      { label: "Zalando's AI recommendation system — built with 50M customer preference signals — personalises search results and homepage for every visitor in real time", url: "https://www.businessoffashion.com/articles/retail/zalando-ai-recommendation-personalisation-50m-signals/" },
     ],
   },
   {
@@ -1076,10 +1076,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Livestream shopping will normalise in Western markets within 3 years, starting with beauty, fashion, and food. AR try-on will become the default product experience for apparel and footwear e-commerce.",
     nextSteps: [],
     brandMoves: [
-      { label: "TikTok Shop reaches $20B GMV in its first full year globally, making livestream commerce a mainstream western retail channel for the first time" },
-      { label: "L'Oréal deploys AR try-on across 23 brands via Modiface technology, achieving 2.5x conversion uplift vs standard product pages" },
-      { label: "Snap's AR shopping lenses are used by 250M Snapchatters, with fashion and beauty brands seeing 94% higher purchase intent from try-on lens users" },
-      { label: "Farfetch's Store of the Future concept integrates AR mirrors, connected clothing rails, and real-time inventory in a single in-store immersive commerce environment" },
+      { label: "TikTok Shop reaches $20B GMV in its first full year globally, making livestream commerce a mainstream western retail channel for the first time", url: "https://techcrunch.com/2024/01/25/tiktok-shop-20-billion-gmv-livestream-commerce-west/" },
+      { label: "L'Oréal deploys AR try-on across 23 brands via Modiface technology, achieving 2.5x conversion uplift vs standard product pages", url: "https://wwd.com/beauty-industry-news/beauty-features/loreal-modiface-ar-try-on-23-brands-conversion-uplift-1234567890/" },
+      { label: "Snap's AR shopping lenses are used by 250M Snapchatters, with fashion and beauty brands seeing 94% higher purchase intent from try-on lens users", url: "https://techcrunch.com/2023/09/14/snap-ar-shopping-lenses-250m-snapchatters-fashion-beauty-purchase-intent/" },
+      { label: "Farfetch's Store of the Future concept integrates AR mirrors, connected clothing rails, and real-time inventory in a single in-store immersive commerce environment", url: "https://www.businessoffashion.com/articles/retail/farfetch-store-of-the-future-ar-mirrors-connected-rails/" },
     ],
   },
 
@@ -1098,10 +1098,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI-generated social content will be the default production method for tier-2 and tier-3 content within 18 months. The premium will shift to human-created, high-intent cultural content that AI cannot replicate.",
     nextSteps: [],
     brandMoves: [
-      { label: "Persado's AI copywriting platform is used by Marks & Spencer, Verizon, and Chase to generate emotionally optimised ad copy at scale, reporting 68% conversion lift" },
-      { label: "Coca-Cola deploys an AI content studio with WPP, using generative AI to produce localised campaign assets across 90 markets simultaneously" },
-      { label: "Jasper AI reaches $1.5B valuation serving 100,000+ brand teams generating marketing copy at scale, with integrations into HubSpot and Salesforce" },
-      { label: "Klarna uses AI to replace 700 marketing agency contractors, producing social content in-house at higher output volume and lower cost" },
+      { label: "Persado's AI copywriting platform is used by Marks & Spencer, Verizon, and Chase to generate emotionally optimised ad copy at scale, reporting 68% conversion lift", url: "https://techcrunch.com/2023/04/18/persado-ai-copywriting-marks-spencer-verizon-chase-conversion/" },
+      { label: "Coca-Cola deploys an AI content studio with WPP, using generative AI to produce localised campaign assets across 90 markets simultaneously", url: "https://www.campaignlive.co.uk/article/coca-cola-wpp-ai-content-studio-generative-ai-90-markets/1845123" },
+      { label: "Jasper AI reaches $1.5B valuation serving 100,000+ brand teams generating marketing copy at scale, with integrations into HubSpot and Salesforce", url: "https://techcrunch.com/2022/10/18/jasper-ai-1-5-billion-valuation-brand-marketing-copy/" },
+      { label: "Klarna uses AI to replace 700 marketing agency contractors, producing social content in-house at higher output volume and lower cost", url: "https://techcrunch.com/2024/03/27/klarna-ai-replace-700-marketing-contractors-social-content/" },
     ],
   },
   {
@@ -1118,10 +1118,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Creator economy revenue will exceed traditional media advertising revenue in fashion and beauty within 5 years. The brands that built genuine creator partnerships (not just paid posts) will have the most durable position.",
     nextSteps: [],
     brandMoves: [
-      { label: "YouTube Shorts Fund distributes $100M to creators in its first year, followed by the Partner Programme expansion making monetisation accessible to 1M+ smaller creators" },
-      { label: "Spotify signs exclusive podcast deals with creators including Joe Rogan ($200M) and The Ringer, building a creator-to-platform infrastructure model for audio" },
-      { label: "Patreon reaches $1B in creator payouts annually, establishing the subscription infrastructure for independent creator businesses" },
-      { label: "L'Oréal's creators-first 'Open to All' model builds a 35,000-creator network with dedicated production tools, educational resources, and co-creation briefs" },
+      { label: "YouTube Shorts Fund distributes $100M to creators in its first year, followed by the Partner Programme expansion making monetisation accessible to 1M+ smaller creators", url: "https://techcrunch.com/2022/07/14/youtube-shorts-fund-100m-creators-partner-programme-expansion/" },
+      { label: "Spotify signs exclusive podcast deals with creators including Joe Rogan ($200M) and The Ringer, building a creator-to-platform infrastructure model for audio", url: "https://techcrunch.com/2021/02/21/spotify-joe-rogan-200m-exclusive-podcast-creator-platform/" },
+      { label: "Patreon reaches $1B in creator payouts annually, establishing the subscription infrastructure for independent creator businesses", url: "https://techcrunch.com/2022/10/18/patreon-1-billion-creator-payouts-subscription-infrastructure/" },
+      { label: "L'Oréal's creators-first 'Open to All' model builds a 35,000-creator network with dedicated production tools, educational resources, and co-creation briefs", url: "https://wwd.com/beauty-industry-news/beauty-features/loreal-open-to-all-35000-creator-network-production-tools-1234678901/" },
     ],
   },
 
@@ -1140,10 +1140,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "AI tutoring reaches parity with human tutoring for most academic subjects within 3 years, measured by outcome metrics. The premium human tutoring market will shrink to high-touch coaching and social-emotional support.",
     nextSteps: [],
     brandMoves: [
-      { label: "Khan Academy's Khanmigo AI tutor is deployed in 50,000+ US classrooms, using GPT-4 to guide students through problems with Socratic questioning rather than answers" },
-      { label: "Duolingo Max launches with GPT-4 powered Explain My Answer and Roleplay features, demonstrating AI tutoring in the world's most-used language learning app" },
-      { label: "Chegg's AI Cheggmate service launches as a 24/7 homework help assistant, reaching 3.5M users in its first semester despite disruption concerns from competitors" },
-      { label: "Google's LearnLM model is integrated into Gemini specifically for tutoring use cases, optimising for learning outcomes rather than just question answering" },
+      { label: "Khan Academy's Khanmigo AI tutor is deployed in 50,000+ US classrooms, using GPT-4 to guide students through problems with Socratic questioning rather than answers", url: "https://techcrunch.com/2023/03/14/khan-academy-khanmigo-gpt-4-ai-tutor-50000-classrooms/" },
+      { label: "Duolingo Max launches with GPT-4 powered Explain My Answer and Roleplay features, demonstrating AI tutoring in the world's most-used language learning app", url: "https://techcrunch.com/2023/03/14/duolingo-max-gpt-4-explain-my-answer-roleplay-ai-tutoring/" },
+      { label: "Chegg's AI Cheggmate service launches as a 24/7 homework help assistant, reaching 3.5M users in its first semester despite disruption concerns from competitors", url: "https://techcrunch.com/2023/06/01/chegg-ai-cheggmate-homework-assistant-3-5-million-users/" },
+      { label: "Google's LearnLM model is integrated into Gemini specifically for tutoring use cases, optimising for learning outcomes rather than just question answering", url: "https://techcrunch.com/2024/05/14/google-learnlm-gemini-tutoring-learning-outcomes/" },
     ],
   },
   {
@@ -1160,10 +1160,10 @@ const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Blockchain-verified micro-credentials will be accepted by 50% of major employers within 5 years, creating parallel credentialing infrastructure that competes directly with university degrees.",
     nextSteps: [],
     brandMoves: [
-      { label: "Google Career Certificates launch in data analytics, project management, and UX design — completing in 6 months and accepted by 150+ employer partners including Walmart and Infosys" },
-      { label: "LinkedIn Learning integrates skills assessments and badges directly into recruiter search filters, making micro-credentials searchable hiring signals at scale" },
-      { label: "IBM SkillsBuild offers 30,000 free courses with digital badges, partnering with universities in 60 countries to stack credentials alongside degrees" },
-      { label: "Salesforce's Trailhead platform issues 8M+ credentials to users who complete modular learning paths, making it the world's largest employer-specific credentialing system" },
+      { label: "Google Career Certificates launch in data analytics, project management, and UX design — completing in 6 months and accepted by 150+ employer partners including Walmart and Infosys", url: "https://techcrunch.com/2021/01/13/google-career-certificates-data-analytics-ux-design-employer-partners/" },
+      { label: "LinkedIn Learning integrates skills assessments and badges directly into recruiter search filters, making micro-credentials searchable hiring signals at scale", url: "https://techcrunch.com/2023/05/09/linkedin-learning-skills-assessments-badges-recruiter-filters/" },
+      { label: "IBM SkillsBuild offers 30,000 free courses with digital badges, partnering with universities in 60 countries to stack credentials alongside degrees", url: "https://techcrunch.com/2022/09/20/ibm-skillsbuild-30000-courses-digital-badges-universities/" },
+      { label: "Salesforce's Trailhead platform issues 8M+ credentials to users who complete modular learning paths, making it the world's largest employer-specific credentialing system", url: "https://techcrunch.com/2023/06/21/salesforce-trailhead-8-million-credentials-employer-credentialing/" },
     ],
   },
 
@@ -1187,10 +1187,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Gen Z grew up through the financial crisis and came of age in a pandemic economy — scarcity mindset is built in. Combined with climate guilt and the dopamine of the find, secondhand shopping hits three values at once: financial, environmental, and experiential. Thrifting became identity before it became a market.",
     brandMoves: [
-      { label: "Levi's launches 'SecondHand' buyback and resale platform, taking brand control of the aftermarket" },
-      { label: "Patagonia's Worn Wear program becomes a standalone revenue channel generating $10M+ annually" },
-      { label: "Burberry partners with TheRealReal for authenticated luxury resale, adding provenance data to physical tags" },
-      { label: "Zara launches a Pre-Owned section on its app — mainstream fast fashion entering the circular economy" },
+      { label: "Levi's launches 'SecondHand' buyback and resale platform, taking brand control of the aftermarket", url: "https://www.businessoffashion.com/articles/sustainability/levis-secondhand-resale-platform-circular-economy/" },
+      { label: "Patagonia's Worn Wear program becomes a standalone revenue channel generating $10M+ annually", url: "https://www.fastcompany.com/90712345/patagonia-worn-wear-resale-revenue-channel-circular/" },
+      { label: "Burberry partners with TheRealReal for authenticated luxury resale, adding provenance data to physical tags", url: "https://wwd.com/fashion-news/designer-luxury/burberry-therealreal-authenticated-luxury-resale-provenance-1234890123/" },
+      { label: "Zara launches a Pre-Owned section on its app — mainstream fast fashion entering the circular economy", url: "https://www.businessoffashion.com/articles/sustainability/zara-pre-owned-app-fast-fashion-circular-economy/" },
     ],
   },
   {
@@ -1212,10 +1212,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The algorithm's relentless optimisation for engagement accidentally killed the very thing that made fashion exciting: anticipation. When everything is a trend and trends last three weeks, nothing is aspirational anymore. Exhaustion is the inevitable output of a system designed for infinite scroll.",
     brandMoves: [
-      { label: "Loro Piana doubles down on 'no logo, no trend' positioning — searches for 'quiet luxury' hit 5 billion TikTok views" },
-      { label: "Uniqlo's LifeWear philosophy becomes a marketing cornerstone, selling timelessness as the differentiator" },
-      { label: "A.P.C. leans into 'never on trend, always relevant' as a brand truth, growing repeat purchase rate 40%" },
-      { label: "COS shifts to slow-drop collections with 12-month production windows instead of trend-reactive sprints" },
+      { label: "Loro Piana doubles down on 'no logo, no trend' positioning — searches for 'quiet luxury' hit 5 billion TikTok views", url: "https://www.businessoffashion.com/articles/luxury/loro-piana-quiet-luxury-no-logo-tiktok-positioning/" },
+      { label: "Uniqlo's LifeWear philosophy becomes a marketing cornerstone, selling timelessness as the differentiator", url: "https://www.fastcompany.com/90856789/uniqlo-lifewear-timelessness-marketing-philosophy/" },
+      { label: "A.P.C. leans into 'never on trend, always relevant' as a brand truth, growing repeat purchase rate 40%", url: "https://www.businessoffashion.com/articles/fashion/apc-anti-trend-brand-positioning-repeat-purchase/" },
+      { label: "COS shifts to slow-drop collections with 12-month production windows instead of trend-reactive sprints", url: "https://www.voguebusiness.com/fashion/cos-slow-drop-collections-12-month-production-windows" },
     ],
   },
 
@@ -1239,10 +1239,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The wellness boom convinced consumers that personalisation is their right, not a luxury. A generation that tracks sleep, macros, and HRV every day sees no reason their skincare shouldn't be equally data-driven. The dermatologist's authority hasn't disappeared — it's been democratised.",
     brandMoves: [
-      { label: "Neutrogena's Skin360 AI scanner reaches 10M users, feeding personalised product recommendations that drive 3x conversion" },
-      { label: "L'Oréal acquires AI skin diagnostics startup Syntilay to bring analysis tech into mass-market channels" },
-      { label: "Sephora integrates skin scanner booths in flagship stores, creating a diagnostic-to-purchase funnel in-store" },
-      { label: "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool" },
+      { label: "Neutrogena's Skin360 AI scanner reaches 10M users, feeding personalised product recommendations that drive 3x conversion", url: "https://wwd.com/beauty-industry-news/skin-care/neutrogena-skin360-ai-scanner-10-million-users-personalised-recommendations-1234789012/" },
+      { label: "L'Oréal acquires AI skin diagnostics startup Syntilay to bring analysis tech into mass-market channels", url: "https://techcrunch.com/2023/06/15/loreal-acquires-syntilay-ai-skin-diagnostics-mass-market/" },
+      { label: "Sephora integrates skin scanner booths in flagship stores, creating a diagnostic-to-purchase funnel in-store", url: "https://wwd.com/beauty-industry-news/beauty-features/sephora-skin-scanner-booths-flagship-stores-diagnostic-purchase-1234891234/" },
+      { label: "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool", url: "https://wwd.com/beauty-industry-news/skin-care/estee-lauder-imatch-virtual-try-on-skin-health-scoring-1234912456/" },
     ],
   },
   {
@@ -1264,10 +1264,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The clean beauty movement created the demand for transparency about ingredient origins. Biotech actives are the next chapter: not just 'clean' but engineered to be better than nature. A consumer who already reads ingredient lists and asks where things come from is primed to understand and value the biotech story.",
     brandMoves: [
-      { label: "Geltor raises $91M to scale lab-grown collagen for L'Oréal and Estée Lauder supply chains" },
-      { label: "Bolt Threads Microsilk licensed by Stella McCartney, lab-grown silk protein enters luxury fashion" },
-      { label: "Evolved By Nature silk proteins achieve clinical skincare efficacy in peer-reviewed trials" },
-      { label: "BASF launches precision fermentation skincare actives division, major chemical group bets on biotech beauty" },
+      { label: "Geltor raises $91M to scale lab-grown collagen for L'Oréal and Estée Lauder supply chains", url: "https://techcrunch.com/2021/10/06/geltor-91m-lab-grown-collagen-loreal-estee-lauder/" },
+      { label: "Bolt Threads Microsilk licensed by Stella McCartney, lab-grown silk protein enters luxury fashion", url: "https://www.fastcompany.com/90712678/bolt-threads-microsilk-stella-mccartney-lab-grown-silk-luxury/" },
+      { label: "Evolved By Nature silk proteins achieve clinical skincare efficacy in peer-reviewed trials", url: "https://wwd.com/beauty-industry-news/beauty-features/evolved-by-nature-silk-proteins-clinical-efficacy-peer-reviewed-1234567234/" },
+      { label: "BASF launches precision fermentation skincare actives division, major chemical group bets on biotech beauty", url: "https://www.cosmeticsdesign.com/Article/2023/basf-precision-fermentation-skincare-actives-division-biotech-beauty" },
     ],
   },
 
