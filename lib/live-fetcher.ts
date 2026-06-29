@@ -51,7 +51,7 @@ function matchTrend(text: string, trends: Array<{ id: string; name: string; desc
     const score = words.filter(w => lower.includes(w)).length;
     if (score > best.score) best = { id: t.id, score };
   }
-  return best.score >= 2 ? best.id : (trends[0]?.id ?? null);
+  return best.score >= 1 ? best.id : null;
 }
 
 async function fetchReddit(queries: string[], trends: Array<{ id: string; name: string; description: string }>): Promise<Signal[]> {
@@ -160,10 +160,9 @@ export async function fetchLiveSignals(
     : ["emerging tech fashion", "AI design innovation", "biotech beauty brand"];
 
   const feeds = topics.length > 0
-    ? [...new Map([
-        ...topics.flatMap(t => (TOPIC_FEEDS[t] ?? []).map(f => [f.url, f] as [string, typeof f])),
-        ...DEFAULT_FEEDS.map(f => [f.url, f] as [string, typeof f]),
-      ]).values()]
+    ? [...new Map(
+        topics.flatMap(t => (TOPIC_FEEDS[t] ?? []).map(f => [f.url, f] as [string, typeof f]))
+      ).values()]
     : DEFAULT_FEEDS;
 
   const [redditResult, rssResult] = await Promise.allSettled([
