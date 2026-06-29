@@ -56,6 +56,29 @@ function computeTrendPosition(idx: number): { x: number; y: number } {
   return { x: 80 + (idx % 3) * 520, y: 80 + Math.floor(idx / 3) * 520 };
 }
 
+// 20-color palette — distinct enough that no two adjacent blobs clash.
+const BOARD_PALETTE = [
+  "#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C",
+  "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C",
+  "#F4A4C0", "#E88B5A", "#9B8FCE", "#94C472", "#EFC54E",
+  "#4A9368", "#6BB9A0", "#B490BE", "#FFA03A", "#95C468",
+];
+
+// Assign palette colors in order so no two trends on the same board share a color.
+// Input must already be sorted in visual display order (relevance DESC).
+function assignUniqueColors(trends: Trend[]): Trend[] {
+  const used = new Set<string>();
+  return trends.map((t, i) => {
+    let color = BOARD_PALETTE[i % BOARD_PALETTE.length];
+    if (used.has(color)) {
+      const fresh = BOARD_PALETTE.find(c => !used.has(c));
+      if (fresh) color = fresh;
+    }
+    used.add(color);
+    return { ...t, color };
+  });
+}
+
 const TREND_POSITIONS: Record<string, { x: number; y: number }> = {
   "ai-creativity":          { x: 368,  y: 168  },
   "longevity":              { x: 948,  y: 168  },
@@ -494,7 +517,7 @@ export default function HomePage() {
         const data = await res.json();
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
         const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
-        const newDynamic = [...baseTrends, ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) }))];
+        const newDynamic = assignUniqueColors([...baseTrends, ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) }))]);
         setDynamicTrends(newDynamic);
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(sorted.flatMap(i => i.signals));
@@ -521,8 +544,9 @@ export default function HomePage() {
       .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
       .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
     if (libraryTrends.length) {
-      setDynamicTrends(libraryTrends);
-      setAppliedDynamicTrends(libraryTrends);
+      const colored = assignUniqueColors(libraryTrends);
+      setDynamicTrends(colored);
+      setAppliedDynamicTrends(colored);
       setTimeout(() => setFocusIdx(0), 60);
       return;
     }
@@ -567,7 +591,7 @@ export default function HomePage() {
         const fresh = libraryTrends
           .filter(t => !existingIds.has(t.id))
           .map((t, i) => ({ ...t, position: computeTrendPosition(prev.length + i) }));
-        const combined = [...prev, ...fresh];
+        const combined = assignUniqueColors([...prev, ...fresh]);
         setAppliedDynamicTrends(combined);
         return combined;
       });
@@ -591,9 +615,11 @@ export default function HomePage() {
     }
     // Keep only trends that belong to at least one remaining topic
     setDynamicTrends(prev => {
-      const kept = prev
-        .filter(t => remaining.some(tp => (t.topics ?? []).includes(tp)))
-        .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+      const kept = assignUniqueColors(
+        prev
+          .filter(t => remaining.some(tp => (t.topics ?? []).includes(tp)))
+          .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
+      );
       setAppliedDynamicTrends(kept);
       return kept;
     });
