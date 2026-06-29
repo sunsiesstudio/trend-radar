@@ -655,7 +655,7 @@ export default function HomePage() {
         {appliedTopics.length > 0 && (
           <>
             <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: isDesktop ? 2 : 1, WebkitBoxOrient: "vertical", whiteSpace: isDesktop ? "normal" : "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
-              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"} tracked`}
+              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `Emerging Tech × ${appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1)} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
             </p>
             {isDesktop && (
               <button
@@ -699,7 +699,7 @@ export default function HomePage() {
                     {appliedTopics.length > 0 ? "What we're tracking" : "About"}
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                    {appliedTopics.length > 0 ? `${appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1)}` : "Augmented Radar"}
+                    {appliedTopics.length > 0 ? `Emerging Tech × ${appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1)}` : "Augmented Radar"}
                   </h3>
                 </div>
                 <button
