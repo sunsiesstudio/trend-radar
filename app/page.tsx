@@ -522,7 +522,11 @@ export default function HomePage() {
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(sorted.flatMap(i => i.signals));
         setGenerationError(null);
-        setTimeout(() => setFocusIdx(0), 60);
+        if (baseTrends.length > 0) {
+          setTimeout(() => fitViewRef.current?.(), 100);
+        } else {
+          setTimeout(() => setFocusIdx(0), 60);
+        }
       } else {
         const errData = await res.json().catch(() => ({})) as { error?: string };
         setGenerationError(errData.error ?? "Generation failed. Please try again.");
@@ -595,7 +599,8 @@ export default function HomePage() {
         setAppliedDynamicTrends(combined);
         return combined;
       });
-      setTimeout(() => setFocusIdx(0), 60);
+      // Fit the whole board so both topics are visible
+      setTimeout(() => fitViewRef.current?.(), 100);
       return;
     }
 
