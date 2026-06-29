@@ -236,7 +236,9 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore, newCount, d, latestDate } as TrendNodeData,
     });
 
-    const MAX_R = d / 2 + 72;
+    // Grid is 760px between centers; midpoint to neighbour is ~380px.
+    // Allow signals to spread up to ~320px from center to fill that space.
+    const MAX_R = d / 2 + 280;
 
     // Local list for this cluster only — used when building nodes/edges below.
     const placements: P[] = [];
@@ -294,12 +296,11 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
 
       // Try from blob edge outward — fills closest slots first like petals
       placed = tryPlace(d / 2 + GAP, MAX_R, true);
-      if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
-      // Last resort: push far out in the signal's natural direction so it never
-      // lands inside the trend blob (default x=cx,y=cy would centre it on the blob).
+      if (!placed) placed = tryPlace(MAX_R + 3, MAX_R + 120, false);
+      // Last resort: natural direction, far enough to never overlap the blob
       if (!placed) {
-        x = cx + (MAX_R * 2.5) * Math.cos(baseAngle) - w / 2;
-        y = cy + (MAX_R * 2.5) * Math.sin(baseAngle) - sigH / 2;
+        x = cx + (MAX_R + 160) * Math.cos(baseAngle) - w / 2;
+        y = cy + (MAX_R + 160) * Math.sin(baseAngle) - sigH / 2;
       }
 
       const entry: P = { sig, w, h: sigH, fillAlpha, borderAlpha, isNew: !seenIds.has(sig.id), x, y };
