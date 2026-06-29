@@ -665,6 +665,12 @@ export default function HomePage() {
     [...visibleTrends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)),
   [visibleTrends]);
 
+  const capTopic = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, " ");
+  const topicsLabel = useMemo(() => {
+    if (appliedTopics.length === 0) return "";
+    return `Emerging Tech × ${appliedTopics.map(capTopic).join(" + ")}`;
+  }, [appliedTopics]);
+
   // Always clamp focusIdx at the point of use — setFocusIdx(9999) is used as "jump to last"
   // so we derive the safe index here rather than fighting async clamp timing.
   const safeIdx = navTrends.length > 0 ? Math.min(focusIdx, navTrends.length - 1) : 0;
@@ -839,7 +845,7 @@ export default function HomePage() {
         {appliedTopics.length > 0 && (
           <>
             <p style={{ flex: 1, fontSize: 13, color: "#555", lineHeight: 1.45, fontFamily: "'EB Garamond', Georgia, serif", margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: isDesktop ? 2 : 1, WebkitBoxOrient: "vertical", whiteSpace: isDesktop ? "normal" : "nowrap", textOverflow: "ellipsis" } as React.CSSProperties}>
-              {TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `Emerging Tech × ${appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1)} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
+              {appliedTopics.length === 1 ? (TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])] ?? `${topicsLabel} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`) : `${topicsLabel} · ${visibleTrends.length} trend${visibleTrends.length === 1 ? "" : "s"}`}
             </p>
             {isDesktop && (
               <button
@@ -883,7 +889,7 @@ export default function HomePage() {
                     {appliedTopics.length > 0 ? "What we're tracking" : "About"}
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000", lineHeight: 1.2, letterSpacing: "-0.03em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-                    {appliedTopics.length > 0 ? `Emerging Tech × ${appliedTopics[0].charAt(0).toUpperCase() + appliedTopics[0].slice(1)}` : "Augmented Radar"}
+                    {appliedTopics.length > 0 ? topicsLabel : "Augmented Radar"}
                   </h3>
                 </div>
                 <button
@@ -916,7 +922,7 @@ export default function HomePage() {
               {/* ── Trends (topic selected) ── */}
               {appliedTopics.length > 0 && (
                 <>
-                  {(() => {
+                  {appliedTopics.length === 1 && (() => {
                     const desc = TOPIC_DESCRIPTIONS[normaliseTopicKey(appliedTopics[0])];
                     return desc ? (
                       <p style={{ fontSize: 14, color: "#555", lineHeight: 1.75, margin: "4px 0 16px", fontFamily: "'EB Garamond', Georgia, serif" }}>
