@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const client = new Anthropic();
 
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   try {
     const msg = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 8192,
+      max_tokens: 16000,
       messages: [
         {
           role: "user",
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
 You always say whether something is just getting started, already moving fast, or nearly played out. You give people something to actually do with the information, not just vibe with it.
 
-Generate exactly 2 trend entries for the topic: "${topic}"
+Generate exactly 6 trend entries for the topic: "${topic}"
 
 Each one should capture a specific moment where new technology is changing how things work in this space. Think AI, biotech, spatial computing, wearables, synthetic biology, robotics, AR/VR, materials science.
 
