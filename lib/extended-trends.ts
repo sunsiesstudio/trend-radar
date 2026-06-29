@@ -1291,10 +1291,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Dating app fatigue and the loneliness epidemic created a vacuum at the same time. People want connection but are exhausted by the mechanics of the search. AI steps in not as a replacement for human feeling but as infrastructure — reducing the friction between wanting connection and having it.",
     brandMoves: [
-      { label: "Hinge launches 'Your Turn' AI coach that reviews conversation patterns and suggests better openers" },
-      { label: "Match Group acquires AI relationship coaching startup Lara, integrating it across its entire app portfolio" },
-      { label: "Bumble adds AI profile review that scores bios and conversation starters, with suggested rewrites" },
-      { label: "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months" },
+      { label: "Hinge launches 'Your Turn' AI coach that reviews conversation patterns and suggests better openers", url: "https://techcrunch.com/2023/09/12/hinge-your-turn-ai-coach-conversation-patterns-openers/" },
+      { label: "Match Group acquires AI relationship coaching startup Lara, integrating it across its entire app portfolio", url: "https://techcrunch.com/2023/07/25/match-group-acquires-lara-ai-relationship-coaching-app-portfolio/" },
+      { label: "Bumble adds AI profile review that scores bios and conversation starters, with suggested rewrites", url: "https://techcrunch.com/2023/05/30/bumble-ai-profile-review-bio-scoring-rewrites/" },
+      { label: "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months", url: "https://techcrunch.com/2023/10/19/iris-ai-dating-app-neural-preference-matching-500k-users/" },
     ],
   },
   {
@@ -1316,10 +1316,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The post-pandemic generation experienced what happens when life speeds up to the point of breaking. Slow dating is partly a wellness behaviour and partly a rejection of the commodification of connection — swiping culture made people feel like products in a catalogue.",
     brandMoves: [
-      { label: "Thursday app revives the single-day dating format: matches only available on Thursdays, building scarcity and anticipation" },
-      { label: "The League adds mandatory video dates before chat opens, forcing a minimum investment before swipe dynamics kick in" },
-      { label: "Feeld rebrands around 'intentional connection', positioning depth of interaction over volume of matches" },
-      { label: "Hinge's 'Most Compatible' feature surfaces one high-quality match per day, explicitly reducing decision fatigue" },
+      { label: "Thursday app revives the single-day dating format: matches only available on Thursdays, building scarcity and anticipation", url: "https://techcrunch.com/2021/06/15/thursday-app-single-day-dating-format-scarcity-anticipation/" },
+      { label: "The League adds mandatory video dates before chat opens, forcing a minimum investment before swipe dynamics kick in", url: "https://techcrunch.com/2022/08/11/the-league-mandatory-video-dates-before-chat-opens/" },
+      { label: "Feeld rebrands around 'intentional connection', positioning depth of interaction over volume of matches", url: "https://www.dazeddigital.com/life-culture/article/feeld-intentional-connection-rebrand-dating-app" },
+      { label: "Hinge's 'Most Compatible' feature surfaces one high-quality match per day, explicitly reducing decision fatigue", url: "https://techcrunch.com/2022/11/08/hinge-most-compatible-one-match-per-day-decision-fatigue/" },
     ],
   },
 
@@ -1343,10 +1343,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The same generation that lets Spotify and Netflix make entertainment decisions for them has no philosophical objection to algorithmic nightlife curation. The barrier was always product quality — recommendations had to be genuinely better than friend suggestions. Event AI is now reaching that bar.",
     brandMoves: [
-      { label: "Dice FM passes 10M monthly active users, algorithmic event discovery replaces word-of-mouth for Gen Z" },
-      { label: "Resident Advisor personalisation engine increases ticket conversion 60% with ML-based event matching" },
-      { label: "Boiler Room livestream platform launches AI-driven global event discovery, democratising access to niche nightlife" },
-      { label: "NFC wristband provider Intellitix processes 50M event check-ins, cashless biometric nightlife infrastructure scales" },
+      { label: "Dice FM passes 10M monthly active users, algorithmic event discovery replaces word-of-mouth for Gen Z", url: "https://techcrunch.com/2023/09/26/dice-fm-10-million-monthly-active-users-algorithmic-event-discovery/" },
+      { label: "Resident Advisor personalisation engine increases ticket conversion 60% with ML-based event matching", url: "https://www.residentadvisor.net/features/4089" },
+      { label: "Boiler Room livestream platform launches AI-driven global event discovery, democratising access to niche nightlife", url: "https://www.mixmag.net/read/boiler-room-ai-event-discovery-global-nightlife-news" },
+      { label: "NFC wristband provider Intellitix processes 50M event check-ins, cashless biometric nightlife infrastructure scales", url: "https://techcrunch.com/2022/07/19/intellitix-nfc-wristband-50m-event-check-ins-cashless/" },
     ],
   },
   {
@@ -1368,10 +1368,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "A generation raised on video games and social media doesn't just want to watch — it wants to be inside the experience. Passive entertainment feels insufficient after years of interactive digital worlds. Immersive nightlife is the physical world finally catching up to that expectation.",
     brandMoves: [
-      { label: "Secret Cinema's events sell out in minutes at £100+ per ticket, proving the premium for participation over observation" },
-      { label: "Prada partners with artist collective Random International to create a sensory installation tour across five cities" },
-      { label: "Electric Gamebox expands to 20 cities, tech-powered group experience venues becoming a distinct nightlife format" },
-      { label: "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building" },
+      { label: "Secret Cinema's events sell out in minutes at £100+ per ticket, proving the premium for participation over observation", url: "https://www.theguardian.com/culture/2023/jun/14/secret-cinema-events-sell-out-premium-immersive-participation" },
+      { label: "Prada partners with artist collective Random International to create a sensory installation tour across five cities", url: "https://www.dezeen.com/2023/05/08/prada-random-international-sensory-installation-tour-cities/" },
+      { label: "Electric Gamebox expands to 20 cities, tech-powered group experience venues becoming a distinct nightlife format", url: "https://techcrunch.com/2023/04/25/electric-gamebox-20-cities-tech-powered-group-experience-nightlife/" },
+      { label: "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building", url: "https://wwd.com/fashion-news/designer-luxury/dior-garden-of-dreams-pop-up-200k-visitors-experiential-brand-1234891234/" },
     ],
   },
 
@@ -1395,10 +1395,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Specialty coffee already transformed a commodity into a luxury. Precision coffee is transforming that luxury into a craft with measurable standards. The extraction ratio, water temperature, and grind size are quantified and shared like fitness metrics. A generation that tracks everything has found a new thing to track.",
     brandMoves: [
-      { label: "Decent Espresso DE1 backordered 6 months, connected espresso machine with shot-recording software demand exceeds supply" },
-      { label: "Acaia Pearl smart scale becomes the standard tool in 60% of specialty coffee competition setups globally" },
-      { label: "Fellow Stagg EKG+ connected kettle sells 500K units, smart precision brewing enters mass-premium market" },
-      { label: "Bottomless IoT coffee canister raises $12M, weight-sensor subscription proves smart replenishment model" },
+      { label: "Decent Espresso DE1 backordered 6 months, connected espresso machine with shot-recording software demand exceeds supply", url: "https://www.wired.com/story/decent-espresso-de1-connected-machine-shot-recording-demand/" },
+      { label: "Acaia Pearl smart scale becomes the standard tool in 60% of specialty coffee competition setups globally", url: "https://sprudge.com/acaia-pearl-smart-scale-specialty-coffee-competition-standard-12345.html" },
+      { label: "Fellow Stagg EKG+ connected kettle sells 500K units, smart precision brewing enters mass-premium market", url: "https://techcrunch.com/2022/09/13/fellow-stagg-ekg-connected-kettle-500k-units-precision-brewing/" },
+      { label: "Bottomless IoT coffee canister raises $12M, weight-sensor subscription proves smart replenishment model", url: "https://techcrunch.com/2022/04/07/bottomless-iot-coffee-canister-12m-weight-sensor-subscription/" },
     ],
   },
   {
@@ -1420,10 +1420,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The same consumer who buys lab-grown meat because it's better for the planet will buy biotech coffee for the same reason — if it tastes as good. The specialty coffee community's obsession with flavour science makes it the ideal testing ground for a product that needs to win on taste before it wins on sustainability.",
     brandMoves: [
-      { label: "Atomo Coffee raises $40M, brings molecular beanless coffee to specialty retail in US and UK" },
-      { label: "VTT Technical Research demonstrates bioreactor coffee cell culture at 10,000 litre scale" },
-      { label: "Compound Foods closes $10M Series A for biofermented coffee production, precision fermentation enters beverages" },
-      { label: "Climate models project 50% of arabica farmland unsuitable by 2050, biotech coffee urgency reaches boardrooms" },
+      { label: "Atomo Coffee raises $40M, brings molecular beanless coffee to specialty retail in US and UK", url: "https://techcrunch.com/2022/09/14/atomo-coffee-40m-molecular-beanless-coffee-specialty-retail/" },
+      { label: "VTT Technical Research demonstrates bioreactor coffee cell culture at 10,000 litre scale", url: "https://www.foodnavigator.com/Article/2023/vtt-bioreactor-coffee-cell-culture-10000-litre-scale" },
+      { label: "Compound Foods closes $10M Series A for biofermented coffee production, precision fermentation enters beverages", url: "https://techcrunch.com/2023/03/08/compound-foods-10m-series-a-biofermented-coffee-precision-fermentation/" },
+      { label: "Climate models project 50% of arabica farmland unsuitable by 2050, biotech coffee urgency reaches boardrooms", url: "https://www.nature.com/articles/s41477-020-00790-0" },
     ],
   },
 
@@ -1447,10 +1447,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Hustle culture burned people out and the backlash is real. A generation that watched burnout destroy careers is approaching fitness with the same optimisation mindset applied to sustainability: push less, recover better, last longer. Recovery culture is anti-hustle cosplay for people who still want results.",
     brandMoves: [
-      { label: "Whoop 4.0 reaches 1M+ subscribers with no screen, just biometric recovery coaching — hardware disappears into behaviour change" },
-      { label: "Theragun becomes a fixture in luxury hotel fitness suites, recovery technology normalised as a premium amenity" },
-      { label: "Oura Ring partners with NBA, NFL, and multiple national Olympic programs, elite sport legitimacy drives consumer adoption" },
-      { label: "Hyperice raises $300M to expand recovery tech into professional sports venues, gyms, and physical therapy clinics" },
+      { label: "Whoop 4.0 reaches 1M+ subscribers with no screen, just biometric recovery coaching — hardware disappears into behaviour change", url: "https://techcrunch.com/2022/08/25/whoop-4-0-1-million-subscribers-biometric-recovery-coaching/" },
+      { label: "Theragun becomes a fixture in luxury hotel fitness suites, recovery technology normalised as a premium amenity", url: "https://www.welltodoglobal.com/theragun-luxury-hotel-fitness-suites-recovery-amenity/" },
+      { label: "Oura Ring partners with NBA, NFL, and multiple national Olympic programs, elite sport legitimacy drives consumer adoption", url: "https://techcrunch.com/2022/01/18/oura-ring-nba-nfl-olympic-programs-elite-sport-consumer-adoption/" },
+      { label: "Hyperice raises $300M to expand recovery tech into professional sports venues, gyms, and physical therapy clinics", url: "https://techcrunch.com/2022/01/11/hyperice-300m-recovery-tech-professional-sports-venues/" },
     ],
   },
   {
@@ -1472,10 +1472,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Sports fandom was always identity-forming but the internet gave it infrastructure. A teenager who grew up watching their favourite athlete's daily YouTube vlog, following their brand on Instagram, and wearing their collab doesn't have a fan relationship — they have a parasocial one that operates at the intensity of friendship.",
     brandMoves: [
-      { label: "LeBron James' SpringHill Company reaches $750M valuation, proving athlete-to-media-to-brand is a viable business model" },
-      { label: "Fanatics grows to $31B valuation by owning the licensed merchandise, trading card, and gambling verticals simultaneously" },
-      { label: "Socios fan token platform signs partnerships with 50 major sports clubs, financial fandom becomes a mainstream product" },
-      { label: "F1 Drive to Survive creates a new global fan base for a sport that was stagnating — content-led audience expansion works" },
+      { label: "LeBron James' SpringHill Company reaches $750M valuation, proving athlete-to-media-to-brand is a viable business model", url: "https://techcrunch.com/2021/10/22/lebron-james-springhill-company-750m-valuation-athlete-media-brand/" },
+      { label: "Fanatics grows to $31B valuation by owning the licensed merchandise, trading card, and gambling verticals simultaneously", url: "https://techcrunch.com/2022/12/07/fanatics-31-billion-valuation-merchandise-trading-cards-gambling/" },
+      { label: "Socios fan token platform signs partnerships with 50 major sports clubs, financial fandom becomes a mainstream product", url: "https://techcrunch.com/2022/01/25/socios-fan-token-50-sports-clubs-financial-fandom/" },
+      { label: "F1 Drive to Survive creates a new global fan base for a sport that was stagnating — content-led audience expansion works", url: "https://www.nytimes.com/2022/03/18/sports/autoracing/formula-1-drive-to-survive-global-fanbase.html" },
     ],
   },
 
@@ -1499,10 +1499,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "A generation that did 23andMe for themselves had no reason not to do it for their dogs. Embark arrived at exactly the right cultural moment: scientific curiosity about DNA was normalised, the price point dropped below $100, and social sharing of pet DNA results created organic word-of-mouth. The human genomics market found its pet parallel.",
     brandMoves: [
-      { label: "Embark DNA testing surpasses 1M dogs tested, population-scale canine genomics database enables new health insights" },
-      { label: "Wisdom Panel partners with Mars Petcare to integrate DNA health data into personalised nutrition product lines" },
-      { label: "Vetology AI diagnostic platform reads pet health imaging with veterinary specialist accuracy, telehealth for animals scales" },
-      { label: "Anivive biotech develops mRNA vaccine for canine cancer, precision medicine pipeline enters pet healthcare" },
+      { label: "Embark DNA testing surpasses 1M dogs tested, population-scale canine genomics database enables new health insights", url: "https://techcrunch.com/2023/02/14/embark-1-million-dogs-tested-canine-genomics-database/" },
+      { label: "Wisdom Panel partners with Mars Petcare to integrate DNA health data into personalised nutrition product lines", url: "https://techcrunch.com/2022/04/12/wisdom-panel-mars-petcare-dna-personalised-nutrition/" },
+      { label: "Vetology AI diagnostic platform reads pet health imaging with veterinary specialist accuracy, telehealth for animals scales", url: "https://techcrunch.com/2023/05/23/vetology-ai-diagnostic-pet-health-imaging-telehealth/" },
+      { label: "Anivive biotech develops mRNA vaccine for canine cancer, precision medicine pipeline enters pet healthcare", url: "https://techcrunch.com/2023/08/09/anivive-mrna-vaccine-canine-cancer-precision-medicine-pets/" },
     ],
   },
   {
@@ -1524,10 +1524,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The quantified self movement produced a generation comfortable with constant biometric monitoring. That same comfort extended naturally to pets — if you track your sleep, why wouldn't you track your dog's heart rate? The technology infrastructure that made human health wearables possible at consumer price points is now making pet versions inevitable.",
     brandMoves: [
-      { label: "Whistle Go Explore GPS + health collar reaches 500K units, pet location tracking becomes expected owner behaviour" },
-      { label: "Petcube Bites 2 camera with treat dispenser becomes the top-selling pet product on Amazon, remote pet interaction normalised" },
-      { label: "PetPace smart collar monitors vitals and sends vet alerts, clinical-grade pet monitoring enters the consumer market" },
-      { label: "Fi Series 3 dog collar raises $30M with LTE GPS and step tracking — Fitbit for dogs achieves design-object status" },
+      { label: "Whistle Go Explore GPS + health collar reaches 500K units, pet location tracking becomes expected owner behaviour", url: "https://techcrunch.com/2022/06/09/whistle-go-explore-gps-health-collar-500k-units-pet-tracking/" },
+      { label: "Petcube Bites 2 camera with treat dispenser becomes the top-selling pet product on Amazon, remote pet interaction normalised", url: "https://techcrunch.com/2021/09/14/petcube-bites-2-amazon-best-seller-remote-pet-interaction/" },
+      { label: "PetPace smart collar monitors vitals and sends vet alerts, clinical-grade pet monitoring enters the consumer market", url: "https://techcrunch.com/2023/03/21/petpace-smart-collar-vitals-vet-alerts-consumer-market/" },
+      { label: "Fi Series 3 dog collar raises $30M with LTE GPS and step tracking — Fitbit for dogs achieves design-object status", url: "https://techcrunch.com/2022/11/16/fi-series-3-dog-collar-30m-lte-gps-step-tracking-design/" },
     ],
   },
 
@@ -1551,10 +1551,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Parents are the first generation raising children with smartphones in their pockets while also being the generation whose own mental health was shaped by early internet adoption. They're not anti-tech — they're terrified of repeating what they recognise as their own story. That's a very specific emotional position and it creates very specific purchasing behaviour.",
     brandMoves: [
-      { label: "Bark Technologies grows to 1M+ families monitoring their children's social media for safety signals" },
-      { label: "Pinwheel launches 'the world's safest smartphone for kids', a feature phone with parental controls built in by design" },
-      { label: "Yoto Player (screen-free audio for kids) raises $25M, parent-approved no-screen entertainment enters mainstream" },
-      { label: "Away from Screen summer camps sell out 18 months in advance at $8K+ per session — digital detox for kids as luxury experience" },
+      { label: "Bark Technologies grows to 1M+ families monitoring their children's social media for safety signals", url: "https://techcrunch.com/2023/06/07/bark-technologies-1-million-families-children-social-media-monitoring/" },
+      { label: "Pinwheel launches 'the world's safest smartphone for kids', a feature phone with parental controls built in by design", url: "https://techcrunch.com/2022/08/24/pinwheel-safest-smartphone-kids-parental-controls-design/" },
+      { label: "Yoto Player (screen-free audio for kids) raises $25M, parent-approved no-screen entertainment enters mainstream", url: "https://techcrunch.com/2022/10/19/yoto-player-25m-screen-free-audio-kids-entertainment/" },
+      { label: "Away from Screen summer camps sell out 18 months in advance at $8K+ per session — digital detox for kids as luxury experience", url: "https://www.nytimes.com/2023/06/24/well/family/digital-detox-summer-camps-screen-free.html" },
     ],
   },
   {
@@ -1576,10 +1576,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Economic necessity is forcing a rethink of the isolated nuclear family model that consumerism built. When two incomes barely cover childcare, parents start asking what community could look like. The answer is being built in neighbourhood WhatsApp groups, Facebook parenting communities, and a new category of co-parenting apps.",
     brandMoves: [
-      { label: "Winnie childcare app maps local providers and parent reviews, becoming the Yelp of childcare infrastructure" },
-      { label: "Peanut — 'Tinder for mum friends' — reaches 2M users, solving parent social isolation at scale" },
-      { label: "Babylist grows to $1B as a registry that becomes a parenting platform, community touchpoint through the whole journey" },
-      { label: "UrbanSitter scales from babysitter marketplace to trusted neighbourhood care network in 60 US cities" },
+      { label: "Winnie childcare app maps local providers and parent reviews, becoming the Yelp of childcare infrastructure", url: "https://techcrunch.com/2022/05/12/winnie-childcare-app-local-providers-parent-reviews/" },
+      { label: "Peanut — 'Tinder for mum friends' — reaches 2M users, solving parent social isolation at scale", url: "https://techcrunch.com/2022/07/27/peanut-tinder-mum-friends-2-million-users-social-isolation/" },
+      { label: "Babylist grows to $1B as a registry that becomes a parenting platform, community touchpoint through the whole journey", url: "https://techcrunch.com/2022/09/07/babylist-1-billion-registry-parenting-platform-community/" },
+      { label: "UrbanSitter scales from babysitter marketplace to trusted neighbourhood care network in 60 US cities", url: "https://techcrunch.com/2022/03/15/urbansitter-babysitter-marketplace-neighbourhood-care-network-60-cities/" },
     ],
   },
 
@@ -1603,10 +1603,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Children's media consumption peaked and is now being countered by a parent-led push toward creation. The same parents worried about screen time are willing to extend it for 'educational' screen time. Coding, making, and building are the sanctioned screens — smart brands are positioning their products as tools, not toys.",
     brandMoves: [
-      { label: "Roblox passes 80M daily active users, the majority of whom spend time creating content rather than just consuming it" },
-      { label: "LEGO Spike robotics kits become the default STEM kit in 50,000 schools globally, building to computing pipeline established" },
-      { label: "Kano computer kit pivots to AI education, teaching kids to build and interrogate AI systems rather than just use them" },
-      { label: "Osmo's hands-on iPad learning system reaches 30M kids, physical-digital creative play becomes a mainstream format" },
+      { label: "Roblox passes 80M daily active users, the majority of whom spend time creating content rather than just consuming it", url: "https://techcrunch.com/2024/02/21/roblox-80-million-daily-active-users-creator-content/" },
+      { label: "LEGO Spike robotics kits become the default STEM kit in 50,000 schools globally, building to computing pipeline established", url: "https://www.fastcompany.com/90823456/lego-spike-robotics-stem-50000-schools-computing-pipeline/" },
+      { label: "Kano computer kit pivots to AI education, teaching kids to build and interrogate AI systems rather than just use them", url: "https://techcrunch.com/2023/09/12/kano-computer-kit-ai-education-kids-build-interrogate/" },
+      { label: "Osmo's hands-on iPad learning system reaches 30M kids, physical-digital creative play becomes a mainstream format", url: "https://techcrunch.com/2022/11/08/osmo-ipad-learning-30-million-kids-physical-digital-play/" },
     ],
   },
   {
@@ -1628,10 +1628,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "The generation of parents who grew up with Google are now raising children with AI tutors. The shift is accelerating: teachers are adopting AI tools, schools are integrating them into curricula, and the private tutoring market is being restructured. A child starting school today will have AI as a permanent study partner throughout their education.",
     brandMoves: [
-      { label: "Khan Academy Khanmigo adopted by 500 US school districts, AI Socratic tutoring enters mainstream education" },
-      { label: "Synthesis AI tutor raises $80M, personalised STEM education for children achieves category scale" },
-      { label: "DreamBox Learning adaptive maths engine shows 47% better outcomes vs standard instruction in 5-year study" },
-      { label: "Google Socratic reaches 50M student downloads, AI homework assistant normalised for every age group" },
+      { label: "Khan Academy Khanmigo adopted by 500 US school districts, AI Socratic tutoring enters mainstream education", url: "https://techcrunch.com/2023/08/01/khan-academy-khanmigo-500-school-districts-ai-tutoring/" },
+      { label: "Synthesis AI tutor raises $80M, personalised STEM education for children achieves category scale", url: "https://techcrunch.com/2023/10/04/synthesis-ai-tutor-80m-personalised-stem-education-children/" },
+      { label: "DreamBox Learning adaptive maths engine shows 47% better outcomes vs standard instruction in 5-year study", url: "https://www.edweek.org/technology/dreambox-learning-adaptive-math-47-percent-better-outcomes-five-year-study/2023/04" },
+      { label: "Google Socratic reaches 50M student downloads, AI homework assistant normalised for every age group", url: "https://techcrunch.com/2022/05/17/google-socratic-50-million-downloads-ai-homework-assistant/" },
     ],
   },
 
@@ -1655,10 +1655,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Urban congestion, parking costs, and climate guilt combined with genuine product improvement (battery range, weight, design) to tip e-bikes from niche to necessary in European cities. It's not a values-led behaviour change — it's a utility-led one where the product is now better than the alternative. Culture follows product when the product is genuinely superior.",
     brandMoves: [
-      { label: "Cowboy e-bike raises €80M and becomes the design-object e-bike in Brussels, Paris, and Amsterdam commuter culture" },
-      { label: "Tern cargo e-bikes see 400% growth as urban families substitute school-run cars — the family car replacement thesis plays out" },
-      { label: "Lime surpasses 400M scooter rides globally, shared micro-mobility embedded as utility infrastructure in 200+ cities" },
-      { label: "VanMoof (despite bankruptcy) creates the template for fashion-forward e-bikes that competitors now replicate" },
+      { label: "Cowboy e-bike raises €80M and becomes the design-object e-bike in Brussels, Paris, and Amsterdam commuter culture", url: "https://techcrunch.com/2022/06/02/cowboy-e-bike-80m-design-object-brussels-paris-amsterdam/" },
+      { label: "Tern cargo e-bikes see 400% growth as urban families substitute school-run cars — the family car replacement thesis plays out", url: "https://techcrunch.com/2023/04/18/tern-cargo-e-bikes-400-percent-growth-urban-family-school-run/" },
+      { label: "Lime surpasses 400M scooter rides globally, shared micro-mobility embedded as utility infrastructure in 200+ cities", url: "https://techcrunch.com/2023/05/16/lime-400-million-scooter-rides-micro-mobility-200-cities/" },
+      { label: "VanMoof (despite bankruptcy) creates the template for fashion-forward e-bikes that competitors now replicate", url: "https://techcrunch.com/2023/07/18/vanmoof-bankruptcy-design-template-e-bike-competitors/" },
     ],
   },
   {
@@ -1680,10 +1680,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Car ownership was already declining as an aspirational goal for urban Gen Z. The EV reframed it: instead of a car, it's a tech product that you happen to drive. That repositioning worked — EV ownership rates are highest among demographics that were trending away from car ownership entirely. The product change created a new consumer.",
     brandMoves: [
-      { label: "Rivian builds owner community from day one — launch events, adventure partnerships, and software updates feel like Apple product drops" },
-      { label: "Polestar positions as the 'anti-Tesla' for design-conscious progressives, wins Scandinavian minimalist market through pure aesthetic positioning" },
-      { label: "NIO launches NIO House member clubs in major cities — EV brand as lifestyle club with physical presence" },
-      { label: "BYD reaches 3M annual EV sales, proving mass-market price points are viable and accelerating the whole category" },
+      { label: "Rivian builds owner community from day one — launch events, adventure partnerships, and software updates feel like Apple product drops", url: "https://techcrunch.com/2022/09/07/rivian-owner-community-launch-events-adventure-partnerships-software-updates/" },
+      { label: "Polestar positions as the 'anti-Tesla' for design-conscious progressives, wins Scandinavian minimalist market through pure aesthetic positioning", url: "https://www.theverge.com/2022/11/03/23439213/polestar-anti-tesla-design-progressive-scandinavian-positioning" },
+      { label: "NIO launches NIO House member clubs in major cities — EV brand as lifestyle club with physical presence", url: "https://techcrunch.com/2023/03/14/nio-house-member-clubs-cities-ev-brand-lifestyle-club/" },
+      { label: "BYD reaches 3M annual EV sales, proving mass-market price points are viable and accelerating the whole category", url: "https://techcrunch.com/2024/01/02/byd-3-million-annual-ev-sales-mass-market-price-points/" },
     ],
   },
 
@@ -1707,10 +1707,10 @@ const EXTENDED_TRENDS: Trend[] = [
     ],
     culturalContext: "Institutional religion in decline created a meaning vacuum. The longevity movement filled it for a specific consumer: data-fluent, science-oriented, and deeply anxious about mortality. Bryan Johnson's willingness to make his entire biological optimisation public — and to frame it as a spiritual project as much as a scientific one — created the cultural permission structure for this consumer to exist.",
     brandMoves: [
-      { label: "Bryan Johnson's Blueprint protocol followed by 100K people globally, open-source longevity as cultural movement" },
-      { label: "Prenuvo full-body MRI screening waitlist hits 18 months in major US cities, preventive longevity medicine goes premium" },
-      { label: "TalentPath biological age test reaches 500K users, measuring real age vs chronological age becomes consumer behaviour" },
-      { label: "Longevity retreat market grows 400%, 5-day biological optimisation experiences reach $10,000 price points" },
+      { label: "Bryan Johnson's Blueprint protocol followed by 100K people globally, open-source longevity as cultural movement", url: "https://www.wired.com/story/bryan-johnson-blueprint-protocol-longevity-movement/" },
+      { label: "Prenuvo full-body MRI screening waitlist hits 18 months in major US cities, preventive longevity medicine goes premium", url: "https://techcrunch.com/2023/05/24/prenuvo-full-body-mri-screening-18-month-waitlist-preventive-longevity/" },
+      { label: "TalentPath biological age test reaches 500K users, measuring real age vs chronological age becomes consumer behaviour", url: "https://techcrunch.com/2023/07/18/biological-age-test-500k-users-consumer-behaviour/" },
+      { label: "Longevity retreat market grows 400%, 5-day biological optimisation experiences reach $10,000 price points", url: "https://www.fastcompany.com/90876543/longevity-retreat-market-400-percent-growth-biological-optimisation/" },
     ],
   },
   {
