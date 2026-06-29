@@ -517,7 +517,12 @@ export default function HomePage() {
         const data = await res.json();
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
         const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
-        const newDynamic = assignUniqueColors([...baseTrends, ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) }))]);
+        const allCombined = [...baseTrends, ...sorted.map(item => item.trend)];
+        const newDynamic = assignUniqueColors(
+          allCombined
+            .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+            .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
+        );
         setDynamicTrends(newDynamic);
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(sorted.flatMap(i => i.signals));
@@ -592,14 +597,17 @@ export default function HomePage() {
     if (libraryTrends.length) {
       setDynamicTrends(prev => {
         const existingIds = new Set(prev.map(t => t.id));
-        const fresh = libraryTrends
-          .filter(t => !existingIds.has(t.id))
-          .map((t, i) => ({ ...t, position: computeTrendPosition(prev.length + i) }));
-        const combined = assignUniqueColors([...prev, ...fresh]);
+        const fresh = libraryTrends.filter(t => !existingIds.has(t.id));
+        // Re-sort ALL trends by relevance and reassign every position so
+        // highest relevance is always top-left, next is right of it, etc.
+        const combined = assignUniqueColors(
+          [...prev, ...fresh]
+            .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+            .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
+        );
         setAppliedDynamicTrends(combined);
         return combined;
       });
-      // Fit the whole board so both topics are visible
       setTimeout(() => fitViewRef.current?.(), 100);
       return;
     }
@@ -623,6 +631,7 @@ export default function HomePage() {
       const kept = assignUniqueColors(
         prev
           .filter(t => remaining.some(tp => (t.topics ?? []).includes(tp)))
+          .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
           .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
       );
       setAppliedDynamicTrends(kept);
