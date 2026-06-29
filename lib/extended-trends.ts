@@ -1947,13 +1947,13 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   "future-of-work": [],
 };
 
-// All cultural topics available in autocomplete — any domain can be explored
-// through the emerging tech lens (dating → AI apps, coffee → biotech ingredients, etc.)
+// All topics available in autocomplete.
+// "Tech" here means the consumer-facing emerging technologies (AI, AR/VR, robotics,
+// space, web3) paired with any cultural domain. Deep-niche tech (synthetic biology,
+// cybersecurity, medtech) is excluded — too far from the culture-meets-tech angle.
 export const LIBRARY_TOPICS = [
-  // Tech-native topics
-  "ai", "biotech", "robotics", "climate-tech", "space", "web3",
-  "ar-vr", "fintech", "medtech", "smart-home", "cybersecurity",
-  "synthetic-biology", "future-of-work",
+  // Emerging tech lenses
+  "ai", "robotics", "space", "web3", "ar-vr", "fintech", "smart-home", "future-of-work",
   // Culture × tech intersections
   "fashion", "beauty", "gaming", "wellness", "food-tech", "mental-health",
   "sustainability", "health", "interior-design", "travel", "fitness",
