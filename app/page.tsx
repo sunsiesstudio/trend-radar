@@ -520,8 +520,10 @@ export default function HomePage() {
 
   const addTopic = useCallback(async (raw: string) => {
     const key = normaliseTopicKey(raw);
-    if (!key || (activeTopics.length === 1 && activeTopics[0] === key)) return;
-    setActiveTopics([key]);
+    if (!key || activeTopics.includes(key)) return;
+    const newTopics = [...activeTopics, key];
+    setActiveTopics(newTopics);
+    setAppliedTopics(newTopics);
     setGenerationError(null);
 
     if (!topicAddedAt[key]) {
@@ -531,16 +533,53 @@ export default function HomePage() {
       try { localStorage.setItem("ar_topicAddedAt", JSON.stringify(next)); } catch { /* ignore */ }
     }
 
-    await loadTopic(key);
-  }, [activeTopics, loadTopic, topicAddedAt]);
+    // If this is the first topic, load fresh
+    if (activeTopics.length === 0) {
+      await loadTopic(key);
+      return;
+    }
 
-  const removeTopic = useCallback(() => {
-    setActiveTopics([]);
-    setAppliedTopics([]);
-    setDynamicTrends([]);
-    setAppliedDynamicTrends([]);
-    setGeneratedSignals([]);
-  }, []);
+    // Append this topic's trends to the existing board
+    const libraryTrends = [...(TOPIC_LIBRARY[key] ?? [])]
+      .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0));
+
+    if (libraryTrends.length) {
+      setDynamicTrends(prev => {
+        const existingIds = new Set(prev.map(t => t.id));
+        const fresh = libraryTrends
+          .filter(t => !existingIds.has(t.id))
+          .map((t, i) => ({ ...t, position: computeTrendPosition(prev.length + i) }));
+        const combined = [...prev, ...fresh];
+        setAppliedDynamicTrends(combined);
+        return combined;
+      });
+      setTimeout(() => setFocusIdx(0), 60);
+      return;
+    }
+
+    // No library trends — generate and append
+    await runGeneration(key, newTopics, dynamicTrends);
+  }, [activeTopics, dynamicTrends, loadTopic, runGeneration, topicAddedAt]);
+
+  const removeTopic = useCallback((topic: string) => {
+    const remaining = activeTopics.filter(t => t !== topic);
+    setActiveTopics(remaining);
+    setAppliedTopics(remaining);
+    if (remaining.length === 0) {
+      setDynamicTrends([]);
+      setAppliedDynamicTrends([]);
+      setGeneratedSignals([]);
+      return;
+    }
+    // Keep only trends that belong to at least one remaining topic
+    setDynamicTrends(prev => {
+      const kept = prev
+        .filter(t => remaining.some(tp => (t.topics ?? []).includes(tp)))
+        .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+      setAppliedDynamicTrends(kept);
+      return kept;
+    });
+  }, [activeTopics]);
 
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
@@ -634,7 +673,7 @@ export default function HomePage() {
                 {topic}
               </span>
               <button
-                onClick={() => removeTopic()}
+                onClick={() => removeTopic(topic)}
                 style={{ background: "none", border: "none", padding: 0, marginLeft: 2, cursor: "pointer", fontSize: 13, color: darkenColor(color, 0.55), lineHeight: 1, display: "flex", alignItems: "center" }}
                 aria-label={`Remove ${topic}`}
               >×</button>
