@@ -1060,7 +1060,7 @@ export default function HomePage() {
                           value={emptySearchInput}
                           onChange={(e) => setEmptySearchInput(e.target.value)}
                           onBlur={() => setTimeout(() => setEmptySearchInput(v => { return v; }), 150)}
-                          placeholder="search any topic…"
+                          placeholder="search a topic…"
                           style={{
                             width: "100%", boxSizing: "border-box",
                             height: 48, padding: "0 52px 0 20px",

@@ -38,6 +38,19 @@ export const TOPIC_COLORS: Record<string, string> = {
   mobility:          "#FFB04A",
   spirituality:      "#C4A0CE",
   coffee:            "#FD8326",
+  ai:                "#FFD65C",
+  biotech:           "#53A373",
+  robotics:          "#8C93C7",
+  "climate-tech":    "#A7D47C",
+  space:             "#C4A0CE",
+  web3:              "#FFB04A",
+  "ar-vr":           "#78C9A8",
+  fintech:           "#FD8326",
+  medtech:           "#FF8BB4",
+  "smart-home":      "#B6D693",
+  cybersecurity:     "#8C93C7",
+  "synthetic-biology":"#53A373",
+  "future-of-work":  "#FFD65C",
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
@@ -73,6 +86,19 @@ export const TOPIC_DESCRIPTIONS: Record<string, string> = {
   mobility:          "Urban mobility is being renegotiated. EVs, e-bikes, scooters, and autonomous vehicles are all competing for the same space. The car is becoming a software product and the city is the UI.",
   spirituality:      "Modern spirituality has become a consumer category. Crystals, astrology apps, sound healing, micro-dosing retreats: all intersecting with wellness, beauty, and tech in ways that are commercially serious.",
   coffee:            "Coffee is a bellwether for consumer taste. Specialty, functional, adaptogenic: each wave has pulled the category further from commodity toward lifestyle signal. The third wave has a fourth one behind it.",
+  ai:                "AI has moved from research lab to consumer product faster than any technology in history. The question is no longer whether AI will change your industry — it's which layer of your stack gets replaced first and by whom.",
+  biotech:           "Biotech is crossing out of the clinic and into the consumer. GLP-1 drugs, gene editing, personalised diagnostics, and longevity science are all arriving in the mainstream at the same time. The body is becoming a design surface.",
+  robotics:          "Robotics is finally leaving the factory floor. Humanoid robots, AI-powered logistics, autonomous agriculture, and consumer companion bots are all in commercial deployment. The labour question is not theoretical anymore.",
+  "climate-tech":    "Climate tech is the biggest capital story of the decade. Carbon markets, green hydrogen, next-gen batteries, and climate adaptation infrastructure are all attracting serious money. The tension is between speed and greenwash.",
+  space:             "Space has been privatised and the pace has changed completely. Satellite constellations, lunar logistics, space tourism, and in-orbit manufacturing are all live commercial categories. The overview effect is becoming a product.",
+  web3:              "Web3 had its hype crash and is rebuilding on actual use cases. Stablecoins, tokenised real-world assets, on-chain loyalty, and AI-crypto convergence are where the serious builders went after the speculation burned out.",
+  "ar-vr":           "Spatial computing is past the headset wars and into the platform question. Apple Vision Pro, Meta Quest, and AR glasses from every major hardware maker are fighting for the interface layer that sits between you and the world.",
+  fintech:           "Fintech has eaten the bank from the edges and is now going after the core. Embedded finance, AI-underwriting, crypto-native banking, and open banking APIs are restructuring who controls your money and how.",
+  medtech:           "Medical technology is accelerating into consumer hands. Continuous glucose monitors, AI diagnostics, at-home lab testing, and surgical robotics are all crossing the line between clinical and personal. The patient is becoming the product.",
+  "smart-home":      "The smart home is moving from gadgets to infrastructure. AI-native home OS, matter-compatible devices, energy management systems, and ambient computing are turning the home into a responsive, learning environment.",
+  cybersecurity:     "Cybersecurity is a growth category driven by threat. AI-generated attacks, deepfake fraud, critical infrastructure vulnerabilities, and post-quantum cryptography are pushing security from IT budget line to board-level priority.",
+  "synthetic-biology": "Synthetic biology is programming living systems. Biofabricated materials, lab-grown leather, engineered microbiomes, and DNA data storage are all coming out of the lab. The living factory is the next industrial revolution.",
+  "future-of-work":  "Work is being structurally redesigned by AI, remote infrastructure, and generational expectation shifts. The office, the career ladder, and the 40-hour week are all being renegotiated simultaneously.",
 };
 
 const TOPIC_ALIASES: Record<string, string> = {
@@ -93,7 +119,6 @@ const TOPIC_ALIASES: Record<string, string> = {
   // health
   "health tech":      "health",
   "healthtech":       "health",
-  "biotech":          "wellness",
   "well-being":       "wellness",
   "wellbeing":        "wellness",
   // sustainability
@@ -101,9 +126,85 @@ const TOPIC_ALIASES: Record<string, string> = {
   "environment":      "sustainability",
   "green":            "sustainability",
   "climate":          "sustainability",
-  // tech
+  // tech (generic fallback only)
   "technology":       "tech",
-  "ai":               "tech",
+  // ai
+  "artificial intelligence": "ai",
+  "machine learning": "ai",
+  "llm":              "ai",
+  "generative ai":    "ai",
+  "gpt":              "ai",
+  // biotech
+  "biotech":          "biotech",
+  "biotechnology":    "biotech",
+  "bio":              "biotech",
+  "longevity":        "biotech",
+  // robotics
+  "robots":           "robotics",
+  "automation":       "robotics",
+  "autonomous":       "robotics",
+  "humanoid":         "robotics",
+  // climate tech
+  "climate tech":     "climate-tech",
+  "cleantech":        "climate-tech",
+  "clean tech":       "climate-tech",
+  "green tech":       "climate-tech",
+  "net zero":         "climate-tech",
+  "carbon":           "climate-tech",
+  // space
+  "space tech":       "space",
+  "aerospace":        "space",
+  "satellites":       "space",
+  "astronaut":        "space",
+  // web3
+  "crypto":           "web3",
+  "blockchain":       "web3",
+  "nft":              "web3",
+  "defi":             "web3",
+  "ethereum":         "web3",
+  "bitcoin":          "web3",
+  "tokens":           "web3",
+  // ar / vr
+  "ar":               "ar-vr",
+  "vr":               "ar-vr",
+  "xr":               "ar-vr",
+  "spatial computing":"ar-vr",
+  "mixed reality":    "ar-vr",
+  "metaverse":        "ar-vr",
+  "headset":          "ar-vr",
+  // fintech
+  "fintech":          "fintech",
+  "payments":         "fintech",
+  "banking":          "fintech",
+  "investing":        "fintech",
+  "money":            "fintech",
+  "insurtech":        "fintech",
+  // medtech
+  "medtech":          "medtech",
+  "medical tech":     "medtech",
+  "diagnostics":      "medtech",
+  "wearables":        "medtech",
+  // smart home
+  "smart home":       "smart-home",
+  "iot":              "smart-home",
+  "home automation":  "smart-home",
+  "connected home":   "smart-home",
+  // cybersecurity
+  "cyber":            "cybersecurity",
+  "hacking":          "cybersecurity",
+  "privacy":          "cybersecurity",
+  "security":         "cybersecurity",
+  // synthetic biology
+  "synthetic biology":"synthetic-biology",
+  "synbio":           "synthetic-biology",
+  "biofabrication":   "synthetic-biology",
+  "lab grown":        "synthetic-biology",
+  // future of work
+  "future of work":   "future-of-work",
+  "remote work":      "future-of-work",
+  "work":             "future-of-work",
+  "workplace":        "future-of-work",
+  "hr tech":          "future-of-work",
   // interior design
   "interior design":  "interior-design",
   "interiors":        "interior-design",
@@ -150,7 +251,6 @@ const TOPIC_ALIASES: Record<string, string> = {
   // creativity
   "creative":         "creativity",
   "creative industries": "creativity",
-  "generative ai":    "creativity",
   "illustration":     "creativity",
   "graphic design":   "creativity",
   "visual art":       "art",
@@ -213,13 +313,10 @@ const TOPIC_ALIASES: Record<string, string> = {
   "dogs":             "pets",
   "cats":             "pets",
   "animal":           "pets",
-  // finance
-  "fintech":          "finance",
-  "money":            "finance",
-  "investing":        "finance",
-  "crypto":           "finance",
-  "banking":          "finance",
-  "payments":         "finance",
+  // finance (general personal finance)
+  "personal finance": "finance",
+  "bnpl":             "finance",
+  "stock market":     "stock",
   // parenting
   "baby":             "parenting",
   "family":           "parenting",
@@ -1834,6 +1931,20 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   kids:             EXTENDED_TRENDS.filter(t => t.topics?.includes("kids")),
   mobility:         EXTENDED_TRENDS.filter(t => t.topics?.includes("mobility")),
   spirituality:     EXTENDED_TRENDS.filter(t => t.topics?.includes("spirituality")),
+  // Emerging tech topics — no pre-built library trends; fall through to AI generation
+  ai:               [],
+  biotech:          [],
+  robotics:         [],
+  "climate-tech":   [],
+  space:            [],
+  web3:             [],
+  "ar-vr":          [],
+  fintech:          [],
+  medtech:          [],
+  "smart-home":     [],
+  cybersecurity:    [],
+  "synthetic-biology": [],
+  "future-of-work": [],
 };
 
 // All topics available in the library, used for autocomplete suggestions
