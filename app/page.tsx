@@ -463,26 +463,23 @@ export default function HomePage() {
     );
   }, [emptySearchInput, activeTopics]);
 
-  // Extracted so it can be called both on first add and on retry
-  const runGeneration = useCallback(async (key: string, newTopics: string[]) => {
+  const runGeneration = useCallback(async (key: string, newTopics: string[], baseTrends: Trend[] = []) => {
     setGeneratingTopic(key);
     setGenerationError(null);
     try {
-      const existingIds = dynamicTrends.map(t => t.id);
       const res = await fetch("/api/generate-trends", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: key, existingTrendIds: existingIds, positionOffset: dynamicTrends.length }),
+        body: JSON.stringify({ topic: key, existingTrendIds: baseTrends.map(t => t.id), positionOffset: baseTrends.length }),
       });
       if (res.ok) {
         const data = await res.json();
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
         const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
-        const offset = dynamicTrends.length;
-        const newDynamic = [...dynamicTrends, ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(offset + i) }))];
+        const newDynamic = [...baseTrends, ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) }))];
         setDynamicTrends(newDynamic);
         setAppliedDynamicTrends(newDynamic);
-        setGeneratedSignals(prev => [...prev, ...sorted.flatMap(i => i.signals)]);
+        setGeneratedSignals(sorted.flatMap(i => i.signals));
         setGenerationError(null);
         setTimeout(() => setFocusIdx(0), 60);
       } else {
@@ -495,10 +492,13 @@ export default function HomePage() {
       setAppliedTopics(newTopics);
       setGeneratingTopic(null);
     }
-  }, [dynamicTrends]);
+  }, []);
 
   const loadTopic = useCallback(async (key: string) => {
     setAppliedTopics([key]);
+    setDynamicTrends([]);
+    setAppliedDynamicTrends([]);
+    setGeneratedSignals([]);
     const libraryTrends = [...(TOPIC_LIBRARY[key] ?? [])]
       .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
       .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
@@ -508,7 +508,7 @@ export default function HomePage() {
       setTimeout(() => setFocusIdx(0), 60);
       return;
     }
-    await runGeneration(key, [key]);
+    await runGeneration(key, [key], []);
   }, [runGeneration]);
 
   const retryGeneration = useCallback(() => {
