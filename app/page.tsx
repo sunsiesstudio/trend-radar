@@ -51,9 +51,11 @@ function accessibleTextColor(hex: string): string {
   return darkenColor(hex, f);
 }
 
-// Compact grid for dynamically added trends — 3 columns, 520 px apart.
+// Grid for dynamically added trends — 3 columns, 760 px apart.
+// A large trend blob + full signal orbit extends ~180 px from center,
+// so 760 px between centers gives ~400 px clear gap between adjacent orbits.
 function computeTrendPosition(idx: number): { x: number; y: number } {
-  return { x: 80 + (idx % 3) * 520, y: 80 + Math.floor(idx / 3) * 520 };
+  return { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
 }
 
 // 20-color palette — distinct enough that no two adjacent blobs clash.
@@ -213,15 +215,10 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
 
   visibleTrends.forEach((trend) => {
     const pos = TREND_POSITIONS[trend.id] ?? trend.position ?? { x: 0, y: 0 };
-    // Cap signals per trend so dense boards don't become unreadable:
-    // fewer trends → more signals each; more trends → fewer signals each.
-    const sigLimit = visibleTrends.length <= 1 ? 8 : visibleTrends.length <= 3 ? 6 : visibleTrends.length <= 6 ? 4 : 3;
-    // Pick the most recent signals (newest first), then re-sort oldest-first
-    // so the oldest land closest to the core during placement.
+    // Oldest signals first so they claim the inner slots closest to the core;
+    // newer signals get pushed outward naturally by the placement loop.
     const trendSignals = allSignals
       .filter((s) => s.trendId === trend.id)
-      .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""))
-      .slice(0, sigLimit)
       .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
     const newCount = trendSignals.filter((s) => !seenIds.has(s.id)).length;
     // Use the date when the topic was added to the radar (persisted in localStorage) for color aging
