@@ -535,12 +535,16 @@ export default function HomePage() {
         const data = await res.json();
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
         const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
-        const allCombined = [...baseTrends, ...sorted.map(item => item.trend)];
-        const newDynamic = assignUniqueColors(
-          allCombined
-            .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
-            .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
-        );
+        const newDynamic = baseTrends.length > 0
+          // Appending to an existing board: keep existing positions, place new trends after
+          ? assignUniqueColors([
+              ...baseTrends,
+              ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) })),
+            ])
+          // First load: sort by relevance so highest score is top-left
+          : assignUniqueColors(
+              sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(i) }))
+            );
         setDynamicTrends(newDynamic);
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(sorted.flatMap(i => i.signals));
@@ -640,13 +644,11 @@ export default function HomePage() {
       setDynamicTrends(prev => {
         const existingIds = new Set(prev.map(t => t.id));
         const fresh = libraryTrends.filter(t => !existingIds.has(t.id));
-        // Re-sort ALL trends by relevance and reassign every position so
-        // highest relevance is always top-left, next is right of it, etc.
-        const combined = assignUniqueColors(
-          [...prev, ...fresh]
-            .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
-            .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
-        );
+        // Keep existing trends in their current positions; append new ones after
+        const combined = assignUniqueColors([
+          ...prev,
+          ...fresh.map((t, i) => ({ ...t, position: computeTrendPosition(prev.length + i) })),
+        ]);
         setAppliedDynamicTrends(combined);
         return combined;
       });
@@ -668,12 +670,13 @@ export default function HomePage() {
       setGeneratedSignals([]);
       return;
     }
-    // Keep only trends that belong to at least one remaining topic
+    // Keep only trends that belong to at least one remaining topic,
+    // preserving their visual order (top-left first) and closing any gaps
     setDynamicTrends(prev => {
       const kept = assignUniqueColors(
         prev
           .filter(t => remaining.some(tp => (t.topics ?? []).includes(tp)))
-          .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+          .sort((a, b) => (a.position?.y ?? 0) - (b.position?.y ?? 0) || (a.position?.x ?? 0) - (b.position?.x ?? 0))
           .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
       );
       setAppliedDynamicTrends(kept);
