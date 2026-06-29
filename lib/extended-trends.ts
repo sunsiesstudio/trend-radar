@@ -1947,10 +1947,10 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   "future-of-work": [],
 };
 
-// Topics available in autocomplete — only those with a genuine emerging-tech angle.
-// Pure lifestyle topics (coffee, nightlife, spirituality, pets, etc.) are excluded.
+// All cultural topics available in autocomplete — any domain can be explored
+// through the emerging tech lens (dating → AI apps, coffee → biotech ingredients, etc.)
 export const LIBRARY_TOPICS = [
-  // Core tech
+  // Tech-native topics
   "ai", "biotech", "robotics", "climate-tech", "space", "web3",
   "ar-vr", "fintech", "medtech", "smart-home", "cybersecurity",
   "synthetic-biology", "future-of-work",
@@ -1959,13 +1959,14 @@ export const LIBRARY_TOPICS = [
   "sustainability", "health", "interior-design", "travel", "fitness",
   "music", "art", "skincare", "luxury", "food", "creativity",
   "photography", "film", "branding", "retail", "social", "education",
-  "sport", "mobility",
+  "sport", "mobility", "dating", "nightlife", "coffee", "finance",
+  "pets", "parenting", "kids", "spirituality", "fragrance", "jewellery",
 ];
 
 // Curated topics shown on the initial empty state screen
 export const FEATURED_TOPICS = [
-  "ai", "biotech", "fashion", "gaming", "fitness", "food-tech",
-  "sustainability", "ar-vr", "music", "beauty", "retail", "mental-health",
+  "fashion", "beauty", "gaming", "music", "food-tech", "travel",
+  "wellness", "luxury", "dating", "ai", "fitness", "sustainability",
 ];
 
 // ─── Extended Signals ─────────────────────────────────────────────────────────
