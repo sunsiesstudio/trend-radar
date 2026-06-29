@@ -237,18 +237,18 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
             </h3>
           </div>
 
-          {/* Source metadata — light byline, no card */}
-          <div style={{ padding: "0 24px 18px", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 15, lineHeight: 1 }}>{getSourceIcon(signal.source)}</span>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
+          {/* Source metadata — single row, no wrap */}
+          <div style={{ padding: "0 24px 18px", display: "flex", alignItems: "center", gap: 0, minWidth: 0 }}>
+            <span style={{ fontSize: 14, lineHeight: 1, marginRight: 7, flexShrink: 0 }}>{getSourceIcon(signal.source)}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#555", flexShrink: 0 }}>
               {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
             </span>
-            <span style={{ fontSize: 12, color: "#bbb" }}>·</span>
-            <span style={{ fontSize: 12, color: "#999" }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
+            <span style={{ fontSize: 12, color: "#ddd", margin: "0 5px", flexShrink: 0 }}>·</span>
+            <span style={{ fontSize: 12, color: "#aaa", flexShrink: 0 }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
             {fmt(signal.date) && (
               <>
-                <span style={{ fontSize: 12, color: "#bbb" }}>·</span>
-                <span style={{ fontSize: 12, color: "#999" }}>{fmt(signal.date)}</span>
+                <span style={{ fontSize: 12, color: "#ddd", margin: "0 5px", flexShrink: 0 }}>·</span>
+                <span style={{ fontSize: 12, color: "#aaa", flexShrink: 0 }}>{fmt(signal.date)}</span>
               </>
             )}
             {effectiveUrl && (
@@ -257,7 +257,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: textCol, textDecoration: "none", padding: "4px 11px", background: `${trendColor}14`, borderRadius: 20, whiteSpace: "nowrap" }}
+                style={{ marginLeft: "auto", flexShrink: 0, fontSize: 11, fontWeight: 700, color: textCol, textDecoration: "none", padding: "4px 11px", background: `${trendColor}14`, borderRadius: 20, whiteSpace: "nowrap" }}
               >
                 View source →
               </a>
