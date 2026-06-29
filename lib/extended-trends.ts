@@ -1954,6 +1954,7 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
 export const LIBRARY_TOPICS = [
   // Emerging tech lenses
   "ai", "robotics", "space", "web3", "ar-vr", "fintech", "smart-home", "future-of-work",
+  "biotech", "medtech", "climate-tech", "cybersecurity",
   // Culture × tech intersections
   "fashion", "beauty", "gaming", "wellness", "food-tech", "mental-health",
   "sustainability", "health", "interior-design", "travel", "fitness",

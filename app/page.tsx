@@ -298,6 +298,12 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       // Try from blob edge outward — fills closest slots first like petals
       placed = tryPlace(d / 2 + GAP, MAX_R, true);
       if (!placed) placed = tryPlace(MAX_R + 3, MAX_R * 2, false);
+      // Last resort: push far out in the signal's natural direction so it never
+      // lands inside the trend blob (default x=cx,y=cy would centre it on the blob).
+      if (!placed) {
+        x = cx + (MAX_R * 2.5) * Math.cos(baseAngle) - w / 2;
+        y = cy + (MAX_R * 2.5) * Math.sin(baseAngle) - sigH / 2;
+      }
 
       const entry: P = { sig, w, h: sigH, fillAlpha, borderAlpha, isNew: !seenIds.has(sig.id), x, y };
       placements.push(entry);
