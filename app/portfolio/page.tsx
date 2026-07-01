@@ -16,58 +16,92 @@ function toRad(deg: number) {
 
 /* ── Disciplines ───────────────────────────────────────────────────────────── */
 const DISCIPLINES = [
-  { id: "interaction", label: "Interaction Design",  sub: "AR/VR · Filters\nMasters Projects",          angleDeg: 270 },
-  { id: "brand",       label: "Brand Design",         sub: "Be in Crypto · Rebrandings\nBrandings",       angleDeg: 330 },
-  { id: "speculative", label: "Speculative Design",   sub: "End of Emotional Privacy\nPhobos",            angleDeg: 30  },
-  { id: "3d",          label: "3D Printing",           sub: "Sunsies",                                    angleDeg: 90  },
-  { id: "strategy",    label: "Strategy & Research",  sub: "Augmented Rarity\nTools Building",            angleDeg: 150 },
-  { id: "product",     label: "Product Design",        sub: "Guestline\nCase Studies",                    angleDeg: 210 },
+  { id: "interaction", label: "Interaction Design",  sub: "AR/VR · Filters\nMasters Projects",       angleDeg: 270 },
+  { id: "brand",       label: "Brand Design",         sub: "Be in Crypto · Rebrandings\nBrandings",    angleDeg: 330 },
+  { id: "speculative", label: "Speculative Design",   sub: "End of Emotional Privacy\nPhobos",         angleDeg: 30  },
+  { id: "3d",          label: "3D Printing",           sub: "Sunsies",                                 angleDeg: 90  },
+  { id: "strategy",    label: "Strategy & Research",  sub: "Augmented Rarity\nTools Building",         angleDeg: 150 },
+  { id: "product",     label: "Product Design",        sub: "Guestline\nCase Studies",                 angleDeg: 210 },
 ];
 
 const NODES = DISCIPLINES.map((d) => {
   const a = toRad(d.angleDeg);
-  return {
-    ...d,
-    x: CX + ARR_R * Math.cos(a),
-    y: CY + ARR_R * Math.sin(a),
-  };
+  return { ...d, x: CX + ARR_R * Math.cos(a), y: CY + ARR_R * Math.sin(a) };
 });
 
-/* ── Image placeholders ────────────────────────────────────────────────────── */
-const IMAGES = [
-  // ── Interaction Design  (node ~700, 362) ──────────────────────────────────
-  { x: 502, y: 52,  w: 128, h: 90,  rot: -2 },
-  { x: 692, y: 36,  w: 88,  h: 112, rot:  3 },
-  { x: 848, y: 68,  w: 118, h: 84,  rot: -4 },
-  { x: 468, y: 202, w: 102, h: 74,  rot:  5 },
-  { x: 862, y: 198, w: 88,  h: 112, rot: -3 },
-
-  // ── Brand Design  (node ~870, 460) ────────────────────────────────────────
-  { x: 1022, y: 192, w: 112, h: 80,  rot: -3 },
-  { x: 1170, y: 282, w: 88,  h: 112, rot:  2 },
-  { x: 1174, y: 422, w: 128, h: 88,  rot: -4 },
-
-  // ── Speculative Design  (node ~870, 656) ──────────────────────────────────
-  { x: 1158, y: 575, w: 88,  h: 112, rot: -2 },
-  { x: 1162, y: 730, w: 128, h: 88,  rot:  4 },
-  { x: 988,  y: 838, w: 112, h: 80,  rot: -3 },
-
-  // ── 3D Printing  (node ~700, 754) ─────────────────────────────────────────
-  { x: 520,  y: 898, w: 128, h: 90,  rot:  2 },
-  { x: 688,  y: 948, w: 88,  h: 112, rot: -3 },
-  { x: 854,  y: 904, w: 112, h: 80,  rot: -5 },
-  { x: 610,  y: 1032,w: 120, h: 85,  rot:  4 },
-
-  // ── Strategy & Research  (node ~530, 656) ─────────────────────────────────
-  { x: 90,   y: 586, w: 88,  h: 112, rot: -2 },
-  { x: 96,   y: 752, w: 128, h: 88,  rot:  3 },
-  { x: 306,  y: 856, w: 112, h: 80,  rot:  4 },
-
-  // ── Product Design  (node ~530, 460) ──────────────────────────────────────
-  { x: 140,  y: 212, w: 88,  h: 112, rot:  2 },
-  { x: 80,   y: 374, w: 128, h: 88,  rot: -3 },
-  { x: 322,  y: 88,  w: 112, h: 80,  rot: -5 },
+/* ── Image clusters ────────────────────────────────────────────────────────── */
+/* Each slot: da = angle offset from node direction, r = distance from node   */
+const CLUSTER_CONFIG = [
+  {
+    nodeId: "interaction",
+    slots: [
+      { da: -40, r: 190, w: 128, h: 90,  rot: -2 },
+      { da: -15, r: 245, w: 88,  h: 112, rot:  3 },
+      { da:   0, r: 285, w: 118, h: 84,  rot: -4 },
+      { da:  15, r: 240, w: 102, h: 74,  rot:  5 },
+      { da:  40, r: 185, w: 88,  h: 112, rot: -3 },
+    ],
+  },
+  {
+    nodeId: "brand",
+    slots: [
+      { da: -35, r: 205, w: 112, h: 80,  rot: -3 },
+      { da: -10, r: 255, w: 88,  h: 112, rot:  2 },
+      { da:  10, r: 250, w: 128, h: 88,  rot: -4 },
+      { da:  35, r: 200, w: 96,  h: 68,  rot:  3 },
+    ],
+  },
+  {
+    nodeId: "speculative",
+    slots: [
+      { da: -30, r: 210, w: 88,  h: 112, rot: -2 },
+      { da:   0, r: 265, w: 128, h: 88,  rot:  4 },
+      { da:  30, r: 205, w: 112, h: 80,  rot: -3 },
+    ],
+  },
+  {
+    nodeId: "3d",
+    slots: [
+      { da: -40, r: 195, w: 128, h: 90,  rot:  2 },
+      { da: -12, r: 245, w: 88,  h: 112, rot: -3 },
+      { da:  12, r: 245, w: 112, h: 80,  rot: -5 },
+      { da:  40, r: 190, w: 120, h: 85,  rot:  4 },
+    ],
+  },
+  {
+    nodeId: "strategy",
+    slots: [
+      { da: -30, r: 205, w: 88,  h: 112, rot: -2 },
+      { da:   0, r: 260, w: 128, h: 88,  rot:  3 },
+      { da:  30, r: 200, w: 112, h: 80,  rot:  4 },
+    ],
+  },
+  {
+    nodeId: "product",
+    slots: [
+      { da: -35, r: 200, w: 88,  h: 112, rot:  2 },
+      { da: -10, r: 252, w: 128, h: 88,  rot: -3 },
+      { da:  10, r: 255, w: 112, h: 80,  rot: -5 },
+      { da:  35, r: 202, w: 96,  h: 68,  rot:  2 },
+    ],
+  },
 ];
+
+const IMAGES = CLUSTER_CONFIG.flatMap(({ nodeId, slots }) => {
+  const node = NODES.find((n) => n.id === nodeId)!;
+  const disc = DISCIPLINES.find((d) => d.id === nodeId)!;
+  const baseA = toRad(disc.angleDeg);
+  return slots.map(({ da, r, w, h, rot }) => {
+    const a = baseA + toRad(da);
+    return {
+      x: node.x + r * Math.cos(a) - w / 2,
+      y: node.y + r * Math.sin(a) - h / 2,
+      w,
+      h,
+      rot,
+    };
+  });
+});
 
 const TONES = [
   "#ebe7e0", "#dedad2", "#e6e2db", "#d6d2ca",
@@ -132,47 +166,26 @@ export default function PortfolioPage() {
       {/* ── Diagram ── */}
       <div style={{ width: W, height: H, position: "relative", margin: "0 auto" }}>
 
-        {/* Discipline labels */}
+        {/* Soft glow anchoring each discipline cluster */}
         {NODES.map((n) => (
           <div
-            key={n.id}
+            key={`glow-${n.id}`}
             style={{
               position: "absolute",
               left: n.x,
               top: n.y,
               transform: "translate(-50%, -50%)",
-              textAlign: "center",
+              width: 380,
+              height: 380,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(180,170,158,0.13) 0%, transparent 68%)",
               pointerEvents: "none",
-              width: 180,
-              zIndex: 2,
+              zIndex: 0,
             }}
-          >
-            <div style={{ fontSize: 15.5, fontWeight: 800, color: "#111", lineHeight: 1.18, letterSpacing: "-0.015em", fontFamily: "'EB Garamond',Georgia,serif" }}>
-              {n.label}
-            </div>
-            <div style={{ fontSize: 10, color: "#777", marginTop: 5, fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 500, lineHeight: 1.55, whiteSpace: "pre-line" }}>
-              {n.sub}
-            </div>
-          </div>
+          />
         ))}
 
-        {/* Centre label */}
-        <div
-          style={{
-            position: "absolute", left: CX, top: CY,
-            transform: "translate(-50%, -50%)",
-            textAlign: "center", pointerEvents: "none", zIndex: 2,
-          }}
-        >
-          <div style={{ fontSize: 19, fontWeight: 800, color: "#111", letterSpacing: "-0.025em", fontFamily: "'EB Garamond',Georgia,serif" }}>
-            Martina
-          </div>
-          <div style={{ fontSize: 8, color: "#aaa", fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginTop: 5 }}>
-            Creative Strategist
-          </div>
-        </div>
-
-        {/* Image placeholders */}
+        {/* Image placeholders — orbiting each node */}
         {IMAGES.map((img, i) => (
           <div
             key={i}
@@ -191,6 +204,46 @@ export default function PortfolioPage() {
             <div style={{ position: "absolute", inset: 5, border: "1px solid rgba(0,0,0,0.07)", borderRadius: 1 }} />
           </div>
         ))}
+
+        {/* Discipline labels — on top of images */}
+        {NODES.map((n) => (
+          <div
+            key={n.id}
+            style={{
+              position: "absolute",
+              left: n.x,
+              top: n.y,
+              transform: "translate(-50%, -50%)",
+              textAlign: "center",
+              pointerEvents: "none",
+              width: 180,
+              zIndex: 3,
+            }}
+          >
+            <div style={{ fontSize: 15.5, fontWeight: 800, color: "#111", lineHeight: 1.18, letterSpacing: "-0.015em", fontFamily: "'EB Garamond',Georgia,serif" }}>
+              {n.label}
+            </div>
+            <div style={{ fontSize: 10, color: "#777", marginTop: 5, fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 500, lineHeight: 1.55, whiteSpace: "pre-line" }}>
+              {n.sub}
+            </div>
+          </div>
+        ))}
+
+        {/* Centre label */}
+        <div
+          style={{
+            position: "absolute", left: CX, top: CY,
+            transform: "translate(-50%, -50%)",
+            textAlign: "center", pointerEvents: "none", zIndex: 3,
+          }}
+        >
+          <div style={{ fontSize: 19, fontWeight: 800, color: "#111", letterSpacing: "-0.025em", fontFamily: "'EB Garamond',Georgia,serif" }}>
+            Martina
+          </div>
+          <div style={{ fontSize: 8, color: "#aaa", fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginTop: 5 }}>
+            Creative Strategist
+          </div>
+        </div>
       </div>
 
       <div style={{ height: 64 }} />
