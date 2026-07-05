@@ -58,12 +58,12 @@ function computeTrendPosition(idx: number): { x: number; y: number } {
   return { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
 }
 
-// 20-color palette — distinct enough that no two adjacent blobs clash.
+// 20-color palette — muted, earthy tones for an editorial, minimal feel.
 const BOARD_PALETTE = [
-  "#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C",
-  "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C",
-  "#F4A4C0", "#E88B5A", "#9B8FCE", "#94C472", "#EFC54E",
-  "#4A9368", "#6BB9A0", "#B490BE", "#FFA03A", "#95C468",
+  "#B5A48C", "#96A896", "#A4B0C0", "#C4A498", "#9EB4A8",
+  "#C0A8B8", "#A8A8BC", "#B4BC9C", "#C8B098", "#98B0A8",
+  "#C0B4A0", "#A8B8BC", "#B4A4C0", "#ACBC98", "#C0A8A0",
+  "#98A8B8", "#B8C0A4", "#C8A8A4", "#A4ACA4", "#BCA890",
 ];
 
 // Assign palette colors in order so no two trends on the same board share a color.
@@ -145,23 +145,25 @@ function blobFromId(id: string): string {
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
+  // Age dims the border: fresh trends have full-opacity outline, older ones fade.
+  const borderHex = Math.round(blobAgeFactor(data.latestDate) * 255).toString(16).padStart(2, "0");
   return (
     <div style={{ position: "relative" }}>
       <div style={{
         width: data.d, height: data.d,
         borderRadius: blobFromId(data.id),
-        background: blobColor,
+        background: `${data.color}16`,
+        border: `1.5px solid ${data.color}${borderHex}`,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: 22,
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: `0 6px 32px ${data.color}66`,
+        boxShadow: "0 2px 24px rgba(0,0,0,0.06)",
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 400, color: "#111", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 500, color: "rgba(0,0,0,0.35)", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           {data.score}%
         </div>
       </div>
@@ -174,18 +176,18 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
     <div style={{
       width: data.w,
       height: data.h,
-      background: `${data.color}${data.fillAlpha}`,
-      border: `1.5px solid ${data.color}${data.borderAlpha}`,
+      background: `${data.color}0E`,
+      border: `1px solid ${data.color}${data.borderAlpha}`,
       borderRadius: blobFromId(data.id),
       padding: "8px",
       display: "flex", alignItems: "center", justifyContent: "center",
       textAlign: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
+      boxShadow: data.isNew ? `0 2px 12px ${data.color}28` : "none",
       position: "relative",
     }}>
-      <div style={{ fontSize: 9.5, fontWeight: 500, color: "#000", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      <div style={{ fontSize: 9.5, fontWeight: 400, color: "#111", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
         {data.title}
       </div>
     </div>
@@ -316,7 +318,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
-        style: { stroke: trend.color, strokeWidth: 1, opacity: 0.18 },
+        style: { stroke: "#1a1a1a", strokeWidth: 0.6, opacity: 0.08 },
       });
     });
   });
