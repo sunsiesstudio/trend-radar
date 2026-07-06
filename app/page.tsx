@@ -145,25 +145,23 @@ function blobFromId(id: string): string {
 }
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  // Age dims the border: fresh trends have full-opacity outline, older ones fade.
-  const borderHex = Math.round(blobAgeFactor(data.latestDate) * 255).toString(16).padStart(2, "0");
+  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   return (
     <div style={{ position: "relative" }}>
       <div style={{
         width: data.d, height: data.d,
         borderRadius: blobFromId(data.id),
-        background: `${data.color}16`,
-        border: `1.5px solid ${data.color}${borderHex}`,
+        background: blobColor,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: 22,
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: "0 2px 24px rgba(0,0,0,0.06)",
+        boxShadow: `0 6px 32px ${data.color}66`,
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 400, color: "#111", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
           {data.name}
         </div>
-        <div style={{ marginTop: 6, fontSize: 8, fontWeight: 500, color: "rgba(0,0,0,0.35)", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           {data.score}%
         </div>
       </div>
@@ -176,18 +174,18 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
     <div style={{
       width: data.w,
       height: data.h,
-      background: `${data.color}0E`,
-      border: `1px solid ${data.color}${data.borderAlpha}`,
+      background: `${data.color}${data.fillAlpha}`,
+      border: `1.5px solid ${data.color}${data.borderAlpha}`,
       borderRadius: blobFromId(data.id),
       padding: "8px",
       display: "flex", alignItems: "center", justifyContent: "center",
       textAlign: "center",
       cursor: "pointer", userSelect: "none",
       boxSizing: "border-box",
-      boxShadow: data.isNew ? `0 2px 12px ${data.color}28` : "none",
+      boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
       position: "relative",
     }}>
-      <div style={{ fontSize: 9.5, fontWeight: 400, color: "#111", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+      <div style={{ fontSize: 9.5, fontWeight: 500, color: "#000", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {data.title}
       </div>
     </div>
@@ -318,7 +316,7 @@ function buildGraph(extraSignals: Signal[], seenIds: Set<string>, visibleTrends:
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
-        style: { stroke: "#1a1a1a", strokeWidth: 0.6, opacity: 0.08 },
+        style: { stroke: trend.color, strokeWidth: 1, opacity: 0.18 },
       });
     });
   });
