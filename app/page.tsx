@@ -58,12 +58,12 @@ function computeTrendPosition(idx: number): { x: number; y: number } {
   return { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
 }
 
-// 20-color palette — muted, earthy tones for an editorial, minimal feel.
+// 20-color palette — distinct enough that no two adjacent blobs clash.
 const BOARD_PALETTE = [
-  "#B5A48C", "#96A896", "#A4B0C0", "#C4A498", "#9EB4A8",
-  "#C0A8B8", "#A8A8BC", "#B4BC9C", "#C8B098", "#98B0A8",
-  "#C0B4A0", "#A8B8BC", "#B4A4C0", "#ACBC98", "#C0A8A0",
-  "#98A8B8", "#B8C0A4", "#C8A8A4", "#A4ACA4", "#BCA890",
+  "#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C",
+  "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C",
+  "#F4A4C0", "#E88B5A", "#9B8FCE", "#94C472", "#EFC54E",
+  "#4A9368", "#6BB9A0", "#B490BE", "#FFA03A", "#95C468",
 ];
 
 // Assign palette colors in order so no two trends on the same board share a color.
