@@ -19,6 +19,7 @@ export interface Trend {
   geographicalContext?: string;
   culturalContext?: string;
   brandMoves?: Array<{ label: string; url?: string }>;
+  needs?: string[]; // human needs this trend activates, e.g. ["Belonging", "Identity"]
 }
 
 export interface Signal {

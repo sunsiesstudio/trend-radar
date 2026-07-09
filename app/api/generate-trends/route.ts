@@ -64,6 +64,7 @@ Return ONLY valid JSON (no markdown, no explanation):
         { "label": "Another brand name: specific product, collab, or campaign (1 sentence)", "url": "https://otherbrand.com" },
         { "label": "Third brand: what they launched or partnered on (1 sentence)", "url": "https://thirdbrand.com" }
       ],
+      "needs": ["Belonging", "Identity"],
       "relevanceScore": 67,
       "signals": [
         { "id": "signal-id-1", "title": "Specific real headline, dateable and sourced", "summary": "2-3 sentences. What does this actually mean beyond the headline. Why does it matter right now. What does it confirm about where things are heading.", "source": "news", "sourceName": "Publication Name" },
@@ -82,6 +83,7 @@ Return ONLY valid JSON (no markdown, no explanation):
 Rules:
 - IDs must be unique slugs starting with "${topic.toLowerCase().replace(/\s+/g, "-")}-"
 - Do NOT reuse these IDs: ${existingTrendIds.join(", ") || "none"}
+- needs: array of 1-2 human needs this trend activates. Pick from ONLY these exact strings: "Belonging", "Identity", "Meaning", "Status", "Autonomy", "Safety"
 - relevanceScore between 52 and 81
 - signals: exactly 8 items, mix of news and reddit, specific and real-sounding
 - brand_moves: every entry MUST include a url pointing to the brand's main homepage (e.g. https://nike.com, https://lululemon.com)
@@ -105,6 +107,7 @@ Rules:
       macro_context?: string; cultural_context?: string; political_context?: string; geographical_context?: string;
       why_relevant: string; trajectory: string;
       brand_moves?: Array<{ label: string; url?: string }>;
+      needs?: string[];
       relevanceScore: number;
       signals: Array<{ id: string; title: string; summary: string; source: string; sourceName: string }>;
     }>).map((t, i) => ({
@@ -128,6 +131,7 @@ Rules:
         trajectory: t.trajectory,
         nextSteps: [],
         brandMoves: t.brand_moves ?? [],
+        needs: t.needs ?? [],
       },
       signals: t.signals.map((s) => ({
         id: s.id,

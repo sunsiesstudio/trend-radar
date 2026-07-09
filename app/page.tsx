@@ -18,6 +18,7 @@ import { Trend, Signal } from "@/types";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
+import { CultureMap } from "@/components/map/CultureMap";
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
 const CIRCLE_D = 164;
@@ -410,6 +411,7 @@ export default function HomePage() {
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [focusIdx,      setFocusIdx]      = useState(0);
   const [summaryOpen,      setSummaryOpen]      = useState(false);
+  const [activeTab,        setActiveTab]        = useState<"radar" | "culture">("radar");
   const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
     if (typeof window === "undefined") return {};
     try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
@@ -740,6 +742,26 @@ export default function HomePage() {
           onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); setTimeout(() => fitViewRef.current?.(), 80); }}
           style={{ fontSize: 15, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" }}
         >Augmented Radar</button>
+
+        {/* Tab switcher */}
+        <div style={{ display: "flex", background: "#f0ede8", borderRadius: 20, padding: 3, gap: 2 }}>
+          {(["radar", "culture"] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: "4px 14px", borderRadius: 16, border: "none", cursor: "pointer",
+                fontSize: 11, fontWeight: 700, letterSpacing: "0.02em",
+                background: activeTab === tab ? "#fff" : "transparent",
+                color: activeTab === tab ? "#000" : "#999",
+                boxShadow: activeTab === tab ? "0 1px 4px rgba(0,0,0,0.1)" : "none",
+                transition: "all 0.15s ease",
+                textTransform: "capitalize",
+              }}
+            >{tab === "radar" ? "Radar" : "Culture Map"}</button>
+          ))}
+        </div>
+
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {lastUpdated && (
             <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
@@ -1180,24 +1202,27 @@ export default function HomePage() {
             </div>
           </div>
         )}
-        <ReactFlow
-          nodes={graphNodes}
-          edges={graphEdges}
-          nodeTypes={NODE_TYPES}
-          onNodeClick={handleNodeClick}
-          nodesDraggable={false}
-          minZoom={0.06}
-          maxZoom={2}
-          panOnDrag
-          zoomOnPinch
-          zoomOnScroll
-          preventScrolling
-          proOptions={{ hideAttribution: true }}
-          style={{ background: "#ffffff" }}
-        >
-          <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} isDesktop={isDesktop} firstTrendPos={visibleTrends[0]?.position ?? null} />
-          {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
-        </ReactFlow>
+        {activeTab === "culture"
+          ? <CultureMap trends={appliedDynamicTrends} topics={appliedTopics} />
+          : <ReactFlow
+              nodes={graphNodes}
+              edges={graphEdges}
+              nodeTypes={NODE_TYPES}
+              onNodeClick={handleNodeClick}
+              nodesDraggable={false}
+              minZoom={0.06}
+              maxZoom={2}
+              panOnDrag
+              zoomOnPinch
+              zoomOnScroll
+              preventScrolling
+              proOptions={{ hideAttribution: true }}
+              style={{ background: "#ffffff" }}
+            >
+              <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} isDesktop={isDesktop} firstTrendPos={visibleTrends[0]?.position ?? null} />
+              {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
+            </ReactFlow>
+        }
       </div>
 
       {/* Nav bar */}
