@@ -1039,7 +1039,7 @@ export default function HomePage() {
           swipeStart.current = null;
         }}
       >
-        {visibleTrends.length === 0 && (
+        {activeTab === "radar" && visibleTrends.length === 0 && (
           <div style={{
             position: "absolute", inset: 0, zIndex: 1,
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -1202,9 +1202,12 @@ export default function HomePage() {
             </div>
           </div>
         )}
-        {activeTab === "culture"
-          ? <CultureMap trends={appliedDynamicTrends} topics={appliedTopics} />
-          : <ReactFlow
+        {activeTab === "culture" && (
+          <div style={{ position: "absolute", inset: 0 }}>
+            <CultureMap trends={appliedDynamicTrends} topics={appliedTopics} />
+          </div>
+        )}
+        {activeTab === "radar" && <ReactFlow
               nodes={graphNodes}
               edges={graphEdges}
               nodeTypes={NODE_TYPES}
@@ -1221,8 +1224,7 @@ export default function HomePage() {
             >
               <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} isDesktop={isDesktop} firstTrendPos={visibleTrends[0]?.position ?? null} />
               {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
-            </ReactFlow>
-        }
+            </ReactFlow>}
       </div>
 
       {/* Nav bar — hidden on culture map tab */}

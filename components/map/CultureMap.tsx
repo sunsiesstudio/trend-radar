@@ -73,9 +73,11 @@ export function CultureMap({ trends, topics }: Props) {
 
   if (topics.length === 0) {
     return (
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>
-        <div style={{ fontSize: 32, opacity: 0.3 }}>◎</div>
-        <div style={{ fontSize: 13, color: "#aaa", fontFamily: "'DM Sans', sans-serif" }}>Add a topic on the Radar to see the culture map</div>
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12, background: "#F5F2EC" }}>
+        <div style={{ fontSize: 32, opacity: 0.2 }}>◎</div>
+        <div style={{ fontSize: 13, color: "#aaa", fontFamily: "'DM Sans', sans-serif", textAlign: "center", lineHeight: 1.6 }}>
+          Switch to <strong style={{ color: "#888" }}>Radar</strong> and add a topic<br />to populate the culture map
+        </div>
       </div>
     );
   }
@@ -104,7 +106,7 @@ export function CultureMap({ trends, topics }: Props) {
   }));
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
       {/* Map canvas */}
       <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
         <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
