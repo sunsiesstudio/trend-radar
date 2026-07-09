@@ -18,32 +18,50 @@ const NEED_COLORS: Record<Need, string> = {
 
 const VALID_NEEDS = new Set<string>(NEEDS);
 
-function inferNeeds(trend: Trend): Need[] {
+const ZONES = ["emergent", "dominant", "residual"] as const;
+type Zone = typeof ZONES[number];
+
+const ZONE_META: Record<Zone, { label: string; sub: string; color: string }> = {
+  emergent: { label: "EMERGENT",  sub: "avant-garde · early adopters",      color: "#78C9A8" },
+  dominant: { label: "DOMINANT",  sub: "mainstream · mass brands can enter", color: "#FFD65C" },
+  residual: { label: "RESIDUAL",  sub: "saturating · becoming cliché",       color: "#FD8326" },
+};
+
+function inferNeed(trend: Trend): Need {
   const text = `${trend.name} ${trend.description} ${trend.culturalContext ?? ""}`.toLowerCase();
-  const found: Need[] = [];
-  if (/belong|community|connect|together|friend|tribe|shared|relation|dating|loneliness/.test(text)) found.push("Belonging");
-  if (/identity|self|authentic|express|personal|individual|profile|avatar|represent/.test(text)) found.push("Identity");
-  if (/meaning|purpose|value|why|deeper|spiritual|signif|fulfill|ritual|belief/.test(text)) found.push("Meaning");
-  if (/status|prestige|signal|flex|luxury|aspirat|rank|exclusive|premium|clout/.test(text)) found.push("Status");
-  if (/autonom|freedom|control|choice|independ|agency|decentrali|ownership/.test(text)) found.push("Autonomy");
-  if (/safe|nostalg|familiar|comfort|tradition|trust|secure|anchor|roots|slow/.test(text)) found.push("Safety");
-  if (found.length === 0) found.push("Meaning");
-  return found.slice(0, 2);
+  if (/belong|community|connect|together|friend|tribe|shared|relation|dating|loneliness/.test(text)) return "Belonging";
+  if (/identity|self|authentic|express|personal|individual|profile|avatar|represent/.test(text)) return "Identity";
+  if (/status|prestige|signal|flex|luxury|aspirat|rank|exclusive|premium|clout/.test(text)) return "Status";
+  if (/autonom|freedom|control|choice|independ|agency|decentrali|ownership/.test(text)) return "Autonomy";
+  if (/safe|nostalg|familiar|comfort|tradition|trust|secure|anchor|roots|slow/.test(text)) return "Safety";
+  return "Meaning";
 }
 
-function getTrendNeeds(trend: Trend): Need[] {
-  const explicit = (trend.needs ?? []).filter(n => VALID_NEEDS.has(n)) as Need[];
-  return explicit.length > 0 ? explicit : inferNeeds(trend);
+function getTrendNeed(trend: Trend): Need {
+  const explicit = (trend.needs ?? []).find(n => VALID_NEEDS.has(n)) as Need | undefined;
+  return explicit ?? inferNeed(trend);
 }
 
-interface Intersection { topic: string; need: Need; trends: Trend[] }
+function parseZone(trajectory?: string): Zone {
+  const t = (trajectory ?? "").toLowerCase();
+  if (/peak|saturat|matur|declin|plateau|widespread|overdo|waning|slow/.test(t)) return "residual";
+  if (/accelerat|pick.*up|growing|fast|rapid|mainstream|mass|expand|scal|broad/.test(t)) return "dominant";
+  return "emergent";
+}
+
+function fnv(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
+  return h;
+}
 
 interface Props { trends: Trend[]; topics: string[] }
 
 export function CultureMap({ trends, topics }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dims, setDims] = useState({ w: 800, h: 560 });
-  const [selected, setSelected] = useState<Intersection | null>(null);
+  const [dims, setDims] = useState({ w: 900, h: 520 });
+  const [selected, setSelected] = useState<Trend | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -56,20 +74,13 @@ export function CultureMap({ trends, topics }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  const intersections = useMemo(() => {
-    const map: Record<string, Trend[]> = {};
-    trends.forEach(trend => {
-      (trend.topics ?? []).forEach(topic => {
-        if (!topics.includes(topic)) return;
-        getTrendNeeds(trend).forEach(need => {
-          const key = `${topic}--${need}`;
-          if (!map[key]) map[key] = [];
-          if (!map[key].find(t => t.id === trend.id)) map[key].push(trend);
-        });
-      });
-    });
-    return map;
-  }, [trends, topics]);
+  const plotData = useMemo(() =>
+    trends.map(trend => ({
+      trend,
+      need: getTrendNeed(trend),
+      zone: parseZone(trend.trajectory),
+    })),
+  [trends]);
 
   if (topics.length === 0) {
     return (
@@ -83,164 +94,195 @@ export function CultureMap({ trends, topics }: Props) {
   }
 
   const { w, h } = dims;
-  const PAD_X = Math.min(160, w * 0.18);
-  const PAD_Y = 60;
+  const PAD_L = Math.min(124, w * 0.14);
+  const PAD_R = 18;
+  const PAD_T = 18;
+  const PAD_B = 56;
 
-  // Topic nodes — left column, evenly spaced
-  const topicSpacing = topics.length > 1 ? Math.min(110, (h - PAD_Y * 2) / (topics.length - 1)) : 0;
-  const topicStartY  = h / 2 - topicSpacing * (topics.length - 1) / 2;
-  const topicX = PAD_X;
-  const topicNodeR = Math.min(46, Math.max(32, topicSpacing * 0.4));
+  const chartW = w - PAD_L - PAD_R;
+  const chartH = h - PAD_T - PAD_B;
+  const zoneH  = chartH / 3;
+  const needW  = chartW / NEEDS.length;
 
-  // Need nodes — right column, evenly spaced
-  const needSpacing = Math.min(82, (h - PAD_Y * 2) / (NEEDS.length - 1));
-  const needStartY  = h / 2 - needSpacing * (NEEDS.length - 1) / 2;
-  const needX = w - PAD_X;
-  const needNodeR = Math.min(38, Math.max(28, needSpacing * 0.42));
+  const zoneTop: Record<Zone, number> = {
+    emergent: PAD_T,
+    dominant: PAD_T + zoneH,
+    residual: PAD_T + zoneH * 2,
+  };
 
-  const topicPositions = topics.map((topic, i) => ({
-    topic, x: topicX, y: topicStartY + i * topicSpacing,
-  }));
-  const needPositions = NEEDS.map((need, i) => ({
-    need, x: needX, y: needStartY + i * needSpacing,
-  }));
+  // Place each trend as a bubble; use hash for stable jitter within its cell
+  const bubbles = plotData.map(({ trend, need, zone }) => {
+    const needIdx = NEEDS.indexOf(need);
+    const h1 = fnv(trend.id + "x");
+    const h2 = fnv(trend.id + "y");
+    const jx = ((h1 % 10000) / 10000 - 0.5) * needW * 0.52;
+    const jy = ((h2 % 10000) / 10000 - 0.5) * zoneH * 0.52;
+    const cx = PAD_L + (needIdx + 0.5) * needW + jx;
+    const cy = zoneTop[zone] + zoneH * 0.5 + jy;
+    const r  = 11 + (trend.relevanceScore / 100) * 16;
+    const color = TOPIC_COLORS[trend.topics?.[0] ?? ""] ?? trend.color ?? "#bbb";
+    return { trend, need, zone, cx, cy, r, color };
+  });
 
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
-      {/* Map canvas */}
+
+      {/* Chart canvas */}
       <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-        <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
-          {/* Background web lines */}
-          {topicPositions.map(tp =>
-            needPositions.map(np => (
-              <line
-                key={`web-${tp.topic}-${np.need}`}
-                x1={tp.x} y1={tp.y} x2={np.x} y2={np.y}
-                stroke="#ccc" strokeWidth={0.7} opacity={0.45}
-              />
-            ))
-          )}
+        <svg width={w} height={h} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
 
-          {/* Active lines + dots */}
-          {topicPositions.map(tp =>
-            needPositions.map(np => {
-              const key = `${tp.topic}--${np.need}`;
-              const matched = intersections[key];
-              if (!matched?.length) return null;
-              const count = matched.length;
-              const dotX = tp.x + (np.x - tp.x) * 0.5;
-              const dotY = tp.y + (np.y - tp.y) * 0.5;
-              const r = 9 + Math.min(count - 1, 4) * 2;
-              const isSelected = selected?.topic === tp.topic && selected?.need === np.need;
-              return (
-                <g key={`act-${tp.topic}-${np.need}`}>
-                  <line
-                    x1={tp.x} y1={tp.y} x2={np.x} y2={np.y}
-                    stroke={NEED_COLORS[np.need]}
-                    strokeWidth={isSelected ? 2.5 : 1.5}
-                    opacity={isSelected ? 1 : 0.55}
-                  />
-                  <circle
-                    cx={dotX} cy={dotY} r={r}
-                    fill={NEED_COLORS[np.need]}
-                    opacity={isSelected ? 1 : 0.85}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setSelected(isSelected ? null : { topic: tp.topic, need: np.need, trends: matched })}
-                  />
-                  <text x={dotX} y={dotY + 4} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fff" style={{ pointerEvents: "none" }}>
-                    {count}
-                  </text>
-                </g>
-              );
-            })
-          )}
-
-          {/* Topic nodes */}
-          {topicPositions.map(({ topic, x, y }) => {
-            const color = TOPIC_COLORS[topic] ?? "#bbb";
-            const label = topic.replace(/-/g, " ");
+          {/* Zone background bands */}
+          {ZONES.map(zone => {
+            const { color, label, sub } = ZONE_META[zone];
+            const ty = zoneTop[zone];
             return (
-              <g key={topic}>
-                <circle cx={x} cy={y} r={topicNodeR} fill={`${color}22`} stroke={color} strokeWidth={1.5} />
-                <text x={x} y={y + 4} textAnchor="middle" fontSize={Math.min(12, topicNodeR * 0.28)} fontWeight={600} fill="#111" fontFamily="'DM Sans', sans-serif"
-                  style={{ textTransform: "capitalize" }}>
+              <g key={zone}>
+                <rect x={PAD_L} y={ty} width={chartW} height={zoneH}
+                  fill={color + "14"} />
+                {/* Divider line (not for top zone) */}
+                {zone !== "emergent" && (
+                  <line x1={PAD_L} y1={ty} x2={PAD_L + chartW} y2={ty}
+                    stroke="#ddd" strokeWidth={1} strokeDasharray="4 6" />
+                )}
+                {/* Zone label block on left */}
+                <text x={PAD_L - 10} y={ty + zoneH / 2 - 7}
+                  textAnchor="end" fontSize={9} fontWeight={700} fill={color}
+                  letterSpacing="0.08em" fontFamily="'DM Sans', sans-serif">
                   {label}
+                </text>
+                <text x={PAD_L - 10} y={ty + zoneH / 2 + 8}
+                  textAnchor="end" fontSize={8} fill={color + "99"}
+                  fontFamily="'DM Sans', sans-serif">
+                  {sub}
                 </text>
               </g>
             );
           })}
 
-          {/* Need nodes */}
-          {needPositions.map(({ need, x, y }) => {
+          {/* Vertical need guides + bottom labels */}
+          {NEEDS.map((need, i) => {
+            const x = PAD_L + (i + 0.5) * needW;
             const color = NEED_COLORS[need];
-            const active = NEEDS.some(n => n === need && topics.some(t => (intersections[`${t}--${need}`]?.length ?? 0) > 0));
             return (
               <g key={need}>
-                <circle cx={x} cy={y} r={needNodeR} fill="#fff" stroke={active ? color : "#ddd"} strokeWidth={active ? 1.5 : 1} />
-                <text x={x} y={y + 4} textAnchor="middle" fontSize={Math.min(11, needNodeR * 0.3)} fontWeight={500} fill={active ? "#111" : "#bbb"} fontFamily="'DM Sans', sans-serif">
+                <line x1={x} y1={PAD_T} x2={x} y2={PAD_T + chartH}
+                  stroke={color + "40"} strokeWidth={1} strokeDasharray="2 8" />
+                <circle cx={x} cy={PAD_T + chartH + 18} r={4} fill={color} />
+                <text x={x} y={PAD_T + chartH + 34}
+                  textAnchor="middle" fontSize={9} fontWeight={600} fill="#888"
+                  fontFamily="'DM Sans', sans-serif">
                   {need}
                 </text>
               </g>
             );
           })}
 
-          {/* Column labels */}
-          <text x={topicX} y={PAD_Y * 0.55} textAnchor="middle" fontSize={9} fontWeight={700} fill="#bbb" letterSpacing={1} fontFamily="'DM Sans', sans-serif" style={{ textTransform: "uppercase" }}>
-            TOPICS
-          </text>
-          <text x={needX} y={PAD_Y * 0.55} textAnchor="middle" fontSize={9} fontWeight={700} fill="#bbb" letterSpacing={1} fontFamily="'DM Sans', sans-serif" style={{ textTransform: "uppercase" }}>
-            HUMAN NEEDS
-          </text>
+          {/* Bubbles */}
+          {bubbles.map(({ trend, need, cx, cy, r, color }, idx) => {
+            const isSelected = selected?.id === trend.id;
+            // Two-word label for larger bubbles
+            const words = trend.name.split(" ");
+            const labelLine1 = words.slice(0, 2).join(" ");
+            const labelLine2 = words.length > 2 ? words.slice(2, 4).join(" ") : null;
+            return (
+              <g key={`${trend.id}-${need}-${idx}`}
+                style={{ cursor: "pointer" }}
+                onClick={() => setSelected(isSelected ? null : trend)}>
+                {/* Glow ring when selected */}
+                {isSelected && (
+                  <circle cx={cx} cy={cy} r={r + 5} fill="none"
+                    stroke={color} strokeWidth={2} opacity={0.4} />
+                )}
+                <circle cx={cx} cy={cy} r={r}
+                  fill={color + (isSelected ? "ee" : "bb")}
+                  stroke={color}
+                  strokeWidth={isSelected ? 2 : 1.5} />
+                {r >= 16 && (
+                  <>
+                    <text x={cx} y={cy + (labelLine2 ? 0 : 4)}
+                      textAnchor="middle"
+                      fontSize={Math.min(8, r * 0.44)} fontWeight={700} fill="#fff"
+                      style={{ pointerEvents: "none" }}
+                      fontFamily="'DM Sans', sans-serif">
+                      {labelLine1}
+                    </text>
+                    {labelLine2 && (
+                      <text x={cx} y={cy + 11}
+                        textAnchor="middle"
+                        fontSize={Math.min(7, r * 0.4)} fontWeight={600} fill="rgba(255,255,255,0.8)"
+                        style={{ pointerEvents: "none" }}
+                        fontFamily="'DM Sans', sans-serif">
+                        {labelLine2}
+                      </text>
+                    )}
+                  </>
+                )}
+              </g>
+            );
+          })}
+
         </svg>
       </div>
 
-      {/* Selected intersection panel */}
+      {/* Selected trend detail */}
       {selected && (
         <div style={{
           flexShrink: 0, background: "#fff",
           borderTop: "1px solid rgba(0,0,0,0.07)",
-          padding: "12px 20px", maxHeight: 180, overflowY: "auto",
+          padding: "12px 20px 14px", maxHeight: 160, overflowY: "auto",
         }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 9, height: 9, borderRadius: "50%", background: NEED_COLORS[selected.need], display: "inline-block" }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#111" }}>
-                {selected.topic.replace(/-/g, " ")} activates <em>{selected.need}</em>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: selected.color }} />
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {selected.name}
               </span>
-              <span style={{ fontSize: 11, color: "#aaa" }}>— {selected.trends.length} trend{selected.trends.length !== 1 ? "s" : ""}</span>
+              <span style={{
+                fontSize: 9, fontWeight: 700, letterSpacing: "0.07em",
+                color: ZONE_META[parseZone(selected.trajectory)].color,
+                background: ZONE_META[parseZone(selected.trajectory)].color + "22",
+                border: `1px solid ${ZONE_META[parseZone(selected.trajectory)].color}55`,
+                padding: "2px 8px", borderRadius: 10,
+                fontFamily: "'DM Sans', sans-serif",
+              }}>
+                {ZONE_META[parseZone(selected.trajectory)].label}
+              </span>
+              <span style={{ fontSize: 9, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
+                {getTrendNeed(selected)}
+              </span>
             </div>
-            <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", fontSize: 18, color: "#aaa", cursor: "pointer" }}>×</button>
+            <button onClick={() => setSelected(null)}
+              style={{ background: "none", border: "none", fontSize: 18, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0 }}>×</button>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {selected.trends.map(t => (
-              <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: t.color, marginTop: 5, flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#111", marginBottom: 2 }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: "#777", lineHeight: 1.4 }}>{t.description.slice(0, 130)}…</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p style={{ fontSize: 12, color: "#555", lineHeight: 1.65, margin: "0 0 6px", fontFamily: "'DM Sans', sans-serif" }}>
+            {selected.description}
+          </p>
+          {selected.trajectory && (
+            <p style={{ fontSize: 11, color: "#999", fontStyle: "italic", margin: 0, fontFamily: "'DM Sans', sans-serif" }}>
+              {selected.trajectory.slice(0, 180)}{selected.trajectory.length > 180 ? "…" : ""}
+            </p>
+          )}
         </div>
       )}
 
-      {/* Footer: legend + hint */}
+      {/* Footer legend */}
       <div style={{
-        flexShrink: 0, padding: "8px 20px",
+        flexShrink: 0, padding: "7px 20px",
         display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8,
         borderTop: "1px solid rgba(0,0,0,0.05)", background: "#F5F2EC",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          {NEEDS.map(need => (
-            <div key={need} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: NEED_COLORS[need] }} />
-              <span style={{ fontSize: 10, color: "#888", fontFamily: "'DM Sans', sans-serif" }}>{need}</span>
+          {topics.map(t => (
+            <div key={t} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#bbb" }} />
+              <span style={{ fontSize: 10, color: "#888", fontFamily: "'DM Sans', sans-serif" }}>
+                {t.replace(/-/g, " ")}
+              </span>
             </div>
           ))}
         </div>
         <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-          Dots = trends. Tap to explore.
+          Size = relevance · tap to explore
         </span>
       </div>
     </div>
