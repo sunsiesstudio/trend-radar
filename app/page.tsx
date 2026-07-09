@@ -1225,14 +1225,15 @@ export default function HomePage() {
         }
       </div>
 
-      {/* Nav bar */}
+      {/* Nav bar — hidden on culture map tab */}
       <div style={{
         flexShrink: 0, zIndex: 10,
-        height: 80,
+        height: activeTab === "culture" ? 0 : 80,
+        overflow: "hidden",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(255,255,255,0.96)", backdropFilter: "blur(16px)",
-        borderTop: "1px solid rgba(0,0,0,0.07)",
-        padding: "0 24px", gap: 16,
+        borderTop: activeTab === "culture" ? "none" : "1px solid rgba(0,0,0,0.07)",
+        padding: activeTab === "culture" ? 0 : "0 24px", gap: 16,
       }}>
         {visibleTrends.length === 0 ? (
           <div style={{ flex: 1, textAlign: "center", padding: "0 12px" }}>
