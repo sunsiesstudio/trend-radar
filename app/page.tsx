@@ -1204,7 +1204,7 @@ export default function HomePage() {
         )}
         {activeTab === "culture" && (
           <div style={{ position: "absolute", inset: 0 }}>
-            <CultureMap trends={appliedDynamicTrends} topics={appliedTopics} />
+            <CultureMap dynamicTrends={appliedDynamicTrends} />
           </div>
         )}
         {activeTab === "radar" && <ReactFlow
