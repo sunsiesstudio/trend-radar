@@ -104,10 +104,11 @@ interface SelectedGroup {
 }
 
 interface Props {
-  dynamicTrends: Trend[]; // user's AI-generated trends to layer on top
+  dynamicTrends: Trend[];
+  activeTopics: string[]; // currently tracked on the Radar — these get highlighted
 }
 
-export function CultureMap({ dynamicTrends }: Props) {
+export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dims, setDims] = useState({ w: 900, h: 600 });
   const [selected, setSelected] = useState<SelectedGroup | null>(null);
@@ -168,6 +169,12 @@ export function CultureMap({ dynamicTrends }: Props) {
     return { need, x: cx + innerR * Math.cos(angle), y: cy + innerR * Math.sin(angle) };
   });
 
+  // Which cultural domains are the user's active radar topics mapped to?
+  const featuredDomains = new Set<CulturalDomain>(
+    activeTopics.map(t => getDomain(t))
+  );
+  const hasFeatured = featuredDomains.size > 0;
+
   const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
 
   return (
@@ -193,11 +200,17 @@ export function CultureMap({ dynamicTrends }: Props) {
             if (!dNode || !nNode) return null;
 
             const isSelected = selected?.domain === group.domain && selected?.need === group.need;
+            const isFeatured = featuredDomains.has(group.domain);
             const dimmed = selected !== null && !isSelected;
+            const backgrounded = hasFeatured && !isFeatured && !isSelected;
             const count = group.trends.length;
-            const weight = count / maxCount; // 0–1
-            const strokeW = 1 + weight * 4;
-            const opacity = dimmed ? 0.08 : isSelected ? 1 : 0.35 + weight * 0.5;
+            const weight = count / maxCount;
+            const strokeW = backgrounded ? 0.8 + weight * 1.5 : 1.5 + weight * 4.5;
+            const opacity = dimmed ? 0.06
+              : isSelected ? 1
+              : backgrounded ? 0.12 + weight * 0.1
+              : isFeatured ? 0.7 + weight * 0.3
+              : 0.35 + weight * 0.5;
             const mx = (dNode.x + nNode.x) / 2;
             const my = (dNode.y + nNode.y) / 2;
             const color = DOMAIN_COLORS[group.domain];
@@ -212,14 +225,16 @@ export function CultureMap({ dynamicTrends }: Props) {
                 {/* Visible chord */}
                 <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
                   stroke={color} strokeWidth={strokeW} opacity={opacity} />
-                {/* Count badge */}
-                {!dimmed && (
+                {/* Count badge — only shown for featured or selected chords */}
+                {!dimmed && !backgrounded && (
                   <g>
-                    <circle cx={mx} cy={my} r={9} fill={isSelected ? color : "#F5F2EC"}
-                      stroke={color} strokeWidth={1.5} opacity={isSelected ? 1 : 0.9} />
+                    <circle cx={mx} cy={my} r={9}
+                      fill={isSelected ? color : isFeatured ? color : "#F5F2EC"}
+                      stroke={color} strokeWidth={1.5}
+                      opacity={isSelected || isFeatured ? 1 : 0.85} />
                     <text x={mx} y={my + 3.5} textAnchor="middle"
                       fontSize={7.5} fontWeight={700}
-                      fill={isSelected ? "#fff" : color}
+                      fill={isSelected || isFeatured ? "#fff" : color}
                       fontFamily="'DM Sans', sans-serif"
                       style={{ pointerEvents: "none" }}>
                       {count}
@@ -233,7 +248,9 @@ export function CultureMap({ dynamicTrends }: Props) {
           {/* Domain nodes — outer ring */}
           {domainNodes.map(({ domain, x, y }) => {
             const color = DOMAIN_COLORS[domain];
-            const active = groups.some(g => g.domain === domain);
+            const isFeatured = featuredDomains.has(domain);
+            const hasData = groups.some(g => g.domain === domain);
+            const r = isFeatured ? domainNodeR * 1.1 : domainNodeR;
             const words = domain.split(" & ");
             const lines = words.length > 1 ? words : domain.split(" ").reduce<string[][]>((acc, word) => {
               if (!acc.length || acc[acc.length - 1].join(" ").length + word.length > 12) acc.push([word]);
@@ -243,16 +260,21 @@ export function CultureMap({ dynamicTrends }: Props) {
 
             return (
               <g key={domain}>
-                <circle cx={x} cy={y} r={domainNodeR}
-                  fill={active ? `${color}18` : "#f8f7f4"}
-                  stroke={active ? color : "#ddd"}
-                  strokeWidth={active ? 2 : 1} />
+                {/* Extra glow ring for featured domain */}
+                {isFeatured && (
+                  <circle cx={x} cy={y} r={r + 6}
+                    fill="none" stroke={color} strokeWidth={1.5} opacity={0.3} />
+                )}
+                <circle cx={x} cy={y} r={r}
+                  fill={isFeatured ? `${color}28` : hasData ? `${color}12` : "#f8f7f4"}
+                  stroke={isFeatured ? color : hasData ? `${color}99` : "#ddd"}
+                  strokeWidth={isFeatured ? 2.5 : hasData ? 1.5 : 1} />
                 {lines.map((line, li) => (
                   <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
                     textAnchor="middle" dominantBaseline="middle"
-                    fontSize={Math.min(11, domainNodeR * 0.24)}
-                    fontWeight={active ? 600 : 400}
-                    fill={active ? "#111" : "#bbb"}
+                    fontSize={Math.min(isFeatured ? 12 : 11, r * 0.24)}
+                    fontWeight={isFeatured ? 800 : hasData ? 500 : 400}
+                    fill={isFeatured ? "#111" : hasData ? "#444" : "#ccc"}
                     fontFamily="'DM Sans', sans-serif">
                     {line}
                   </text>
