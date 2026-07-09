@@ -18,15 +18,6 @@ const NEED_COLORS: Record<Need, string> = {
 
 const VALID_NEEDS = new Set<string>(NEEDS);
 
-const ZONES = ["emergent", "dominant", "residual"] as const;
-type Zone = typeof ZONES[number];
-
-const ZONE_META: Record<Zone, { label: string; sub: string; color: string }> = {
-  emergent: { label: "EMERGENT",  sub: "avant-garde · early adopters",      color: "#78C9A8" },
-  dominant: { label: "DOMINANT",  sub: "mainstream · mass brands can enter", color: "#FFD65C" },
-  residual: { label: "RESIDUAL",  sub: "saturating · becoming cliché",       color: "#FD8326" },
-};
-
 function inferNeed(trend: Trend): Need {
   const text = `${trend.name} ${trend.description} ${trend.culturalContext ?? ""}`.toLowerCase();
   if (/belong|community|connect|together|friend|tribe|shared|relation|dating|loneliness/.test(text)) return "Belonging";
@@ -42,25 +33,11 @@ function getTrendNeed(trend: Trend): Need {
   return explicit ?? inferNeed(trend);
 }
 
-function parseZone(trajectory?: string): Zone {
-  const t = (trajectory ?? "").toLowerCase();
-  if (/peak|saturat|matur|declin|plateau|widespread|overdo|waning|slow/.test(t)) return "residual";
-  if (/accelerat|pick.*up|growing|fast|rapid|mainstream|mass|expand|scal|broad/.test(t)) return "dominant";
-  return "emergent";
-}
-
-function fnv(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-  h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
-  return h;
-}
-
 interface Props { trends: Trend[]; topics: string[] }
 
 export function CultureMap({ trends, topics }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dims, setDims] = useState({ w: 900, h: 520 });
+  const [dims, setDims] = useState({ w: 900, h: 600 });
   const [selected, setSelected] = useState<Trend | null>(null);
 
   useEffect(() => {
@@ -74,14 +51,6 @@ export function CultureMap({ trends, topics }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  const plotData = useMemo(() =>
-    trends.map(trend => ({
-      trend,
-      need: getTrendNeed(trend),
-      zone: parseZone(trend.trajectory),
-    })),
-  [trends]);
-
   if (topics.length === 0) {
     return (
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12, background: "#F5F2EC" }}>
@@ -94,82 +63,140 @@ export function CultureMap({ trends, topics }: Props) {
   }
 
   const { w, h } = dims;
-  const PAD_L = Math.min(124, w * 0.14);
-  const PAD_R = 18;
-  const PAD_T = 18;
-  const PAD_B = 56;
+  const cx = w / 2;
+  const cy = h / 2;
+  const minDim = Math.min(w, h);
 
-  const chartW = w - PAD_L - PAD_R;
-  const chartH = h - PAD_T - PAD_B;
-  const zoneH  = chartH / 3;
-  const needW  = chartW / NEEDS.length;
+  const outerR    = minDim * 0.38;
+  const innerR    = minDim * 0.165;
+  const topicNodeR = Math.min(54, Math.max(36, outerR * 0.22));
+  const needNodeR  = Math.min(46, Math.max(30, innerR * 0.68));
 
-  const zoneTop: Record<Zone, number> = {
-    emergent: PAD_T,
-    dominant: PAD_T + zoneH,
-    residual: PAD_T + zoneH * 2,
-  };
+  // Topics evenly spaced around the outer ring
+  const topicNodes = useMemo(() => topics.map((topic, i) => {
+    const angle = (i / topics.length) * Math.PI * 2 - Math.PI / 2;
+    return {
+      topic,
+      x: cx + outerR * Math.cos(angle),
+      y: cy + outerR * Math.sin(angle),
+      color: TOPIC_COLORS[topic] ?? "#aaa",
+    };
+  }), [topics, cx, cy, outerR]);
 
-  // Place each trend as a bubble; use hash for stable jitter within its cell
-  const bubbles = plotData.map(({ trend, need, zone }) => {
-    const needIdx = NEEDS.indexOf(need);
-    const h1 = fnv(trend.id + "x");
-    const h2 = fnv(trend.id + "y");
-    const jx = ((h1 % 10000) / 10000 - 0.5) * needW * 0.52;
-    const jy = ((h2 % 10000) / 10000 - 0.5) * zoneH * 0.52;
-    const cx = PAD_L + (needIdx + 0.5) * needW + jx;
-    const cy = zoneTop[zone] + zoneH * 0.5 + jy;
-    const r  = 11 + (trend.relevanceScore / 100) * 16;
-    const color = TOPIC_COLORS[trend.topics?.[0] ?? ""] ?? trend.color ?? "#bbb";
-    return { trend, need, zone, cx, cy, r, color };
-  });
+  // Needs evenly spaced around the inner ring
+  const needNodes = useMemo(() => NEEDS.map((need, i) => {
+    const angle = (i / NEEDS.length) * Math.PI * 2 - Math.PI / 2;
+    return {
+      need,
+      x: cx + innerR * Math.cos(angle),
+      y: cy + innerR * Math.sin(angle),
+      color: NEED_COLORS[need],
+    };
+  }), [cx, cy, innerR]);
+
+  // One connection per trend: topic node → need node
+  const connections = useMemo(() => trends.flatMap(trend => {
+    const need = getTrendNeed(trend);
+    const topicKey = trend.topics?.[0] ?? "";
+    const tNode = topicNodes.find(n => n.topic === topicKey);
+    const nNode = needNodes.find(n => n.need === need);
+    if (!tNode || !nNode) return [];
+    return [{ trend, need, tNode, nNode, color: tNode.color }];
+  }), [trends, topicNodes, needNodes]);
 
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
 
-      {/* Chart canvas */}
+      {/* Canvas */}
       <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-        <svg width={w} height={h} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+        <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
 
-          {/* Zone background bands */}
-          {ZONES.map(zone => {
-            const { color, label, sub } = ZONE_META[zone];
-            const ty = zoneTop[zone];
+          {/* Ghost web — all possible sector × need connections */}
+          {topicNodes.flatMap(tn =>
+            needNodes.map(nn => (
+              <line key={`web-${tn.topic}-${nn.need}`}
+                x1={tn.x} y1={tn.y} x2={nn.x} y2={nn.y}
+                stroke="#ccc" strokeWidth={0.6} opacity={0.35} />
+            ))
+          )}
+
+          {/* Active connections — one line per trend */}
+          {connections.map(({ trend, tNode, nNode, color }, idx) => {
+            const isSelected = selected?.id === trend.id;
+            const dimmed = selected !== null && !isSelected;
+            const mx = (tNode.x + nNode.x) / 2;
+            const my = (tNode.y + nNode.y) / 2;
+
+            // Rotate label so it follows the line
+            const angleDeg = Math.atan2(nNode.y - tNode.y, nNode.x - tNode.x) * (180 / Math.PI);
+            const flip = angleDeg > 90 || angleDeg < -90;
+            const labelAngle = flip ? angleDeg + 180 : angleDeg;
+            const labelWords = trend.name.split(" ").slice(0, 3).join(" ");
+
             return (
-              <g key={zone}>
-                <rect x={PAD_L} y={ty} width={chartW} height={zoneH}
-                  fill={color + "14"} />
-                {/* Divider line (not for top zone) */}
-                {zone !== "emergent" && (
-                  <line x1={PAD_L} y1={ty} x2={PAD_L + chartW} y2={ty}
-                    stroke="#ddd" strokeWidth={1} strokeDasharray="4 6" />
-                )}
-                {/* Zone label block on left */}
-                <text x={PAD_L - 10} y={ty + zoneH / 2 - 7}
-                  textAnchor="end" fontSize={9} fontWeight={700} fill={color}
-                  letterSpacing="0.08em" fontFamily="'DM Sans', sans-serif">
-                  {label}
-                </text>
-                <text x={PAD_L - 10} y={ty + zoneH / 2 + 8}
-                  textAnchor="end" fontSize={8} fill={color + "99"}
-                  fontFamily="'DM Sans', sans-serif">
-                  {sub}
-                </text>
+              <g key={`${trend.id}-${idx}`} style={{ cursor: "pointer" }}
+                onClick={() => setSelected(isSelected ? null : trend)}>
+                {/* Invisible wider hit zone */}
+                <line x1={tNode.x} y1={tNode.y} x2={nNode.x} y2={nNode.y}
+                  stroke="transparent" strokeWidth={14} />
+                {/* Visible line */}
+                <line x1={tNode.x} y1={tNode.y} x2={nNode.x} y2={nNode.y}
+                  stroke={color}
+                  strokeWidth={isSelected ? 2.5 : 1.5}
+                  opacity={dimmed ? 0.15 : isSelected ? 1 : 0.55} />
+                {/* Label along the line, near midpoint */}
+                <g transform={`translate(${mx},${my}) rotate(${labelAngle})`}>
+                  <rect x={-labelWords.length * 2.6} y={-10} width={labelWords.length * 5.2} height={13}
+                    fill="#F5F2EC" rx={3} opacity={dimmed ? 0 : 0.85} />
+                  <text textAnchor="middle" y={0}
+                    fontSize={isSelected ? 9.5 : 8.5}
+                    fontWeight={isSelected ? 700 : 500}
+                    fill={dimmed ? "transparent" : isSelected ? "#111" : "#444"}
+                    fontFamily="'DM Sans', sans-serif"
+                    style={{ pointerEvents: "none" }}>
+                    {labelWords}
+                  </text>
+                </g>
               </g>
             );
           })}
 
-          {/* Vertical need guides + bottom labels */}
-          {NEEDS.map((need, i) => {
-            const x = PAD_L + (i + 0.5) * needW;
-            const color = NEED_COLORS[need];
+          {/* Topic nodes — outer ring */}
+          {topicNodes.map(({ topic, x, y, color }) => {
+            const label = topic.replace(/-/g, " ");
+            const words = label.split(" ");
+            return (
+              <g key={topic}>
+                <circle cx={x} cy={y} r={topicNodeR}
+                  fill="#fff" stroke={color} strokeWidth={2} />
+                {words.map((word, wi) => (
+                  <text key={wi}
+                    x={x} y={y + (wi - (words.length - 1) / 2) * 15}
+                    textAnchor="middle" dominantBaseline="middle"
+                    fontSize={Math.min(12, topicNodeR * 0.26)}
+                    fontWeight={600} fill="#111"
+                    fontFamily="'DM Sans', sans-serif">
+                    {word}
+                  </text>
+                ))}
+              </g>
+            );
+          })}
+
+          {/* Need nodes — inner ring */}
+          {needNodes.map(({ need, x, y, color }) => {
+            const active = connections.some(c => c.need === need && (selected === null || selected.id === c.trend.id));
+            const anyActive = connections.some(c => c.need === need);
             return (
               <g key={need}>
-                <line x1={x} y1={PAD_T} x2={x} y2={PAD_T + chartH}
-                  stroke={color + "40"} strokeWidth={1} strokeDasharray="2 8" />
-                <circle cx={x} cy={PAD_T + chartH + 18} r={4} fill={color} />
-                <text x={x} y={PAD_T + chartH + 34}
-                  textAnchor="middle" fontSize={9} fontWeight={600} fill="#888"
+                <circle cx={x} cy={y} r={needNodeR}
+                  fill={anyActive ? `${color}22` : "#fff"}
+                  stroke={anyActive ? color : "#ddd"}
+                  strokeWidth={anyActive ? 1.5 : 1} />
+                <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+                  fontSize={Math.min(11, needNodeR * 0.3)}
+                  fontWeight={500}
+                  fill={anyActive ? "#111" : "#bbb"}
                   fontFamily="'DM Sans', sans-serif">
                   {need}
                 </text>
@@ -177,91 +204,37 @@ export function CultureMap({ trends, topics }: Props) {
             );
           })}
 
-          {/* Bubbles */}
-          {bubbles.map(({ trend, need, cx, cy, r, color }, idx) => {
-            const isSelected = selected?.id === trend.id;
-            // Two-word label for larger bubbles
-            const words = trend.name.split(" ");
-            const labelLine1 = words.slice(0, 2).join(" ");
-            const labelLine2 = words.length > 2 ? words.slice(2, 4).join(" ") : null;
-            return (
-              <g key={`${trend.id}-${need}-${idx}`}
-                style={{ cursor: "pointer" }}
-                onClick={() => setSelected(isSelected ? null : trend)}>
-                {/* Glow ring when selected */}
-                {isSelected && (
-                  <circle cx={cx} cy={cy} r={r + 5} fill="none"
-                    stroke={color} strokeWidth={2} opacity={0.4} />
-                )}
-                <circle cx={cx} cy={cy} r={r}
-                  fill={color + (isSelected ? "ee" : "bb")}
-                  stroke={color}
-                  strokeWidth={isSelected ? 2 : 1.5} />
-                {r >= 16 && (
-                  <>
-                    <text x={cx} y={cy + (labelLine2 ? 0 : 4)}
-                      textAnchor="middle"
-                      fontSize={Math.min(8, r * 0.44)} fontWeight={700} fill="#fff"
-                      style={{ pointerEvents: "none" }}
-                      fontFamily="'DM Sans', sans-serif">
-                      {labelLine1}
-                    </text>
-                    {labelLine2 && (
-                      <text x={cx} y={cy + 11}
-                        textAnchor="middle"
-                        fontSize={Math.min(7, r * 0.4)} fontWeight={600} fill="rgba(255,255,255,0.8)"
-                        style={{ pointerEvents: "none" }}
-                        fontFamily="'DM Sans', sans-serif">
-                        {labelLine2}
-                      </text>
-                    )}
-                  </>
-                )}
-              </g>
-            );
-          })}
-
         </svg>
       </div>
 
-      {/* Selected trend detail */}
+      {/* Selected trend detail panel */}
       {selected && (
         <div style={{
           flexShrink: 0, background: "#fff",
           borderTop: "1px solid rgba(0,0,0,0.07)",
-          padding: "12px 20px 14px", maxHeight: 160, overflowY: "auto",
+          padding: "12px 20px 14px", maxHeight: 150, overflowY: "auto",
         }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 6 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: selected.color }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: selected.color, flexShrink: 0 }} />
               <span style={{ fontSize: 14, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
                 {selected.name}
               </span>
               <span style={{
-                fontSize: 9, fontWeight: 700, letterSpacing: "0.07em",
-                color: ZONE_META[parseZone(selected.trajectory)].color,
-                background: ZONE_META[parseZone(selected.trajectory)].color + "22",
-                border: `1px solid ${ZONE_META[parseZone(selected.trajectory)].color}55`,
-                padding: "2px 8px", borderRadius: 10,
-                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 9, padding: "2px 8px", borderRadius: 10,
+                background: `${NEED_COLORS[getTrendNeed(selected)]}22`,
+                border: `1px solid ${NEED_COLORS[getTrendNeed(selected)]}66`,
+                color: "#555", fontFamily: "'DM Sans', sans-serif",
               }}>
-                {ZONE_META[parseZone(selected.trajectory)].label}
-              </span>
-              <span style={{ fontSize: 9, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
                 {getTrendNeed(selected)}
               </span>
             </div>
             <button onClick={() => setSelected(null)}
-              style={{ background: "none", border: "none", fontSize: 18, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0 }}>×</button>
+              style={{ background: "none", border: "none", fontSize: 18, color: "#bbb", cursor: "pointer", lineHeight: 1 }}>×</button>
           </div>
-          <p style={{ fontSize: 12, color: "#555", lineHeight: 1.65, margin: "0 0 6px", fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{ fontSize: 12, color: "#555", lineHeight: 1.65, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>
             {selected.description}
           </p>
-          {selected.trajectory && (
-            <p style={{ fontSize: 11, color: "#999", fontStyle: "italic", margin: 0, fontFamily: "'DM Sans', sans-serif" }}>
-              {selected.trajectory.slice(0, 180)}{selected.trajectory.length > 180 ? "…" : ""}
-            </p>
-          )}
         </div>
       )}
 
@@ -271,7 +244,7 @@ export function CultureMap({ trends, topics }: Props) {
         display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8,
         borderTop: "1px solid rgba(0,0,0,0.05)", background: "#F5F2EC",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {topics.map(t => (
             <div key={t} style={{ display: "flex", alignItems: "center", gap: 4 }}>
               <div style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#bbb" }} />
@@ -282,7 +255,7 @@ export function CultureMap({ trends, topics }: Props) {
           ))}
         </div>
         <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-          Size = relevance · tap to explore
+          Tap a line to explore a trend
         </span>
       </div>
     </div>
