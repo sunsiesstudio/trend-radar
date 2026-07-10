@@ -111,8 +111,16 @@ interface Props {
 
 export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dims,     setDims]     = useState({ w: 900, h: 600 });
+  const [dims,      setDims]      = useState({ w: 900, h: 600 });
   const [selection, setSelection] = useState<Selection>(null);
+  const [isMobile,  setIsMobile]  = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -174,7 +182,6 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return { need, x: cx + innerR * Math.cos(angle), y: cy + innerR * Math.sin(angle) };
   });
 
-  // Helper: is a domain/need highlighted by current selection?
   function isHighlighted(domain: CulturalDomain, need: Need) {
     if (!selection) return false;
     if (selection.type === "need")   return selection.need === need;
@@ -185,233 +192,277 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
 
   function clearSelection() { setSelection(null); }
 
-  return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
+  // ── Detail panel content (shared between sidebar and popup) ──────────────────
 
-      <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-        <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
-
-          {/* Ghost web */}
-          {domainNodes.flatMap(dn =>
-            needNodes.map(nn => (
-              <line key={`web-${dn.domain}-${nn.need}`}
-                x1={dn.x} y1={dn.y} x2={nn.x} y2={nn.y}
-                stroke="#ccc" strokeWidth={0.5} opacity={0.2} />
-            ))
+  const panelContent = selection && (
+    <div style={{ padding: isMobile ? "16px 20px 28px" : "20px 20px 16px" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          {selection.type === "need" && (
+            <>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {selection.need}
+              </span>
+              <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
+            </>
           )}
-
-          {/* Background aggregated chords (non-featured domains) */}
-          {groups
-            .filter(g => !featuredDomains.has(g.domain))
-            .map(group => {
-              const dNode = domainNodes.find(n => n.domain === group.domain);
-              const nNode = needNodes.find(n => n.need === group.need);
-              if (!dNode || !nNode) return null;
-              const highlighted = isHighlighted(group.domain, group.need);
-              const dimmed = selection !== null && !highlighted;
-              const weight = group.trends.length / maxCount;
-              const color = DOMAIN_COLORS[group.domain];
-              const opacity = dimmed ? 0.05 : highlighted ? 0.7 : hasFeatured ? 0.12 + weight * 0.1 : 0.3 + weight * 0.4;
-              const strokeW = highlighted ? 2 + weight * 3 : 0.8 + weight * 1.5;
-              return (
-                <g key={`bg-${group.domain}--${group.need}`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setSelection(highlighted ? null : {
-                    type: "need", need: group.need,
-                    trends: enriched.filter(e => e.need === group.need).map(e => e.trend),
-                  })}>
-                  <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                    stroke="transparent" strokeWidth={14} />
-                  <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                    stroke={color} strokeWidth={strokeW} opacity={opacity} />
-                </g>
-              );
-            })
-          }
-
-          {/* Featured domain: individual trend lines with names */}
-          {enriched
-            .filter(e => featuredDomains.has(e.domain))
-            .map(({ trend, domain, need }, idx) => {
-              const dNode = domainNodes.find(n => n.domain === domain);
-              const nNode = needNodes.find(n => n.need === need);
-              if (!dNode || !nNode) return null;
-              const isThis = selection?.type === "trend" && selection.trend.id === trend.id;
-              const highlighted = isHighlighted(domain, need);
-              const dimmed = selection !== null && !isThis && !highlighted;
-              const color = DOMAIN_COLORS[domain];
-              const mx = (dNode.x + nNode.x) / 2;
-              const my = (dNode.y + nNode.y) / 2;
-              const angleDeg = Math.atan2(nNode.y - dNode.y, nNode.x - dNode.x) * (180 / Math.PI);
-              const flip = angleDeg > 90 || angleDeg < -90;
-              const labelAngle = flip ? angleDeg + 180 : angleDeg;
-              const label = trend.name.split(" ").slice(0, 3).join(" ");
-              return (
-                <g key={`feat-${trend.id}-${idx}`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setSelection(isThis ? null : { type: "trend", trend, domain, need })}>
-                  <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                    stroke="transparent" strokeWidth={14} />
-                  <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                    stroke={color}
-                    strokeWidth={isThis ? 2.5 : 1.8}
-                    opacity={dimmed ? 0.12 : isThis ? 1 : 0.65} />
-                  {!dimmed && (
-                    <g transform={`translate(${mx},${my}) rotate(${labelAngle})`}>
-                      <rect x={-label.length * 2.8} y={-10}
-                        width={label.length * 5.6} height={13}
-                        fill="#F5F2EC" rx={3} opacity={0.9} />
-                      <text textAnchor="middle" y={0}
-                        fontSize={isThis ? 9.5 : 8.5}
-                        fontWeight={isThis ? 700 : 500}
-                        fill={isThis ? "#111" : "#555"}
-                        fontFamily="'DM Sans', sans-serif"
-                        style={{ pointerEvents: "none" }}>
-                        {label}
-                      </text>
-                    </g>
-                  )}
-                </g>
-              );
-            })
-          }
-
-          {/* Domain nodes — outer ring */}
-          {domainNodes.map(({ domain, x, y }) => {
-            const color = DOMAIN_COLORS[domain];
-            const isFeatured = featuredDomains.has(domain);
-            const isSelectedDomain = selection?.type === "domain" && selection.domain === domain;
-            const r = isFeatured ? domainNodeR * 1.1 : domainNodeR;
-            const words = domain.split(" & ");
-            const lines = words.length > 1 ? words : domain.split(" ").reduce<string[][]>((acc, word) => {
-              if (!acc.length || acc[acc.length - 1].join(" ").length + word.length > 12) acc.push([word]);
-              else acc[acc.length - 1].push(word);
-              return acc;
-            }, []).map(g => g.join(" "));
-            const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
-            return (
-              <g key={domain} style={{ cursor: "pointer" }}
-                onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
-                {isFeatured && (
-                  <circle cx={x} cy={y} r={r + 6}
-                    fill="none" stroke={color} strokeWidth={1.5} opacity={0.3} />
-                )}
-                <circle cx={x} cy={y} r={r}
-                  fill={isFeatured ? `${color}28` : isSelectedDomain ? `${color}22` : "#f8f7f4"}
-                  stroke={isFeatured || isSelectedDomain ? color : "#ddd"}
-                  strokeWidth={isFeatured ? 2.5 : isSelectedDomain ? 2 : 1} />
-                {lines.map((line, li) => (
-                  <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
-                    textAnchor="middle" dominantBaseline="middle"
-                    fontSize={Math.min(isFeatured ? 12 : 11, r * 0.24)}
-                    fontWeight={isFeatured ? 800 : isSelectedDomain ? 700 : 400}
-                    fill={isFeatured || isSelectedDomain ? "#111" : "#ccc"}
-                    fontFamily="'DM Sans', sans-serif">
-                    {line}
-                  </text>
-                ))}
-              </g>
-            );
-          })}
-
-          {/* Need nodes — inner ring */}
-          {needNodes.map(({ need, x, y }) => {
-            const color = NEED_COLORS[need];
-            const isSelectedNeed = selection?.type === "need" && selection.need === need;
-            const hasConnections = enriched.some(e => e.need === need);
-            const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
-            return (
-              <g key={need} style={{ cursor: "pointer" }}
-                onClick={() => setSelection(isSelectedNeed ? null : { type: "need", need, trends: needTrends })}>
-                <circle cx={x} cy={y} r={needNodeR}
-                  fill={isSelectedNeed ? `${color}33` : hasConnections ? `${color}18` : "#f8f7f4"}
-                  stroke={isSelectedNeed ? color : hasConnections ? `${color}99` : "#ddd"}
-                  strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.5 : 1} />
-                <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
-                  fontSize={Math.min(11, needNodeR * 0.3)}
-                  fontWeight={isSelectedNeed ? 700 : hasConnections ? 500 : 400}
-                  fill={isSelectedNeed ? "#111" : hasConnections ? "#333" : "#ccc"}
-                  fontFamily="'DM Sans', sans-serif">
-                  {need}
-                </text>
-              </g>
-            );
-          })}
-
-        </svg>
+          {selection.type === "domain" && (
+            <>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {selection.domain}
+              </span>
+              <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
+            </>
+          )}
+          {selection.type === "trend" && (
+            <>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {selection.trend.name}
+              </span>
+            </>
+          )}
+        </div>
+        <button onClick={clearSelection}
+          style={{ background: "none", border: "none", fontSize: 20, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginLeft: 8 }}>×</button>
       </div>
 
-      {/* Selection detail panel */}
-      {selection && (
-        <div style={{
-          flexShrink: 0, background: "#fff",
-          borderTop: "1px solid rgba(0,0,0,0.07)",
-          padding: "12px 20px 14px", maxHeight: 220, overflowY: "auto",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {selection.type === "need" && (
-                <>
-                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block" }} />
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    {selection.need}
-                  </span>
-                  <span style={{ fontSize: 11, color: "#aaa" }}>— {selection.trends.length} trends activating this</span>
-                </>
-              )}
-              {selection.type === "domain" && (
-                <>
-                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block" }} />
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    {selection.domain}
-                  </span>
-                  <span style={{ fontSize: 11, color: "#aaa" }}>— {selection.trends.length} trends</span>
-                </>
-              )}
-              {selection.type === "trend" && (
-                <>
-                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block" }} />
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    {selection.trend.name}
-                  </span>
-                  <span style={{ fontSize: 10, color: "#aaa", background: "#f5f3ef", padding: "2px 8px", borderRadius: 10, fontFamily: "'DM Sans', sans-serif" }}>
-                    {selection.domain} × {selection.need}
-                  </span>
-                </>
-              )}
-            </div>
-            <button onClick={clearSelection}
-              style={{ background: "none", border: "none", fontSize: 18, color: "#bbb", cursor: "pointer", lineHeight: 1 }}>×</button>
+      {selection.type === "trend" && (
+        <>
+          <div style={{ fontSize: 10, color: "#aaa", background: "#f5f3ef", padding: "3px 10px", borderRadius: 10, display: "inline-block", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
+            {selection.domain} × {selection.need}
           </div>
+          <p style={{ fontSize: 12, color: "#555", lineHeight: 1.65, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>
+            {selection.trend.description}
+          </p>
+        </>
+      )}
 
-          {/* Trend list */}
-          {selection.type === "trend" ? (
-            <p style={{ fontSize: 12, color: "#555", lineHeight: 1.65, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>
-              {selection.trend.description}
-            </p>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {(selection.trends).slice(0, 10).map(t => (
-                <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", marginTop: 5, flexShrink: 0,
-                    background: DOMAIN_COLORS[getDomain(t.topics?.[0] ?? "")] }} />
-                  <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
-                    <div style={{ fontSize: 10, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif" }}>
-                      {t.description.slice(0, 90)}…
-                    </div>
+      {(selection.type === "need" || selection.type === "domain") && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {selection.trends.slice(0, 12).map(t => {
+            const tDomain = getDomain(t.topics?.[0] ?? "");
+            const tNeed   = getTrendNeed(t);
+            const color   = DOMAIN_COLORS[tDomain];
+            return (
+              <div
+                key={t.id}
+                onClick={() => setSelection({ type: "trend", trend: t, domain: tDomain, need: tNeed })}
+                style={{
+                  display: "flex", alignItems: "flex-start", gap: 10,
+                  background: "#f9f8f5", borderRadius: 10, padding: "10px 12px",
+                  cursor: "pointer", border: "1px solid transparent",
+                  transition: "border-color 0.15s",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
+              >
+                <div style={{
+                  width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
+                  background: color,
+                }} />
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
+                  <div style={{ fontSize: 11, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
+                    {t.description.slice(0, 100)}…
                   </div>
                 </div>
-              ))}
-              {selection.trends.length > 10 && (
-                <div style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-                  +{selection.trends.length - 10} more
-                </div>
-              )}
+              </div>
+            );
+          })}
+          {selection.trends.length > 12 && (
+            <div style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif", paddingLeft: 4 }}>
+              +{selection.trends.length - 12} more
             </div>
           )}
         </div>
       )}
+    </div>
+  );
+
+  // ── SVG canvas ────────────────────────────────────────────────────────────────
+
+  const svgCanvas = (
+    <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
+
+      {/* Ghost web */}
+      {domainNodes.flatMap(dn =>
+        needNodes.map(nn => (
+          <line key={`web-${dn.domain}-${nn.need}`}
+            x1={dn.x} y1={dn.y} x2={nn.x} y2={nn.y}
+            stroke="#ccc" strokeWidth={0.5} opacity={0.2} />
+        ))
+      )}
+
+      {/* Background aggregated chords (non-featured domains) */}
+      {groups
+        .filter(g => !featuredDomains.has(g.domain))
+        .map(group => {
+          const dNode = domainNodes.find(n => n.domain === group.domain);
+          const nNode = needNodes.find(n => n.need === group.need);
+          if (!dNode || !nNode) return null;
+          const highlighted = isHighlighted(group.domain, group.need);
+          const dimmed = selection !== null && !highlighted;
+          const weight = group.trends.length / maxCount;
+          const color = DOMAIN_COLORS[group.domain];
+          const opacity = dimmed ? 0.05 : highlighted ? 0.7 : hasFeatured ? 0.12 + weight * 0.1 : 0.3 + weight * 0.4;
+          const strokeW = highlighted ? 2 + weight * 3 : 0.8 + weight * 1.5;
+          return (
+            <g key={`bg-${group.domain}--${group.need}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelection(highlighted ? null : {
+                type: "need", need: group.need,
+                trends: enriched.filter(e => e.need === group.need).map(e => e.trend),
+              })}>
+              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
+                stroke="transparent" strokeWidth={14} />
+              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
+                stroke={color} strokeWidth={strokeW} opacity={opacity} />
+            </g>
+          );
+        })
+      }
+
+      {/* Featured domain: individual trend lines with names */}
+      {enriched
+        .filter(e => featuredDomains.has(e.domain))
+        .map(({ trend, domain, need }, idx) => {
+          const dNode = domainNodes.find(n => n.domain === domain);
+          const nNode = needNodes.find(n => n.need === need);
+          if (!dNode || !nNode) return null;
+          const isThis = selection?.type === "trend" && selection.trend.id === trend.id;
+          const highlighted = isHighlighted(domain, need);
+          const dimmed = selection !== null && !isThis && !highlighted;
+          const color = DOMAIN_COLORS[domain];
+          const mx = (dNode.x + nNode.x) / 2;
+          const my = (dNode.y + nNode.y) / 2;
+          const angleDeg = Math.atan2(nNode.y - dNode.y, nNode.x - dNode.x) * (180 / Math.PI);
+          const flip = angleDeg > 90 || angleDeg < -90;
+          const labelAngle = flip ? angleDeg + 180 : angleDeg;
+          const label = trend.name.split(" ").slice(0, 3).join(" ");
+          return (
+            <g key={`feat-${trend.id}-${idx}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelection(isThis ? null : { type: "trend", trend, domain, need })}>
+              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
+                stroke="transparent" strokeWidth={14} />
+              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
+                stroke={color}
+                strokeWidth={isThis ? 2.5 : 1.8}
+                opacity={dimmed ? 0.12 : isThis ? 1 : 0.65} />
+              {!dimmed && (
+                <g transform={`translate(${mx},${my}) rotate(${labelAngle})`}>
+                  <rect x={-label.length * 2.8} y={-10}
+                    width={label.length * 5.6} height={13}
+                    fill="#F5F2EC" rx={3} opacity={0.9} />
+                  <text textAnchor="middle" y={0}
+                    fontSize={isThis ? 9.5 : 8.5}
+                    fontWeight={isThis ? 700 : 500}
+                    fill={isThis ? "#111" : "#555"}
+                    fontFamily="'DM Sans', sans-serif"
+                    style={{ pointerEvents: "none" }}>
+                    {label}
+                  </text>
+                </g>
+              )}
+            </g>
+          );
+        })
+      }
+
+      {/* Domain nodes — outer ring */}
+      {domainNodes.map(({ domain, x, y }) => {
+        const color = DOMAIN_COLORS[domain];
+        const isFeatured = featuredDomains.has(domain);
+        const isSelectedDomain = selection?.type === "domain" && selection.domain === domain;
+        const r = isFeatured ? domainNodeR * 1.1 : domainNodeR;
+        const words = domain.split(" & ");
+        const lines = words.length > 1 ? words : domain.split(" ").reduce<string[][]>((acc, word) => {
+          if (!acc.length || acc[acc.length - 1].join(" ").length + word.length > 12) acc.push([word]);
+          else acc[acc.length - 1].push(word);
+          return acc;
+        }, []).map(g => g.join(" "));
+        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
+        return (
+          <g key={domain} style={{ cursor: "pointer" }}
+            onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
+            {isFeatured && (
+              <circle cx={x} cy={y} r={r + 6}
+                fill="none" stroke={color} strokeWidth={1.5} opacity={0.3} />
+            )}
+            <circle cx={x} cy={y} r={r}
+              fill={isFeatured ? `${color}28` : isSelectedDomain ? `${color}22` : "#f8f7f4"}
+              stroke={isFeatured || isSelectedDomain ? color : "#ddd"}
+              strokeWidth={isFeatured ? 2.5 : isSelectedDomain ? 2 : 1} />
+            {lines.map((line, li) => (
+              <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
+                textAnchor="middle" dominantBaseline="middle"
+                fontSize={Math.min(isFeatured ? 12 : 11, r * 0.24)}
+                fontWeight={isFeatured ? 800 : isSelectedDomain ? 700 : 400}
+                fill={isFeatured || isSelectedDomain ? "#111" : "#ccc"}
+                fontFamily="'DM Sans', sans-serif">
+                {line}
+              </text>
+            ))}
+          </g>
+        );
+      })}
+
+      {/* Need nodes — inner ring */}
+      {needNodes.map(({ need, x, y }) => {
+        const color = NEED_COLORS[need];
+        const isSelectedNeed = selection?.type === "need" && selection.need === need;
+        const hasConnections = enriched.some(e => e.need === need);
+        const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+        return (
+          <g key={need} style={{ cursor: "pointer" }}
+            onClick={() => setSelection(isSelectedNeed ? null : { type: "need", need, trends: needTrends })}>
+            <circle cx={x} cy={y} r={needNodeR}
+              fill={isSelectedNeed ? `${color}33` : hasConnections ? `${color}18` : "#f8f7f4"}
+              stroke={isSelectedNeed ? color : hasConnections ? `${color}99` : "#ddd"}
+              strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.5 : 1} />
+            <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+              fontSize={Math.min(11, needNodeR * 0.3)}
+              fontWeight={isSelectedNeed ? 700 : hasConnections ? 500 : 400}
+              fill={isSelectedNeed ? "#111" : hasConnections ? "#333" : "#ccc"}
+              fontFamily="'DM Sans', sans-serif">
+              {need}
+            </text>
+          </g>
+        );
+      })}
+
+    </svg>
+  );
+
+  // ── Render ────────────────────────────────────────────────────────────────────
+
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
+
+      {/* Main row: canvas + optional right panel (desktop only) */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
+
+        {/* SVG canvas */}
+        <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+          {svgCanvas}
+        </div>
+
+        {/* Desktop right sidebar */}
+        {!isMobile && selection && (
+          <div style={{
+            width: 300, flexShrink: 0,
+            background: "#fff",
+            borderLeft: "1px solid rgba(0,0,0,0.07)",
+            overflowY: "auto",
+            display: "flex", flexDirection: "column",
+          }}>
+            {panelContent}
+          </div>
+        )}
+      </div>
 
       {/* Footer */}
       <div style={{
@@ -426,6 +477,39 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           {allTrends.length} trends mapped
         </span>
       </div>
+
+      {/* Mobile bottom-sheet popup */}
+      {isMobile && selection && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={clearSelection}
+            style={{
+              position: "fixed", inset: 0,
+              background: "rgba(0,0,0,0.35)",
+              zIndex: 200,
+            }}
+          />
+          {/* Sheet */}
+          <div style={{
+            position: "fixed", left: 0, right: 0, bottom: 0,
+            background: "#fff",
+            borderRadius: "18px 18px 0 0",
+            maxHeight: "62vh",
+            overflowY: "auto",
+            zIndex: 201,
+            boxShadow: "0 -6px 40px rgba(0,0,0,0.18)",
+          }}>
+            {/* Drag handle */}
+            <div style={{
+              width: 36, height: 4, borderRadius: 2,
+              background: "#ddd", margin: "12px auto 0",
+            }} />
+            {panelContent}
+          </div>
+        </>
+      )}
+
     </div>
   );
 }
