@@ -698,6 +698,7 @@ export default function HomePage() {
       const trend = appliedDynamicTrends.find((t) => t.id === node.id);
       if (trend) {
         setActiveTrend(trend);
+        setActiveSignal(null);
         markSeen(allSignals.filter((s) => s.trendId === trend.id).map((s) => s.id));
       }
     } else if (node.type === "signalOrbit") {
@@ -731,8 +732,22 @@ export default function HomePage() {
   const focusTrend = navTrends[safeIdx] ?? navTrends[0];
   const focusTrendPos = TREND_POSITIONS[focusTrend?.id] ?? focusTrend?.position ?? { x: 0, y: 0 };
 
-  const prev = () => setFocusIdx((i) => Math.max(0, i - 1));
-  const next = () => setFocusIdx((i) => Math.min(navTrends.length - 1, i + 1));
+  const prev = () => {
+    const newIdx = Math.max(0, safeIdx - 1);
+    setFocusIdx(newIdx);
+    if (isDesktop && activeTab === "radar" && navTrends[newIdx]) {
+      setActiveTrend(navTrends[newIdx]);
+      setActiveSignal(null);
+    }
+  };
+  const next = () => {
+    const newIdx = Math.min(navTrends.length - 1, safeIdx + 1);
+    setFocusIdx(newIdx);
+    if (isDesktop && activeTab === "radar" && navTrends[newIdx]) {
+      setActiveTrend(navTrends[newIdx]);
+      setActiveSignal(null);
+    }
+  };
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "#F5F2EC", display: "flex", flexDirection: "column", overflow: "hidden" }}>
