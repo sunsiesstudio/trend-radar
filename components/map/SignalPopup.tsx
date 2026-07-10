@@ -212,31 +212,48 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
         overflow: "hidden",
       }}
     >
-        {/* Color bar */}
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${trendColor}, ${trendColor}44)`, flexShrink: 0 }} />
+        {/* Color bar — modal only */}
+        {mode !== "sidebar" && (
+          <div style={{ height: 4, background: `linear-gradient(90deg, ${trendColor}, ${trendColor}44)`, flexShrink: 0 }} />
+        )}
 
         <div style={{ overflowY: "auto", flex: 1, WebkitOverflowScrolling: "touch", touchAction: "pan-y", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))" } as React.CSSProperties}>
 
-          {/* Tag + close */}
-          <div style={{ padding: "20px 24px 16px", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{
-              fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase",
-              letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20,
-            }}>
-              Signal
-            </span>
-            <button onClick={onClose} style={{ marginLeft: "auto", width: 34, height: 34, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
-          </div>
-
-          {/* Title — hero */}
-          <div style={{ padding: "0 24px 14px" }}>
-            <h3 style={{ fontSize: 22, fontWeight: 800, color: "#111", lineHeight: 1.2, margin: 0, letterSpacing: "-0.03em" }}>
-              {signal.title}
-            </h3>
-          </div>
+          {mode === "sidebar" ? (
+            /* Sidebar header — culture-map style */
+            <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #f0ede8" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: trendColor, flexShrink: 0, marginTop: 4, display: "inline-block" }} />
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", lineHeight: 1.35, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
+                    {signal.title}
+                  </h3>
+                </div>
+                <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+              </div>
+            </div>
+          ) : (
+            /* Modal header */
+            <>
+              <div style={{ padding: "20px 24px 16px", display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{
+                  fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase",
+                  letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20,
+                }}>
+                  Signal
+                </span>
+                <button onClick={onClose} style={{ marginLeft: "auto", width: 34, height: 34, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
+              </div>
+              <div style={{ padding: "0 24px 14px" }}>
+                <h3 style={{ fontSize: 22, fontWeight: 800, color: "#111", lineHeight: 1.2, margin: 0, letterSpacing: "-0.03em" }}>
+                  {signal.title}
+                </h3>
+              </div>
+            </>
+          )}
 
           {/* Source metadata — single row, no wrap */}
-          <div style={{ padding: "0 24px 18px", display: "flex", alignItems: "center", gap: 0, minWidth: 0 }}>
+          <div style={{ padding: mode === "sidebar" ? "12px 20px 14px" : "0 24px 18px", display: "flex", alignItems: "center", gap: 0, minWidth: 0 }}>
             <span style={{ fontSize: 14, lineHeight: 1, marginRight: 7, flexShrink: 0 }}>{getSourceIcon(signal.source)}</span>
             <span style={{ fontSize: 12, fontWeight: 600, color: "#555", flexShrink: 0 }}>
               {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
@@ -263,16 +280,16 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           </div>
 
           {/* Divider */}
-          <div style={{ margin: "0 24px 18px", height: 1, background: "#f0ede8" }} />
+          <div style={{ margin: mode === "sidebar" ? "0 20px 14px" : "0 24px 18px", height: 1, background: "#f0ede8" }} />
 
           {/* Summary — primary content */}
-          <div style={{ padding: "0 24px 24px" }}>
-            <p style={{ fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{signal.summary}</p>
+          <div style={{ padding: mode === "sidebar" ? "0 20px 18px" : "0 24px 24px" }}>
+            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#333", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{signal.summary}</p>
           </div>
 
           {/* Trend link + related — grouped at bottom */}
           {(onOpenTrend || related.length > 0) && (
-            <div style={{ margin: "0 24px 24px", borderRadius: 14, border: "1px solid #efefef", overflow: "hidden" }}>
+            <div style={{ margin: mode === "sidebar" ? "0 20px 20px" : "0 24px 24px", borderRadius: 10, border: "1px solid #f0ede8", overflow: "hidden" }}>
 
               {/* Trend link */}
               {onOpenTrend && (
@@ -329,15 +346,17 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           )}
         </div>
 
-        {/* Footer */}
-        <div style={{ padding: "10px 20px", paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))", borderTop: "1px solid #f0ede8", flexShrink: 0, textAlign: "center" } as React.CSSProperties}>
-          <p style={{ fontSize: 10, color: "#ccc", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-            Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
-            <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
-              Augmented Rarity
-            </a>
-          </p>
-        </div>
+        {/* Footer — modal only */}
+        {mode !== "sidebar" && (
+          <div style={{ padding: "10px 20px", paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))", borderTop: "1px solid #f0ede8", flexShrink: 0, textAlign: "center" } as React.CSSProperties}>
+            <p style={{ fontSize: 10, color: "#ccc", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+              Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
+              <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
+                Augmented Rarity
+              </a>
+            </p>
+          </div>
+        )}
     </div>
   );
 

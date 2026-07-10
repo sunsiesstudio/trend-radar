@@ -507,6 +507,12 @@ export default function HomePage() {
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends, topicAddedAt), [allExtraSignals, seenIds, visibleTrends, topicAddedAt]);
   const fitViewRef = useRef<(() => void) | null>(null);
 
+  // Re-center blobs when the right sidebar opens or closes on desktop.
+  const sidebarOpen = isDesktop && activeTab === "radar" && (!!activeTrend || !!activeSignal);
+  useEffect(() => {
+    const t = setTimeout(() => fitViewRef.current?.(), 80);
+    return () => clearTimeout(t);
+  }, [sidebarOpen]);
 
   const topicSuggestions = useMemo(() => {
     const q = topicInput.toLowerCase().trim();

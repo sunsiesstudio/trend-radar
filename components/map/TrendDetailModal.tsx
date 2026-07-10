@@ -379,60 +379,89 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         overflow: "hidden",
       }}
     >
-        {/* Color bar */}
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0 }} />
+        {/* Color bar — modal only */}
+        {mode !== "sidebar" && (
+          <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0 }} />
+        )}
 
-        {/* Header */}
-        <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.07em", background: `${trend.color}14`, padding: "3px 10px", borderRadius: 20 }}>
-              Trend
-            </span>
-            <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
-          </div>
-
-          <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
-            {trend.name}
-          </h3>
-
-          {/* Relevance bar */}
-          <div style={{ position: "relative", marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#f8f7f5", borderRadius: 10 }}>
-              <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
-                <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
+        {mode === "sidebar" ? (
+          /* Sidebar header — culture-map style */
+          <div style={{ padding: "20px 20px 14px", flexShrink: 0, borderBottom: "1px solid #f0ede8" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1 }}>
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: trend.color, flexShrink: 0, marginTop: 4, display: "inline-block" }} />
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#111", lineHeight: 1.25, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
+                  {trend.name}
+                </h3>
               </div>
-              <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>{trend.relevanceScore}% relevance</span>
-              <button
-                onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
-                style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#fff", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
-              >i</button>
+              <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
             </div>
-            {showRelevanceInfo && (
-              <div onClick={() => setShowRelevanceInfo(false)} style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}>
-                <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>what's this score?</div>
-                how much momentum this trend has right now: signal volume, recency, cross-category spread, and where it sits on the adoption curve. higher = more urgent.
-              </div>
+            {trend.topics?.[0] && (
+              <span style={{ display: "inline-block", fontSize: 11, color: "#888", background: "#f5f3ef", padding: "3px 10px", borderRadius: 20, marginLeft: 20, marginBottom: 10 }}>
+                {trend.topics[0].replace(/-/g, " ")}
+              </span>
             )}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 20 }}>
+              <div style={{ flex: 1, height: 2, background: "#eee", borderRadius: 1 }}>
+                <div style={{ width: `${trend.relevanceScore}%`, height: "100%", background: trend.color, borderRadius: 1 }} />
+              </div>
+              <span style={{ fontSize: 10, color: "#bbb" }}>{trend.relevanceScore}%</span>
+            </div>
           </div>
-        </div>
+        ) : (
+          /* Modal header */
+          <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.07em", background: `${trend.color}14`, padding: "3px 10px", borderRadius: 20 }}>
+                Trend
+              </span>
+              <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
+            </div>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
+              {trend.name}
+            </h3>
+            <div style={{ position: "relative", marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#f8f7f5", borderRadius: 10 }}>
+                <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
+                  <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
+                </div>
+                <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>{trend.relevanceScore}% relevance</span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
+                  style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#fff", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
+                >i</button>
+              </div>
+              {showRelevanceInfo && (
+                <div onClick={() => setShowRelevanceInfo(false)} style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}>
+                  <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>what's this score?</div>
+                  how much momentum this trend has right now: signal volume, recency, cross-category spread, and where it sits on the adoption curve. higher = more urgent.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Body */}
-        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "0 24px" } as React.CSSProperties}>
-          <div style={{ paddingTop: 4, paddingBottom: 16, display: "flex", flexDirection: "column", gap: 0 }}>
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: mode === "sidebar" ? "0 20px" : "0 24px" } as React.CSSProperties}>
+          <div style={{ paddingTop: mode === "sidebar" ? 14 : 4, paddingBottom: 16, display: "flex", flexDirection: "column", gap: 0 }}>
 
             {/* What's happening */}
-            <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, margin: "0 0 20px", fontFamily: "'EB Garamond', Georgia, serif" }}>
+            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#555", lineHeight: 1.7, margin: "0 0 16px", fontFamily: "'EB Garamond', Georgia, serif" }}>
               {trend.description}
             </p>
 
             {/* Why it matters */}
-            <div style={{ background: `${trend.color}0c`, border: `1.5px solid ${trend.color}28`, borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
-              <div style={{ fontSize: 9, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why it matters</div>
-              <p style={{ fontSize: 13.5, color: "#111", lineHeight: 1.8, margin: 0 }}>{trend.whyRelevant}</p>
+            <div style={{
+              background: mode === "sidebar" ? "#f9f8f5" : `${trend.color}0c`,
+              border: mode === "sidebar" ? "none" : `1.5px solid ${trend.color}28`,
+              borderRadius: 10, padding: "12px 14px", marginBottom: 16,
+            }}>
+              <div style={{ fontSize: 9, fontWeight: 800, color: mode === "sidebar" ? "#aaa" : textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>why it matters</div>
+              <p style={{ fontSize: 13, color: "#333", lineHeight: 1.75, margin: 0 }}>{trend.whyRelevant}</p>
             </div>
 
             {/* Cultural context — always shown */}
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 16 }}>
               <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
               {trend.culturalContext ? (
                 <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.culturalContext}</p>
@@ -549,21 +578,23 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           </div>
         </div>
 
-        {/* Footer */}
-        <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#fff" }}>
-          <button
-            onClick={() => exportPDF(trend, signals)}
-            style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-          >
-            Export as PDF
-          </button>
-          <p style={{ fontSize: 10, color: "#ccc", margin: "10px 0 0", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-            Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
-            <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
-              Augmented Rarity
-            </a>
-          </p>
-        </div>
+        {/* Footer — modal only */}
+        {mode !== "sidebar" && (
+          <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#fff" }}>
+            <button
+              onClick={() => exportPDF(trend, signals)}
+              style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+            >
+              Export as PDF
+            </button>
+            <p style={{ fontSize: 10, color: "#ccc", margin: "10px 0 0", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+              Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
+              <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
+                Augmented Rarity
+              </a>
+            </p>
+          </div>
+        )}
     </div>
   );
 
