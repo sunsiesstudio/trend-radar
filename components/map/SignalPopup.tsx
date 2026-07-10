@@ -220,17 +220,28 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
         <div style={{ overflowY: "auto", flex: 1, WebkitOverflowScrolling: "touch", touchAction: "pan-y", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))" } as React.CSSProperties}>
 
           {mode === "sidebar" ? (
-            /* Sidebar header — culture-map style */
-            <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #f0ede8" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1 }}>
-                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: trendColor, flexShrink: 0, marginTop: 4, display: "inline-block" }} />
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", lineHeight: 1.35, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
-                    {signal.title}
-                  </h3>
-                </div>
+            /* Sidebar header */
+            <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
+              {/* Row 1: SIGNAL chip + close */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20 }}>
+                  Signal
+                </span>
                 <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
               </div>
+              {/* Row 2: trend reference */}
+              {trendName && (
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: trendColor, flexShrink: 0, display: "inline-block" }} />
+                  <span style={{ fontSize: 11, color: "#888", fontWeight: 500 }}>
+                    {trendName}
+                  </span>
+                </div>
+              )}
+              {/* Row 3: signal title */}
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", lineHeight: 1.35, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {signal.title}
+              </h3>
             </div>
           ) : (
             /* Modal header */
