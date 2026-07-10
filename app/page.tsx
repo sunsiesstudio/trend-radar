@@ -729,7 +729,7 @@ export default function HomePage() {
   const next = () => setFocusIdx((i) => Math.min(navTrends.length - 1, i + 1));
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#ffffff", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#F5F2EC", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{
         flexShrink: 0, zIndex: 10,
@@ -1027,9 +1027,12 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Canvas + desktop right sidebar */}
+      <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "row", overflow: "hidden" }}>
+
       {/* Canvas */}
       <div
-        style={{ flex: 1, minHeight: 0, position: "relative" }}
+        style={{ flex: 1, minWidth: 0, position: "relative" }}
         onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (swipeStart.current === null) return;
@@ -1220,12 +1223,46 @@ export default function HomePage() {
               zoomOnScroll
               preventScrolling
               proOptions={{ hideAttribution: true }}
-              style={{ background: "#ffffff" }}
+              style={{ background: "#F5F2EC" }}
             >
               <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} isDesktop={isDesktop} firstTrendPos={visibleTrends[0]?.position ?? null} />
               {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
             </ReactFlow>}
       </div>
+
+      {/* Desktop right sidebar — trend or signal detail */}
+      {isDesktop && activeTab === "radar" && (activeTrend || (activeSignal && activeTrendForSignal)) && (
+        <div style={{
+          width: 360, flexShrink: 0,
+          borderLeft: "1px solid rgba(0,0,0,0.08)",
+          background: "#fff",
+          display: "flex", flexDirection: "column",
+          overflow: "hidden",
+        }}>
+          {activeSignal && activeTrendForSignal ? (
+            <SignalPopup
+              signal={activeSignal}
+              mode="sidebar"
+              trendColor={activeTrendForSignal.color}
+              trendName={activeTrendForSignal.name}
+              allSignals={allSignals}
+              onClose={() => setActiveSignal(null)}
+              onSelectSignal={(s) => setActiveSignal(s)}
+              onOpenTrend={() => { setActiveSignal(null); }}
+            />
+          ) : activeTrend ? (
+            <TrendDetailModal
+              trend={activeTrend}
+              mode="sidebar"
+              extraSignals={allExtraSignals}
+              onClose={() => setActiveTrend(null)}
+              onSelectSignal={(s) => setActiveSignal(s)}
+            />
+          ) : null}
+        </div>
+      )}
+
+      </div>{/* end canvas+sidebar row */}
 
       {/* Nav bar — hidden on culture map tab */}
       <div style={{
@@ -1298,7 +1335,8 @@ export default function HomePage() {
         )}
       </div>
 
-      {activeTrend && (
+      {/* Mobile modals — only on small screens (desktop uses right sidebar instead) */}
+      {!isDesktop && activeTrend && (
         <TrendDetailModal
           trend={activeTrend}
           extraSignals={allExtraSignals}
@@ -1307,7 +1345,7 @@ export default function HomePage() {
         />
       )}
 
-      {activeSignal && activeTrendForSignal && (
+      {!isDesktop && activeSignal && activeTrendForSignal && (
         <SignalPopup
           signal={activeSignal}
           trendColor={activeTrendForSignal.color}

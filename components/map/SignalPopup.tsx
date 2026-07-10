@@ -21,6 +21,7 @@ interface Props {
   onClose: () => void;
   onSelectSignal?: (s: Signal) => void;
   onOpenTrend?: () => void;
+  mode?: "modal" | "sidebar";
 }
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -171,7 +172,7 @@ const SOURCE_DOMAINS: Record<string, string> = {
   "arXiv": "https://arxiv.org",
 };
 
-export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose, onSelectSignal, onOpenTrend }: Props) {
+export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose, onSelectSignal, onOpenTrend, mode = "modal" }: Props) {
   const pool = allSignals ?? SIGNALS;
   const crossLinked = (signal.crossLinks ?? []).map((id) => pool.find((s) => s.id === id)).filter(Boolean) as Signal[];
   const related = crossLinked.length > 0
@@ -195,25 +196,22 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
   const fmt = (d?: string) =>
     d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : null;
 
-  return (
+  const panel = (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", alignItems: isDesktop ? "center" : "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
-      onClick={onClose}
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        backgroundColor: "#fff",
+        borderRadius: mode === "sidebar" ? 0 : (isDesktop ? "24px" : "24px 24px 0 0"),
+        width: "100%",
+        maxWidth: mode === "sidebar" ? undefined : (isDesktop ? 560 : 680),
+        maxHeight: mode === "sidebar" ? undefined : (isDesktop ? "85vh" : "88svh"),
+        height: mode === "sidebar" ? "100%" : undefined,
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: mode === "sidebar" ? "none" : (isDesktop ? "0 24px 80px rgba(0,0,0,0.2)" : "0 -12px 80px rgba(0,0,0,0.15)"),
+        overflow: "hidden",
+      }}
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          backgroundColor: "#fff",
-          borderRadius: isDesktop ? "24px" : "24px 24px 0 0",
-          width: "100%",
-          maxWidth: isDesktop ? 560 : 680,
-          maxHeight: isDesktop ? "85vh" : "88svh",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: isDesktop ? "0 24px 80px rgba(0,0,0,0.2)" : "0 -12px 80px rgba(0,0,0,0.15)",
-          overflow: "hidden",
-        }}
-      >
         {/* Color bar */}
         <div style={{ height: 4, background: `linear-gradient(90deg, ${trendColor}, ${trendColor}44)`, flexShrink: 0 }} />
 
@@ -340,7 +338,17 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
             </a>
           </p>
         </div>
-      </div>
+    </div>
+  );
+
+  if (mode === "sidebar") return panel;
+
+  return (
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", alignItems: isDesktop ? "center" : "flex-end", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
+      onClick={onClose}
+    >
+      {panel}
     </div>
   );
 }
