@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Trend } from "@/types";
 import { TOPIC_LIBRARY } from "@/lib/extended-trends";
+import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 
 // ── Fixed cultural domains ─────────────────────────────────────────────────────
 
@@ -194,7 +195,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
 
   // ── Detail panel content (shared between sidebar and popup) ──────────────────
 
-  const panelContent = selection && (
+  const listContent = selection && (selection.type === "need" || selection.type === "domain") && (
     <div style={{ padding: isMobile ? "16px 20px 28px" : "20px 20px 16px" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -216,69 +217,48 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
               <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
             </>
           )}
-          {selection.type === "trend" && (
-            <>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
-              <span style={{ fontSize: 15, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                {selection.trend.name}
-              </span>
-            </>
-          )}
         </div>
         <button onClick={clearSelection}
           style={{ background: "none", border: "none", fontSize: 20, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginLeft: 8 }}>×</button>
       </div>
 
-      {selection.type === "trend" && (
-        <>
-          <div style={{ fontSize: 10, color: "#aaa", background: "#f5f3ef", padding: "3px 10px", borderRadius: 10, display: "inline-block", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
-            {selection.domain} × {selection.need}
-          </div>
-          <p style={{ fontSize: 12, color: "#555", lineHeight: 1.65, margin: 0, fontFamily: "'DM Sans', sans-serif" }}>
-            {selection.trend.description}
-          </p>
-        </>
-      )}
-
-      {(selection.type === "need" || selection.type === "domain") && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {selection.trends.slice(0, 12).map(t => {
-            const tDomain = getDomain(t.topics?.[0] ?? "");
-            const tNeed   = getTrendNeed(t);
-            const color   = DOMAIN_COLORS[tDomain];
-            return (
-              <div
-                key={t.id}
-                onClick={() => setSelection({ type: "trend", trend: t, domain: tDomain, need: tNeed })}
-                style={{
-                  display: "flex", alignItems: "flex-start", gap: 10,
-                  background: "#f9f8f5", borderRadius: 10, padding: "10px 12px",
-                  cursor: "pointer", border: "1px solid transparent",
-                  transition: "border-color 0.15s",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
-              >
-                <div style={{
-                  width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
-                  background: color,
-                }} />
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
-                    {t.description.slice(0, 100)}…
-                  </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {selection.trends.slice(0, 12).map(t => {
+          const tDomain = getDomain(t.topics?.[0] ?? "");
+          const tNeed   = getTrendNeed(t);
+          const color   = DOMAIN_COLORS[tDomain];
+          return (
+            <div
+              key={t.id}
+              onClick={() => setSelection({ type: "trend", trend: t, domain: tDomain, need: tNeed })}
+              style={{
+                display: "flex", alignItems: "flex-start", gap: 10,
+                background: "#f9f8f5", borderRadius: 10, padding: "10px 12px",
+                cursor: "pointer", border: "1px solid transparent",
+                transition: "border-color 0.15s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
+            >
+              <div style={{
+                width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
+                background: color,
+              }} />
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
+                <div style={{ fontSize: 11, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
+                  {t.description.slice(0, 100)}…
                 </div>
               </div>
-            );
-          })}
-          {selection.trends.length > 12 && (
-            <div style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif", paddingLeft: 4 }}>
-              +{selection.trends.length - 12} more
             </div>
-          )}
-        </div>
-      )}
+          );
+        })}
+        {selection.trends.length > 12 && (
+          <div style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif", paddingLeft: 4 }}>
+            +{selection.trends.length - 12} more
+          </div>
+        )}
+      </div>
     </div>
   );
 
@@ -453,13 +433,20 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         {/* Desktop right sidebar */}
         {!isMobile && selection && (
           <div style={{
-            width: 300, flexShrink: 0,
+            width: selection.type === "trend" ? 360 : 300, flexShrink: 0,
             background: "#fff",
             borderLeft: "1px solid rgba(0,0,0,0.07)",
             overflowY: "auto",
             display: "flex", flexDirection: "column",
           }}>
-            {panelContent}
+            {selection.type === "trend" ? (
+              <TrendDetailModal
+                trend={selection.trend}
+                onClose={clearSelection}
+                onSelectSignal={() => {}}
+                mode="sidebar"
+              />
+            ) : listContent}
           </div>
         )}
       </div>
@@ -505,7 +492,14 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
               width: 36, height: 4, borderRadius: 2,
               background: "#ddd", margin: "12px auto 0",
             }} />
-            {panelContent}
+            {selection.type === "trend" ? (
+              <TrendDetailModal
+                trend={selection.trend}
+                onClose={clearSelection}
+                onSelectSignal={() => {}}
+                mode="sidebar"
+              />
+            ) : listContent}
           </div>
         </>
       )}
