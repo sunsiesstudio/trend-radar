@@ -228,7 +228,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {selection.trends.slice(0, 12).map(t => {
+        {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).slice(0, 12).map(t => {
           const tDomain = getDomain(t.topics?.[0] ?? "");
           const tNeed   = getTrendNeed(t);
           const color   = DOMAIN_COLORS[tDomain];
@@ -438,7 +438,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         {/* Desktop right sidebar */}
         {!isMobile && selection && (
           <div style={{
-            width: selection.type === "trend" ? 360 : 300, flexShrink: 0,
+            width: "33.333vw", minWidth: 280, maxWidth: 520, flexShrink: 0,
             background: "#fff",
             borderLeft: "1px solid rgba(0,0,0,0.07)",
             overflowY: "auto",

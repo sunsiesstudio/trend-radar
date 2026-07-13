@@ -181,7 +181,6 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
   const relatedLabel = crossLinked.length > 0 ? "Connected signals" : "Related signal";
   const textCol = accessibleTextColor(trendColor);
   const effectiveUrl = signal.sourceUrl
-    || SOURCE_DOMAINS[signal.sourceName ?? ""]
     || (signal.sourceName?.startsWith("r/") ? `https://reddit.com/${signal.sourceName}` : undefined);
 
   const [isDesktop, setIsDesktop] = useState(false);

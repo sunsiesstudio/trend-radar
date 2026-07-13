@@ -1254,7 +1254,7 @@ export default function HomePage() {
       {/* Desktop right sidebar — trend or signal detail */}
       {isDesktop && activeTab === "radar" && (activeTrend || (activeSignal && activeTrendForSignal)) && (
         <div style={{
-          width: 360, flexShrink: 0,
+          width: "33.333vw", minWidth: 280, maxWidth: 520, flexShrink: 0,
           borderLeft: "1px solid rgba(0,0,0,0.08)",
           background: "#fff",
           display: "flex", flexDirection: "column",

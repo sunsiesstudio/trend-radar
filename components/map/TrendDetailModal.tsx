@@ -384,31 +384,48 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0 }} />
         )}
 
-        {mode === "sidebar" ? (
-          /* Sidebar header — culture-map style */
-          <div style={{ padding: "20px 20px 14px", flexShrink: 0, borderBottom: "1px solid #f0ede8" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1 }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: trend.color, flexShrink: 0, marginTop: 4, display: "inline-block" }} />
-                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#111", lineHeight: 1.25, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
-                  {trend.name}
-                </h3>
+        {mode === "sidebar" ? (() => {
+          // Determine readable text color on the trend color background
+          const lin = (c: number) => { const v = c / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+          const lum = 0.2126 * lin(parseInt(trend.color.slice(1, 3), 16)) + 0.7152 * lin(parseInt(trend.color.slice(3, 5), 16)) + 0.0722 * lin(parseInt(trend.color.slice(5, 7), 16));
+          const onColor = lum > 0.35 ? "#1a1a1a" : "#ffffff";
+          const onColorSub = lum > 0.35 ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.65)";
+          const onColorClose = lum > 0.35 ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.2)";
+          return (
+          /* Sidebar header — colored hero */
+          <div style={{ flexShrink: 0 }}>
+            {/* Hero block */}
+            <div style={{ background: trend.color, padding: "22px 20px 20px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                <span style={{ fontSize: 9, fontWeight: 800, color: onColorSub, textTransform: "uppercase", letterSpacing: "0.14em" }}>Trend</span>
+                <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: onColorClose, border: "none", fontSize: 17, color: onColor, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
               </div>
-              <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+              <h3 style={{ fontSize: 22, fontWeight: 700, color: onColor, lineHeight: 1.2, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {trend.name}
+              </h3>
             </div>
-            {trend.topics?.[0] && (
-              <span style={{ display: "inline-block", fontSize: 11, color: "#888", background: "#f5f3ef", padding: "3px 10px", borderRadius: 20, marginLeft: 20, marginBottom: 10 }}>
-                {trend.topics[0].replace(/-/g, " ")}
-              </span>
-            )}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 20 }}>
-              <div style={{ flex: 1, height: 2, background: "#eee", borderRadius: 1 }}>
-                <div style={{ width: `${trend.relevanceScore}%`, height: "100%", background: trend.color, borderRadius: 1 }} />
+            {/* Relevance row below hero */}
+            <div style={{ padding: "12px 20px 14px", borderBottom: "1px solid #f0ede8", position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#f8f7f5", borderRadius: 10 }}>
+                <div style={{ flex: 1, height: 3, backgroundColor: "#e8e4de", borderRadius: 2 }}>
+                  <div style={{ width: `${trend.relevanceScore}%`, height: "100%", backgroundColor: trend.color, borderRadius: 2 }} />
+                </div>
+                <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>{trend.relevanceScore}% relevance</span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
+                  style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#fff", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, fontFamily: "serif" } as React.CSSProperties}
+                >i</button>
               </div>
-              <span style={{ fontSize: 10, color: "#bbb" }}>{trend.relevanceScore}%</span>
+              {showRelevanceInfo && (
+                <div onClick={() => setShowRelevanceInfo(false)} style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 10, background: "#1a1a1a", color: "#e8e4de", borderRadius: 12, padding: "12px 14px", fontSize: 12, lineHeight: 1.65, maxWidth: 280, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}>
+                  <div style={{ fontSize: 9, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>what's this score?</div>
+                  how much momentum this trend has right now: signal volume, recency, cross-category spread, and where it sits on the adoption curve. higher = more urgent.
+                </div>
+              )}
             </div>
           </div>
-        ) : (
+          );
+        })() : (
           /* Modal header */
           <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
