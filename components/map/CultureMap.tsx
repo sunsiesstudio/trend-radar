@@ -97,13 +97,20 @@ const NEED_REMAP: Record<string, Need> = {
 
 const VALID_NEEDS = new Set<string>(NEEDS);
 
-function getDomainVibe(domain: CulturalDomain, trends: Trend[]): string {
-  const top = [...trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).slice(0, 3);
-  const names = top.map(t => t.name);
-  if (!names.length) return "";
-  if (names.length === 1) return `${names[0]} is where ${domain} is heading right now.`;
-  if (names.length === 2) return `${names[0]} and ${names[1]} are the big shifts reshaping ${domain}.`;
-  return `${names[0]}, ${names[1]}, and ${names[2]} are converging in ${domain} — all driven by emerging tech.`;
+const DOMAIN_VIBES: Record<CulturalDomain, string> = {
+  Body:      "Performance, longevity, and stress are being quantified and chemically optimised. The body is now a data source.",
+  Home:      "The home is becoming a responsive environment — tracking, adapting, and personalising in real time.",
+  Work:      "AI is compressing tasks, eliminating roles, and rewriting what productivity actually means.",
+  Play:      "Entertainment is going spatial and participatory. The line between content and experience is dissolving.",
+  Style:     "Identity is being expressed, archived, and resold at a pace the fashion system wasn't built for.",
+  Food:      "What we eat is being reinvented at the molecular level — from lab-grown to AI-formulated.",
+  Community: "Belonging is migrating online and fragmenting into micro-communities built around shared obsessions.",
+  Mind:      "Mental health has gone mainstream. The market for mood, focus, and calm is now a tech battleground.",
+  Nature:    "The climate crisis is forcing a redesign of materials, energy, and how brands talk about responsibility.",
+};
+
+function getDomainVibe(domain: CulturalDomain): string {
+  return DOMAIN_VIBES[domain] ?? "";
 }
 
 function inferNeed(trend: Trend): Need {
@@ -206,7 +213,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const cx = w / 2, cy = h / 2;
   const minDim = Math.min(w, h);
   const outerR      = minDim * 0.38;
-  const innerR      = minDim * 0.26;
+  const innerR      = minDim * 0.165;
   const domainNodeR = Math.min(54, Math.max(34, outerR * 0.2));
   const needNodeR   = Math.min(44, Math.max(28, innerR * 0.7));
 
@@ -260,7 +267,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
       </div>
 
       {selection.type === "domain" && (() => {
-        const vibe = getDomainVibe(selection.domain, selection.trends);
+        const vibe = getDomainVibe(selection.domain);
         return vibe ? (
           <p style={{ fontSize: 12.5, color: "#888", lineHeight: 1.6, margin: "0 0 14px", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
             {vibe}
