@@ -73,6 +73,7 @@ Return ONLY valid JSON (no markdown, no explanation):
         { "label": "Third brand: what they launched or partnered on (1 sentence)", "url": "https://wired.com/article-about-their-launch" }
       ],
       "needs": ["Belonging", "Identity"],
+      "tech_tags": ["AI", "Biotech"],
       "relevanceScore": 67,
       "signals": [
         { "id": "signal-id-1", "title": "Specific real headline, dateable and sourced", "summary": "2-3 sentences. What does this actually mean beyond the headline. Why does it matter right now. What does it confirm about where things are heading.", "source": "news", "sourceName": "Publication Name" },
@@ -92,6 +93,7 @@ Rules:
 - IDs must be unique slugs starting with "${idPrefix}-"
 - Do NOT reuse these IDs: ${existingTrendIds.join(", ") || "none"}
 - needs: array of 1-2 human needs this trend activates. Pick from ONLY these exact strings: "Belonging", "Identity", "Meaning", "Status", "Autonomy", "Safety"
+- tech_tags: array of 1-3 emerging tech domains that are DIRECTLY enabling this trend. Pick from ONLY these exact strings: "AI", "Biotech", "Robotics", "AR/VR", "Synthetic Biology", "Wearables", "Materials Science", "Climate Tech", "Spatial Computing", "Web3", "Genomics", "Neuroscience". Only include a tag if that tech is actually doing something in this trend, not just loosely related
 - relevanceScore between 52 and 81
 - signals: exactly 8 items, mix of news and reddit, specific and real-sounding
 - brand_moves: every entry MUST include a url pointing to a real news article, press release, or source page where this specific move was reported (NOT the brand homepage — link to the article about it, e.g. https://techcrunch.com/2024/01/... or https://wsj.com/articles/...)
@@ -116,6 +118,7 @@ Rules:
       why_relevant: string; trajectory: string;
       brand_moves?: Array<{ label: string; url?: string }>;
       needs?: string[];
+      tech_tags?: string[];
       relevanceScore: number;
       signals: Array<{ id: string; title: string; summary: string; source: string; sourceName: string }>;
     }>).map((t, i) => ({
@@ -140,6 +143,7 @@ Rules:
         nextSteps: [],
         brandMoves: t.brand_moves ?? [],
         needs: t.needs ?? [],
+        techTags: t.tech_tags ?? [],
       },
       signals: t.signals.map((s) => ({
         id: s.id,

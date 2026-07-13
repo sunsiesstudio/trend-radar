@@ -464,6 +464,21 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               {trend.description}
             </p>
 
+            {/* Tech tags */}
+            {(trend.techTags ?? []).length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 14 }}>
+                {(trend.techTags ?? []).map(tag => (
+                  <span key={tag} style={{
+                    fontSize: 10, fontWeight: 700, color: textCol,
+                    background: `${trend.color}14`, border: `1px solid ${trend.color}30`,
+                    borderRadius: 20, padding: "3px 9px", letterSpacing: "0.04em",
+                  }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {/* Why it matters */}
             <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 16 }}>
               <div style={{

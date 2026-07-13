@@ -300,6 +300,15 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 <div style={{ fontSize: 11, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
                   {t.description.slice(0, 100)}…
                 </div>
+                {(t.techTags ?? []).length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
+                    {(t.techTags ?? []).map(tag => (
+                      <span key={tag} style={{ fontSize: 9, fontWeight: 700, color: color, background: `${color}15`, borderRadius: 20, padding: "2px 7px", letterSpacing: "0.04em" }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );

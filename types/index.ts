@@ -20,6 +20,7 @@ export interface Trend {
   culturalContext?: string;
   brandMoves?: Array<{ label: string; url?: string }>;
   needs?: string[]; // human needs this trend activates, e.g. ["Belonging", "Identity"]
+  techTags?: string[]; // emerging tech domains driving this trend, e.g. ["AI", "Biotech"]
 }
 
 export interface Signal {
