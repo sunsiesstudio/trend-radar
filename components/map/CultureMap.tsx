@@ -250,6 +250,14 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return { need, x: cx + innerRx * Math.cos(angle), y: cy + innerRy * Math.sin(angle) };
   });
 
+  // Shorten a line so it starts/ends at node edges, not centers.
+  function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2: number) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const ux = dx / dist, uy = dy / dist;
+    return { sx: x1 + ux * r1, sy: y1 + uy * r1, ex: x2 - ux * r2, ey: y2 - uy * r2 };
+  }
+
   function isHighlighted(domain: CulturalDomain, need: Need) {
     if (!selection) return false;
     if (selection.type === "need")   return selection.need === need;
@@ -376,13 +384,16 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const svgCanvas = (
     <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
 
-      {/* Ghost web */}
+      {/* Ghost web — lines stop at node edges so transparent fills don't bleed */}
       {domainNodes.flatMap(dn =>
-        needNodes.map(nn => (
-          <line key={`web-${dn.domain}-${nn.need}`}
-            x1={dn.x} y1={dn.y} x2={nn.x} y2={nn.y}
-            stroke="#ccc" strokeWidth={0.5} opacity={0.2} />
-        ))
+        needNodes.map(nn => {
+          const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nn.x, nn.y, domainNodeR, needNodeR);
+          return (
+            <line key={`web-${dn.domain}-${nn.need}`}
+              x1={sx} y1={sy} x2={ex} y2={ey}
+              stroke="#ccc" strokeWidth={0.5} opacity={0.2} />
+          );
+        })
       )}
 
       {/* Center tech label */}
@@ -403,6 +414,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           const color = DOMAIN_COLORS[group.domain];
           const opacity = dimmed ? 0.05 : highlighted ? 0.7 : 0.3 + weight * 0.4;
           const strokeW = highlighted ? 2 + weight * 3 : 0.8 + weight * 1.5;
+          const { sx, sy, ex, ey } = edgePts(dNode.x, dNode.y, nNode.x, nNode.y, domainNodeR, needNodeR);
           return (
             <g key={`bg-${group.domain}--${group.need}`}
               style={{ cursor: "pointer" }}
@@ -410,9 +422,11 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 type: "need", need: group.need,
                 trends: enriched.filter(e => e.need === group.need).map(e => e.trend),
               })}>
+              {/* click target: full center-to-center length */}
               <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
                 stroke="transparent" strokeWidth={14} />
-              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
+              {/* visible line: starts/ends at node edges */}
+              <line x1={sx} y1={sy} x2={ex} y2={ey}
                 stroke={color} strokeWidth={strokeW} opacity={opacity} />
             </g>
           );
