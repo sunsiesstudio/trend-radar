@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Trend } from "@/types";
+import { Trend, Signal } from "@/types";
 import { TOPIC_LIBRARY } from "@/lib/extended-trends";
+import { SIGNALS } from "@/lib/trends";
+import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
+import { SignalPopup } from "@/components/map/SignalPopup";
 
 // ── Life arenas (outer ring) ──────────────────────────────────────────────────
 
@@ -131,9 +134,12 @@ interface Props {
 
 export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dims,      setDims]      = useState({ w: 900, h: 600 });
-  const [selection, setSelection] = useState<Selection>(null);
-  const [isMobile,  setIsMobile]  = useState(false);
+  const [dims,        setDims]        = useState({ w: 900, h: 600 });
+  const [selection,   setSelection]   = useState<Selection>(null);
+  const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
+  const [isMobile,    setIsMobile]    = useState(false);
+
+  const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS], []);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -248,7 +254,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).slice(0, 12).map(t => {
           const tDomain = getDomain(t.topics?.[0] ?? "");
           const tNeed   = getTrendNeed(t);
-          const color   = DOMAIN_COLORS[tDomain];
+          const color   = t.color || DOMAIN_COLORS[tDomain];
           return (
             <div
               key={t.id}
@@ -420,7 +426,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         </div>
 
         {/* Desktop right sidebar */}
-        {!isMobile && selection && (
+        {!isMobile && (selection || activeSignal) && (
           <div style={{
             width: "33.333vw", minWidth: 280, maxWidth: 520, flexShrink: 0,
             background: "#fff",
@@ -428,11 +434,24 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
             overflowY: "auto",
             display: "flex", flexDirection: "column",
           }}>
-            {selection.type === "trend" ? (
+            {activeSignal ? (() => {
+              const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
+              return (
+                <SignalPopup
+                  signal={activeSignal}
+                  mode="sidebar"
+                  trendColor={sigTrend?.color ?? "#888"}
+                  trendName={sigTrend?.name ?? ""}
+                  allSignals={allSignals}
+                  onClose={() => setActiveSignal(null)}
+                  onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+                />
+              );
+            })() : selection?.type === "trend" ? (
               <TrendDetailModal
                 trend={selection.trend}
                 onClose={clearSelection}
-                onSelectSignal={() => {}}
+                onSelectSignal={(s) => setActiveSignal(s)}
                 mode="sidebar"
               />
             ) : listContent}
@@ -481,11 +500,23 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
               width: 36, height: 4, borderRadius: 2,
               background: "#ddd", margin: "12px auto 0",
             }} />
-            {selection.type === "trend" ? (
+            {activeSignal ? (() => {
+              const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
+              return (
+                <SignalPopup
+                  signal={activeSignal}
+                  trendColor={sigTrend?.color ?? "#888"}
+                  trendName={sigTrend?.name ?? ""}
+                  allSignals={allSignals}
+                  onClose={() => setActiveSignal(null)}
+                  onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+                />
+              );
+            })() : selection?.type === "trend" ? (
               <TrendDetailModal
                 trend={selection.trend}
                 onClose={clearSelection}
-                onSelectSignal={() => {}}
+                onSelectSignal={(s) => setActiveSignal(s)}
                 mode="sidebar"
               />
             ) : listContent}

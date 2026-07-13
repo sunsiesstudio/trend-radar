@@ -548,36 +548,38 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                               </span>
                             </div>
                           )}
-                          <button
-                            onClick={() => onSelectSignal(s)}
-                            style={{ textAlign: "left", background: "#faf9f6", border: corroborated ? `1.5px solid ${trend.color}44` : "1px solid #eee", borderRadius: corroborated ? "12px 12px 0 0" : 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
-                          >
-                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                              <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
-                              <span style={{ fontSize: 10, fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
-                              {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
-                              <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{dateFmt}</span>
-                            </div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
-                            <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
-                            {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
-                          </button>
-                          {corroborated && (
-                            <div style={{ background: `${trend.color}08`, border: `1.5px solid ${trend.color}44`, borderTop: "none", borderRadius: "0 0 12px 12px", padding: "8px 14px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
-                              <span style={{ fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", marginRight: 2 }}>Also reported by</span>
-                              {cluster.slice(1).map((cs, k) => {
-                                const csYear = cs.date ? new Date(cs.date).getFullYear() : null;
-                                const csFmt = cs.date ? new Date(cs.date).toLocaleDateString("en-US", { month: "short", ...(csYear !== now ? { year: "2-digit" } : {}) }) : "";
-                                return (
-                                  <button key={k} onClick={() => onSelectSignal(cs)} style={{ display: "flex", alignItems: "center", gap: 4, background: "#fff", border: "1px solid #eee", borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontSize: 10, color: "#555", fontWeight: 600, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
-                                    <span>{getSourceIcon(cs.source)}</span>
-                                    <span>{cs.sourceName}</span>
-                                    {csFmt && <span style={{ color: "#bbb", fontWeight: 400 }}>· {csFmt}</span>}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
+                          <div style={{ background: "#faf9f6", border: "1px solid #eee", borderRadius: 12, overflow: "hidden" }}>
+                            <button
+                              onClick={() => onSelectSignal(s)}
+                              style={{ textAlign: "left", background: "transparent", border: "none", padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                                <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
+                                <span style={{ fontSize: 10, fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.sourceName}</span>
+                                {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
+                                <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{dateFmt}</span>
+                              </div>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
+                              <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
+                              {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
+                            </button>
+                            {corroborated && (
+                              <div style={{ borderTop: "1px solid #eee", padding: "8px 14px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+                                <span style={{ fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", marginRight: 2 }}>Also reported by</span>
+                                {cluster.slice(1).map((cs, k) => {
+                                  const csYear = cs.date ? new Date(cs.date).getFullYear() : null;
+                                  const csFmt = cs.date ? new Date(cs.date).toLocaleDateString("en-US", { month: "short", ...(csYear !== now ? { year: "2-digit" } : {}) }) : "";
+                                  return (
+                                    <button key={k} onClick={() => onSelectSignal(cs)} style={{ display: "flex", alignItems: "center", gap: 4, background: "#fff", border: "1px solid #eee", borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontSize: 10, color: "#555", fontWeight: 600, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
+                                      <span>{getSourceIcon(cs.source)}</span>
+                                      <span>{cs.sourceName}</span>
+                                      {csFmt && <span style={{ color: "#bbb", fontWeight: 400 }}>· {csFmt}</span>}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       );
                     })}
