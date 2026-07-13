@@ -221,19 +221,33 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const { w, h } = dims;
   const cx = w / 2, cy = h / 2;
   const minDim = Math.min(w, h);
-  const outerR      = minDim * 0.38;
-  const innerR      = minDim * 0.165;
-  const domainNodeR = Math.min(54, Math.max(34, outerR * 0.2));
-  const needNodeR   = Math.min(44, Math.max(28, innerR * 0.7));
+
+  // On portrait screens the diagram is a circle inside a tall rectangle, leaving
+  // large blank margins above/below. Stretch the y-axis so the layout fills the
+  // viewport while keeping the x-axis constrained by screen width.
+  const portrait = h > w * 1.15;
+  const domainNodeR = Math.min(minDim < 600 ? 42 : 54, Math.max(30, minDim * 0.08));
+  const EDGE_PAD = 14;
+  const maxRx  = w / 2 - domainNodeR - EDGE_PAD;
+  const maxRy  = h / 2 - domainNodeR - EDGE_PAD;
+  const baseR  = Math.min(maxRx, maxRy); // largest circle that fits
+
+  const outerRx = portrait ? maxRx : baseR;
+  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.75)) : baseR;
+
+  const INNER_RATIO = 0.165 / 0.38; // ≈ 0.434
+  const innerRx = outerRx * INNER_RATIO;
+  const innerRy = outerRy * INNER_RATIO;
+  const needNodeR = Math.min(44, Math.max(26, Math.min(innerRx, innerRy) * 0.72));
 
   const domainNodes = CULTURAL_DOMAINS.map((domain, i) => {
     const angle = (i / CULTURAL_DOMAINS.length) * Math.PI * 2 - Math.PI / 2;
-    return { domain, x: cx + outerR * Math.cos(angle), y: cy + outerR * Math.sin(angle) };
+    return { domain, x: cx + outerRx * Math.cos(angle), y: cy + outerRy * Math.sin(angle) };
   });
 
   const needNodes = NEEDS.map((need, i) => {
     const angle = (i / NEEDS.length) * Math.PI * 2 - Math.PI / 2;
-    return { need, x: cx + innerR * Math.cos(angle), y: cy + innerR * Math.sin(angle) };
+    return { need, x: cx + innerRx * Math.cos(angle), y: cy + innerRy * Math.sin(angle) };
   });
 
   function isHighlighted(domain: CulturalDomain, need: Need) {
@@ -412,7 +426,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
             {lines.map((line, li) => (
               <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
                 textAnchor="middle" dominantBaseline="middle"
-                fontSize={Math.min(11, r * 0.24)}
+                fontSize={Math.min(13, Math.max(9, domainNodeR * 0.30))}
                 fontWeight={isSelectedDomain ? 700 : 500}
                 fill={isSelectedDomain ? "#111" : "#666"}
                 fontFamily="'DM Sans', sans-serif">
@@ -499,19 +513,21 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         )}
       </div>
 
-      {/* Footer */}
-      <div style={{
-        flexShrink: 0, padding: "7px 20px",
-        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
-        borderTop: "1px solid rgba(0,0,0,0.05)", background: "#F5F2EC",
-      }}>
-        <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-          Tap a tension, a life arena, or a chord to explore
-        </span>
-        <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-          {allTrends.length} trends mapped
-        </span>
-      </div>
+      {/* Footer — desktop only; mobile needs every pixel for the map */}
+      {!isMobile && (
+        <div style={{
+          flexShrink: 0, padding: "7px 20px",
+          display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
+          borderTop: "1px solid rgba(0,0,0,0.05)", background: "#F5F2EC",
+        }}>
+          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
+            Tap a tension, a life arena, or a chord to explore
+          </span>
+          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
+            {allTrends.length} trends mapped
+          </span>
+        </div>
+      )}
 
       {/* Mobile bottom-sheet popup */}
       {isMobile && selection && (

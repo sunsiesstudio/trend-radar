@@ -278,15 +278,15 @@ export default function HomePage() {
 
       {/* Header */}
       <div style={{
-        flexShrink: 0, height: 56, padding: "0 16px",
-        display: "flex", alignItems: "center", gap: 12,
+        flexShrink: 0, height: isDesktop ? 56 : 48, padding: "0 12px",
+        display: "flex", alignItems: "center", gap: isDesktop ? 12 : 8,
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)", zIndex: 10,
       }}>
         {/* Logo */}
         <button
           onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
-          style={{ fontSize: 14, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
+          style={{ fontSize: isDesktop ? 14 : 12, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
         >Augmented Culture</button>
 
         {/* Topic search bar — chips + input in one pill */}
