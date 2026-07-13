@@ -136,9 +136,14 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
 
   // All library trends + user's dynamic trends (deduped)
   const allTrends = useMemo(() => {
+    const seen = new Set<string>();
     const libraryFlat = Object.entries(TOPIC_LIBRARY).flatMap(([topic, trends]) =>
       trends.map(t => ({ ...t, topics: t.topics?.length ? t.topics : [topic] }))
-    );
+    ).filter(t => {
+      if (seen.has(t.id)) return false;
+      seen.add(t.id);
+      return true;
+    });
     const dynamicIds = new Set(dynamicTrends.map(t => t.id));
     return [...libraryFlat.filter(t => !dynamicIds.has(t.id)), ...dynamicTrends];
   }, [dynamicTrends]);
@@ -373,15 +378,15 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 fill="none" stroke={color} strokeWidth={1.5} opacity={0.3} />
             )}
             <circle cx={x} cy={y} r={r}
-              fill={isFeatured ? `${color}28` : isSelectedDomain ? `${color}22` : "#f8f7f4"}
-              stroke={isFeatured || isSelectedDomain ? color : "#ddd"}
-              strokeWidth={isFeatured ? 2.5 : isSelectedDomain ? 2 : 1} />
+              fill={isFeatured ? `${color}28` : isSelectedDomain ? `${color}22` : hasFeatured ? "#f8f7f4" : `${color}12`}
+              stroke={isFeatured || isSelectedDomain ? color : hasFeatured ? "#ddd" : `${color}88`}
+              strokeWidth={isFeatured ? 2.5 : isSelectedDomain ? 2 : hasFeatured ? 1 : 1.5} />
             {lines.map((line, li) => (
               <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
                 textAnchor="middle" dominantBaseline="middle"
                 fontSize={Math.min(isFeatured ? 12 : 11, r * 0.24)}
-                fontWeight={isFeatured ? 800 : isSelectedDomain ? 700 : 400}
-                fill={isFeatured || isSelectedDomain ? "#111" : "#ccc"}
+                fontWeight={isFeatured ? 800 : isSelectedDomain ? 700 : hasFeatured ? 400 : 500}
+                fill={isFeatured || isSelectedDomain ? "#111" : hasFeatured ? "#ccc" : "#666"}
                 fontFamily="'DM Sans', sans-serif">
                 {line}
               </text>
