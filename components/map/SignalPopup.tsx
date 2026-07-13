@@ -177,8 +177,8 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
   const crossLinked = (signal.crossLinks ?? []).map((id) => pool.find((s) => s.id === id)).filter(Boolean) as Signal[];
   const related = crossLinked.length > 0
     ? crossLinked
-    : pool.filter((s) => s.trendId === signal.trendId && s.id !== signal.id).slice(0, 1);
-  const relatedLabel = crossLinked.length > 0 ? "Connected signals" : "Related signal";
+    : pool.filter((s) => s.trendId === signal.trendId && s.id !== signal.id);
+  const relatedLabel = crossLinked.length > 0 ? "Connected signals" : `More signals (${related.length})`;
   const textCol = accessibleTextColor(trendColor);
   const effectiveUrl = signal.sourceUrl
     || (signal.sourceName?.startsWith("r/") ? `https://reddit.com/${signal.sourceName}` : undefined);
@@ -219,21 +219,25 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
         {/* Sidebar header — pinned outside the scroll area */}
         {mode === "sidebar" && (
           <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
-            {/* Row 1: SIGNAL chip + close */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20 }}>
+            {/* Row 1: SIGNAL chip + trend dot + trend name (clickable) + close */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20, flexShrink: 0 }}>
                 Signal
               </span>
-              <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+              {trendName && (
+                <>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: trendColor, flexShrink: 0, display: "inline-block" }} />
+                  <button
+                    onClick={onOpenTrend ? () => { onClose(); onOpenTrend(); } : undefined}
+                    style={{ fontSize: 11, color: onOpenTrend ? textCol : "#888", fontWeight: 600, background: "none", border: "none", padding: 0, cursor: onOpenTrend ? "pointer" : "default", textDecoration: "none", flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  >
+                    {trendName}{onOpenTrend ? " →" : ""}
+                  </button>
+                </>
+              )}
+              <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, marginLeft: "auto" }}>×</button>
             </div>
-            {/* Row 2: trend reference */}
-            {trendName && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: trendColor, flexShrink: 0, display: "inline-block" }} />
-                <span style={{ fontSize: 11, color: "#888", fontWeight: 500 }}>{trendName}</span>
-              </div>
-            )}
-            {/* Row 3: signal title */}
+            {/* Row 2: signal title */}
             <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", lineHeight: 1.35, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
               {signal.title}
             </h3>
@@ -265,27 +269,20 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           {/* Source metadata — single row, no wrap */}
           <div style={{ padding: mode === "sidebar" ? "12px 20px 14px" : "0 24px 18px", display: "flex", alignItems: "center", gap: 0, minWidth: 0 }}>
             <span style={{ fontSize: 14, lineHeight: 1, marginRight: 7, flexShrink: 0 }}>{getSourceIcon(signal.source)}</span>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "#555", flexShrink: 0 }}>
-              {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
-            </span>
-            <span style={{ fontSize: 12, color: "#ddd", margin: "0 5px", flexShrink: 0 }}>·</span>
-            <span style={{ fontSize: 12, color: "#aaa", flexShrink: 0 }}>{SOURCE_LABELS[signal.source ?? "manual"]}</span>
+            {effectiveUrl ? (
+              <a href={effectiveUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12, fontWeight: 600, color: textCol, textDecoration: "none", flexShrink: 0 }}>
+                {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]} →
+              </a>
+            ) : (
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#555", flexShrink: 0 }}>
+                {signal.sourceName ?? SOURCE_LABELS[signal.source ?? "manual"]}
+              </span>
+            )}
             {fmt(signal.date) && (
               <>
                 <span style={{ fontSize: 12, color: "#ddd", margin: "0 5px", flexShrink: 0 }}>·</span>
                 <span style={{ fontSize: 12, color: "#aaa", flexShrink: 0 }}>{fmt(signal.date)}</span>
               </>
-            )}
-            {effectiveUrl && (
-              <a
-                href={effectiveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                style={{ marginLeft: "auto", flexShrink: 0, fontSize: 11, fontWeight: 700, color: textCol, textDecoration: "none", padding: "4px 11px", background: `${trendColor}14`, borderRadius: 20, whiteSpace: "nowrap" }}
-              >
-                View source →
-              </a>
             )}
           </div>
 

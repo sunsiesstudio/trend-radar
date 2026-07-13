@@ -355,6 +355,12 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
     mq.addEventListener("change", h);
     return () => mq.removeEventListener("change", h);
   }, []);
+  useEffect(() => {
+    if (!showRelevanceInfo) return;
+    const handler = () => setShowRelevanceInfo(false);
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [showRelevanceInfo]);
   const textCol = accessibleTextColor(trend.color);
 
   const signals = [
@@ -460,11 +466,10 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
             {/* Why it matters */}
             <div style={{
-              background: mode === "sidebar" ? "#f9f8f5" : `${trend.color}0c`,
-              border: mode === "sidebar" ? "none" : `1.5px solid ${trend.color}28`,
+              background: `${trend.color}18`,
               borderRadius: 10, padding: "12px 14px", marginBottom: 16,
             }}>
-              <div style={{ fontSize: 9, fontWeight: 800, color: mode === "sidebar" ? "#aaa" : textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>why it matters</div>
+              <div style={{ fontSize: 9, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>why it matters</div>
               <p style={{ fontSize: 13, color: "#333", lineHeight: 1.75, margin: 0 }}>{trend.whyRelevant}</p>
             </div>
 
@@ -484,8 +489,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               {(trend.brandMoves ?? []).length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {(trend.brandMoves ?? []).map((move, i) => (
-                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
-                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: trend.color, flexShrink: 0, marginTop: 5 }} />
+                    <div key={i} style={{ padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
                       {move.url ? (
                         <a href={move.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0, textDecoration: "none", display: "block" }}>
                           {move.label} <span style={{ color: textCol, fontSize: 11, fontWeight: 700 }}>→</span>
@@ -546,7 +550,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                           )}
                           <button
                             onClick={() => onSelectSignal(s)}
-                            style={{ textAlign: "left", background: "#faf9f6", border: corroborated ? `1.5px solid ${trend.color}44` : "1px solid #eee", borderLeft: `3px solid ${trend.color}`, borderRadius: corroborated ? "12px 12px 0 0" : 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+                            style={{ textAlign: "left", background: "#faf9f6", border: corroborated ? `1.5px solid ${trend.color}44` : "1px solid #eee", borderRadius: corroborated ? "12px 12px 0 0" : 12, padding: "12px 14px", cursor: "pointer", width: "100%", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
                           >
                             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                               <span style={{ fontSize: 12 }}>{getSourceIcon(s.source)}</span>
