@@ -8,64 +8,64 @@ import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 // ── Life arenas (outer ring) ──────────────────────────────────────────────────
 
 const CULTURAL_DOMAINS = [
-  "The Body",
-  "The Home",
-  "Work & Money",
-  "Play & Entertainment",
-  "Style & Making",
-  "Food & Ritual",
-  "Love & Care",
-  "Mind & Spirit",
-  "Nature & Planet",
+  "Body",
+  "Home",
+  "Work",
+  "Play",
+  "Style",
+  "Food",
+  "Community",
+  "Mind",
+  "Nature",
 ] as const;
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  "The Body":            "#E87B7B",
-  "The Home":            "#D4A76A",
-  "Work & Money":        "#6B8FBB",
-  "Play & Entertainment":"#FFD65C",
-  "Style & Making":      "#C4A0CE",
-  "Food & Ritual":       "#FD8326",
-  "Love & Care":         "#FF8BB4",
-  "Mind & Spirit":       "#78C9A8",
-  "Nature & Planet":     "#6BAD6B",
+  Body:      "#E87B7B",
+  Home:      "#D4A76A",
+  Work:      "#6B8FBB",
+  Play:      "#FFD65C",
+  Style:     "#C4A0CE",
+  Food:      "#FD8326",
+  Community: "#FF8BB4",
+  Mind:      "#78C9A8",
+  Nature:    "#6BAD6B",
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
-  // The Body
-  biotech: "The Body", medtech: "The Body", health: "The Body",
-  fitness: "The Body", wellness: "The Body", skincare: "The Body",
-  "synthetic-biology": "The Body",
-  // The Home
-  "smart-home": "The Home", "interior-design": "The Home", lifestyle: "The Home",
-  // Work & Money
-  technology: "Work & Money", ai: "Work & Money", fintech: "Work & Money",
-  cybersecurity: "Work & Money", robotics: "Work & Money", finance: "Work & Money",
-  retail: "Work & Money", branding: "Work & Money", education: "Work & Money",
-  "future-of-work": "Work & Money", web3: "Work & Money",
-  // Play & Entertainment
-  gaming: "Play & Entertainment", sport: "Play & Entertainment", sports: "Play & Entertainment",
-  nightlife: "Play & Entertainment", mobility: "Play & Entertainment",
-  travel: "Play & Entertainment", film: "Play & Entertainment", music: "Play & Entertainment",
-  "ar-vr": "Play & Entertainment",
-  // Style & Making
-  beauty: "Style & Making", fashion: "Style & Making", luxury: "Style & Making",
-  fragrance: "Style & Making", jewellery: "Style & Making",
-  art: "Style & Making", photography: "Style & Making", creativity: "Style & Making",
-  // Food & Ritual
-  food: "Food & Ritual", "food-tech": "Food & Ritual", coffee: "Food & Ritual",
-  // Love & Care
-  social: "Love & Care", dating: "Love & Care", parenting: "Love & Care",
-  kids: "Love & Care", pets: "Love & Care", spirituality: "Love & Care",
-  // Mind & Spirit
-  "mental-health": "Mind & Spirit",
-  // Nature & Planet
-  sustainability: "Nature & Planet", "climate-tech": "Nature & Planet", space: "Nature & Planet",
+  // Body
+  biotech: "Body", medtech: "Body", health: "Body",
+  fitness: "Body", wellness: "Body", skincare: "Body",
+  "synthetic-biology": "Body",
+  // Home
+  "smart-home": "Home", "interior-design": "Home", lifestyle: "Home",
+  // Work
+  technology: "Work", ai: "Work", fintech: "Work",
+  cybersecurity: "Work", robotics: "Work", finance: "Work",
+  retail: "Work", branding: "Work", education: "Work",
+  "future-of-work": "Work", web3: "Work",
+  // Play
+  gaming: "Play", sport: "Play", sports: "Play",
+  nightlife: "Play", mobility: "Play",
+  travel: "Play", film: "Play", music: "Play",
+  "ar-vr": "Play",
+  // Style
+  beauty: "Style", fashion: "Style", luxury: "Style",
+  fragrance: "Style", jewellery: "Style",
+  art: "Style", photography: "Style", creativity: "Style",
+  // Food
+  food: "Food", "food-tech": "Food", coffee: "Food",
+  // Community
+  social: "Community", dating: "Community", parenting: "Community",
+  kids: "Community", pets: "Community", spirituality: "Community",
+  // Mind
+  "mental-health": "Mind",
+  // Nature
+  sustainability: "Nature", "climate-tech": "Nature", space: "Nature",
 };
 
 function getDomain(topic: string): CulturalDomain {
-  return TOPIC_TO_DOMAIN[topic] ?? "Work & Money";
+  return TOPIC_TO_DOMAIN[topic] ?? "Work";
 }
 
 // ── Cultural tensions (inner ring) ────────────────────────────────────────────
