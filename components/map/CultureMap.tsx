@@ -5,94 +5,113 @@ import { Trend } from "@/types";
 import { TOPIC_LIBRARY } from "@/lib/extended-trends";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 
-// ── Fixed cultural domains ─────────────────────────────────────────────────────
+// ── Life arenas (outer ring) ──────────────────────────────────────────────────
 
 const CULTURAL_DOMAINS = [
-  "Tech & digital media",
-  "Arts & performance",
-  "Play",
-  "Spirituality & belief",
-  "Work & economy",
-  "Language & media",
-  "Food & ritual",
-  "Body & wellness",
-  "Aesthetic & design",
+  "The Body",
+  "The Home",
+  "Work & Money",
+  "Play & Entertainment",
+  "Style & Making",
+  "Food & Ritual",
+  "Love & Care",
+  "Mind & Spirit",
+  "Nature & Planet",
 ] as const;
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  "Tech & digital media":   "#8C93C7",
-  "Arts & performance":     "#FF8BB4",
-  "Play":                   "#FFD65C",
-  "Spirituality & belief":  "#78C9A8",
-  "Work & economy":         "#FD8326",
-  "Language & media":       "#B6D693",
-  "Food & ritual":          "#C4A0CE",
-  "Body & wellness":        "#53A373",
-  "Aesthetic & design":     "#FFB04A",
+  "The Body":            "#E87B7B",
+  "The Home":            "#D4A76A",
+  "Work & Money":        "#6B8FBB",
+  "Play & Entertainment":"#FFD65C",
+  "Style & Making":      "#C4A0CE",
+  "Food & Ritual":       "#FD8326",
+  "Love & Care":         "#FF8BB4",
+  "Mind & Spirit":       "#78C9A8",
+  "Nature & Planet":     "#6BAD6B",
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
-  technology: "Tech & digital media", ai: "Tech & digital media",
-  sustainability: "Tech & digital media", "climate-tech": "Tech & digital media",
-  fintech: "Tech & digital media", cybersecurity: "Tech & digital media",
-  biotech: "Tech & digital media", robotics: "Tech & digital media",
-  web3: "Tech & digital media", "ar-vr": "Tech & digital media",
-  "smart-home": "Tech & digital media", space: "Tech & digital media",
-  medtech: "Tech & digital media",
-  art: "Arts & performance", film: "Arts & performance",
-  photography: "Arts & performance", creativity: "Arts & performance",
-  music: "Arts & performance",
-  gaming: "Play", sport: "Play", sports: "Play",
-  nightlife: "Play", mobility: "Play",
-  spirituality: "Spirituality & belief",
-  retail: "Work & economy", finance: "Work & economy", branding: "Work & economy",
-  education: "Work & economy", "future-of-work": "Work & economy",
-  social: "Language & media", travel: "Language & media",
-  dating: "Language & media", parenting: "Language & media", kids: "Language & media",
-  food: "Food & ritual", "food-tech": "Food & ritual", coffee: "Food & ritual",
-  health: "Body & wellness", fitness: "Body & wellness", skincare: "Body & wellness",
-  wellness: "Body & wellness", "mental-health": "Body & wellness",
-  pets: "Body & wellness", "synthetic-biology": "Body & wellness",
-  beauty: "Aesthetic & design", fashion: "Aesthetic & design",
-  "interior-design": "Aesthetic & design", luxury: "Aesthetic & design",
-  fragrance: "Aesthetic & design", jewellery: "Aesthetic & design",
-  lifestyle: "Aesthetic & design",
+  // The Body
+  biotech: "The Body", medtech: "The Body", health: "The Body",
+  fitness: "The Body", wellness: "The Body", skincare: "The Body",
+  "synthetic-biology": "The Body",
+  // The Home
+  "smart-home": "The Home", "interior-design": "The Home", lifestyle: "The Home",
+  // Work & Money
+  technology: "Work & Money", ai: "Work & Money", fintech: "Work & Money",
+  cybersecurity: "Work & Money", robotics: "Work & Money", finance: "Work & Money",
+  retail: "Work & Money", branding: "Work & Money", education: "Work & Money",
+  "future-of-work": "Work & Money", web3: "Work & Money",
+  // Play & Entertainment
+  gaming: "Play & Entertainment", sport: "Play & Entertainment", sports: "Play & Entertainment",
+  nightlife: "Play & Entertainment", mobility: "Play & Entertainment",
+  travel: "Play & Entertainment", film: "Play & Entertainment", music: "Play & Entertainment",
+  "ar-vr": "Play & Entertainment",
+  // Style & Making
+  beauty: "Style & Making", fashion: "Style & Making", luxury: "Style & Making",
+  fragrance: "Style & Making", jewellery: "Style & Making",
+  art: "Style & Making", photography: "Style & Making", creativity: "Style & Making",
+  // Food & Ritual
+  food: "Food & Ritual", "food-tech": "Food & Ritual", coffee: "Food & Ritual",
+  // Love & Care
+  social: "Love & Care", dating: "Love & Care", parenting: "Love & Care",
+  kids: "Love & Care", pets: "Love & Care", spirituality: "Love & Care",
+  // Mind & Spirit
+  "mental-health": "Mind & Spirit",
+  // Nature & Planet
+  sustainability: "Nature & Planet", "climate-tech": "Nature & Planet", space: "Nature & Planet",
 };
 
 function getDomain(topic: string): CulturalDomain {
-  return TOPIC_TO_DOMAIN[topic] ?? "Tech & digital media";
+  return TOPIC_TO_DOMAIN[topic] ?? "Work & Money";
 }
 
-// ── Human needs ───────────────────────────────────────────────────────────────
+// ── Cultural tensions (inner ring) ────────────────────────────────────────────
 
-const NEEDS = ["Belonging", "Identity", "Meaning", "Status", "Autonomy", "Safety"] as const;
+const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity", "Resilience"] as const;
 type Need = typeof NEEDS[number];
 
 const NEED_COLORS: Record<Need, string> = {
-  Belonging: "#FF8BB4",
-  Identity:  "#8C93C7",
-  Meaning:   "#78C9A8",
-  Status:    "#FFD65C",
-  Autonomy:  "#FD8326",
-  Safety:    "#B6D693",
+  Control:      "#FD8326",
+  Connection:   "#FF8BB4",
+  Escape:       "#8C93C7",
+  Recognition:  "#FFD65C",
+  Authenticity: "#78C9A8",
+  Resilience:   "#B6D693",
+};
+
+// Remap old need names from library data to new tensions
+const NEED_REMAP: Record<string, Need> = {
+  Belonging: "Connection",
+  Identity:  "Authenticity",
+  Meaning:   "Escape",
+  Status:    "Recognition",
+  Autonomy:  "Control",
+  Safety:    "Resilience",
 };
 
 const VALID_NEEDS = new Set<string>(NEEDS);
 
 function inferNeed(trend: Trend): Need {
   const text = `${trend.name} ${trend.description} ${(trend as { culturalContext?: string }).culturalContext ?? ""}`.toLowerCase();
-  if (/belong|community|connect|together|friend|tribe|shared|relation|dating|loneliness/.test(text)) return "Belonging";
-  if (/identity|self|authentic|express|personal|individual|profile|avatar|represent/.test(text)) return "Identity";
-  if (/status|prestige|signal|flex|luxury|aspirat|rank|exclusive|premium|clout/.test(text)) return "Status";
-  if (/autonom|freedom|control|choice|independ|agency|decentrali|ownership/.test(text)) return "Autonomy";
-  if (/safe|nostalg|familiar|comfort|tradition|trust|secure|anchor|roots|slow/.test(text)) return "Safety";
-  return "Meaning";
+  if (/control|own|agent|agenc|choice|independ|customi|personal|sovereign|empower/.test(text)) return "Control";
+  if (/belong|together|communit|intimac|friend|love|care|relation|dating|loneli|connect/.test(text)) return "Connection";
+  if (/wonder|adventure|dream|escap|fantasi|transcend|rest|slow|decompress|wanderlust|holiday/.test(text)) return "Escape";
+  if (/status|prestige|signal|achiev|fame|attention|flex|recog|celebr|exclusive|luxury|aspirat|clout/.test(text)) return "Recognition";
+  if (/authentic|real|genuine|honest|raw|transparent|fake|perform|truth|original|unfiltered/.test(text)) return "Authenticity";
+  return "Resilience";
 }
 
 function getTrendNeed(trend: Trend): Need {
+  // Check if explicit needs match new tension names
   const explicit = (trend.needs ?? []).find(n => VALID_NEEDS.has(n)) as Need | undefined;
-  return explicit ?? inferNeed(trend);
+  if (explicit) return explicit;
+  // Remap legacy need names (Belonging → Connection, etc.)
+  const remapped = (trend.needs ?? []).map(n => NEED_REMAP[n]).find(Boolean);
+  if (remapped) return remapped;
+  return inferNeed(trend);
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -166,19 +185,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return [...map.values()];
   }, [enriched]);
 
-  // Tech & digital media is the meta-domain — it shows all trends
-  const techGroups = useMemo(() => NEEDS.map(need => ({
-    domain: "Tech & digital media" as CulturalDomain,
-    need,
-    trends: enriched.filter(e => e.need === need).map(e => e.trend),
-  })).filter(g => g.trends.length > 0), [enriched]);
-
-  const allGroups = useMemo(() => {
-    const techKey = new Set(techGroups.map(g => `Tech & digital media--${g.need}`));
-    return [...groups.filter(g => !techKey.has(`${g.domain}--${g.need}`)), ...techGroups];
-  }, [groups, techGroups]);
-
-  const maxCount = Math.max(1, ...allGroups.map(g => g.trends.length));
+  const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
 
   const { w, h } = dims;
   const cx = w / 2, cy = h / 2;
@@ -296,8 +303,8 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         ))
       )}
 
-      {/* Background aggregated chords — all domains including Tech meta-chords */}
-      {allGroups.map(group => {
+      {/* Background aggregated chords */}
+      {groups.map(group => {
           const dNode = domainNodes.find(n => n.domain === group.domain);
           const nNode = needNodes.find(n => n.need === group.need);
           if (!dNode || !nNode) return null;
@@ -334,9 +341,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           else acc[acc.length - 1].push(word);
           return acc;
         }, []).map(g => g.join(" "));
-        const domainTrends = domain === "Tech & digital media"
-          ? allTrends
-          : enriched.filter(e => e.domain === domain).map(e => e.trend);
+        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
         return (
           <g key={domain} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
@@ -428,7 +433,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         borderTop: "1px solid rgba(0,0,0,0.05)", background: "#F5F2EC",
       }}>
         <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-          Tap a need, a sector, or a trend line to explore
+          Tap a tension, a life arena, or a chord to explore
         </span>
         <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
           {allTrends.length} trends mapped
