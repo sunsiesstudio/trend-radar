@@ -85,6 +85,15 @@ const NEED_COLORS: Record<Need, string> = {
   Resilience:   "#B6D693",
 };
 
+const TENSION_VIBES: Record<Need, string> = {
+  Control:      "People are reclaiming agency over their data, bodies, and environments as automation accelerates.",
+  Connection:   "Genuine human connection is growing scarce — and more valuable — in algorithmically mediated social life.",
+  Escape:       "Pressure to be always-on is fuelling a mainstream retreat into rest, slowness, and alternative realities.",
+  Recognition:  "Attention is the new currency. Status is fragmenting from prestige brands into cultural credibility.",
+  Authenticity: "Audiences have finely tuned radar for performance. Raw, unfiltered, and unoptimised is winning trust.",
+  Resilience:   "Climate anxiety, economic precarity, and health shocks have normalised planning for disruption.",
+};
+
 // Remap old need names from library data to new tensions
 const NEED_REMAP: Record<string, Need> = {
   Belonging: "Connection",
@@ -275,8 +284,17 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         ) : null;
       })()}
 
+      {selection.type === "need" && (() => {
+        const vibe = TENSION_VIBES[selection.need];
+        return vibe ? (
+          <p style={{ fontSize: 12.5, color: "#888", lineHeight: 1.6, margin: "0 0 14px", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+            {vibe}
+          </p>
+        ) : null;
+      })()}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).slice(0, 12).map(t => {
+        {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).map(t => {
           const tDomain = getDomain(t.topics?.[0] ?? "");
           const tNeed   = getTrendNeed(t);
           const color   = t.color || DOMAIN_COLORS[tDomain];
@@ -320,11 +338,6 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
             </div>
           );
         })}
-        {selection.trends.length > 12 && (
-          <div style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif", paddingLeft: 4 }}>
-            +{selection.trends.length - 12} more
-          </div>
-        )}
       </div>
     </div>
   );

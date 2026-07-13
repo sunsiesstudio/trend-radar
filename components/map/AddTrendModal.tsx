@@ -1,47 +1,49 @@
 "use client";
 
 import { useState } from "react";
-import { Signal, Trend } from "@/types";
-import { TRENDS } from "@/lib/trends";
+import { Trend } from "@/types";
+
+const TOPIC_OPTIONS = [
+  "fashion", "beauty", "gaming", "health", "fitness", "wellness",
+  "technology", "ai", "sustainability", "food", "music", "art",
+  "social", "luxury", "travel", "finance", "education", "biotech",
+  "mental-health", "sport", "smart-home", "web3", "ar-vr",
+];
 
 interface Props {
-  onAdd: (signal: Signal) => void;
+  onAdd: (trend: Trend) => void;
   onClose: () => void;
-  defaultTrendId?: string;
-  trends?: Trend[];
 }
 
-export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedTrends }: Props) {
-  const trendList = (passedTrends && passedTrends.length > 0) ? passedTrends : TRENDS;
-  const [trendId, setTrendId]       = useState(defaultTrendId ?? trendList[0].id);
-  const [title, setTitle]           = useState("");
-  const [summary, setSummary]       = useState("");
-  const [sourceName, setSourceName] = useState("");
-  const [sourceUrl, setSourceUrl]   = useState("");
-  const [source, setSource]         = useState<Signal["source"]>("manual");
+export function AddTrendModal({ onAdd, onClose }: Props) {
+  const [name,        setName]        = useState("");
+  const [description, setDescription] = useState("");
+  const [topic,       setTopic]       = useState(TOPIC_OPTIONS[0]);
 
-  const trend = trendList.find((t) => t.id === trendId) ?? trendList[0];
-  const canSubmit = title.trim().length > 0 && summary.trim().length > 0;
+  const canSubmit = name.trim().length > 0 && description.trim().length > 0;
 
   const submit = () => {
     if (!canSubmit) return;
     onAdd({
       id: crypto.randomUUID(),
-      trendId,
-      title: title.trim(),
-      summary: summary.trim(),
-      source,
-      sourceName: sourceName.trim() || "Manual",
-      sourceUrl: sourceUrl.trim() || undefined,
-      date: new Date().toISOString().slice(0, 10),
-      crossLinks: [],
+      name: name.trim(),
+      description: description.trim(),
+      color: "#888",
+      relevanceScore: 50,
+      redditQuery: name.trim(),
+      newsQuery: name.trim(),
+      position: { x: 0, y: 0 },
+      whyRelevant: description.trim(),
+      trajectory: "Emerging",
+      nextSteps: [],
+      topics: [topic],
     });
     onClose();
   };
 
   const field = (label: string, children: React.ReactNode) => (
     <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-      <div style={{ fontSize: 10, fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      <div style={{ fontSize: 10, fontWeight: 800, color: "#aaa", textTransform: "uppercase" as const, letterSpacing: "0.12em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {label}
       </div>
       {children}
@@ -60,7 +62,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
     outline: "none",
     appearance: "none",
     WebkitAppearance: "none",
-    boxSizing: "border-box",
+    boxSizing: "border-box" as const,
     minHeight: 48,
   };
 
@@ -76,103 +78,61 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
           borderRadius: 20,
           width: "100%",
           maxWidth: 520,
-          /* flex column so body scrolls and footer stays fixed above keyboard */
           display: "flex",
           flexDirection: "column",
           maxHeight: "90svh",
-          boxShadow: "0 -8px 60px rgba(0,0,0,0.14)",
+          boxShadow: "0 8px 60px rgba(0,0,0,0.18)",
         }}
       >
-        {/* Color stripe */}
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0, borderRadius: "20px 20px 0 0" }} />
-
-        {/* Header — fixed, never scrolls away */}
+        {/* Header */}
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f0f0", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
-            Add signal
+            Add trend
           </h2>
           <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 18, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>×</button>
         </div>
 
-        {/* Body — scrolls independently */}
+        {/* Body */}
         <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-y", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 16 } as React.CSSProperties}>
 
-          {field("Add to trend",
-            <div style={{ position: "relative" }}>
-              <select
-                value={trendId}
-                onChange={(e) => setTrendId(e.target.value)}
-                style={{ ...inputBase, cursor: "pointer", paddingRight: 40 }}
-              >
-                {trendList.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-              </select>
-              <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#aaa", pointerEvents: "none", lineHeight: 1 }}>⌄</span>
-            </div>
-          )}
-
-          {field("Title *",
+          {field("Trend name *",
             <input
               style={inputBase}
-              placeholder="What is this signal?"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              autoCapitalize="sentences"
-            />
-          )}
-
-          {field("Summary *",
-            <textarea
-              style={{ ...inputBase, resize: "none", lineHeight: 1.55 }}
-              rows={4}
-              placeholder="Why does this matter? What does it signal?"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              autoCapitalize="sentences"
-            />
-          )}
-
-          {field("Source name",
-            <input
-              style={inputBase}
-              placeholder="e.g. Wired, r/fashion, NYT…"
-              value={sourceName}
-              onChange={(e) => setSourceName(e.target.value)}
+              placeholder="e.g. Quiet Luxury"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               autoCapitalize="words"
             />
           )}
 
-          {field("Source type",
+          {field("Description *",
+            <textarea
+              style={{ ...inputBase, resize: "none", lineHeight: 1.55 }}
+              rows={4}
+              placeholder="What is happening? Why does it matter?"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              autoCapitalize="sentences"
+            />
+          )}
+
+          {field("Domain",
             <div style={{ position: "relative" }}>
               <select
-                value={source}
-                onChange={(e) => setSource(e.target.value as Signal["source"])}
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
                 style={{ ...inputBase, cursor: "pointer", paddingRight: 40 }}
               >
-                {["manual", "reddit", "news", "youtube", "arxiv", "hackernews"].map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
+                {TOPIC_OPTIONS.map((t) => <option key={t} value={t}>{t.replace(/-/g, " ")}</option>)}
               </select>
               <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#aaa", pointerEvents: "none", lineHeight: 1 }}>⌄</span>
             </div>
           )}
 
-          {field("Source URL (optional)",
-            <input
-              style={inputBase}
-              placeholder="https://…"
-              value={sourceUrl}
-              onChange={(e) => setSourceUrl(e.target.value)}
-              inputMode="url"
-              autoCapitalize="none"
-              autoCorrect="off"
-            />
-          )}
-
-          {/* Extra bottom breathing room so last field clears the footer */}
           <div style={{ height: 8 }} />
         </div>
 
-        {/* Footer — stays above keyboard */}
+        {/* Footer */}
         <div style={{
           padding: "12px 20px",
           paddingBottom: "max(20px, env(safe-area-inset-bottom, 20px))",
@@ -181,6 +141,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
           display: "flex",
           gap: 10,
           background: "#fff",
+          borderRadius: "0 0 20px 20px",
         }}>
           <button
             onClick={onClose}
@@ -195,11 +156,11 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
               flex: 2, padding: "14px 0", border: "none", borderRadius: 14,
               fontSize: 14, fontWeight: 700, cursor: canSubmit ? "pointer" : "default",
               opacity: canSubmit ? 1 : 0.3,
-              backgroundColor: trend.color, color: "#fff",
+              backgroundColor: "#000", color: "#fff",
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             }}
           >
-            Add signal
+            Add trend
           </button>
         </div>
       </div>

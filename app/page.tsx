@@ -6,6 +6,7 @@ import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRA
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
+import { AddTrendModal } from "@/components/map/AddTrendModal";
 import { CultureMap } from "@/components/map/CultureMap";
 
 function darkenColor(hex: string, factor = 0.62): string {
@@ -48,6 +49,8 @@ function assignUniqueColors(trends: Trend[]): Trend[] {
 
 export default function HomePage() {
   const [showAdd,       setShowAdd]       = useState(false);
+  const [showAddTrend,  setShowAddTrend]  = useState(false);
+  const [showAddMenu,   setShowAddMenu]   = useState(false);
   const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
@@ -262,6 +265,14 @@ export default function HomePage() {
     setShowAdd(false);
   }, []);
 
+  const handleAddTrend = useCallback((t: Trend) => {
+    const positioned = { ...t, position: computeTrendPosition(appliedDynamicTrends.length) };
+    const newTrends = assignUniqueColors([...appliedDynamicTrends, positioned]);
+    setDynamicTrends(newTrends);
+    setAppliedDynamicTrends(newTrends);
+    setShowAddTrend(false);
+  }, [appliedDynamicTrends]);
+
   return (
     <div style={{ position: "fixed", inset: 0, background: "#F5F2EC", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
@@ -352,10 +363,34 @@ export default function HomePage() {
               })()}
             </span>
           )}
-          <button
-            onClick={() => setShowAdd(true)}
-            style={{ padding: "6px 16px", background: "#000", color: "#fff", border: "none", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-          >+ Signal</button>
+          {/* Round + FAB */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setShowAddMenu(m => !m)}
+              style={{ width: 36, height: 36, borderRadius: "50%", background: "#000", color: "#fff", border: "none", fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, fontWeight: 300 }}
+            >+</button>
+            {showAddMenu && (
+              <>
+                <div onClick={() => setShowAddMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 40 }} />
+                <div style={{
+                  position: "absolute", top: "calc(100% + 8px)", right: 0,
+                  background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)", overflow: "hidden", zIndex: 50,
+                  minWidth: 140,
+                }}>
+                  <button
+                    onClick={() => { setShowAdd(true); setShowAddMenu(false); }}
+                    style={{ display: "block", width: "100%", padding: "12px 18px", background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#111", textAlign: "left", whiteSpace: "nowrap", fontFamily: "inherit" }}
+                  >Add signal</button>
+                  <div style={{ height: 1, background: "#f0f0f0", margin: "0 10px" }} />
+                  <button
+                    onClick={() => { setShowAddTrend(true); setShowAddMenu(false); }}
+                    style={{ display: "block", width: "100%", padding: "12px 18px", background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#111", textAlign: "left", whiteSpace: "nowrap", fontFamily: "inherit" }}
+                  >Add trend</button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -364,7 +399,8 @@ export default function HomePage() {
         <CultureMap dynamicTrends={appliedDynamicTrends} activeTopics={appliedTopics} />
       </div>
 
-      {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} />}
+      {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}
+      {showAddTrend && <AddTrendModal onAdd={handleAddTrend} onClose={() => setShowAddTrend(false)} />}
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg) } }
