@@ -97,6 +97,15 @@ const NEED_REMAP: Record<string, Need> = {
 
 const VALID_NEEDS = new Set<string>(NEEDS);
 
+function getDomainVibe(domain: CulturalDomain, trends: Trend[]): string {
+  const top = [...trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).slice(0, 3);
+  const names = top.map(t => t.name);
+  if (!names.length) return "";
+  if (names.length === 1) return `${names[0]} is where ${domain} is heading right now.`;
+  if (names.length === 2) return `${names[0]} and ${names[1]} are the big shifts reshaping ${domain}.`;
+  return `${names[0]}, ${names[1]}, and ${names[2]} are converging in ${domain} — all driven by emerging tech.`;
+}
+
 function inferNeed(trend: Trend): Need {
   const text = `${trend.name} ${trend.description} ${(trend as { culturalContext?: string }).culturalContext ?? ""}`.toLowerCase();
   if (/control|own|agent|agenc|choice|independ|customi|personal|sovereign|empower/.test(text)) return "Control";
@@ -197,7 +206,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const cx = w / 2, cy = h / 2;
   const minDim = Math.min(w, h);
   const outerR      = minDim * 0.38;
-  const innerR      = minDim * 0.165;
+  const innerR      = minDim * 0.26;
   const domainNodeR = Math.min(54, Math.max(34, outerR * 0.2));
   const needNodeR   = Math.min(44, Math.max(28, innerR * 0.7));
 
@@ -249,6 +258,15 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         <button onClick={clearSelection}
           style={{ background: "none", border: "none", fontSize: 20, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginLeft: 8 }}>×</button>
       </div>
+
+      {selection.type === "domain" && (() => {
+        const vibe = getDomainVibe(selection.domain, selection.trends);
+        return vibe ? (
+          <p style={{ fontSize: 12.5, color: "#888", lineHeight: 1.6, margin: "0 0 14px", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+            {vibe}
+          </p>
+        ) : null;
+      })()}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).slice(0, 12).map(t => {
@@ -309,16 +327,9 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         ))
       )}
 
-      {/* Center hub — the tech lens all trends are mapped through */}
-      <circle cx={cx} cy={cy} r={Math.min(38, minDim * 0.05)}
-        fill="#f5f2ec" stroke="#ccc" strokeWidth={1.5} strokeDasharray="5 3" />
-      <text x={cx} y={cy - 6} textAnchor="middle" dominantBaseline="middle"
-        fontSize={8} fontWeight={800} fill="#aaa" letterSpacing="0.14em"
-        fontFamily="'DM Sans', sans-serif">
-        EMERGING
-      </text>
-      <text x={cx} y={cy + 7} textAnchor="middle" dominantBaseline="middle"
-        fontSize={8} fontWeight={800} fill="#aaa" letterSpacing="0.14em"
+      {/* Center tech label */}
+      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
+        fontSize={8} fontWeight={700} fill="#ccc" letterSpacing="0.22em"
         fontFamily="'DM Sans', sans-serif">
         TECH
       </text>

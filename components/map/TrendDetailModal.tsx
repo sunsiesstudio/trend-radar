@@ -465,16 +465,18 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </p>
 
             {/* Why it matters */}
-            <div style={{
-              background: `${trend.color}18`,
-              borderRadius: 10, padding: "12px 14px", marginBottom: 16,
-            }}>
-              <div style={{ fontSize: 9, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>why it matters</div>
-              <p style={{ fontSize: 13, color: "#333", lineHeight: 1.75, margin: 0 }}>{trend.whyRelevant}</p>
+            <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 16 }}>
+              <div style={{
+                background: `${trend.color}18`,
+                borderRadius: 10, padding: "12px 14px",
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: textCol, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>why it matters</div>
+                <p style={{ fontSize: 13, color: "#333", lineHeight: 1.75, margin: 0 }}>{trend.whyRelevant}</p>
+              </div>
             </div>
 
             {/* Cultural context — always shown */}
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 16 }}>
               <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
               {trend.culturalContext ? (
                 <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.culturalContext}</p>
@@ -484,7 +486,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </div>
 
             {/* What brands are doing */}
-            <div style={{ marginBottom: 24 }}>
+            <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 24 }}>
               <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what brands are doing</div>
               {(trend.brandMoves ?? []).length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -532,6 +534,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
               return (
                 <>
+                  <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 10 }}>
                   <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>signals ({sorted.length})</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {clusters.map((cluster, ci) => {
@@ -583,6 +586,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                         </div>
                       );
                     })}
+                  </div>
                   </div>
                 </>
               );

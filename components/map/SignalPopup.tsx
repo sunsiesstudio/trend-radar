@@ -181,7 +181,8 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
   const relatedLabel = crossLinked.length > 0 ? "Connected signals" : `More signals (${related.length})`;
   const textCol = accessibleTextColor(trendColor);
   const effectiveUrl = signal.sourceUrl
-    || (signal.sourceName?.startsWith("r/") ? `https://reddit.com/${signal.sourceName}` : undefined);
+    || (signal.sourceName?.startsWith("r/") ? `https://reddit.com/${signal.sourceName}` : undefined)
+    || (signal.sourceName ? SOURCE_DOMAINS[signal.sourceName] : undefined);
 
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
@@ -295,11 +296,11 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           </div>
 
           {/* Trend link + related — grouped at bottom */}
-          {(onOpenTrend || related.length > 0) && (
+          {((mode !== "sidebar" && onOpenTrend) || related.length > 0) && (
             <div style={{ margin: mode === "sidebar" ? "0 20px 20px" : "0 24px 24px", borderRadius: 10, border: "1px solid #f0ede8", overflow: "hidden" }}>
 
-              {/* Trend link */}
-              {onOpenTrend && (
+              {/* Trend link — only in modal (sidebar header already shows it) */}
+              {mode !== "sidebar" && onOpenTrend && (
                 <button
                   onClick={() => { onClose(); onOpenTrend(); }}
                   style={{
