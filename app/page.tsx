@@ -276,7 +276,7 @@ export default function HomePage() {
         <button
           onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
           style={{ fontSize: 14, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
-        >Augmented Radar</button>
+        >Augmented Culture</button>
 
         {/* Topic search bar — chips + input in one pill */}
         <div style={{ flex: 1, position: "relative", maxWidth: 520 }}>
