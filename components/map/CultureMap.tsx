@@ -263,97 +263,112 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   // ── Detail panel content (shared between sidebar and popup) ──────────────────
 
   const listContent = selection && (selection.type === "need" || selection.type === "domain") && (
-    <div style={{ padding: isMobile ? "16px 20px 28px" : "20px 20px 16px" }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          {selection.type === "need" && (
-            <>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block", flexShrink: 0 }} />
-              <span style={{ fontSize: 15, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                {selection.need}
-              </span>
-              <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
-            </>
-          )}
-          {selection.type === "domain" && (
-            <>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
-              <span style={{ fontSize: 15, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                {selection.domain}
-              </span>
-              <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
-            </>
-          )}
+    <>
+      {/* ── Sticky header ─────────────────────────────────────────────────────── */}
+      <div style={{
+        padding: "16px 20px 12px",
+        flexShrink: 0,
+        borderBottom: "1px solid #f0ede8",
+        background: "#fff",
+      }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            {selection.type === "need" && (
+              <>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block", flexShrink: 0 }} />
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                  {selection.need}
+                </span>
+                <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
+              </>
+            )}
+            {selection.type === "domain" && (
+              <>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                  {selection.domain}
+                </span>
+                <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
+              </>
+            )}
+          </div>
+          <button onClick={clearSelection}
+            style={{ background: "none", border: "none", fontSize: 20, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginLeft: 8 }}>×</button>
         </div>
-        <button onClick={clearSelection}
-          style={{ background: "none", border: "none", fontSize: 20, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginLeft: 8 }}>×</button>
+
+        {selection.type === "domain" && (() => {
+          const vibe = getDomainVibe(selection.domain);
+          return vibe ? (
+            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+              {vibe}
+            </p>
+          ) : null;
+        })()}
+
+        {selection.type === "need" && (() => {
+          const vibe = TENSION_VIBES[selection.need];
+          return vibe ? (
+            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+              {vibe}
+            </p>
+          ) : null;
+        })()}
       </div>
 
-      {selection.type === "domain" && (() => {
-        const vibe = getDomainVibe(selection.domain);
-        return vibe ? (
-          <p style={{ fontSize: 12.5, color: "#888", lineHeight: 1.6, margin: "0 0 14px", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
-            {vibe}
-          </p>
-        ) : null;
-      })()}
-
-      {selection.type === "need" && (() => {
-        const vibe = TENSION_VIBES[selection.need];
-        return vibe ? (
-          <p style={{ fontSize: 12.5, color: "#888", lineHeight: 1.6, margin: "0 0 14px", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
-            {vibe}
-          </p>
-        ) : null;
-      })()}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).map(t => {
-          const tDomain = getDomain(t.topics?.[0] ?? "");
-          const tNeed   = getTrendNeed(t);
-          const color   = t.color || DOMAIN_COLORS[tDomain];
-          return (
-            <div
-              key={t.id}
-              onClick={() => setSelection({ type: "trend", trend: t, domain: tDomain, need: tNeed })}
-              style={{
-                display: "flex", alignItems: "flex-start", gap: 10,
-                background: "#f9f8f5", borderRadius: 10, padding: "10px 12px",
-                cursor: "pointer", border: "1px solid transparent",
-                transition: "border-color 0.15s",
-              }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
-            >
-              <div style={{
-                width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
-                background: color,
-              }} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
-                    {t.relevanceScore ?? 0}%
-                  </span>
-                </div>
-                <div style={{ fontSize: 11, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
-                  {t.description.slice(0, 100)}…
-                </div>
-                {(t.techTags ?? []).length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
-                    {(t.techTags ?? []).map(tag => (
-                      <span key={tag} style={{ fontSize: 9, fontWeight: 700, color: color, background: `${color}15`, borderRadius: 20, padding: "2px 7px", letterSpacing: "0.04em" }}>
-                        {tag}
-                      </span>
-                    ))}
+      {/* ── Scrollable trend list ──────────────────────────────────────────────── */}
+      <div style={{
+        ...(isMobile ? { flex: 1, overflowY: "auto" as const, WebkitOverflowScrolling: "touch" as const } : {}),
+        padding: "12px 20px",
+        paddingBottom: isMobile ? "max(28px, env(safe-area-inset-bottom, 28px))" : 20,
+      }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).map(t => {
+            const tDomain = getDomain(t.topics?.[0] ?? "");
+            const tNeed   = getTrendNeed(t);
+            const color   = t.color || DOMAIN_COLORS[tDomain];
+            return (
+              <div
+                key={t.id}
+                onClick={() => setSelection({ type: "trend", trend: t, domain: tDomain, need: tNeed })}
+                style={{
+                  display: "flex", alignItems: "flex-start", gap: 10,
+                  background: "#f9f8f5", borderRadius: 10, padding: "10px 12px",
+                  cursor: "pointer", border: "1px solid transparent",
+                  transition: "border-color 0.15s",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
+              >
+                <div style={{
+                  width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
+                  background: color,
+                }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
+                      {t.relevanceScore ?? 0}%
+                    </span>
                   </div>
-                )}
+                  <div style={{ fontSize: 12, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
+                    {t.description.slice(0, 100)}…
+                  </div>
+                  {(t.techTags ?? []).length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
+                      {(t.techTags ?? []).map(tag => (
+                        <span key={tag} style={{ fontSize: 9, fontWeight: 700, color: color, background: `${color}15`, borderRadius: 20, padding: "2px 7px", letterSpacing: "0.04em" }}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 
   // ── SVG canvas ────────────────────────────────────────────────────────────────
@@ -485,8 +500,8 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
             width: "33.333vw", minWidth: 280, maxWidth: 520, flexShrink: 0,
             background: "#fff",
             borderLeft: "1px solid rgba(0,0,0,0.07)",
-            overflowY: "auto",
             display: "flex", flexDirection: "column",
+            overflowY: "auto",
           }}>
             {activeSignal ? (() => {
               const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
@@ -545,36 +560,42 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           <div style={{
             position: "fixed", left: 0, right: 0, bottom: 0,
             background: "#fff",
-            borderRadius: "18px 18px 0 0",
-            maxHeight: "62vh",
-            overflowY: "auto",
+            borderRadius: "20px 20px 0 0",
+            maxHeight: "92svh",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
             zIndex: 201,
-            boxShadow: "0 -6px 40px rgba(0,0,0,0.18)",
+            boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
           }}>
             {/* Drag handle */}
             <div style={{
-              width: 36, height: 4, borderRadius: 2,
-              background: "#ddd", margin: "12px auto 0",
+              width: 40, height: 4, borderRadius: 2,
+              background: "#ddd", margin: "12px auto 0", flexShrink: 0,
             }} />
             {activeSignal ? (() => {
               const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
               return (
-                <SignalPopup
-                  signal={activeSignal}
-                  trendColor={sigTrend?.color ?? "#888"}
-                  trendName={sigTrend?.name ?? ""}
-                  allSignals={allSignals}
-                  onClose={() => setActiveSignal(null)}
-                  onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
-                />
+                <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+                  <SignalPopup
+                    signal={activeSignal}
+                    trendColor={sigTrend?.color ?? "#888"}
+                    trendName={sigTrend?.name ?? ""}
+                    allSignals={allSignals}
+                    onClose={() => setActiveSignal(null)}
+                    onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+                  />
+                </div>
               );
             })() : selection?.type === "trend" ? (
-              <TrendDetailModal
-                trend={selection.trend}
-                onClose={clearSelection}
-                onSelectSignal={(s) => setActiveSignal(s)}
-                mode="sidebar"
-              />
+              <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+                <TrendDetailModal
+                  trend={selection.trend}
+                  onClose={clearSelection}
+                  onSelectSignal={(s) => setActiveSignal(s)}
+                  mode="sidebar"
+                />
+              </div>
             ) : listContent}
           </div>
         </>
