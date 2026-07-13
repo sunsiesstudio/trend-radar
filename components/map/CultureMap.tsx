@@ -303,6 +303,20 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         ))
       )}
 
+      {/* Center hub — the tech lens all trends are mapped through */}
+      <circle cx={cx} cy={cy} r={Math.min(38, minDim * 0.05)}
+        fill="#f5f2ec" stroke="#ccc" strokeWidth={1.5} strokeDasharray="5 3" />
+      <text x={cx} y={cy - 6} textAnchor="middle" dominantBaseline="middle"
+        fontSize={8} fontWeight={800} fill="#aaa" letterSpacing="0.14em"
+        fontFamily="'DM Sans', sans-serif">
+        EMERGING
+      </text>
+      <text x={cx} y={cy + 7} textAnchor="middle" dominantBaseline="middle"
+        fontSize={8} fontWeight={800} fill="#aaa" letterSpacing="0.14em"
+        fontFamily="'DM Sans', sans-serif">
+        TECH
+      </text>
+
       {/* Background aggregated chords */}
       {groups.map(group => {
           const dNode = domainNodes.find(n => n.domain === group.domain);
