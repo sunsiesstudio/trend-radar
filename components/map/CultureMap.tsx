@@ -384,7 +384,11 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const svgCanvas = (
     <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
 
-      {/* Ghost web removed — 54 faint lines created too much visual noise */}
+      <defs>
+        <filter id="nodeShad" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#000" floodOpacity="0.10" />
+        </filter>
+      </defs>
 
       {/* Center tech label */}
       <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
@@ -417,7 +421,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 stroke="transparent" strokeWidth={14} />
               {/* visible line: starts/ends at node edges */}
               <line x1={sx} y1={sy} x2={ex} y2={ey}
-                stroke={color} strokeWidth={strokeW} opacity={opacity} />
+                stroke={color} strokeWidth={strokeW} opacity={opacity} strokeLinecap="round" />
             </g>
           );
         })
@@ -439,15 +443,20 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           <g key={domain} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
             <circle cx={x} cy={y} r={r}
-              fill={isSelectedDomain ? `${color}28` : "#F5F2EC"}
-              stroke={isSelectedDomain ? color : `${color}99`}
-              strokeWidth={isSelectedDomain ? 2 : 1.5} />
+              fill={color}
+              stroke={isSelectedDomain ? "#fff" : "rgba(255,255,255,0.25)"}
+              strokeWidth={isSelectedDomain ? 3 : 1}
+              filter="url(#nodeShad)" />
+            {isSelectedDomain && (
+              <circle cx={x} cy={y} r={r + 5} fill="none"
+                stroke={color} strokeWidth={2} opacity={0.35} />
+            )}
             {lines.map((line, li) => (
               <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
                 textAnchor="middle" dominantBaseline="middle"
                 fontSize={Math.min(13, Math.max(9, domainNodeR * 0.30))}
-                fontWeight={isSelectedDomain ? 700 : 500}
-                fill={isSelectedDomain ? "#111" : "#666"}
+                fontWeight={700}
+                fill="#fff"
                 fontFamily="'DM Sans', sans-serif">
                 {line}
               </text>
@@ -468,13 +477,14 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           <g key={need} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedNeed ? null : { type: "need", need, trends: needTrends })}>
             <polygon points={pts}
-              fill={isSelectedNeed ? `${color}30` : "#F5F2EC"}
-              stroke={isSelectedNeed ? color : hasConnections ? `${color}bb` : "#ccc"}
-              strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.5 : 1} />
+              fill={isSelectedNeed ? `${color}18` : "#fff"}
+              stroke={isSelectedNeed ? color : hasConnections ? color : "#ddd"}
+              strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.8 : 1}
+              filter="url(#nodeShad)" />
             <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
               fontSize={Math.min(11, needNodeR * 0.3)}
-              fontWeight={isSelectedNeed ? 700 : hasConnections ? 500 : 400}
-              fill={isSelectedNeed ? "#111" : hasConnections ? "#333" : "#ccc"}
+              fontWeight={isSelectedNeed ? 700 : hasConnections ? 600 : 400}
+              fill={isSelectedNeed ? color : hasConnections ? color : "#ccc"}
               fontFamily="'DM Sans', sans-serif">
               {need}
             </text>
@@ -488,7 +498,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#fff" }}>
 
       {/* Main row: canvas + optional right panel (desktop only) */}
       <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
@@ -537,7 +547,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         <div style={{
           flexShrink: 0, padding: "7px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
-          borderTop: "1px solid rgba(0,0,0,0.05)", background: "#F5F2EC",
+          borderTop: "1px solid rgba(0,0,0,0.05)", background: "#fff",
         }}>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
             Tap a tension, a life arena, or a chord to explore

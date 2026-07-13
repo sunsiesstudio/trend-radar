@@ -104,7 +104,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
                 onChange={(e) => setTrendId(e.target.value)}
                 style={{ ...inputBase, cursor: "pointer", paddingRight: 40 }}
               >
-                {trendList.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                {[...trendList].sort((a, b) => a.name.localeCompare(b.name)).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
               <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#aaa", pointerEvents: "none", lineHeight: 1 }}>⌄</span>
             </div>
