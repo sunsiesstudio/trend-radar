@@ -24,10 +24,14 @@ function pickColor(topic: string, idx: number): string {
 }
 
 export async function POST(req: NextRequest) {
-  const { topic, existingTrendIds = [], positionOffset = 0 } = await req.json();
-  if (!topic || typeof topic !== "string") {
+  const { topic, topics: topicsParam, existingTrendIds = [], positionOffset = 0 } = await req.json();
+  const allTopics: string[] = topicsParam?.length ? topicsParam : (topic ? [topic] : []);
+  if (!allTopics.length) {
     return NextResponse.json({ error: "topic required" }, { status: 400 });
   }
+  const isIntersection = allTopics.length > 1;
+  const primaryKey = allTopics[0];
+  const idPrefix = allTopics.map((t: string) => t.toLowerCase().replace(/\s+/g, "-")).join("-x-");
 
   try {
     const msg = await client.messages.create({
@@ -40,9 +44,13 @@ export async function POST(req: NextRequest) {
 
 You always say whether something is just getting started, already moving fast, or nearly played out. You give people something to actually do with the information, not just vibe with it.
 
-Generate exactly 6 trend entries for the topic: "${topic}"
+${isIntersection
+  ? `Generate exactly 6 trend entries at the intersection of: ${allTopics.map(t => `"${t}"`).join(" × ")}
 
-Each one should capture a specific moment where new technology is changing how things work in this space. Think AI, biotech, spatial computing, wearables, synthetic biology, robotics, AR/VR, materials science.
+Each trend MUST live at the genuine crossover of ALL these spaces: ${allTopics.join(", ")}. A trend that only belongs to one of these areas alone is wrong. Show what happens when emerging technology operates at the intersection of ALL of them simultaneously. Think AI, biotech, spatial computing, wearables, synthetic biology, robotics, AR/VR, materials science as the enabling layer.`
+  : `Generate exactly 6 trend entries for the topic: "${primaryKey}"
+
+Each one should capture a specific moment where new technology is changing how things work in this space. Think AI, biotech, spatial computing, wearables, synthetic biology, robotics, AR/VR, materials science.`}
 
 Return ONLY valid JSON (no markdown, no explanation):
 {
@@ -60,9 +68,9 @@ Return ONLY valid JSON (no markdown, no explanation):
       "why_relevant": "5-6 sentences, written directly to whoever needs to make a decision about this. What's the real risk of doing nothing for the next 18 months. What does a brand look like when they get this right, specifically. How long before the window closes. Name who's already moving and who's being left behind. End with the one thing this permanently changes.",
       "trajectory": "3-4 sentences. Call it: just getting started, accelerating, or nearly peaked. What do the next 18-36 months look like. What would confirm it's speeding up. What could slow it down or kill it.",
       "brand_moves": [
-        { "label": "Brand name: what they did and why it worked (1 sentence)", "url": "https://brandname.com" },
-        { "label": "Another brand name: specific product, collab, or campaign (1 sentence)", "url": "https://otherbrand.com" },
-        { "label": "Third brand: what they launched or partnered on (1 sentence)", "url": "https://thirdbrand.com" }
+        { "label": "Brand name: what they did and why it worked (1 sentence)", "url": "https://techcrunch.com/article-about-what-they-did" },
+        { "label": "Another brand name: specific product, collab, or campaign (1 sentence)", "url": "https://theverge.com/article-about-this-move" },
+        { "label": "Third brand: what they launched or partnered on (1 sentence)", "url": "https://wired.com/article-about-their-launch" }
       ],
       "needs": ["Belonging", "Identity"],
       "relevanceScore": 67,
@@ -81,12 +89,12 @@ Return ONLY valid JSON (no markdown, no explanation):
 }
 
 Rules:
-- IDs must be unique slugs starting with "${topic.toLowerCase().replace(/\s+/g, "-")}-"
+- IDs must be unique slugs starting with "${idPrefix}-"
 - Do NOT reuse these IDs: ${existingTrendIds.join(", ") || "none"}
 - needs: array of 1-2 human needs this trend activates. Pick from ONLY these exact strings: "Belonging", "Identity", "Meaning", "Status", "Autonomy", "Safety"
 - relevanceScore between 52 and 81
 - signals: exactly 8 items, mix of news and reddit, specific and real-sounding
-- brand_moves: every entry MUST include a url pointing to the brand's main homepage (e.g. https://nike.com, https://lululemon.com)
+- brand_moves: every entry MUST include a url pointing to a real news article, press release, or source page where this specific move was reported (NOT the brand homepage — link to the article about it, e.g. https://techcrunch.com/2024/01/... or https://wsj.com/articles/...)
 - Every section must name at least one real brand, company, product, or person
 - No sentence that could belong in a different trend report
 - Have a clear opinion, don't hedge unless genuinely unsure
@@ -116,10 +124,10 @@ Rules:
         name: t.name,
         description: t.description,
         color: pickColor(topic, i),
-        topics: [topic.toLowerCase().replace(/\s+/g, "-")],
+        topics: allTopics.map((t: string) => t.toLowerCase().replace(/\s+/g, "-")),
         relevanceScore: t.relevanceScore,
-        redditQuery: `${topic} technology`,
-        newsQuery: `${topic} emerging tech`,
+        redditQuery: `${allTopics.join(" ")} technology`,
+        newsQuery: `${allTopics.join(" ")} emerging tech`,
         position: gridPosition(positionOffset + i),
         historicalContext: t.historical_context,
         economicContext: t.economic_context,

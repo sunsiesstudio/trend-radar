@@ -166,9 +166,19 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return [...map.values()];
   }, [enriched]);
 
-  const featuredDomains = new Set<CulturalDomain>(activeTopics.map(t => getDomain(t)));
-  const hasFeatured = featuredDomains.size > 0;
-  const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
+  // Tech & digital media is the meta-domain — it shows all trends
+  const techGroups = useMemo(() => NEEDS.map(need => ({
+    domain: "Tech & digital media" as CulturalDomain,
+    need,
+    trends: enriched.filter(e => e.need === need).map(e => e.trend),
+  })).filter(g => g.trends.length > 0), [enriched]);
+
+  const allGroups = useMemo(() => {
+    const techKey = new Set(techGroups.map(g => `Tech & digital media--${g.need}`));
+    return [...groups.filter(g => !techKey.has(`${g.domain}--${g.need}`)), ...techGroups];
+  }, [groups, techGroups]);
+
+  const maxCount = Math.max(1, ...allGroups.map(g => g.trends.length));
 
   const { w, h } = dims;
   const cx = w / 2, cy = h / 2;
@@ -249,8 +259,13 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
                 background: color,
               }} />
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
+                    {t.relevanceScore ?? 0}%
+                  </span>
+                </div>
                 <div style={{ fontSize: 11, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
                   {t.description.slice(0, 100)}…
                 </div>
@@ -281,10 +296,8 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         ))
       )}
 
-      {/* Background aggregated chords (non-featured domains) */}
-      {groups
-        .filter(g => !featuredDomains.has(g.domain))
-        .map(group => {
+      {/* Background aggregated chords — all domains including Tech meta-chords */}
+      {allGroups.map(group => {
           const dNode = domainNodes.find(n => n.domain === group.domain);
           const nNode = needNodes.find(n => n.need === group.need);
           if (!dNode || !nNode) return null;
@@ -292,7 +305,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           const dimmed = selection !== null && !highlighted;
           const weight = group.trends.length / maxCount;
           const color = DOMAIN_COLORS[group.domain];
-          const opacity = dimmed ? 0.05 : highlighted ? 0.7 : hasFeatured ? 0.12 + weight * 0.1 : 0.3 + weight * 0.4;
+          const opacity = dimmed ? 0.05 : highlighted ? 0.7 : 0.3 + weight * 0.4;
           const strokeW = highlighted ? 2 + weight * 3 : 0.8 + weight * 1.5;
           return (
             <g key={`bg-${group.domain}--${group.need}`}
@@ -310,83 +323,33 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         })
       }
 
-      {/* Featured domain: individual trend lines with names */}
-      {enriched
-        .filter(e => featuredDomains.has(e.domain))
-        .map(({ trend, domain, need }, idx) => {
-          const dNode = domainNodes.find(n => n.domain === domain);
-          const nNode = needNodes.find(n => n.need === need);
-          if (!dNode || !nNode) return null;
-          const isThis = selection?.type === "trend" && selection.trend.id === trend.id;
-          const highlighted = isHighlighted(domain, need);
-          const dimmed = selection !== null && !isThis && !highlighted;
-          const color = DOMAIN_COLORS[domain];
-          const mx = (dNode.x + nNode.x) / 2;
-          const my = (dNode.y + nNode.y) / 2;
-          const angleDeg = Math.atan2(nNode.y - dNode.y, nNode.x - dNode.x) * (180 / Math.PI);
-          const flip = angleDeg > 90 || angleDeg < -90;
-          const labelAngle = flip ? angleDeg + 180 : angleDeg;
-          const label = trend.name.split(" ").slice(0, 3).join(" ");
-          return (
-            <g key={`feat-${trend.id}-${idx}`}
-              style={{ cursor: "pointer" }}
-              onClick={() => setSelection(isThis ? null : { type: "trend", trend, domain, need })}>
-              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                stroke="transparent" strokeWidth={14} />
-              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                stroke={color}
-                strokeWidth={isThis ? 2.5 : 1.8}
-                opacity={dimmed ? 0.12 : isThis ? 1 : 0.65} />
-              {!dimmed && (
-                <g transform={`translate(${mx},${my}) rotate(${labelAngle})`}>
-                  <rect x={-label.length * 2.8} y={-10}
-                    width={label.length * 5.6} height={13}
-                    fill="#F5F2EC" rx={3} opacity={0.9} />
-                  <text textAnchor="middle" y={0}
-                    fontSize={isThis ? 9.5 : 8.5}
-                    fontWeight={isThis ? 700 : 500}
-                    fill={isThis ? "#111" : "#555"}
-                    fontFamily="'DM Sans', sans-serif"
-                    style={{ pointerEvents: "none" }}>
-                    {label}
-                  </text>
-                </g>
-              )}
-            </g>
-          );
-        })
-      }
-
       {/* Domain nodes — outer ring */}
       {domainNodes.map(({ domain, x, y }) => {
         const color = DOMAIN_COLORS[domain];
-        const isFeatured = featuredDomains.has(domain);
         const isSelectedDomain = selection?.type === "domain" && selection.domain === domain;
-        const r = isFeatured ? domainNodeR * 1.1 : domainNodeR;
+        const r = domainNodeR;
         const words = domain.split(" & ");
         const lines = words.length > 1 ? words : domain.split(" ").reduce<string[][]>((acc, word) => {
           if (!acc.length || acc[acc.length - 1].join(" ").length + word.length > 12) acc.push([word]);
           else acc[acc.length - 1].push(word);
           return acc;
         }, []).map(g => g.join(" "));
-        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
+        const domainTrends = domain === "Tech & digital media"
+          ? allTrends
+          : enriched.filter(e => e.domain === domain).map(e => e.trend);
         return (
           <g key={domain} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
-            {isFeatured && (
-              <circle cx={x} cy={y} r={r + 6}
-                fill="none" stroke={color} strokeWidth={1.5} opacity={0.3} />
-            )}
             <circle cx={x} cy={y} r={r}
-              fill={isFeatured ? `${color}28` : isSelectedDomain ? `${color}22` : hasFeatured ? "#f8f7f4" : `${color}12`}
-              stroke={isFeatured || isSelectedDomain ? color : hasFeatured ? "#ddd" : `${color}88`}
-              strokeWidth={isFeatured ? 2.5 : isSelectedDomain ? 2 : hasFeatured ? 1 : 1.5} />
+              fill={isSelectedDomain ? `${color}22` : `${color}12`}
+              stroke={isSelectedDomain ? color : `${color}88`}
+              strokeWidth={isSelectedDomain ? 2 : 1.5} />
             {lines.map((line, li) => (
               <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
                 textAnchor="middle" dominantBaseline="middle"
-                fontSize={Math.min(isFeatured ? 12 : 11, r * 0.24)}
-                fontWeight={isFeatured ? 800 : isSelectedDomain ? 700 : hasFeatured ? 400 : 500}
-                fill={isFeatured || isSelectedDomain ? "#111" : hasFeatured ? "#ccc" : "#666"}
+                fontSize={Math.min(11, r * 0.24)}
+                fontWeight={isSelectedDomain ? 700 : 500}
+                fill={isSelectedDomain ? "#111" : "#666"}
                 fontFamily="'DM Sans', sans-serif">
                 {line}
               </text>
@@ -395,16 +358,18 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         );
       })}
 
-      {/* Need nodes — inner ring */}
+      {/* Need nodes — inner ring (diamond shape) */}
       {needNodes.map(({ need, x, y }) => {
         const color = NEED_COLORS[need];
         const isSelectedNeed = selection?.type === "need" && selection.need === need;
         const hasConnections = enriched.some(e => e.need === need);
         const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+        const d = needNodeR;
+        const pts = `${x},${y - d} ${x + d},${y} ${x},${y + d} ${x - d},${y}`;
         return (
           <g key={need} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedNeed ? null : { type: "need", need, trends: needTrends })}>
-            <circle cx={x} cy={y} r={needNodeR}
+            <polygon points={pts}
               fill={isSelectedNeed ? `${color}33` : hasConnections ? `${color}18` : "#f8f7f4"}
               stroke={isSelectedNeed ? color : hasConnections ? `${color}99` : "#ddd"}
               strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.5 : 1} />

@@ -506,6 +506,7 @@ export default function HomePage() {
   const allExtraSignals = useMemo(() => [...extraSignals, ...liveSignals, ...generatedSignals], [extraSignals, liveSignals, generatedSignals]);
   const { nodes: graphNodes, edges: graphEdges } = useMemo(() => buildGraph(allExtraSignals, seenIds, visibleTrends, topicAddedAt), [allExtraSignals, seenIds, visibleTrends, topicAddedAt]);
   const fitViewRef = useRef<(() => void) | null>(null);
+  const [navActivated, setNavActivated] = useState(false);
 
   // Re-center blobs when the right sidebar opens or closes on desktop.
   const sidebarOpen = isDesktop && activeTab === "radar" && (!!activeTrend || !!activeSignal);
@@ -530,14 +531,15 @@ export default function HomePage() {
     );
   }, [emptySearchInput, activeTopics]);
 
-  const runGeneration = useCallback(async (key: string, newTopics: string[], baseTrends: Trend[] = []) => {
-    setGeneratingTopic(key);
+  const runGeneration = useCallback(async (key: string, newTopics: string[], baseTrends: Trend[] = [], intersectionTopics?: string[]) => {
+    const displayKey = intersectionTopics && intersectionTopics.length > 1 ? intersectionTopics.join(" × ") : key;
+    setGeneratingTopic(displayKey);
     setGenerationError(null);
     try {
       const res = await fetch("/api/generate-trends", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: key, existingTrendIds: baseTrends.map(t => t.id), positionOffset: baseTrends.length }),
+        body: JSON.stringify({ topic: key, topics: intersectionTopics ?? [key], existingTrendIds: baseTrends.map(t => t.id), positionOffset: baseTrends.length }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -564,11 +566,8 @@ export default function HomePage() {
           ts[key] = Date.now();
           localStorage.setItem("ar_trendGeneratedAt", JSON.stringify(ts));
         } catch { /* ignore */ }
-        if (baseTrends.length > 0) {
-          setTimeout(() => fitViewRef.current?.(), 100);
-        } else {
-          setTimeout(() => setFocusIdx(0), 60);
-        }
+        setNavActivated(false);
+        setTimeout(() => fitViewRef.current?.(), 100);
       } else {
         const errData = await res.json().catch(() => ({})) as { error?: string };
         setGenerationError(errData.error ?? "Generation failed. Please try again.");
@@ -593,7 +592,8 @@ export default function HomePage() {
       const colored = assignUniqueColors(libraryTrends);
       setDynamicTrends(colored);
       setAppliedDynamicTrends(colored);
-      setTimeout(() => setFocusIdx(0), 60);
+      setNavActivated(false);
+      setTimeout(() => fitViewRef.current?.(), 100);
       return;
     }
     await runGeneration(key, [key], []);
@@ -644,28 +644,11 @@ export default function HomePage() {
       return;
     }
 
-    // Append this topic's trends to the existing board
-    const libraryTrends = [...(TOPIC_LIBRARY[key] ?? [])]
-      .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0));
-
-    if (libraryTrends.length) {
-      setDynamicTrends(prev => {
-        const existingIds = new Set(prev.map(t => t.id));
-        const fresh = libraryTrends.filter(t => !existingIds.has(t.id));
-        // Keep existing trends in their current positions; append new ones after
-        const combined = assignUniqueColors([
-          ...prev,
-          ...fresh.map((t, i) => ({ ...t, position: computeTrendPosition(prev.length + i) })),
-        ]);
-        setAppliedDynamicTrends(combined);
-        return combined;
-      });
-      setTimeout(() => fitViewRef.current?.(), 100);
-      return;
-    }
-
-    // No library trends — generate and append
-    await runGeneration(key, newTopics, dynamicTrends);
+    // Multiple topics active — generate intersection trends (clear board, regenerate)
+    setDynamicTrends([]);
+    setAppliedDynamicTrends([]);
+    setGeneratedSignals([]);
+    await runGeneration(key, newTopics, [], newTopics);
   }, [activeTopics, dynamicTrends, loadTopic, runGeneration, topicAddedAt]);
 
   const removeTopic = useCallback((topic: string) => {
@@ -678,19 +661,17 @@ export default function HomePage() {
       setGeneratedSignals([]);
       return;
     }
-    // Keep only trends that belong to at least one remaining topic,
-    // preserving their visual order (top-left first) and closing any gaps
-    setDynamicTrends(prev => {
-      const kept = assignUniqueColors(
-        prev
-          .filter(t => remaining.some(tp => (t.topics ?? []).includes(tp)))
-          .sort((a, b) => (a.position?.y ?? 0) - (b.position?.y ?? 0) || (a.position?.x ?? 0) - (b.position?.x ?? 0))
-          .map((t, i) => ({ ...t, position: computeTrendPosition(i) }))
-      );
-      setAppliedDynamicTrends(kept);
-      return kept;
-    });
-  }, [activeTopics]);
+    if (remaining.length === 1) {
+      // Back to a single topic — reload its dedicated trends
+      loadTopic(remaining[0]);
+      return;
+    }
+    // Still multi-topic — regenerate intersection of remaining topics
+    setDynamicTrends([]);
+    setAppliedDynamicTrends([]);
+    setGeneratedSignals([]);
+    runGeneration(remaining[0], remaining, [], remaining);
+  }, [activeTopics, loadTopic, runGeneration]);
 
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
@@ -734,6 +715,7 @@ export default function HomePage() {
 
   const prev = () => {
     const newIdx = Math.max(0, safeIdx - 1);
+    setNavActivated(true);
     setFocusIdx(newIdx);
     if (isDesktop && activeTab === "radar" && navTrends[newIdx]) {
       setActiveTrend(navTrends[newIdx]);
@@ -742,6 +724,7 @@ export default function HomePage() {
   };
   const next = () => {
     const newIdx = Math.min(navTrends.length - 1, safeIdx + 1);
+    setNavActivated(true);
     setFocusIdx(newIdx);
     if (isDesktop && activeTab === "radar" && navTrends[newIdx]) {
       setActiveTrend(navTrends[newIdx]);
@@ -779,7 +762,7 @@ export default function HomePage() {
                 transition: "all 0.15s ease",
                 textTransform: "capitalize",
               }}
-            >{tab === "radar" ? "Radar" : "Culture Map"}</button>
+            >{tab === "radar" ? "Radar" : "Map"}</button>
           ))}
         </div>
 
@@ -1193,7 +1176,6 @@ export default function HomePage() {
                               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                             }}
                           >
-                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0 }} />
                             {t.replace(/-/g, " ")}
                           </button>
                         ))}
@@ -1216,7 +1198,6 @@ export default function HomePage() {
                           display: "flex", alignItems: "center", gap: 7,
                         }}
                       >
-                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
                         {t.replace(/-/g, " ")}
                       </button>
                     ))}
@@ -1247,7 +1228,7 @@ export default function HomePage() {
               style={{ background: "#F5F2EC" }}
             >
               <BoardController fitViewRef={fitViewRef} nodeCount={graphNodes.length} isDesktop={isDesktop} firstTrendPos={visibleTrends[0]?.position ?? null} />
-              {focusTrend && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
+              {focusTrend && navActivated && <FocusController trendId={focusTrend.id} trendPos={focusTrendPos} />}
             </ReactFlow>}
       </div>
 
