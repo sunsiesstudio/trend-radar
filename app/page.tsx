@@ -323,7 +323,7 @@ export default function HomePage() {
                   if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 300)}
                 placeholder={activeTopics.length === 0 ? "search a topic…" : "add topic…"}
                 style={{ flex: 1, minWidth: 120, background: "none", border: "none", outline: "none", fontSize: 12, fontWeight: 500, color: "#333", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "0 4px" }}
               />
@@ -333,14 +333,14 @@ export default function HomePage() {
           {/* Autocomplete dropdown */}
           {showSuggestions && topicSuggestions.length > 0 && (
             <div style={{
-              position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 30,
+              position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
               background: "#fff", border: "1px solid #e8e4de", borderRadius: 16,
               boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 240, overflowY: "auto", padding: "6px 0",
             }}>
               {topicSuggestions.map(topic => (
                 <button
                   key={topic}
-                  onMouseDown={() => { addTopic(topic); setTopicInput(""); setShowSuggestions(false); }}
+                  onPointerDown={(e) => { e.preventDefault(); addTopic(topic); setTopicInput(""); setShowSuggestions(false); }}
                   style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "9px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left", fontSize: 12, fontWeight: 600, color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
                 >
                   <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />

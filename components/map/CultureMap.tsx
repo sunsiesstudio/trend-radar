@@ -233,7 +233,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const baseR  = Math.min(maxRx, maxRy); // largest circle that fits
 
   const outerRx = portrait ? maxRx : baseR;
-  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.75)) : baseR;
+  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.35)) : baseR;
 
   const INNER_RATIO = 0.165 / 0.38; // ≈ 0.434
   const innerRx = outerRx * INNER_RATIO;
@@ -384,17 +384,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const svgCanvas = (
     <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
 
-      {/* Ghost web — lines stop at node edges so transparent fills don't bleed */}
-      {domainNodes.flatMap(dn =>
-        needNodes.map(nn => {
-          const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nn.x, nn.y, domainNodeR, needNodeR);
-          return (
-            <line key={`web-${dn.domain}-${nn.need}`}
-              x1={sx} y1={sy} x2={ex} y2={ey}
-              stroke="#ccc" strokeWidth={0.5} opacity={0.2} />
-          );
-        })
-      )}
+      {/* Ghost web removed — 54 faint lines created too much visual noise */}
 
       {/* Center tech label */}
       <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
@@ -449,8 +439,8 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           <g key={domain} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
             <circle cx={x} cy={y} r={r}
-              fill={isSelectedDomain ? `${color}22` : `${color}12`}
-              stroke={isSelectedDomain ? color : `${color}88`}
+              fill={isSelectedDomain ? `${color}28` : "#F5F2EC"}
+              stroke={isSelectedDomain ? color : `${color}99`}
               strokeWidth={isSelectedDomain ? 2 : 1.5} />
             {lines.map((line, li) => (
               <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
@@ -478,8 +468,8 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           <g key={need} style={{ cursor: "pointer" }}
             onClick={() => setSelection(isSelectedNeed ? null : { type: "need", need, trends: needTrends })}>
             <polygon points={pts}
-              fill={isSelectedNeed ? `${color}33` : hasConnections ? `${color}18` : "#f8f7f4"}
-              stroke={isSelectedNeed ? color : hasConnections ? `${color}99` : "#ddd"}
+              fill={isSelectedNeed ? `${color}30` : "#F5F2EC"}
+              stroke={isSelectedNeed ? color : hasConnections ? `${color}bb` : "#ccc"}
               strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.5 : 1} />
             <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
               fontSize={Math.min(11, needNodeR * 0.3)}
