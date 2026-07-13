@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Augmented Radar",
+  title: "Augmented Culture",
   description: "Where emerging tech meets fashion, beauty, and lifestyle — by Augmented Rarity",
 };
 

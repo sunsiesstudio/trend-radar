@@ -302,7 +302,7 @@ ${(trend.brandMoves ?? []).length > 0 ? `
   <div class="brand-moves">
     ${(trend.brandMoves ?? []).map(m => `<div class="brand-move">
       <span class="brand-dot"></span>
-      <span class="brand-label">${m.url ? `<a href="${m.url}" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${m.label}</a>` : m.label}</span>
+      <span class="brand-label">${(() => { try { const u = new URL(m.url ?? ""); return u.pathname.length > 1 && u.pathname !== "/"; } catch { return false; } })() ? `<a href="${m.url}" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${m.label}</a>` : m.label}</span>
     </div>`).join("")}
   </div>
 </div>` : ""}
@@ -333,7 +333,7 @@ ${signals.length > 0 ? `
 </div>` : ""}
 
 <div class="footer">
-  <span><strong>Augmented Radar</strong> maps emerging tech against culture.<br>By Martina from <a href="https://open.substack.com/pub/augmentedrarity" style="color:${c}">Augmented Rarity</a></span>
+  <span><strong>Augmented Culture</strong> maps emerging tech against culture.<br>By Martina from <a href="https://open.substack.com/pub/augmentedrarity" style="color:${c}">Augmented Rarity</a></span>
   <span>${date}</span>
 </div>
 
@@ -505,17 +505,20 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>what brands are doing</div>
               {(trend.brandMoves ?? []).length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {(trend.brandMoves ?? []).map((move, i) => (
-                    <div key={i} style={{ padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
-                      {move.url ? (
-                        <a href={move.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0, textDecoration: "none", display: "block" }}>
-                          {move.label} <span style={{ color: textCol, fontSize: 11, fontWeight: 700 }}>→</span>
-                        </a>
-                      ) : (
-                        <p style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0 }}>{move.label}</p>
-                      )}
-                    </div>
-                  ))}
+                  {(trend.brandMoves ?? []).map((move, i) => {
+                    const isArticle = (() => { try { const u = new URL(move.url ?? ""); return u.pathname.length > 1 && u.pathname !== "/"; } catch { return false; } })();
+                    return (
+                      <div key={i} style={{ padding: "10px 14px", background: "#faf9f6", borderRadius: 10, border: "1px solid #efefef" }}>
+                        {isArticle ? (
+                          <a href={move.url!} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0, textDecoration: "none", display: "block" }}>
+                            {move.label} <span style={{ color: textCol, fontSize: 11, fontWeight: 700 }}>→</span>
+                          </a>
+                        ) : (
+                          <p style={{ fontSize: 12.5, color: "#333", lineHeight: 1.65, margin: 0 }}>{move.label}</p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <p style={{ fontSize: 12, color: "#ccc", margin: 0, fontStyle: "italic" }}>No brand activity tracked yet.</p>
@@ -621,7 +624,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               Export as PDF
             </button>
             <p style={{ fontSize: 10, color: "#ccc", margin: "10px 0 0", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-              Augmented Radar maps emerging tech against culture.<br />By Martina from{" "}
+              Augmented Culture maps emerging tech against culture.<br />By Martina from{" "}
               <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
                 Augmented Rarity
               </a>
