@@ -2,19 +2,12 @@
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
-import { TOPIC_LIBRARY, TOPIC_COLORS, EXTENDED_SIGNALS, normaliseTopicKey, LIBRARY_TOPICS, TOPIC_DESCRIPTIONS } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 import { AddTrendModal } from "@/components/map/AddTrendModal";
 import { CultureMap } from "@/components/map/CultureMap";
-
-function darkenColor(hex: string, factor = 0.62): string {
-  const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
-  const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
-  const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
-  return `#${r.toString(16).padStart(2,"0")}${g.toString(16).padStart(2,"0")}${b.toString(16).padStart(2,"0")}`;
-}
 
 // Grid for dynamically added trends — 3 columns, 760 px apart.
 function computeTrendPosition(idx: number): { x: number; y: number } {
@@ -63,8 +56,6 @@ export default function HomePage() {
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [topicInput, setTopicInput] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const liveTopicsRef = useRef<string[]>([]);
   const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
@@ -103,13 +94,6 @@ export default function HomePage() {
     mq.addEventListener("change", h);
     return () => mq.removeEventListener("change", h);
   }, []);
-
-  const topicSuggestions = useMemo(() => {
-    const q = topicInput.toLowerCase().trim();
-    const all = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
-    if (!q) return all;
-    return all.filter(t => t.includes(q) || t.replace(/-/g, " ").includes(q));
-  }, [topicInput, activeTopics]);
 
   const runGeneration = useCallback(async (key: string, newTopics: string[], baseTrends: Trend[] = [], intersectionTopics?: string[]) => {
     const displayKey = intersectionTopics && intersectionTopics.length > 1 ? intersectionTopics.join(" × ") : key;
@@ -327,80 +311,10 @@ export default function HomePage() {
           activeTopics={appliedTopics}
           extraSignals={allExtraSignals}
           topicAddedAt={topicAddedAt}
+          generatingTopic={generatingTopic}
+          onAddTopic={addTopic}
+          onRemoveTopic={removeTopic}
         />
-      </div>
-
-      {/* ── Bottom search bar ─────────────────────────────────────────────────── */}
-      <div style={{
-        flexShrink: 0,
-        background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)",
-        borderTop: "1px solid rgba(0,0,0,0.07)", zIndex: 10,
-        padding: "10px 16px",
-        paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
-      }}>
-        <div style={{ position: "relative", maxWidth: 600, margin: "0 auto" }}>
-
-          {/* Suggestions — pops upward */}
-          {showSuggestions && topicSuggestions.length > 0 && (
-            <div style={{
-              position: "absolute", bottom: "calc(100% + 8px)", left: 0, right: 0, zIndex: 200,
-              background: "#fff", border: "1px solid #e8e4de", borderRadius: 16,
-              boxShadow: "0 -8px 24px rgba(0,0,0,0.1)", maxHeight: 240, overflowY: "auto", padding: "6px 0",
-            }}>
-              {topicSuggestions.map(topic => (
-                <button
-                  key={topic}
-                  onPointerDown={(e) => { e.preventDefault(); addTopic(topic); setTopicInput(""); setShowSuggestions(false); }}
-                  style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "9px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left", fontSize: 12, fontWeight: 600, color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
-                >
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
-                  {topic.replace(/-/g, " ")}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Input pill */}
-          <div
-            style={{
-              display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6,
-              background: "#f5f5f5", borderRadius: 28, padding: "8px 14px",
-              minHeight: 46, cursor: "text",
-            }}
-            onClick={() => (document.getElementById("topic-search-input") as HTMLInputElement)?.focus()}
-          >
-            {activeTopics.map(topic => {
-              const color = TOPIC_COLORS[topic] ?? "#aaa";
-              const darkC = darkenColor(color);
-              return (
-                <div key={topic} style={{ display: "flex", alignItems: "center", gap: 3, background: `${color}22`, border: `1px solid ${color}55`, borderRadius: 20, padding: "3px 8px 3px 10px", flexShrink: 0 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: darkC, letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{topic.replace(/-/g, " ")}</span>
-                  <button onClick={(e) => { e.stopPropagation(); removeTopic(topic); }} style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 15, color: darkC, lineHeight: 1, display: "flex", alignItems: "center" }}>×</button>
-                </div>
-              );
-            })}
-            {generatingTopic ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#aaa", padding: "0 4px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
-                generating {generatingTopic}…
-              </div>
-            ) : (
-              <input
-                id="topic-search-input"
-                value={topicInput}
-                onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && topicInput.trim()) { addTopic(topicInput.trim()); setTopicInput(""); setShowSuggestions(false); }
-                  if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 300)}
-                placeholder={activeTopics.length === 0 ? "Search a topic to filter the map…" : "Add another topic…"}
-                style={{ flex: 1, minWidth: 120, background: "none", border: "none", outline: "none", fontSize: 13, fontWeight: 500, color: "#333", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "0 4px" }}
-              />
-            )}
-          </div>
-        </div>
       </div>
 
       {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}

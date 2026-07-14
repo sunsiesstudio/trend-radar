@@ -358,7 +358,7 @@ export function normaliseTopicKey(input: string): string {
 
 // ─── Library ──────────────────────────────────────────────────────────────────
 
-const EXTENDED_TRENDS: Trend[] = [
+export const EXTENDED_TRENDS: Trend[] = [
 
   // ── GAMING ──────────────────────────────────────────────────────────────────
   {

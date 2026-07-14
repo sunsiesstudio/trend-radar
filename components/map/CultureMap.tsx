@@ -2,9 +2,8 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Trend, Signal } from "@/types";
-import { TOPIC_LIBRARY } from "@/lib/extended-trends";
+import { EXTENDED_TRENDS, EXTENDED_SIGNALS } from "@/lib/extended-trends";
 import { SIGNALS } from "@/lib/trends";
-import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { BlobRadarView } from "@/components/map/BlobRadarView";
@@ -121,10 +120,13 @@ type Selection =
 type View = "map" | "radar";
 
 interface Props {
-  dynamicTrends:  Trend[];
-  activeTopics:   string[];
-  extraSignals?:  Signal[];
-  topicAddedAt?:  Record<string, string>;
+  dynamicTrends:   Trend[];
+  activeTopics:    string[];
+  extraSignals?:   Signal[];
+  topicAddedAt?:   Record<string, string>;
+  generatingTopic?: string | null;
+  onAddTopic:      (topic: string) => void;
+  onRemoveTopic:   (topic: string) => void;
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
@@ -138,7 +140,7 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt }: Props) {
+export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
   const [view,         setView]         = useState<View>("map");
@@ -171,14 +173,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
     return () => obs.disconnect();
   }, []);
 
-  // When dynamicTrends is populated (a topic is active), use only those trends.
-  // Without this, the map always shows all library trends and search has no effect.
   const allTrends = useMemo(() => {
     if (dynamicTrends.length > 0) return dynamicTrends;
     const seen = new Set<string>();
-    return Object.entries(TOPIC_LIBRARY).flatMap(([topic, trends]) =>
-      trends.map(t => ({ ...t, topics: t.topics?.length ? t.topics : [topic] }))
-    ).filter(t => { if (seen.has(t.id)) return false; seen.add(t.id); return true; });
+    return EXTENDED_TRENDS.filter(t => { if (seen.has(t.id)) return false; seen.add(t.id); return true; });
   }, [dynamicTrends]);
 
   const enriched = useMemo(() => allTrends.map(t => ({
@@ -400,6 +398,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       trends={dynamicTrends}
       signals={allSignals}
       topicAddedAt={topicAddedAt}
+      activeTopics={activeTopics}
+      generatingTopic={generatingTopic}
+      onAddTopic={onAddTopic}
+      onRemoveTopic={onRemoveTopic}
       onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}
       onSelectSignal={(sig) => setActiveSignal(sig)}
     />

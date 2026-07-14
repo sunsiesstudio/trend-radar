@@ -11,7 +11,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { Trend, Signal } from "@/types";
 import { SIGNALS } from "@/lib/trends";
-import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
+import { EXTENDED_SIGNALS, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_COLORS } from "@/lib/extended-trends";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -255,13 +255,24 @@ interface Props {
   trends: Trend[];
   signals?: Signal[];
   topicAddedAt?: Record<string, string>;
+  activeTopics: string[];
+  generatingTopic?: string | null;
+  onAddTopic: (topic: string) => void;
+  onRemoveTopic: (topic: string) => void;
   onSelectTrend?: (trend: Trend) => void;
   onSelectSignal?: (signal: Signal) => void;
 }
 
-export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTrend, onSelectSignal }: Props) {
+export function BlobRadarView({
+  trends, signals, topicAddedAt = {},
+  activeTopics, generatingTopic, onAddTopic, onRemoveTopic,
+  onSelectTrend, onSelectSignal,
+}: Props) {
   const fitViewRef = useRef<(() => void) | null>(null);
   const [focusIdx, setFocusIdx] = useState(0);
+  const [topicInput, setTopicInput] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Sort highest-relevance first — same order as displayed bottom nav
   const sorted = useMemo(
@@ -303,15 +314,154 @@ export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTren
   const prev = () => setFocusIdx(i => Math.max(0, i - 1));
   const next = () => setFocusIdx(i => Math.min(sorted.length - 1, i + 1));
 
+  // ── Search helpers ────────────────────────────────────────────────────────────
+
+  const topicSuggestions = useMemo(() => {
+    const q = topicInput.toLowerCase().trim();
+    const available = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
+    if (!q) return available;
+    return available.filter(t => t.includes(q) || t.replace(/-/g, " ").includes(q));
+  }, [topicInput, activeTopics]);
+
+  const inspirationPills = useMemo(
+    () => FEATURED_TOPICS.filter(t => !activeTopics.includes(t)).slice(0, 8),
+    [activeTopics],
+  );
+
+  function submitTopic(raw: string) {
+    const key = raw.trim();
+    if (!key) return;
+    onAddTopic(key);
+    setTopicInput("");
+    setShowSuggestions(false);
+  }
+
+  // ── Empty state ───────────────────────────────────────────────────────────────
+
   if (trends.length === 0) {
     return (
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff" }}>
-        <div style={{ textAlign: "center", padding: "0 40px" }}>
-          <div style={{ fontSize: 28, color: "#e8e8e8", marginBottom: 12, fontFamily: "'EB Garamond', Georgia, serif" }}>○</div>
-          <div style={{ fontSize: 14, color: "#bbb", fontFamily: "'EB Garamond', Georgia, serif" }}>
-            Search a topic below to start the radar
-          </div>
+        <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
+
+          {generatingTopic ? (
+            /* Loading state */
+            <>
+              <div style={{ fontSize: 32, color: "#e0e0e0", marginBottom: 14, fontFamily: "'EB Garamond', Georgia, serif", animation: "pulse 1.6s infinite" }}>○</div>
+              <div style={{ fontSize: 15, color: "#aaa", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                Generating <em>{generatingTopic}</em>…
+              </div>
+            </>
+          ) : (
+            /* Search state */
+            <>
+              <div style={{ fontSize: 32, color: "#e0e0e0", marginBottom: 14, fontFamily: "'EB Garamond', Georgia, serif" }}>○</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
+                What&apos;s on your radar?
+              </div>
+              <div style={{ fontSize: 13, color: "#bbb", marginTop: 4, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                Search a culture topic to start
+              </div>
+
+              {/* Search input */}
+              <div style={{ position: "relative", marginTop: 22 }}>
+
+                {/* Suggestions dropdown — opens downward */}
+                {showSuggestions && topicSuggestions.length > 0 && (
+                  <div style={{
+                    position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
+                    background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 220, overflowY: "auto", padding: "6px 0",
+                  }}>
+                    {topicSuggestions.slice(0, 8).map(topic => (
+                      <button
+                        key={topic}
+                        onPointerDown={(e) => { e.preventDefault(); submitTopic(topic); }}
+                        style={{
+                          display: "flex", alignItems: "center", gap: 10,
+                          width: "100%", padding: "9px 16px",
+                          background: "none", border: "none", cursor: "pointer",
+                          textAlign: "left", fontSize: 12, fontWeight: 600,
+                          color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        }}
+                      >
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                        {topic.replace(/-/g, " ")}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  background: "#f5f5f5", borderRadius: 28, padding: "10px 10px 10px 18px",
+                }}>
+                  <input
+                    ref={inputRef}
+                    value={topicInput}
+                    onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") { submitTopic(topicSuggestions[0] ?? topicInput); }
+                      if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    placeholder="fashion, gaming, wellness…"
+                    style={{
+                      flex: 1, background: "none", border: "none", outline: "none",
+                      fontSize: 14, fontWeight: 500, color: "#333",
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    }}
+                  />
+                  <button
+                    onClick={() => submitTopic(topicSuggestions[0] ?? topicInput)}
+                    style={{
+                      width: 36, height: 36, borderRadius: "50%",
+                      background: topicInput.trim() ? "#000" : "#e0e0e0",
+                      border: "none", cursor: topicInput.trim() ? "pointer" : "default",
+                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 7h10M8 3l4 4-4 4" stroke={topicInput.trim() ? "#fff" : "#bbb"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Or try pills */}
+              {!topicInput && inspirationPills.length > 0 && (
+                <div style={{ marginTop: 18 }}>
+                  <span style={{ fontSize: 11, color: "#ccc", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                    or try
+                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginTop: 10 }}>
+                    {inspirationPills.map(topic => (
+                      <button
+                        key={topic}
+                        onClick={() => submitTopic(topic)}
+                        style={{
+                          padding: "6px 13px", borderRadius: 20,
+                          background: "#fff", border: "1px solid #e8e4de",
+                          fontSize: 12, fontWeight: 600, color: "#444",
+                          cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          display: "flex", alignItems: "center", gap: 6,
+                          transition: "border-color 0.12s",
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.borderColor = TOPIC_COLORS[topic] ?? "#aaa")}
+                        onMouseLeave={e => (e.currentTarget.style.borderColor = "#e8e4de")}
+                      >
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", display: "inline-block", flexShrink: 0 }} />
+                        {topic.replace(/-/g, " ")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
+
+        <style>{`@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
       </div>
     );
   }
@@ -320,6 +470,44 @@ export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTren
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
       {/* ReactFlow canvas */}
       <div style={{ flex: 1, position: "relative" }}>
+        {/* Active topic chips overlay */}
+        {activeTopics.length > 0 && (
+          <div style={{
+            position: "absolute", top: 8, left: 8, zIndex: 4,
+            display: "flex", flexWrap: "wrap", gap: 5, maxWidth: "calc(100% - 120px)",
+          }}>
+            {activeTopics.map(topic => {
+              const color = TOPIC_COLORS[topic] ?? "#aaa";
+              return (
+                <div key={topic} style={{
+                  display: "flex", alignItems: "center", gap: 3,
+                  background: `${color}18`, border: `1px solid ${color}55`,
+                  borderRadius: 20, padding: "3px 8px 3px 10px",
+                  backdropFilter: "blur(8px)",
+                }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: darkenColor(color), letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                    {topic.replace(/-/g, " ")}
+                  </span>
+                  <button
+                    onClick={() => onRemoveTopic(topic)}
+                    style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 14, color: darkenColor(color), lineHeight: 1, display: "flex", alignItems: "center" }}
+                  >×</button>
+                </div>
+              );
+            })}
+            {generatingTopic && (
+              <div style={{
+                display: "flex", alignItems: "center", gap: 5,
+                background: "#f5f5f5", borderRadius: 20, padding: "3px 10px",
+                fontSize: 11, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              }}>
+                <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
+                {generatingTopic}
+              </div>
+            )}
+          </div>
+        )}
+
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -393,6 +581,8 @@ export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTren
           </button>
         </div>
       )}
+
+      <style>{`@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
     </div>
   );
 }
