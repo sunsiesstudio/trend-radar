@@ -214,20 +214,13 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
 
 // ── Controllers (must be children of ReactFlow) ───────────────────────────────
 
-function BoardController({ fitViewRef, nodeCount }: {
+function BoardController({ fitViewRef }: {
   fitViewRef: React.MutableRefObject<(() => void) | null>;
-  nodeCount: number;
 }) {
   const { fitView } = useReactFlow();
   useEffect(() => {
     fitViewRef.current = () => fitView({ duration: 420, padding: 0.22 });
   }, [fitView, fitViewRef]);
-  const prev = useRef(0);
-  useEffect(() => {
-    if (nodeCount === prev.current) return;
-    prev.current = nodeCount;
-    if (nodeCount > 0) setTimeout(() => fitView({ duration: 600, padding: 0.22 }), 80);
-  }, [nodeCount, fitView]);
   return null;
 }
 
@@ -235,16 +228,21 @@ function FocusController({ trend, idx }: { trend: Trend | undefined; idx: number
   const { fitBounds } = useReactFlow();
   const prevIdx = useRef(-1);
   useEffect(() => {
-    if (!trend || idx === prevIdx.current) return;
+    if (!trend) return;
+    const isInitial = prevIdx.current === -1;
+    if (!isInitial && idx === prevIdx.current) return;
     prevIdx.current = idx;
     const pos = trend.position ?? { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
     const viewR = 300;
-    fitBounds(
-      { x: cx - viewR, y: cy - viewR, width: viewR * 2, height: viewR * 2 },
-      { duration: 420 },
-    );
+    const delay = isInitial ? 150 : 0;
+    setTimeout(() => {
+      fitBounds(
+        { x: cx - viewR, y: cy - viewR, width: viewR * 2, height: viewR * 2 },
+        { duration: 420 },
+      );
+    }, delay);
   }, [trend, idx, fitBounds]);
   return null;
 }
@@ -483,7 +481,7 @@ export function BlobRadarView({
           proOptions={{ hideAttribution: true }}
           style={{ background: "#ffffff" }}
         >
-          <BoardController fitViewRef={fitViewRef} nodeCount={nodes.length} />
+          <BoardController fitViewRef={fitViewRef} />
           <FocusController trend={focusTrend} idx={safeIdx} />
         </ReactFlow>
       </div>
