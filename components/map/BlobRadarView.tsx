@@ -468,44 +468,6 @@ export function BlobRadarView({
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
       {/* ReactFlow canvas */}
       <div style={{ flex: 1, position: "relative" }}>
-        {/* Active topic chips overlay */}
-        {activeTopics.length > 0 && (
-          <div style={{
-            position: "absolute", top: 8, left: 8, zIndex: 4,
-            display: "flex", flexWrap: "wrap", gap: 5, maxWidth: "calc(100% - 120px)",
-          }}>
-            {activeTopics.map(topic => {
-              const color = TOPIC_COLORS[topic] ?? "#aaa";
-              return (
-                <div key={topic} style={{
-                  display: "flex", alignItems: "center", gap: 3,
-                  background: `${color}18`, border: `1px solid ${color}55`,
-                  borderRadius: 20, padding: "3px 8px 3px 10px",
-                  backdropFilter: "blur(8px)",
-                }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: darkenColor(color), letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                    {topic.replace(/-/g, " ")}
-                  </span>
-                  <button
-                    onClick={() => onRemoveTopic(topic)}
-                    style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 14, color: darkenColor(color), lineHeight: 1, display: "flex", alignItems: "center" }}
-                  >×</button>
-                </div>
-              );
-            })}
-            {generatingTopic && (
-              <div style={{
-                display: "flex", alignItems: "center", gap: 5,
-                background: "#f5f5f5", borderRadius: 20, padding: "3px 10px",
-                fontSize: 11, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              }}>
-                <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
-                {generatingTopic}
-              </div>
-            )}
-          </div>
-        )}
-
         <ReactFlow
           nodes={nodes}
           edges={edges}

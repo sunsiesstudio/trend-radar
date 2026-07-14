@@ -2,12 +2,20 @@
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
-import { TOPIC_LIBRARY, normaliseTopicKey } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 import { AddTrendModal } from "@/components/map/AddTrendModal";
 import { CultureMap } from "@/components/map/CultureMap";
+import { HomeView } from "@/components/HomeView";
+
+function darkenColor(hex: string, factor = 0.62): string {
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
 
 // Grid for dynamically added trends — 3 columns, 760 px apart.
 function computeTrendPosition(idx: number): { x: number; y: number } {
@@ -56,6 +64,8 @@ export default function HomePage() {
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [showHome, setShowHome] = useState(true);
+  const [initialMapView, setInitialMapView] = useState<"map" | "radar">("map");
 
   const liveTopicsRef = useRef<string[]>([]);
   const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
@@ -253,7 +263,7 @@ export default function HomePage() {
         {/* Logo + tagline */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
           <button
-            onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
+            onClick={() => { setShowHome(true); setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
             style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
           >Augmented Culture</button>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", display: isDesktop ? "inline" : "none" }}>
@@ -304,17 +314,68 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Map canvas ────────────────────────────────────────────────────────── */}
+      {/* ── Filter chip sub-bar (when a topic is active) ─────────────────────── */}
+      {!showHome && appliedTopics.length > 0 && (
+        <div style={{
+          flexShrink: 0, padding: "6px 16px",
+          background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.05)",
+          display: "flex", alignItems: "center", gap: 8, zIndex: 9,
+        }}>
+          <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
+            tech
+          </span>
+          <span style={{ fontSize: 11, color: "#ddd", fontWeight: 400 }}>×</span>
+          {appliedTopics.map(topic => {
+            const color = TOPIC_COLORS[topic] ?? "#aaa";
+            const dark = darkenColor(color);
+            return (
+              <div key={topic} style={{
+                display: "flex", alignItems: "center", gap: 3,
+                background: `${color}18`, border: `1px solid ${color}44`,
+                borderRadius: 20, padding: "3px 8px 3px 10px",
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: dark, letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  {topic.replace(/-/g, " ")}
+                </span>
+                <button
+                  onClick={() => removeTopic(topic)}
+                  style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 14, color: dark, lineHeight: 1, display: "flex", alignItems: "center" }}
+                >×</button>
+              </div>
+            );
+          })}
+          {generatingTopic && (
+            <span style={{ fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+              generating…
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* ── Main canvas ───────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-        <CultureMap
-          dynamicTrends={appliedDynamicTrends}
-          activeTopics={appliedTopics}
-          extraSignals={allExtraSignals}
-          topicAddedAt={topicAddedAt}
-          generatingTopic={generatingTopic}
-          onAddTopic={addTopic}
-          onRemoveTopic={removeTopic}
-        />
+        {showHome ? (
+          <HomeView
+            onExploreMap={() => { setShowHome(false); setInitialMapView("map"); }}
+            onOpenRadar={async (topic) => {
+              setShowHome(false);
+              setInitialMapView("radar");
+              if (topic) await addTopic(topic);
+            }}
+          />
+        ) : (
+          <CultureMap
+            key={initialMapView}
+            dynamicTrends={appliedDynamicTrends}
+            activeTopics={appliedTopics}
+            extraSignals={allExtraSignals}
+            topicAddedAt={topicAddedAt}
+            generatingTopic={generatingTopic}
+            onAddTopic={addTopic}
+            onRemoveTopic={removeTopic}
+            initialView={initialMapView}
+          />
+        )}
       </div>
 
       {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}
