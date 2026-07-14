@@ -346,7 +346,6 @@ export function BlobRadarView({
           {generatingTopic ? (
             /* Loading state */
             <>
-              <div style={{ fontSize: 32, color: "#e0e0e0", marginBottom: 14, fontFamily: "'EB Garamond', Georgia, serif", animation: "pulse 1.6s infinite" }}>○</div>
               <div style={{ fontSize: 15, color: "#aaa", fontFamily: "'EB Garamond', Georgia, serif" }}>
                 Generating <em>{generatingTopic}</em>…
               </div>
@@ -354,7 +353,6 @@ export function BlobRadarView({
           ) : (
             /* Search state */
             <>
-              <div style={{ fontSize: 32, color: "#e0e0e0", marginBottom: 14, fontFamily: "'EB Garamond', Georgia, serif" }}>○</div>
               <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
                 What&apos;s on your radar?
               </div>
