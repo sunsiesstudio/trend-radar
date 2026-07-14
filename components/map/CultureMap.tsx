@@ -397,7 +397,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const blobRadar = (
     <BlobRadarView
-      trends={allTrends}
+      trends={dynamicTrends}
       signals={allSignals}
       topicAddedAt={topicAddedAt}
       onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}

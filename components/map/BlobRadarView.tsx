@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -60,7 +60,7 @@ type SignalNodeData = { id: string; title: string; color: string; isNew: boolean
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   return (
-    <div style={{ position: "relative" }}>
+    <div>
       <div style={{
         width: data.d, height: data.d,
         borderRadius: blobFromId(data.id),
@@ -119,10 +119,7 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
   const allBlobs: Blob[] = [];
   const allSignalPlacements: P[] = [];
 
-  // Sort by relevance descending so highest-score blobs get top-left positions
-  const sorted = [...trends].sort((a, b) => (b.relevanceScore ?? 50) - (a.relevanceScore ?? 50));
-
-  sorted.forEach((trend, idx) => {
+  trends.forEach((trend, idx) => {
     const pos = trend.position ?? { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
     const trendSignals = signals
       .filter((s) => s.trendId === trend.id)
@@ -215,9 +212,12 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
   return { nodes, edges };
 }
 
-// ── Board controller ──────────────────────────────────────────────────────────
+// ── Controllers (must be children of ReactFlow) ───────────────────────────────
 
-function BoardController({ fitViewRef, nodeCount }: { fitViewRef: React.MutableRefObject<(() => void) | null>; nodeCount: number }) {
+function BoardController({ fitViewRef, nodeCount }: {
+  fitViewRef: React.MutableRefObject<(() => void) | null>;
+  nodeCount: number;
+}) {
   const { fitView } = useReactFlow();
   useEffect(() => {
     fitViewRef.current = () => fitView({ duration: 420, padding: 0.22 });
@@ -226,10 +226,26 @@ function BoardController({ fitViewRef, nodeCount }: { fitViewRef: React.MutableR
   useEffect(() => {
     if (nodeCount === prev.current) return;
     prev.current = nodeCount;
-    if (nodeCount > 0) {
-      setTimeout(() => fitView({ duration: 600, padding: 0.22 }), 80);
-    }
+    if (nodeCount > 0) setTimeout(() => fitView({ duration: 600, padding: 0.22 }), 80);
   }, [nodeCount, fitView]);
+  return null;
+}
+
+function FocusController({ trend, idx }: { trend: Trend | undefined; idx: number }) {
+  const { fitBounds } = useReactFlow();
+  const prevIdx = useRef(-1);
+  useEffect(() => {
+    if (!trend || idx === prevIdx.current) return;
+    prevIdx.current = idx;
+    const pos = trend.position ?? { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
+    const cx = pos.x + CIRCLE_D / 2;
+    const cy = pos.y + CIRCLE_D / 2;
+    const viewR = 300;
+    fitBounds(
+      { x: cx - viewR, y: cy - viewR, width: viewR * 2, height: viewR * 2 },
+      { duration: 420 },
+    );
+  }, [trend, idx, fitBounds]);
   return null;
 }
 
@@ -245,6 +261,16 @@ interface Props {
 
 export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTrend, onSelectSignal }: Props) {
   const fitViewRef = useRef<(() => void) | null>(null);
+  const [focusIdx, setFocusIdx] = useState(0);
+
+  // Sort highest-relevance first — same order as displayed bottom nav
+  const sorted = useMemo(
+    () => [...trends].sort((a, b) => (b.relevanceScore ?? 50) - (a.relevanceScore ?? 50)),
+    [trends],
+  );
+
+  // Reset focus when the trend set changes
+  useEffect(() => { setFocusIdx(0); }, [trends]);
 
   const allSignals = useMemo(() => {
     const extra = signals ?? [];
@@ -254,25 +280,34 @@ export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTren
   }, [signals]);
 
   const { nodes, edges } = useMemo(
-    () => buildGraph(trends, allSignals, topicAddedAt),
-    [trends, allSignals, topicAddedAt],
+    () => buildGraph(sorted, allSignals, topicAddedAt),
+    [sorted, allSignals, topicAddedAt],
   );
 
   const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
     if (node.type === "trendCircle") {
-      const trend = trends.find((t) => t.id === node.id);
-      if (trend) onSelectTrend?.(trend);
+      const trend = sorted.find((t) => t.id === node.id);
+      if (trend) {
+        setFocusIdx(sorted.indexOf(trend));
+        onSelectTrend?.(trend);
+      }
     } else if (node.type === "signalOrbit") {
       const sig = allSignals.find((s) => s.id === node.id);
       if (sig) onSelectSignal?.(sig);
     }
-  }, [trends, allSignals, onSelectTrend, onSelectSignal]);
+  }, [sorted, allSignals, onSelectTrend, onSelectSignal]);
+
+  const safeIdx = sorted.length > 0 ? Math.min(focusIdx, sorted.length - 1) : 0;
+  const focusTrend = sorted[safeIdx];
+
+  const prev = () => setFocusIdx(i => Math.max(0, i - 1));
+  const next = () => setFocusIdx(i => Math.min(sorted.length - 1, i + 1));
 
   if (trends.length === 0) {
     return (
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff" }}>
         <div style={{ textAlign: "center", padding: "0 40px" }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: "#f0f0f0", marginBottom: 12, fontFamily: "'EB Garamond', Georgia, serif" }}>○</div>
+          <div style={{ fontSize: 28, color: "#e8e8e8", marginBottom: 12, fontFamily: "'EB Garamond', Georgia, serif" }}>○</div>
           <div style={{ fontSize: 14, color: "#bbb", fontFamily: "'EB Garamond', Georgia, serif" }}>
             Search a topic below to start the radar
           </div>
@@ -282,22 +317,82 @@ export function BlobRadarView({ trends, signals, topicAddedAt = {}, onSelectTren
   }
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      nodeTypes={NODE_TYPES}
-      onNodeClick={handleNodeClick}
-      nodesDraggable={false}
-      minZoom={0.06}
-      maxZoom={2}
-      panOnDrag
-      zoomOnPinch
-      zoomOnScroll
-      preventScrolling
-      proOptions={{ hideAttribution: true }}
-      style={{ background: "#ffffff" }}
-    >
-      <BoardController fitViewRef={fitViewRef} nodeCount={nodes.length} />
-    </ReactFlow>
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
+      {/* ReactFlow canvas */}
+      <div style={{ flex: 1, position: "relative" }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={NODE_TYPES}
+          onNodeClick={handleNodeClick}
+          nodesDraggable={false}
+          minZoom={0.06}
+          maxZoom={2}
+          panOnDrag
+          zoomOnPinch
+          zoomOnScroll
+          preventScrolling
+          proOptions={{ hideAttribution: true }}
+          style={{ background: "#ffffff" }}
+        >
+          <BoardController fitViewRef={fitViewRef} nodeCount={nodes.length} />
+          <FocusController trend={focusTrend} idx={safeIdx} />
+        </ReactFlow>
+      </div>
+
+      {/* Bottom nav — arrows + trend name + count */}
+      {sorted.length > 0 && (
+        <div style={{
+          flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "10px 16px",
+          paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
+          background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)",
+          borderTop: "1px solid rgba(0,0,0,0.07)",
+          gap: 12,
+        }}>
+          <button
+            onClick={prev}
+            disabled={safeIdx === 0}
+            style={{
+              width: 40, height: 40, borderRadius: "50%",
+              background: safeIdx === 0 ? "#f5f5f5" : "#000",
+              border: "none", cursor: safeIdx === 0 ? "default" : "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M9 2L4 7L9 12" stroke={safeIdx === 0 ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
+              {focusTrend?.name}
+            </div>
+            <div style={{ fontSize: 10, color: "#bbb", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+              {safeIdx + 1} / {sorted.length}
+            </div>
+          </div>
+
+          <button
+            onClick={next}
+            disabled={safeIdx === sorted.length - 1}
+            style={{
+              width: 40, height: 40, borderRadius: "50%",
+              background: safeIdx === sorted.length - 1 ? "#f5f5f5" : "#000",
+              border: "none", cursor: safeIdx === sorted.length - 1 ? "default" : "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M5 2L10 7L5 12" stroke={safeIdx === sorted.length - 1 ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
