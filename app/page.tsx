@@ -41,8 +41,6 @@ function assignUniqueColors(trends: Trend[]): Trend[] {
   });
 }
 
-const QUICK_STARTS = ["fashion", "ai", "wellness", "sustainability", "gaming"];
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
@@ -320,58 +318,6 @@ export default function HomePage() {
       {/* ── Map canvas ────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
         <CultureMap dynamicTrends={appliedDynamicTrends} activeTopics={appliedTopics} />
-
-        {/* Empty-state overlay — shown when no topic is active */}
-        {appliedTopics.length === 0 && !generatingTopic && (
-          <div style={{
-            position: "absolute", inset: 0,
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            gap: 16, padding: "0 24px 80px",
-            pointerEvents: "none",
-          }}>
-            <div style={{ textAlign: "center", maxWidth: 340 }}>
-              <div style={{ fontSize: isDesktop ? 22 : 18, fontWeight: 700, color: "#111", letterSpacing: "-0.025em", fontFamily: "'EB Garamond', Georgia, serif", marginBottom: 10, lineHeight: 1.25 }}>
-                Where culture meets technology
-              </div>
-              <div style={{ fontSize: 13, color: "#999", lineHeight: 1.6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                Life arenas and cultural tensions mapped against emerging tech trends.
-                <br />Tap a node to explore, or search a topic below.
-              </div>
-            </div>
-
-            {/* Legend pills */}
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f4f4f4", borderRadius: 20, padding: "5px 12px" }}>
-                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#E87B7B" }} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#777", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Life arenas</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f4f4f4", borderRadius: 20, padding: "5px 12px" }}>
-                <div style={{ width: 10, height: 10, transform: "rotate(45deg)", background: "#8C93C7" }} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#777", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Cultural tensions</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f4f4f4", borderRadius: 20, padding: "5px 12px" }}>
-                <div style={{ width: 16, height: 2, background: "linear-gradient(90deg, #E87B7B, #8C93C7)", borderRadius: 2 }} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#777", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Trend connections</span>
-              </div>
-            </div>
-
-            {/* Quick-start topic chips */}
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", pointerEvents: "auto" }}>
-              {QUICK_STARTS.map(t => (
-                <button
-                  key={t}
-                  onClick={() => addTopic(t)}
-                  style={{
-                    padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 600,
-                    background: "#fff", border: "1.5px solid #e0e0e0", color: "#444",
-                    cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                  }}
-                >{t}</button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ── Bottom search bar ─────────────────────────────────────────────────── */}

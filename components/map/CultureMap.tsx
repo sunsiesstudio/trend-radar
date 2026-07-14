@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Trend, Signal } from "@/types";
 import { TOPIC_LIBRARY } from "@/lib/extended-trends";
 import { SIGNALS } from "@/lib/trends";
@@ -11,15 +11,8 @@ import { SignalPopup } from "@/components/map/SignalPopup";
 // ── Life arenas (outer ring) ──────────────────────────────────────────────────
 
 const CULTURAL_DOMAINS = [
-  "Body",
-  "Home",
-  "Work",
-  "Play",
-  "Style",
-  "Food",
-  "Community",
-  "Mind",
-  "Nature",
+  "Body", "Home", "Work", "Play", "Style",
+  "Food", "Community", "Mind", "Nature",
 ] as const;
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
@@ -36,34 +29,20 @@ const DOMAIN_COLORS: Record<CulturalDomain, string> = {
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
-  // Body
-  biotech: "Body", medtech: "Body", health: "Body",
-  fitness: "Body", wellness: "Body", skincare: "Body",
-  "synthetic-biology": "Body",
-  // Home
+  biotech: "Body", medtech: "Body", health: "Body", fitness: "Body",
+  wellness: "Body", skincare: "Body", "synthetic-biology": "Body",
   "smart-home": "Home", "interior-design": "Home", lifestyle: "Home",
-  // Work
-  technology: "Work", ai: "Work", fintech: "Work",
-  cybersecurity: "Work", robotics: "Work", finance: "Work",
-  retail: "Work", branding: "Work", education: "Work",
-  "future-of-work": "Work", web3: "Work",
-  // Play
-  gaming: "Play", sport: "Play", sports: "Play",
-  nightlife: "Play", mobility: "Play",
-  travel: "Play", film: "Play", music: "Play",
-  "ar-vr": "Play",
-  // Style
-  beauty: "Style", fashion: "Style", luxury: "Style",
-  fragrance: "Style", jewellery: "Style",
-  art: "Style", photography: "Style", creativity: "Style",
-  // Food
+  technology: "Work", ai: "Work", fintech: "Work", cybersecurity: "Work",
+  robotics: "Work", finance: "Work", retail: "Work", branding: "Work",
+  education: "Work", "future-of-work": "Work", web3: "Work",
+  gaming: "Play", sport: "Play", sports: "Play", nightlife: "Play",
+  mobility: "Play", travel: "Play", film: "Play", music: "Play", "ar-vr": "Play",
+  beauty: "Style", fashion: "Style", luxury: "Style", fragrance: "Style",
+  jewellery: "Style", art: "Style", photography: "Style", creativity: "Style",
   food: "Food", "food-tech": "Food", coffee: "Food",
-  // Community
   social: "Community", dating: "Community", parenting: "Community",
   kids: "Community", pets: "Community", spirituality: "Community",
-  // Mind
   "mental-health": "Mind",
-  // Nature
   sustainability: "Nature", "climate-tech": "Nature", space: "Nature",
 };
 
@@ -94,14 +73,9 @@ const TENSION_VIBES: Record<Need, string> = {
   Resilience:   "Climate anxiety, economic precarity, and health shocks have normalised planning for disruption.",
 };
 
-// Remap old need names from library data to new tensions
 const NEED_REMAP: Record<string, Need> = {
-  Belonging: "Connection",
-  Identity:  "Authenticity",
-  Meaning:   "Escape",
-  Status:    "Recognition",
-  Autonomy:  "Control",
-  Safety:    "Resilience",
+  Belonging: "Connection", Identity: "Authenticity", Meaning: "Escape",
+  Status: "Recognition", Autonomy: "Control", Safety: "Resilience",
 };
 
 const VALID_NEEDS = new Set<string>(NEEDS);
@@ -118,10 +92,6 @@ const DOMAIN_VIBES: Record<CulturalDomain, string> = {
   Nature:    "The climate crisis is forcing a redesign of materials, energy, and how brands talk about responsibility.",
 };
 
-function getDomainVibe(domain: CulturalDomain): string {
-  return DOMAIN_VIBES[domain] ?? "";
-}
-
 function inferNeed(trend: Trend): Need {
   const text = `${trend.name} ${trend.description} ${(trend as { culturalContext?: string }).culturalContext ?? ""}`.toLowerCase();
   if (/control|own|agent|agenc|choice|independ|customi|personal|sovereign|empower/.test(text)) return "Control";
@@ -133,10 +103,8 @@ function inferNeed(trend: Trend): Need {
 }
 
 function getTrendNeed(trend: Trend): Need {
-  // Check if explicit needs match new tension names
   const explicit = (trend.needs ?? []).find(n => VALID_NEEDS.has(n)) as Need | undefined;
   if (explicit) return explicit;
-  // Remap legacy need names (Belonging → Connection, etc.)
   const remapped = (trend.needs ?? []).map(n => NEED_REMAP[n]).find(Boolean);
   if (remapped) return remapped;
   return inferNeed(trend);
@@ -158,11 +126,9 @@ interface Props {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function CultureMap({ dynamicTrends, activeTopics }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dims,        setDims]        = useState({ w: 900, h: 600 });
-  const [selection,   setSelection]   = useState<Selection>(null);
+  const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
-  const [isMobile,    setIsMobile]    = useState(false);
+  const [isMobile,     setIsMobile]     = useState(false);
 
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS], []);
 
@@ -171,17 +137,6 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      if (width > 0 && height > 0) setDims({ w: width, h: height });
-    });
-    obs.observe(el);
-    return () => obs.disconnect();
   }, []);
 
   // All library trends + user's dynamic trends (deduped)
@@ -198,104 +153,36 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return [...libraryFlat.filter(t => !dynamicIds.has(t.id)), ...dynamicTrends];
   }, [dynamicTrends]);
 
-  // Enrich each trend with its mapped domain + need
   const enriched = useMemo(() => allTrends.map(t => ({
     trend: t,
     domain: getDomain(t.topics?.[0] ?? ""),
     need:   getTrendNeed(t),
   })), [allTrends]);
 
-  // Aggregated groups for background chords
-  const groups = useMemo(() => {
-    const map = new Map<string, { domain: CulturalDomain; need: Need; trends: Trend[] }>();
-    enriched.forEach(({ trend, domain, need }) => {
-      const key = `${domain}--${need}`;
-      if (!map.has(key)) map.set(key, { domain, need, trends: [] });
-      map.get(key)!.trends.push(trend);
-    });
-    return [...map.values()];
-  }, [enriched]);
-
-  const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
-
-  const { w, h } = dims;
-  const cx = w / 2, cy = h / 2;
-  const minDim = Math.min(w, h);
-
-  // On portrait screens the diagram is a circle inside a tall rectangle, leaving
-  // large blank margins above/below. Stretch the y-axis so the layout fills the
-  // viewport while keeping the x-axis constrained by screen width.
-  const portrait = h > w * 1.15;
-  const domainNodeR = Math.min(minDim < 600 ? 42 : 54, Math.max(30, minDim * 0.08));
-  const EDGE_PAD = 14;
-  const maxRx  = w / 2 - domainNodeR - EDGE_PAD;
-  const maxRy  = h / 2 - domainNodeR - EDGE_PAD;
-  const baseR  = Math.min(maxRx, maxRy); // largest circle that fits
-
-  const outerRx = portrait ? maxRx : baseR;
-  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.35)) : baseR;
-
-  const INNER_RATIO = 0.165 / 0.38; // ≈ 0.434
-  const innerRx = outerRx * INNER_RATIO;
-  const innerRy = outerRy * INNER_RATIO;
-  const needNodeR = Math.min(44, Math.max(26, Math.min(innerRx, innerRy) * 0.72));
-
-  const domainNodes = CULTURAL_DOMAINS.map((domain, i) => {
-    const angle = (i / CULTURAL_DOMAINS.length) * Math.PI * 2 - Math.PI / 2;
-    return { domain, x: cx + outerRx * Math.cos(angle), y: cy + outerRy * Math.sin(angle) };
-  });
-
-  const needNodes = NEEDS.map((need, i) => {
-    const angle = (i / NEEDS.length) * Math.PI * 2 - Math.PI / 2;
-    return { need, x: cx + innerRx * Math.cos(angle), y: cy + innerRy * Math.sin(angle) };
-  });
-
-  // Shorten a line so it starts/ends at node edges, not centers.
-  function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2: number) {
-    const dx = x2 - x1, dy = y2 - y1;
-    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-    const ux = dx / dist, uy = dy / dist;
-    return { sx: x1 + ux * r1, sy: y1 + uy * r1, ex: x2 - ux * r2, ey: y2 - uy * r2 };
-  }
-
-  function isHighlighted(domain: CulturalDomain, need: Need) {
-    if (!selection) return false;
-    if (selection.type === "need")   return selection.need === need;
-    if (selection.type === "domain") return selection.domain === domain;
-    if (selection.type === "trend")  return selection.domain === domain && selection.need === need;
-    return false;
-  }
-
   function clearSelection() { setSelection(null); }
 
-  // ── Detail panel content (shared between sidebar and popup) ──────────────────
+  // ── Detail panel content ──────────────────────────────────────────────────────
 
   const listContent = selection && (selection.type === "need" || selection.type === "domain") && (
     <>
-      {/* ── Sticky header ─────────────────────────────────────────────────────── */}
+      {/* Sticky header */}
       <div style={{
-        padding: "16px 20px 12px",
-        flexShrink: 0,
-        borderBottom: "1px solid #f0ede8",
-        background: "#fff",
+        padding: "16px 20px 12px", flexShrink: 0,
+        borderBottom: "1px solid #f0ede8", background: "#fff",
       }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {selection.type === "need" && (
               <>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block", flexShrink: 0 }} />
-                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                  {selection.need}
-                </span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.need}</span>
                 <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
               </>
             )}
             {selection.type === "domain" && (
               <>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
-                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                  {selection.domain}
-                </span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.domain}</span>
                 <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
               </>
             )}
@@ -305,25 +192,21 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         </div>
 
         {selection.type === "domain" && (() => {
-          const vibe = getDomainVibe(selection.domain);
+          const vibe = DOMAIN_VIBES[selection.domain];
           return vibe ? (
-            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
-              {vibe}
-            </p>
+            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{vibe}</p>
           ) : null;
         })()}
 
         {selection.type === "need" && (() => {
           const vibe = TENSION_VIBES[selection.need];
           return vibe ? (
-            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
-              {vibe}
-            </p>
+            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{vibe}</p>
           ) : null;
         })()}
       </div>
 
-      {/* ── Scrollable trend list ──────────────────────────────────────────────── */}
+      {/* Scrollable trend list */}
       <div style={{
         ...(isMobile ? { flex: 1, overflowY: "auto" as const, WebkitOverflowScrolling: "touch" as const } : {}),
         padding: "12px 20px",
@@ -347,16 +230,11 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
               >
-                <div style={{
-                  width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0,
-                  background: color,
-                }} />
+                <div style={{ width: 8, height: 8, borderRadius: "50%", marginTop: 4, flexShrink: 0, background: color }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
-                      {t.relevanceScore ?? 0}%
-                    </span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>{t.relevanceScore ?? 0}%</span>
                   </div>
                   <div style={{ fontSize: 12, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
                     {t.description.slice(0, 100)}…
@@ -364,9 +242,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                   {(t.techTags ?? []).length > 0 && (
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
                       {(t.techTags ?? []).map(tag => (
-                        <span key={tag} style={{ fontSize: 9, fontWeight: 700, color: color, background: `${color}15`, borderRadius: 20, padding: "2px 7px", letterSpacing: "0.04em" }}>
-                          {tag}
-                        </span>
+                        <span key={tag} style={{ fontSize: 9, fontWeight: 700, color, background: `${color}15`, borderRadius: 20, padding: "2px 7px", letterSpacing: "0.04em" }}>{tag}</span>
                       ))}
                     </div>
                   )}
@@ -379,120 +255,127 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     </>
   );
 
-  // ── SVG canvas ────────────────────────────────────────────────────────────────
+  // ── Card grid ─────────────────────────────────────────────────────────────────
 
-  const svgCanvas = (
-    <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
+  const cardGrid = (
+    <div style={{
+      flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch",
+      padding: isMobile ? "20px 16px 24px" : "32px 40px 32px",
+    } as React.CSSProperties}>
 
-      <defs>
-        <filter id="nodeShad" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#000" floodOpacity="0.10" />
-        </filter>
-      </defs>
+      {/* Life Arenas */}
+      <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+        <div style={{
+          fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em",
+          textTransform: "uppercase", marginBottom: 12,
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        }}>
+          Life Arenas
+        </div>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: isMobile ? 8 : 12,
+        }}>
+          {CULTURAL_DOMAINS.map(domain => {
+            const color = DOMAIN_COLORS[domain];
+            const isSelected = selection?.type === "domain" && selection.domain === domain;
+            const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
+            return (
+              <div
+                key={domain}
+                onClick={() => setSelection(isSelected ? null : { type: "domain", domain, trends: domainTrends })}
+                style={{
+                  borderRadius: isMobile ? 14 : 18,
+                  padding: isMobile ? "16px 10px" : "20px 14px",
+                  background: color,
+                  cursor: "pointer",
+                  textAlign: "center",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                  boxShadow: isSelected
+                    ? `0 0 0 3px #fff, 0 0 0 5px ${color}, 0 6px 20px ${color}55`
+                    : "0 2px 10px rgba(0,0,0,0.10)",
+                  transform: isSelected ? "scale(1.03)" : "scale(1)",
+                  transition: "all 0.15s ease",
+                  userSelect: "none",
+                }}
+              >
+                <div style={{
+                  fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#fff",
+                  letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif",
+                }}>
+                  {domain}
+                </div>
+                <div style={{
+                  fontSize: 10, color: "rgba(255,255,255,0.7)",
+                  fontFamily: "'DM Sans', sans-serif",
+                }}>
+                  {domainTrends.length} trends
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-      {/* Center tech label */}
-      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-        fontSize={8} fontWeight={700} fill="#ccc" letterSpacing="0.22em"
-        fontFamily="'DM Sans', sans-serif">
-        TECH
-      </text>
+      {/* Cultural Tensions */}
+      <div>
+        <div style={{
+          fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em",
+          textTransform: "uppercase", marginBottom: 12,
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        }}>
+          Cultural Tensions
+        </div>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: isMobile ? 8 : 12,
+        }}>
+          {NEEDS.map(need => {
+            const color = NEED_COLORS[need];
+            const isSelected = selection?.type === "need" && selection.need === need;
+            const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+            return (
+              <div
+                key={need}
+                onClick={() => setSelection(isSelected ? null : { type: "need", need, trends: needTrends })}
+                style={{
+                  borderRadius: isMobile ? 14 : 18,
+                  padding: isMobile ? "16px 10px" : "20px 14px",
+                  background: isSelected ? `${color}14` : "#fff",
+                  border: `2px solid ${isSelected ? color : `${color}66`}`,
+                  cursor: "pointer",
+                  textAlign: "center",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                  boxShadow: isSelected
+                    ? `0 0 0 3px ${color}33, 0 6px 20px ${color}22`
+                    : "0 2px 10px rgba(0,0,0,0.06)",
+                  transform: isSelected ? "scale(1.03)" : "scale(1)",
+                  transition: "all 0.15s ease",
+                  userSelect: "none",
+                }}
+              >
+                <div style={{
+                  fontSize: isMobile ? 12 : 14, fontWeight: 700,
+                  color: isSelected ? color : "#333",
+                  letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif",
+                }}>
+                  {need}
+                </div>
+                <div style={{
+                  fontSize: 10, color: isSelected ? color : "#aaa",
+                  fontFamily: "'DM Sans', sans-serif",
+                }}>
+                  {needTrends.length} trends
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-      {/* Background aggregated chords */}
-      {groups.map(group => {
-          const dNode = domainNodes.find(n => n.domain === group.domain);
-          const nNode = needNodes.find(n => n.need === group.need);
-          if (!dNode || !nNode) return null;
-          const highlighted = isHighlighted(group.domain, group.need);
-          const dimmed = selection !== null && !highlighted;
-          const weight = group.trends.length / maxCount;
-          const color = DOMAIN_COLORS[group.domain];
-          const opacity = dimmed ? 0.05 : highlighted ? 0.7 : 0.3 + weight * 0.4;
-          const strokeW = highlighted ? 2 + weight * 3 : 0.8 + weight * 1.5;
-          const { sx, sy, ex, ey } = edgePts(dNode.x, dNode.y, nNode.x, nNode.y, domainNodeR, needNodeR);
-          return (
-            <g key={`bg-${group.domain}--${group.need}`}
-              style={{ cursor: "pointer" }}
-              onClick={() => setSelection(highlighted ? null : {
-                type: "need", need: group.need,
-                trends: enriched.filter(e => e.need === group.need).map(e => e.trend),
-              })}>
-              {/* click target: full center-to-center length */}
-              <line x1={dNode.x} y1={dNode.y} x2={nNode.x} y2={nNode.y}
-                stroke="transparent" strokeWidth={14} />
-              {/* visible line: starts/ends at node edges */}
-              <line x1={sx} y1={sy} x2={ex} y2={ey}
-                stroke={color} strokeWidth={strokeW} opacity={opacity} strokeLinecap="round" />
-            </g>
-          );
-        })
-      }
-
-      {/* Domain nodes — outer ring */}
-      {domainNodes.map(({ domain, x, y }) => {
-        const color = DOMAIN_COLORS[domain];
-        const isSelectedDomain = selection?.type === "domain" && selection.domain === domain;
-        const r = domainNodeR;
-        const words = domain.split(" & ");
-        const lines = words.length > 1 ? words : domain.split(" ").reduce<string[][]>((acc, word) => {
-          if (!acc.length || acc[acc.length - 1].join(" ").length + word.length > 12) acc.push([word]);
-          else acc[acc.length - 1].push(word);
-          return acc;
-        }, []).map(g => g.join(" "));
-        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
-        return (
-          <g key={domain} style={{ cursor: "pointer" }}
-            onClick={() => setSelection(isSelectedDomain ? null : { type: "domain", domain, trends: domainTrends })}>
-            <circle cx={x} cy={y} r={r}
-              fill={color}
-              stroke={isSelectedDomain ? "#fff" : "rgba(255,255,255,0.25)"}
-              strokeWidth={isSelectedDomain ? 3 : 1}
-              filter="url(#nodeShad)" />
-            {isSelectedDomain && (
-              <circle cx={x} cy={y} r={r + 5} fill="none"
-                stroke={color} strokeWidth={2} opacity={0.35} />
-            )}
-            {lines.map((line, li) => (
-              <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * 14}
-                textAnchor="middle" dominantBaseline="middle"
-                fontSize={Math.min(13, Math.max(9, domainNodeR * 0.30))}
-                fontWeight={700}
-                fill="#fff"
-                fontFamily="'DM Sans', sans-serif">
-                {line}
-              </text>
-            ))}
-          </g>
-        );
-      })}
-
-      {/* Need nodes — inner ring (diamond shape) */}
-      {needNodes.map(({ need, x, y }) => {
-        const color = NEED_COLORS[need];
-        const isSelectedNeed = selection?.type === "need" && selection.need === need;
-        const hasConnections = enriched.some(e => e.need === need);
-        const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
-        const d = needNodeR;
-        const pts = `${x},${y - d} ${x + d},${y} ${x},${y + d} ${x - d},${y}`;
-        return (
-          <g key={need} style={{ cursor: "pointer" }}
-            onClick={() => setSelection(isSelectedNeed ? null : { type: "need", need, trends: needTrends })}>
-            <polygon points={pts}
-              fill={isSelectedNeed ? `${color}18` : "#fff"}
-              stroke={isSelectedNeed ? color : hasConnections ? color : "#ddd"}
-              strokeWidth={isSelectedNeed ? 2.5 : hasConnections ? 1.8 : 1}
-              filter="url(#nodeShad)" />
-            <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
-              fontSize={Math.min(11, needNodeR * 0.3)}
-              fontWeight={isSelectedNeed ? 700 : hasConnections ? 600 : 400}
-              fill={isSelectedNeed ? color : hasConnections ? color : "#ccc"}
-              fontFamily="'DM Sans', sans-serif">
-              {need}
-            </text>
-          </g>
-        );
-      })}
-
-    </svg>
+    </div>
   );
 
   // ── Render ────────────────────────────────────────────────────────────────────
@@ -500,18 +383,15 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#fff" }}>
 
-      {/* Main row: canvas + optional right panel (desktop only) */}
+      {/* Main row: card grid + optional right panel (desktop only) */}
       <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
 
-        {/* SVG canvas */}
-        <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-          {svgCanvas}
-        </div>
+        {cardGrid}
 
         {/* Desktop right sidebar */}
         {!isMobile && (selection || activeSignal) && (
           <div style={{
-            width: "33.333vw", minWidth: 280, maxWidth: 520, flexShrink: 0,
+            width: "38vw", minWidth: 300, maxWidth: 540, flexShrink: 0,
             background: "#fff",
             borderLeft: "1px solid rgba(0,0,0,0.07)",
             display: "flex", flexDirection: "column",
@@ -542,7 +422,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         )}
       </div>
 
-      {/* Footer — desktop only; mobile needs every pixel for the map */}
+      {/* Footer — desktop only */}
       {!isMobile && (
         <div style={{
           flexShrink: 0, padding: "7px 20px",
@@ -550,7 +430,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           borderTop: "1px solid rgba(0,0,0,0.05)", background: "#fff",
         }}>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-            Tap a tension, a life arena, or a chord to explore
+            Tap a life arena or cultural tension to explore trends
           </span>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
             {allTrends.length} trends mapped
@@ -558,35 +438,26 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         </div>
       )}
 
-      {/* Mobile bottom-sheet popup */}
+      {/* Mobile bottom sheet — fixed height so it's consistent across domains and tensions */}
       {isMobile && selection && (
         <>
-          {/* Backdrop */}
           <div
             onClick={clearSelection}
-            style={{
-              position: "fixed", inset: 0,
-              background: "rgba(0,0,0,0.35)",
-              zIndex: 200,
-            }}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }}
           />
-          {/* Sheet */}
           <div style={{
             position: "fixed", left: 0, right: 0, bottom: 0,
             background: "#fff",
             borderRadius: "20px 20px 0 0",
-            maxHeight: "92svh",
-            display: "flex",
-            flexDirection: "column",
+            height: "72svh",
+            display: "flex", flexDirection: "column",
             overflow: "hidden",
             zIndex: 201,
             boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
           }}>
             {/* Drag handle */}
-            <div style={{
-              width: 40, height: 4, borderRadius: 2,
-              background: "#ddd", margin: "12px auto 0", flexShrink: 0,
-            }} />
+            <div style={{ width: 40, height: 4, borderRadius: 2, background: "#ddd", margin: "12px auto 0", flexShrink: 0 }} />
+
             {activeSignal ? (() => {
               const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
               return (
