@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Trend, Signal } from "@/types";
 import { TOPIC_LIBRARY } from "@/lib/extended-trends";
 import { SIGNALS } from "@/lib/trends";
@@ -8,7 +8,7 @@ import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 
-// ── Life arenas (outer ring) ──────────────────────────────────────────────────
+// ── Life arenas ───────────────────────────────────────────────────────────────
 
 const CULTURAL_DOMAINS = [
   "Body", "Home", "Work", "Play", "Style",
@@ -50,7 +50,7 @@ function getDomain(topic: string): CulturalDomain {
   return TOPIC_TO_DOMAIN[topic] ?? "Work";
 }
 
-// ── Cultural tensions (inner ring) ────────────────────────────────────────────
+// ── Cultural tensions ──────────────────────────────────────────────────────────
 
 const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity", "Resilience"] as const;
 type Need = typeof NEEDS[number];
@@ -77,7 +77,6 @@ const NEED_REMAP: Record<string, Need> = {
   Belonging: "Connection", Identity: "Authenticity", Meaning: "Escape",
   Status: "Recognition", Autonomy: "Control", Safety: "Resilience",
 };
-
 const VALID_NEEDS = new Set<string>(NEEDS);
 
 const DOMAIN_VIBES: Record<CulturalDomain, string> = {
@@ -113,19 +112,33 @@ function getTrendNeed(trend: Trend): Need {
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type Selection =
-  | { type: "need";   need: Need;                                 trends: Trend[] }
-  | { type: "domain"; domain: CulturalDomain;                     trends: Trend[] }
+  | { type: "need";   need: Need;                              trends: Trend[] }
+  | { type: "domain"; domain: CulturalDomain;                  trends: Trend[] }
   | { type: "trend";  trend: Trend; domain: CulturalDomain; need: Need }
   | null;
+
+type View = "card" | "map";
 
 interface Props {
   dynamicTrends: Trend[];
   activeTopics:  string[];
 }
 
+// ── Helper ────────────────────────────────────────────────────────────────────
+
+function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2: number) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+  const ux = dx / dist, uy = dy / dist;
+  return { sx: x1 + ux * r1, sy: y1 + uy * r1, ex: x2 - ux * r2, ey: y2 - uy * r2 };
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function CultureMap({ dynamicTrends, activeTopics }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dims,         setDims]         = useState({ w: 900, h: 600 });
+  const [view,         setView]         = useState<View>("card");
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
@@ -133,43 +146,86 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS], []);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
-  // All library trends + user's dynamic trends (deduped)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      if (width > 0 && height > 0) setDims({ w: width, h: height });
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const allTrends = useMemo(() => {
     const seen = new Set<string>();
     const libraryFlat = Object.entries(TOPIC_LIBRARY).flatMap(([topic, trends]) =>
       trends.map(t => ({ ...t, topics: t.topics?.length ? t.topics : [topic] }))
-    ).filter(t => {
-      if (seen.has(t.id)) return false;
-      seen.add(t.id);
-      return true;
-    });
+    ).filter(t => { if (seen.has(t.id)) return false; seen.add(t.id); return true; });
     const dynamicIds = new Set(dynamicTrends.map(t => t.id));
     return [...libraryFlat.filter(t => !dynamicIds.has(t.id)), ...dynamicTrends];
   }, [dynamicTrends]);
 
   const enriched = useMemo(() => allTrends.map(t => ({
-    trend: t,
-    domain: getDomain(t.topics?.[0] ?? ""),
-    need:   getTrendNeed(t),
+    trend: t, domain: getDomain(t.topics?.[0] ?? ""), need: getTrendNeed(t),
   })), [allTrends]);
 
   function clearSelection() { setSelection(null); }
+
+  // ── Map geometry ─────────────────────────────────────────────────────────────
+
+  const { w, h } = dims;
+  const cx = w / 2, cy = h / 2;
+  const minDim = Math.min(w, h);
+  const portrait = h > w * 1.15;
+  const domR = Math.min(minDim < 500 ? 38 : 48, Math.max(28, minDim * 0.077));
+  const PAD = 12;
+  const maxRx = w / 2 - domR - PAD;
+  const maxRy = h / 2 - domR - PAD;
+  const baseR = Math.min(maxRx, maxRy);
+  const outerRx = portrait ? maxRx : baseR;
+  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.3)) : baseR;
+  const INNER = 0.42;
+  const innerRx = outerRx * INNER;
+  const innerRy = outerRy * INNER;
+  // Rounded-rect size for tension nodes
+  const tensW = Math.min(88, Math.max(58, Math.min(innerRx, innerRy) * 1.4));
+  const tensH = Math.min(44, Math.max(32, tensW * 0.5));
+
+  const domainNodes = CULTURAL_DOMAINS.map((domain, i) => {
+    const angle = (i / CULTURAL_DOMAINS.length) * Math.PI * 2 - Math.PI / 2;
+    return { domain, x: cx + outerRx * Math.cos(angle), y: cy + outerRy * Math.sin(angle) };
+  });
+
+  const needNodes = NEEDS.map((need, i) => {
+    const angle = (i / NEEDS.length) * Math.PI * 2 - Math.PI / 2;
+    return { need, x: cx + innerRx * Math.cos(angle), y: cy + innerRy * Math.sin(angle) };
+  });
+
+  // Which domains/needs are connected to the current selection
+  const selectedDomain = selection?.type === "domain" ? selection.domain
+    : selection?.type === "trend" ? selection.domain : null;
+  const selectedNeed = selection?.type === "need" ? selection.need
+    : selection?.type === "trend" ? selection.need : null;
+
+  const connectedNeeds = selectedDomain
+    ? new Set(enriched.filter(e => e.domain === selectedDomain).map(e => e.need))
+    : null;
+  const connectedDomains = selectedNeed
+    ? new Set(enriched.filter(e => e.need === selectedNeed).map(e => e.domain))
+    : null;
 
   // ── Detail panel content ──────────────────────────────────────────────────────
 
   const listContent = selection && (selection.type === "need" || selection.type === "domain") && (
     <>
-      {/* Sticky header */}
-      <div style={{
-        padding: "16px 20px 12px", flexShrink: 0,
-        borderBottom: "1px solid #f0ede8", background: "#fff",
-      }}>
+      <div style={{ padding: "16px 20px 12px", flexShrink: 0, borderBottom: "1px solid #f0ede8", background: "#fff" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {selection.type === "need" && (
@@ -190,23 +246,15 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
           <button onClick={clearSelection}
             style={{ background: "none", border: "none", fontSize: 20, color: "#bbb", cursor: "pointer", lineHeight: 1, flexShrink: 0, marginLeft: 8 }}>×</button>
         </div>
-
         {selection.type === "domain" && (() => {
-          const vibe = DOMAIN_VIBES[selection.domain];
-          return vibe ? (
-            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{vibe}</p>
-          ) : null;
+          const v = DOMAIN_VIBES[selection.domain];
+          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{v}</p> : null;
         })()}
-
         {selection.type === "need" && (() => {
-          const vibe = TENSION_VIBES[selection.need];
-          return vibe ? (
-            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{vibe}</p>
-          ) : null;
+          const v = TENSION_VIBES[selection.need];
+          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{v}</p> : null;
         })()}
       </div>
-
-      {/* Scrollable trend list */}
       <div style={{
         ...(isMobile ? { flex: 1, overflowY: "auto" as const, WebkitOverflowScrolling: "touch" as const } : {}),
         padding: "12px 20px",
@@ -218,15 +266,9 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
             const tNeed   = getTrendNeed(t);
             const color   = t.color || DOMAIN_COLORS[tDomain];
             return (
-              <div
-                key={t.id}
+              <div key={t.id}
                 onClick={() => setSelection({ type: "trend", trend: t, domain: tDomain, need: tNeed })}
-                style={{
-                  display: "flex", alignItems: "flex-start", gap: 10,
-                  background: "#f9f8f5", borderRadius: 10, padding: "10px 12px",
-                  cursor: "pointer", border: "1px solid transparent",
-                  transition: "border-color 0.15s",
-                }}
+                style={{ display: "flex", alignItems: "flex-start", gap: 10, background: "#f9f8f5", borderRadius: 10, padding: "10px 12px", cursor: "pointer", border: "1px solid transparent", transition: "border-color 0.15s" }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = color + "66")}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}
               >
@@ -234,18 +276,11 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#111", fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>{t.relevanceScore ?? 0}%</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#bbb", flexShrink: 0 }}>{t.relevanceScore ?? 0}%</span>
                   </div>
-                  <div style={{ fontSize: 12, color: "#888", lineHeight: 1.4, fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: "#888", lineHeight: 1.4, marginTop: 2, fontFamily: "'DM Sans', sans-serif" }}>
                     {t.description.slice(0, 100)}…
                   </div>
-                  {(t.techTags ?? []).length > 0 && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
-                      {(t.techTags ?? []).map(tag => (
-                        <span key={tag} style={{ fontSize: 9, fontWeight: 700, color, background: `${color}15`, borderRadius: 20, padding: "2px 7px", letterSpacing: "0.04em" }}>{tag}</span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             );
@@ -255,169 +290,220 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     </>
   );
 
-  // ── Card grid ─────────────────────────────────────────────────────────────────
+  // ── Card grid view ────────────────────────────────────────────────────────────
 
   const cardGrid = (
     <div style={{
       flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch",
       padding: isMobile ? "20px 16px 24px" : "32px 40px 32px",
     } as React.CSSProperties}>
-
-      {/* Life Arenas */}
       <div style={{ marginBottom: isMobile ? 24 : 32 }}>
-        <div style={{
-          fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em",
-          textTransform: "uppercase", marginBottom: 12,
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        }}>
+        <div style={{ fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em", textTransform: "uppercase" as const, marginBottom: 12, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           Life Arenas
         </div>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: isMobile ? 8 : 12,
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: isMobile ? 8 : 12 }}>
           {CULTURAL_DOMAINS.map(domain => {
             const color = DOMAIN_COLORS[domain];
             const isSelected = selection?.type === "domain" && selection.domain === domain;
             const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
             return (
-              <div
-                key={domain}
+              <div key={domain}
                 onClick={() => setSelection(isSelected ? null : { type: "domain", domain, trends: domainTrends })}
                 style={{
-                  borderRadius: isMobile ? 14 : 18,
-                  padding: isMobile ? "16px 10px" : "20px 14px",
-                  background: color,
-                  cursor: "pointer",
-                  textAlign: "center",
+                  borderRadius: isMobile ? 14 : 18, padding: isMobile ? "16px 10px" : "20px 14px",
+                  background: color, cursor: "pointer", textAlign: "center",
                   display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                  boxShadow: isSelected
-                    ? `0 0 0 3px #fff, 0 0 0 5px ${color}, 0 6px 20px ${color}55`
-                    : "0 2px 10px rgba(0,0,0,0.10)",
+                  boxShadow: isSelected ? `0 0 0 3px #fff, 0 0 0 5px ${color}, 0 6px 20px ${color}55` : "0 2px 10px rgba(0,0,0,0.10)",
                   transform: isSelected ? "scale(1.03)" : "scale(1)",
-                  transition: "all 0.15s ease",
-                  userSelect: "none",
-                }}
-              >
-                <div style={{
-                  fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#fff",
-                  letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif",
+                  transition: "all 0.15s ease", userSelect: "none",
                 }}>
-                  {domain}
-                </div>
-                <div style={{
-                  fontSize: 10, color: "rgba(255,255,255,0.7)",
-                  fontFamily: "'DM Sans', sans-serif",
-                }}>
-                  {domainTrends.length} trends
-                </div>
+                <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontFamily: "'DM Sans', sans-serif" }}>{domainTrends.length} trends</div>
               </div>
             );
           })}
         </div>
       </div>
-
-      {/* Cultural Tensions */}
       <div>
-        <div style={{
-          fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em",
-          textTransform: "uppercase", marginBottom: 12,
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        }}>
+        <div style={{ fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em", textTransform: "uppercase" as const, marginBottom: 12, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
           Cultural Tensions
         </div>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: isMobile ? 8 : 12,
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: isMobile ? 8 : 12 }}>
           {NEEDS.map(need => {
             const color = NEED_COLORS[need];
             const isSelected = selection?.type === "need" && selection.need === need;
             const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
             return (
-              <div
-                key={need}
+              <div key={need}
                 onClick={() => setSelection(isSelected ? null : { type: "need", need, trends: needTrends })}
                 style={{
-                  borderRadius: isMobile ? 14 : 18,
-                  padding: isMobile ? "16px 10px" : "20px 14px",
-                  background: isSelected ? `${color}14` : "#fff",
-                  border: `2px solid ${isSelected ? color : `${color}66`}`,
-                  cursor: "pointer",
-                  textAlign: "center",
+                  borderRadius: isMobile ? 14 : 18, padding: isMobile ? "16px 10px" : "20px 14px",
+                  background: isSelected ? `${color}14` : "#fff", border: `2px solid ${isSelected ? color : `${color}66`}`,
+                  cursor: "pointer", textAlign: "center",
                   display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                  boxShadow: isSelected
-                    ? `0 0 0 3px ${color}33, 0 6px 20px ${color}22`
-                    : "0 2px 10px rgba(0,0,0,0.06)",
+                  boxShadow: isSelected ? `0 0 0 3px ${color}33, 0 6px 20px ${color}22` : "0 2px 10px rgba(0,0,0,0.06)",
                   transform: isSelected ? "scale(1.03)" : "scale(1)",
-                  transition: "all 0.15s ease",
-                  userSelect: "none",
-                }}
-              >
-                <div style={{
-                  fontSize: isMobile ? 12 : 14, fontWeight: 700,
-                  color: isSelected ? color : "#333",
-                  letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif",
+                  transition: "all 0.15s ease", userSelect: "none",
                 }}>
-                  {need}
-                </div>
-                <div style={{
-                  fontSize: 10, color: isSelected ? color : "#aaa",
-                  fontFamily: "'DM Sans', sans-serif",
-                }}>
-                  {needTrends.length} trends
-                </div>
+                <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: isSelected ? color : "#333", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
+                <div style={{ fontSize: 10, color: isSelected ? color : "#aaa", fontFamily: "'DM Sans', sans-serif" }}>{needTrends.length} trends</div>
               </div>
             );
           })}
         </div>
       </div>
-
     </div>
   );
+
+  // ── SVG map view ──────────────────────────────────────────────────────────────
+
+  const svgMap = (
+    <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block" }}>
+      <defs>
+        <filter id="nodeShad" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="5" floodColor="#000" floodOpacity="0.10" />
+        </filter>
+      </defs>
+
+      {/* Connection lines — only appear when a node is selected */}
+      {selectedDomain && connectedNeeds && needNodes.map(({ need, x: nx, y: ny }) => {
+        if (!connectedNeeds.has(need)) return null;
+        const dNode = domainNodes.find(n => n.domain === selectedDomain)!;
+        const color = DOMAIN_COLORS[selectedDomain];
+        const { sx, sy, ex, ey } = edgePts(dNode.x, dNode.y, nx, ny, domR, tensH * 0.65);
+        return (
+          <line key={need} x1={sx} y1={sy} x2={ex} y2={ey}
+            stroke={color} strokeWidth={1.5} opacity={0.55} strokeLinecap="round" />
+        );
+      })}
+      {selectedNeed && connectedDomains && domainNodes.map(({ domain, x: dx, y: dy }) => {
+        if (!connectedDomains.has(domain)) return null;
+        const nNode = needNodes.find(n => n.need === selectedNeed)!;
+        const color = DOMAIN_COLORS[domain];
+        const { sx, sy, ex, ey } = edgePts(dx, dy, nNode.x, nNode.y, domR, tensH * 0.65);
+        return (
+          <line key={domain} x1={sx} y1={sy} x2={ex} y2={ey}
+            stroke={color} strokeWidth={1.5} opacity={0.55} strokeLinecap="round" />
+        );
+      })}
+
+      {/* Domain circles — outer ring */}
+      {domainNodes.map(({ domain, x, y }) => {
+        const color = DOMAIN_COLORS[domain];
+        const isSelected = selection?.type === "domain" && selection.domain === domain;
+        const dimmed = selection !== null && !isSelected &&
+          !(connectedDomains?.has(domain)) && selection.type !== "trend";
+        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
+        const fontSize = Math.min(12, Math.max(9, domR * 0.28));
+        return (
+          <g key={domain} style={{ cursor: "pointer" }} opacity={dimmed ? 0.3 : 1}
+            onClick={() => setSelection(isSelected ? null : { type: "domain", domain, trends: domainTrends })}>
+            {isSelected && <circle cx={x} cy={y} r={domR + 6} fill="none" stroke={color} strokeWidth={2} opacity={0.35} />}
+            <circle cx={x} cy={y} r={domR} fill={color}
+              stroke={isSelected ? "#fff" : "rgba(255,255,255,0.2)"} strokeWidth={isSelected ? 2.5 : 1}
+              filter="url(#nodeShad)" />
+            <text x={x} y={y - 5} textAnchor="middle" dominantBaseline="middle"
+              fontSize={fontSize} fontWeight={800} fill="#fff" fontFamily="'DM Sans', sans-serif">{domain}</text>
+            <text x={x} y={y + fontSize + 2} textAnchor="middle" dominantBaseline="middle"
+              fontSize={Math.max(7, fontSize * 0.75)} fill="rgba(255,255,255,0.65)" fontFamily="'DM Sans', sans-serif">
+              {domainTrends.length} trends
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Tension nodes — inner ring, rounded rectangles */}
+      {needNodes.map(({ need, x, y }) => {
+        const color = NEED_COLORS[need];
+        const isSelected = selection?.type === "need" && selection.need === need;
+        const dimmed = selection !== null && !isSelected &&
+          !(connectedNeeds?.has(need)) && selection.type !== "trend";
+        const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+        const fontSize = Math.min(11, Math.max(8, tensW * 0.125));
+        return (
+          <g key={need} style={{ cursor: "pointer" }} opacity={dimmed ? 0.3 : 1}
+            onClick={() => setSelection(isSelected ? null : { type: "need", need, trends: needTrends })}>
+            <rect x={x - tensW / 2} y={y - tensH / 2} width={tensW} height={tensH} rx={tensH / 2}
+              fill={isSelected ? `${color}18` : "#fff"}
+              stroke={color} strokeWidth={isSelected ? 2.2 : 1.5}
+              filter="url(#nodeShad)" />
+            <text x={x} y={y - 4} textAnchor="middle" dominantBaseline="middle"
+              fontSize={fontSize} fontWeight={700} fill={isSelected ? color : "#333"} fontFamily="'DM Sans', sans-serif">{need}</text>
+            <text x={x} y={y + fontSize + 2} textAnchor="middle" dominantBaseline="middle"
+              fontSize={Math.max(6, fontSize * 0.75)} fill={isSelected ? color : "#aaa"} fontFamily="'DM Sans', sans-serif">
+              {needTrends.length} trends
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+
+  // ── View toggle ───────────────────────────────────────────────────────────────
+
+  const viewToggle = (
+    <div style={{
+      position: "absolute", top: 12, right: 12, zIndex: 5,
+      display: "flex", background: "#f0f0f0", borderRadius: 10, padding: 3, gap: 2,
+      boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+    }}>
+      {(["card", "map"] as View[]).map(v => (
+        <button key={v} onClick={() => setView(v)}
+          style={{
+            padding: "5px 14px", borderRadius: 8, border: "none", cursor: "pointer",
+            fontSize: 11, fontWeight: 700, fontFamily: "'DM Sans', sans-serif",
+            letterSpacing: "0.02em",
+            background: view === v ? "#fff" : "transparent",
+            color: view === v ? "#111" : "#999",
+            boxShadow: view === v ? "0 1px 3px rgba(0,0,0,0.10)" : "none",
+            transition: "all 0.15s",
+          }}>
+          {v === "card" ? "Grid" : "Map"}
+        </button>
+      ))}
+    </div>
+  );
+
+  // ── Sidebar helpers ───────────────────────────────────────────────────────────
+
+  function renderSidebarBody() {
+    if (activeSignal) {
+      const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
+      return (
+        <SignalPopup signal={activeSignal} mode="sidebar"
+          trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
+          allSignals={allSignals} onClose={() => setActiveSignal(null)}
+          onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+        />
+      );
+    }
+    if (selection?.type === "trend") {
+      return <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar" />;
+    }
+    return listContent;
+  }
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#fff" }}>
 
-      {/* Main row: card grid + optional right panel (desktop only) */}
       <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
 
-        {cardGrid}
+        {/* Canvas / grid area */}
+        <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          {view === "map" ? svgMap : cardGrid}
+          {viewToggle}
+        </div>
 
         {/* Desktop right sidebar */}
         {!isMobile && (selection || activeSignal) && (
           <div style={{
             width: "38vw", minWidth: 300, maxWidth: 540, flexShrink: 0,
-            background: "#fff",
-            borderLeft: "1px solid rgba(0,0,0,0.07)",
-            display: "flex", flexDirection: "column",
-            overflowY: "auto",
+            background: "#fff", borderLeft: "1px solid rgba(0,0,0,0.07)",
+            display: "flex", flexDirection: "column", overflowY: "auto",
           }}>
-            {activeSignal ? (() => {
-              const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
-              return (
-                <SignalPopup
-                  signal={activeSignal}
-                  mode="sidebar"
-                  trendColor={sigTrend?.color ?? "#888"}
-                  trendName={sigTrend?.name ?? ""}
-                  allSignals={allSignals}
-                  onClose={() => setActiveSignal(null)}
-                  onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
-                />
-              );
-            })() : selection?.type === "trend" ? (
-              <TrendDetailModal
-                trend={selection.trend}
-                onClose={clearSelection}
-                onSelectSignal={(s) => setActiveSignal(s)}
-                mode="sidebar"
-              />
-            ) : listContent}
+            {renderSidebarBody()}
           </div>
         )}
       </div>
@@ -426,66 +512,47 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
       {!isMobile && (
         <div style={{
           flexShrink: 0, padding: "7px 20px",
-          display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
           borderTop: "1px solid rgba(0,0,0,0.05)", background: "#fff",
         }}>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-            Tap a life arena or cultural tension to explore trends
+            {view === "map" ? "Tap a node to reveal its connections" : "Tap a life arena or cultural tension to explore trends"}
           </span>
-          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-            {allTrends.length} trends mapped
-          </span>
+          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{allTrends.length} trends mapped</span>
         </div>
       )}
 
-      {/* Mobile bottom sheet — fixed height so it's consistent across domains and tensions */}
+      {/* Mobile bottom sheet — fixed height for consistency */}
       {isMobile && selection && (
         <>
-          <div
-            onClick={clearSelection}
-            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }}
-          />
+          <div onClick={clearSelection}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }} />
           <div style={{
-            position: "fixed", left: 0, right: 0, bottom: 0,
-            background: "#fff",
-            borderRadius: "20px 20px 0 0",
-            height: "72svh",
-            display: "flex", flexDirection: "column",
-            overflow: "hidden",
-            zIndex: 201,
-            boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
+            position: "fixed", left: 0, right: 0, bottom: 0, background: "#fff",
+            borderRadius: "20px 20px 0 0", height: "72svh",
+            display: "flex", flexDirection: "column", overflow: "hidden",
+            zIndex: 201, boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
           }}>
-            {/* Drag handle */}
             <div style={{ width: 40, height: 4, borderRadius: 2, background: "#ddd", margin: "12px auto 0", flexShrink: 0 }} />
-
             {activeSignal ? (() => {
               const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
               return (
                 <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-                  <SignalPopup
-                    signal={activeSignal}
-                    trendColor={sigTrend?.color ?? "#888"}
-                    trendName={sigTrend?.name ?? ""}
-                    allSignals={allSignals}
-                    onClose={() => setActiveSignal(null)}
+                  <SignalPopup signal={activeSignal}
+                    trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
+                    allSignals={allSignals} onClose={() => setActiveSignal(null)}
                     onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
                   />
                 </div>
               );
             })() : selection?.type === "trend" ? (
               <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-                <TrendDetailModal
-                  trend={selection.trend}
-                  onClose={clearSelection}
-                  onSelectSignal={(s) => setActiveSignal(s)}
-                  mode="sidebar"
-                />
+                <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar" />
               </div>
             ) : listContent}
           </div>
         </>
       )}
-
     </div>
   );
 }
