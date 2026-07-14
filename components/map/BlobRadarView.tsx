@@ -61,6 +61,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const ptr = useRef<{ x: number; y: number } | null>(null);
   return (
     <div
+      className="nopan"
       onPointerDown={(e) => { e.stopPropagation(); ptr.current = { x: e.clientX, y: e.clientY }; }}
       onPointerUp={(e) => {
         e.stopPropagation();
@@ -93,6 +94,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   const ptr = useRef<{ x: number; y: number } | null>(null);
   return (
     <div
+      className="nopan"
       onPointerDown={(e) => { e.stopPropagation(); ptr.current = { x: e.clientX, y: e.clientY }; }}
       onPointerUp={(e) => {
         e.stopPropagation();
