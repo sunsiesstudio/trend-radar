@@ -50,7 +50,7 @@ function getDomain(topic: string): CulturalDomain {
   return TOPIC_TO_DOMAIN[topic] ?? "Work";
 }
 
-// ── Cultural tensions ──────────────────────────────────────────────────────────
+// ── Cultural tensions ─────────────────────────────────────────────────────────
 
 const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity", "Resilience"] as const;
 type Need = typeof NEEDS[number];
@@ -112,12 +112,12 @@ function getTrendNeed(trend: Trend): Need {
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type Selection =
-  | { type: "need";   need: Need;                              trends: Trend[] }
-  | { type: "domain"; domain: CulturalDomain;                  trends: Trend[] }
+  | { type: "need";   need: Need;             trends: Trend[] }
+  | { type: "domain"; domain: CulturalDomain; trends: Trend[] }
   | { type: "trend";  trend: Trend; domain: CulturalDomain; need: Need }
   | null;
 
-type View = "card" | "map";
+type View = "card" | "map" | "radar";
 
 interface Props {
   dynamicTrends: Trend[];
@@ -163,40 +163,59 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return () => obs.disconnect();
   }, []);
 
+  // When dynamicTrends is populated (a topic is active), use only those trends.
+  // Without this, the map always shows all library trends and search has no effect.
   const allTrends = useMemo(() => {
+    if (dynamicTrends.length > 0) return dynamicTrends;
     const seen = new Set<string>();
-    const libraryFlat = Object.entries(TOPIC_LIBRARY).flatMap(([topic, trends]) =>
+    return Object.entries(TOPIC_LIBRARY).flatMap(([topic, trends]) =>
       trends.map(t => ({ ...t, topics: t.topics?.length ? t.topics : [topic] }))
     ).filter(t => { if (seen.has(t.id)) return false; seen.add(t.id); return true; });
-    const dynamicIds = new Set(dynamicTrends.map(t => t.id));
-    return [...libraryFlat.filter(t => !dynamicIds.has(t.id)), ...dynamicTrends];
   }, [dynamicTrends]);
 
   const enriched = useMemo(() => allTrends.map(t => ({
     trend: t, domain: getDomain(t.topics?.[0] ?? ""), need: getTrendNeed(t),
   })), [allTrends]);
 
+  // Groups used by the radar chord lines
+  const groups = useMemo(() => {
+    const map = new Map<string, { domain: CulturalDomain; need: Need; trends: Trend[] }>();
+    enriched.forEach(({ trend, domain, need }) => {
+      const key = `${domain}--${need}`;
+      if (!map.has(key)) map.set(key, { domain, need, trends: [] });
+      map.get(key)!.trends.push(trend);
+    });
+    return [...map.values()];
+  }, [enriched]);
+
+  const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
+
   function clearSelection() { setSelection(null); }
 
-  // ── Map geometry ─────────────────────────────────────────────────────────────
+  // ── Shared geometry ───────────────────────────────────────────────────────────
 
   const { w, h } = dims;
   const cx = w / 2, cy = h / 2;
   const minDim = Math.min(w, h);
   const portrait = h > w * 1.15;
-  const domR = Math.min(minDim < 500 ? 38 : 48, Math.max(28, minDim * 0.077));
-  const PAD = 12;
+
+  // Outer ring (domains)
+  const domR = Math.min(minDim < 600 ? 42 : 54, Math.max(28, minDim * 0.08));
+  const PAD  = 14;
   const maxRx = w / 2 - domR - PAD;
   const maxRy = h / 2 - domR - PAD;
   const baseR = Math.min(maxRx, maxRy);
   const outerRx = portrait ? maxRx : baseR;
-  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.3)) : baseR;
-  const INNER = 0.42;
-  const innerRx = outerRx * INNER;
-  const innerRy = outerRy * INNER;
-  // Rounded-rect size for tension nodes
-  const tensW = Math.min(88, Math.max(58, Math.min(innerRx, innerRy) * 1.4));
-  const tensH = Math.min(44, Math.max(32, tensW * 0.5));
+  const outerRy = portrait ? Math.min(maxRy, maxRx * Math.min(h / w, 1.35)) : baseR;
+
+  // Inner ring (tensions) — ~43% of outer radius
+  const INNER_RATIO = 0.43;
+  const innerRx = outerRx * INNER_RATIO;
+  const innerRy = outerRy * INNER_RATIO;
+  const needR   = Math.min(44, Math.max(26, Math.min(innerRx, innerRy) * 0.72));
+  // Pill width for map view
+  const pillW = needR * 2.4;
+  const pillH = needR * 1.1;
 
   const domainNodes = CULTURAL_DOMAINS.map((domain, i) => {
     const angle = (i / CULTURAL_DOMAINS.length) * Math.PI * 2 - Math.PI / 2;
@@ -208,20 +227,23 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     return { need, x: cx + innerRx * Math.cos(angle), y: cy + innerRy * Math.sin(angle) };
   });
 
-  // Which domains/needs are connected to the current selection
-  const selectedDomain = selection?.type === "domain" ? selection.domain
+  // Which nodes connect to the current selection (for map view on-demand lines + radar dimming)
+  const selDomain = selection?.type === "domain" ? selection.domain
     : selection?.type === "trend" ? selection.domain : null;
-  const selectedNeed = selection?.type === "need" ? selection.need
+  const selNeed   = selection?.type === "need" ? selection.need
     : selection?.type === "trend" ? selection.need : null;
+  const connNeeds   = selDomain ? new Set(enriched.filter(e => e.domain === selDomain).map(e => e.need)) : null;
+  const connDomains = selNeed   ? new Set(enriched.filter(e => e.need   === selNeed  ).map(e => e.domain)) : null;
 
-  const connectedNeeds = selectedDomain
-    ? new Set(enriched.filter(e => e.domain === selectedDomain).map(e => e.need))
-    : null;
-  const connectedDomains = selectedNeed
-    ? new Set(enriched.filter(e => e.need === selectedNeed).map(e => e.domain))
-    : null;
+  function isHighlighted(domain: CulturalDomain, need: Need) {
+    if (!selection) return false;
+    if (selection.type === "need")   return selection.need === need;
+    if (selection.type === "domain") return selection.domain === domain;
+    if (selection.type === "trend")  return selection.domain === domain && selection.need === need;
+    return false;
+  }
 
-  // ── Detail panel content ──────────────────────────────────────────────────────
+  // ── Detail panel ─────────────────────────────────────────────────────────────
 
   const listContent = selection && (selection.type === "need" || selection.type === "domain") && (
     <>
@@ -317,7 +339,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
                   transform: isSelected ? "scale(1.03)" : "scale(1)",
                   transition: "all 0.15s ease", userSelect: "none",
                 }}>
-                <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
+                <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#fff", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
                 <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontFamily: "'DM Sans', sans-serif" }}>{domainTrends.length} trends</div>
               </div>
             );
@@ -355,82 +377,71 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     </div>
   );
 
-  // ── SVG map view ──────────────────────────────────────────────────────────────
+  // ── Map view (spatial, on-demand connections) ─────────────────────────────────
 
   const svgMap = (
     <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block" }}>
       <defs>
-        <filter id="nodeShad" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="5" floodColor="#000" floodOpacity="0.10" />
+        <filter id="shad" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="5" floodColor="#000" floodOpacity="0.09" />
         </filter>
       </defs>
 
-      {/* Connection lines — only appear when a node is selected */}
-      {selectedDomain && connectedNeeds && needNodes.map(({ need, x: nx, y: ny }) => {
-        if (!connectedNeeds.has(need)) return null;
-        const dNode = domainNodes.find(n => n.domain === selectedDomain)!;
-        const color = DOMAIN_COLORS[selectedDomain];
-        const { sx, sy, ex, ey } = edgePts(dNode.x, dNode.y, nx, ny, domR, tensH * 0.65);
-        return (
-          <line key={need} x1={sx} y1={sy} x2={ex} y2={ey}
-            stroke={color} strokeWidth={1.5} opacity={0.55} strokeLinecap="round" />
-        );
+      {/* Connection lines — revealed on selection only */}
+      {selDomain && connNeeds && needNodes.map(({ need, x: nx, y: ny }) => {
+        if (!connNeeds.has(need)) return null;
+        const dn = domainNodes.find(n => n.domain === selDomain)!;
+        const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nx, ny, domR, pillH * 0.6);
+        return <line key={need} x1={sx} y1={sy} x2={ex} y2={ey}
+          stroke={DOMAIN_COLORS[selDomain]} strokeWidth={1.5} opacity={0.5} strokeLinecap="round" />;
       })}
-      {selectedNeed && connectedDomains && domainNodes.map(({ domain, x: dx, y: dy }) => {
-        if (!connectedDomains.has(domain)) return null;
-        const nNode = needNodes.find(n => n.need === selectedNeed)!;
-        const color = DOMAIN_COLORS[domain];
-        const { sx, sy, ex, ey } = edgePts(dx, dy, nNode.x, nNode.y, domR, tensH * 0.65);
-        return (
-          <line key={domain} x1={sx} y1={sy} x2={ex} y2={ey}
-            stroke={color} strokeWidth={1.5} opacity={0.55} strokeLinecap="round" />
-        );
+      {selNeed && connDomains && domainNodes.map(({ domain, x: dx, y: dy }) => {
+        if (!connDomains.has(domain)) return null;
+        const nn = needNodes.find(n => n.need === selNeed)!;
+        const { sx, sy, ex, ey } = edgePts(dx, dy, nn.x, nn.y, domR, pillH * 0.6);
+        return <line key={domain} x1={sx} y1={sy} x2={ex} y2={ey}
+          stroke={DOMAIN_COLORS[domain]} strokeWidth={1.5} opacity={0.5} strokeLinecap="round" />;
       })}
 
-      {/* Domain circles — outer ring */}
+      {/* Domain circles */}
       {domainNodes.map(({ domain, x, y }) => {
         const color = DOMAIN_COLORS[domain];
-        const isSelected = selection?.type === "domain" && selection.domain === domain;
-        const dimmed = selection !== null && !isSelected &&
-          !(connectedDomains?.has(domain)) && selection.type !== "trend";
+        const isSel = selection?.type === "domain" && selection.domain === domain;
+        const dimmed = selection !== null && !isSel && !connDomains?.has(domain) && selection.type !== "trend";
         const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
-        const fontSize = Math.min(12, Math.max(9, domR * 0.28));
+        const fs = Math.min(12, Math.max(9, domR * 0.27));
         return (
-          <g key={domain} style={{ cursor: "pointer" }} opacity={dimmed ? 0.3 : 1}
-            onClick={() => setSelection(isSelected ? null : { type: "domain", domain, trends: domainTrends })}>
-            {isSelected && <circle cx={x} cy={y} r={domR + 6} fill="none" stroke={color} strokeWidth={2} opacity={0.35} />}
+          <g key={domain} style={{ cursor: "pointer" }} opacity={dimmed ? 0.28 : 1}
+            onClick={() => setSelection(isSel ? null : { type: "domain", domain, trends: domainTrends })}>
+            {isSel && <circle cx={x} cy={y} r={domR + 6} fill="none" stroke={color} strokeWidth={2} opacity={0.35} />}
             <circle cx={x} cy={y} r={domR} fill={color}
-              stroke={isSelected ? "#fff" : "rgba(255,255,255,0.2)"} strokeWidth={isSelected ? 2.5 : 1}
-              filter="url(#nodeShad)" />
+              stroke={isSel ? "#fff" : "rgba(255,255,255,0.2)"} strokeWidth={isSel ? 2.5 : 1} filter="url(#shad)" />
             <text x={x} y={y - 5} textAnchor="middle" dominantBaseline="middle"
-              fontSize={fontSize} fontWeight={800} fill="#fff" fontFamily="'DM Sans', sans-serif">{domain}</text>
-            <text x={x} y={y + fontSize + 2} textAnchor="middle" dominantBaseline="middle"
-              fontSize={Math.max(7, fontSize * 0.75)} fill="rgba(255,255,255,0.65)" fontFamily="'DM Sans', sans-serif">
+              fontSize={fs} fontWeight={800} fill="#fff" fontFamily="'DM Sans', sans-serif">{domain}</text>
+            <text x={x} y={y + fs + 2} textAnchor="middle" dominantBaseline="middle"
+              fontSize={Math.max(7, fs * 0.78)} fill="rgba(255,255,255,0.65)" fontFamily="'DM Sans', sans-serif">
               {domainTrends.length} trends
             </text>
           </g>
         );
       })}
 
-      {/* Tension nodes — inner ring, rounded rectangles */}
+      {/* Tension pills */}
       {needNodes.map(({ need, x, y }) => {
         const color = NEED_COLORS[need];
-        const isSelected = selection?.type === "need" && selection.need === need;
-        const dimmed = selection !== null && !isSelected &&
-          !(connectedNeeds?.has(need)) && selection.type !== "trend";
+        const isSel = selection?.type === "need" && selection.need === need;
+        const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
         const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
-        const fontSize = Math.min(11, Math.max(8, tensW * 0.125));
+        const fs = Math.min(11, Math.max(8, pillW * 0.12));
         return (
-          <g key={need} style={{ cursor: "pointer" }} opacity={dimmed ? 0.3 : 1}
-            onClick={() => setSelection(isSelected ? null : { type: "need", need, trends: needTrends })}>
-            <rect x={x - tensW / 2} y={y - tensH / 2} width={tensW} height={tensH} rx={tensH / 2}
-              fill={isSelected ? `${color}18` : "#fff"}
-              stroke={color} strokeWidth={isSelected ? 2.2 : 1.5}
-              filter="url(#nodeShad)" />
+          <g key={need} style={{ cursor: "pointer" }} opacity={dimmed ? 0.28 : 1}
+            onClick={() => setSelection(isSel ? null : { type: "need", need, trends: needTrends })}>
+            <rect x={x - pillW / 2} y={y - pillH / 2} width={pillW} height={pillH} rx={pillH / 2}
+              fill={isSel ? `${color}18` : "#fff"} stroke={color} strokeWidth={isSel ? 2.2 : 1.5} filter="url(#shad)" />
             <text x={x} y={y - 4} textAnchor="middle" dominantBaseline="middle"
-              fontSize={fontSize} fontWeight={700} fill={isSelected ? color : "#333"} fontFamily="'DM Sans', sans-serif">{need}</text>
-            <text x={x} y={y + fontSize + 2} textAnchor="middle" dominantBaseline="middle"
-              fontSize={Math.max(6, fontSize * 0.75)} fill={isSelected ? color : "#aaa"} fontFamily="'DM Sans', sans-serif">
+              fontSize={fs} fontWeight={700} fill={isSel ? color : "#333"} fontFamily="'DM Sans', sans-serif">{need}</text>
+            <text x={x} y={y + fs + 2} textAnchor="middle" dominantBaseline="middle"
+              fontSize={Math.max(6, fs * 0.78)} fill={isSel ? color : "#aaa"} fontFamily="'DM Sans', sans-serif">
               {needTrends.length} trends
             </text>
           </g>
@@ -439,7 +450,90 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     </svg>
   );
 
+  // ── Radar view (chord diagram) ────────────────────────────────────────────────
+
+  const svgRadar = (
+    <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block" }}>
+      <defs>
+        <filter id="shad2" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#000" floodOpacity="0.10" />
+        </filter>
+      </defs>
+
+      {/* Chord lines — drawn first so nodes sit on top */}
+      {groups.map(group => {
+        const dn = domainNodes.find(n => n.domain === group.domain);
+        const nn = needNodes.find(n => n.need === group.need);
+        if (!dn || !nn) return null;
+        const highlighted = isHighlighted(group.domain, group.need);
+        const dimmed      = selection !== null && !highlighted;
+        const weight      = group.trends.length / maxCount;
+        const color       = DOMAIN_COLORS[group.domain];
+        const opacity     = dimmed ? 0.04 : highlighted ? 0.72 : 0.22 + weight * 0.38;
+        const strokeW     = highlighted ? 2.5 + weight * 2.5 : 0.8 + weight * 1.4;
+        const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nn.x, nn.y, domR, needR);
+        return (
+          <g key={`${group.domain}--${group.need}`} style={{ cursor: "pointer" }}
+            onClick={() => setSelection(highlighted ? null : {
+              type: "need", need: group.need,
+              trends: enriched.filter(e => e.need === group.need).map(e => e.trend),
+            })}>
+            <line x1={dn.x} y1={dn.y} x2={nn.x} y2={nn.y} stroke="transparent" strokeWidth={14} />
+            <line x1={sx} y1={sy} x2={ex} y2={ey}
+              stroke={color} strokeWidth={strokeW} opacity={opacity} strokeLinecap="round" />
+          </g>
+        );
+      })}
+
+      {/* Domain circles — outer ring */}
+      {domainNodes.map(({ domain, x, y }) => {
+        const color = DOMAIN_COLORS[domain];
+        const isSel = selection?.type === "domain" && selection.domain === domain;
+        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
+        const fs = Math.min(13, Math.max(9, domR * 0.30));
+        const words = domain.split(" ");
+        const lines = words.length > 1 ? words : [domain];
+        return (
+          <g key={domain} style={{ cursor: "pointer" }}
+            onClick={() => setSelection(isSel ? null : { type: "domain", domain, trends: domainTrends })}>
+            {isSel && <circle cx={x} cy={y} r={domR + 6} fill="none" stroke={color} strokeWidth={2} opacity={0.35} />}
+            <circle cx={x} cy={y} r={domR} fill={color}
+              stroke={isSel ? "#fff" : "rgba(255,255,255,0.2)"} strokeWidth={isSel ? 2.5 : 1} filter="url(#shad2)" />
+            {lines.map((line, li) => (
+              <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * (fs + 2)}
+                textAnchor="middle" dominantBaseline="middle"
+                fontSize={fs} fontWeight={800} fill="#fff" fontFamily="'DM Sans', sans-serif">{line}</text>
+            ))}
+          </g>
+        );
+      })}
+
+      {/* Tension diamonds — inner ring */}
+      {needNodes.map(({ need, x, y }) => {
+        const color = NEED_COLORS[need];
+        const isSel = selection?.type === "need" && selection.need === need;
+        const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+        const d = needR;
+        const pts = `${x},${y - d} ${x + d},${y} ${x},${y + d} ${x - d},${y}`;
+        const fs = Math.min(11, needR * 0.30);
+        return (
+          <g key={need} style={{ cursor: "pointer" }}
+            onClick={() => setSelection(isSel ? null : { type: "need", need, trends: needTrends })}>
+            <polygon points={pts}
+              fill={isSel ? `${color}18` : "#fff"}
+              stroke={color} strokeWidth={isSel ? 2.5 : 1.8} filter="url(#shad2)" />
+            <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+              fontSize={fs} fontWeight={isSel ? 700 : 600}
+              fill={isSel ? color : "#333"} fontFamily="'DM Sans', sans-serif">{need}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+
   // ── View toggle ───────────────────────────────────────────────────────────────
+
+  const VIEW_LABELS: Record<View, string> = { card: "Grid", map: "Map", radar: "Radar" };
 
   const viewToggle = (
     <div style={{
@@ -447,18 +541,17 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
       display: "flex", background: "#f0f0f0", borderRadius: 10, padding: 3, gap: 2,
       boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
     }}>
-      {(["card", "map"] as View[]).map(v => (
+      {(["card", "map", "radar"] as View[]).map(v => (
         <button key={v} onClick={() => setView(v)}
           style={{
-            padding: "5px 14px", borderRadius: 8, border: "none", cursor: "pointer",
+            padding: "5px 12px", borderRadius: 8, border: "none", cursor: "pointer",
             fontSize: 11, fontWeight: 700, fontFamily: "'DM Sans', sans-serif",
-            letterSpacing: "0.02em",
             background: view === v ? "#fff" : "transparent",
             color: view === v ? "#111" : "#999",
             boxShadow: view === v ? "0 1px 3px rgba(0,0,0,0.10)" : "none",
             transition: "all 0.15s",
           }}>
-          {v === "card" ? "Grid" : "Map"}
+          {VIEW_LABELS[v]}
         </button>
       ))}
     </div>
@@ -485,14 +578,22 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
+  const footerHints: Record<View, string> = {
+    card:  "Tap a life arena or cultural tension to explore trends",
+    map:   "Tap a node to reveal its connections",
+    radar: "Tap a chord to explore a tension · Tap a node to explore a domain",
+  };
+
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#fff" }}>
 
       <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
 
-        {/* Canvas / grid area */}
+        {/* Canvas area */}
         <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          {view === "map" ? svgMap : cardGrid}
+          {view === "card"  ? cardGrid  : null}
+          {view === "map"   ? svgMap    : null}
+          {view === "radar" ? svgRadar  : null}
           {viewToggle}
         </div>
 
@@ -508,21 +609,18 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         )}
       </div>
 
-      {/* Footer — desktop only */}
       {!isMobile && (
         <div style={{
           flexShrink: 0, padding: "7px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
           borderTop: "1px solid rgba(0,0,0,0.05)", background: "#fff",
         }}>
-          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>
-            {view === "map" ? "Tap a node to reveal its connections" : "Tap a life arena or cultural tension to explore trends"}
-          </span>
+          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{footerHints[view]}</span>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{allTrends.length} trends mapped</span>
         </div>
       )}
 
-      {/* Mobile bottom sheet — fixed height for consistency */}
+      {/* Mobile bottom sheet */}
       {isMobile && selection && (
         <>
           <div onClick={clearSelection}
