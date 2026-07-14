@@ -476,7 +476,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
           {view === "map"   ? svgMap    : null}
           {view === "radar" ? blobRadar : null}
-          {viewToggle}
         </div>
 
         {/* Desktop right sidebar */}
