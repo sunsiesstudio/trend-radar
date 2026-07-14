@@ -18,9 +18,15 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
     EXTENDED_TRENDS.slice(-4).reverse(),
   []);
 
-  const lastSignalDate = useMemo(() => {
-    const dates = EXTENDED_SIGNALS.map(s => s.date ?? "").filter(Boolean).sort().reverse();
-    return dates[0] ? formatDate(dates[0]) : null;
+  // Latest signal date per trend
+  const latestSignalByTrend = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const s of EXTENDED_SIGNALS) {
+      if (s.trendId && s.date) {
+        if (!map[s.trendId] || s.date > map[s.trendId]) map[s.trendId] = s.date;
+      }
+    }
+    return map;
   }, []);
 
   const topName = topTrends[0]?.name ?? "something";
@@ -49,7 +55,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
           letterSpacing: "-0.03em", lineHeight: 1.12,
           color: "#111", margin: "0 0 20px",
         }}>
-          here&apos;s what i&apos;m<br />watching right now
+          what&apos;s shifting
         </h1>
 
         {/* Brief */}
@@ -67,18 +73,13 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
 
         {/* Trend cards */}
         <div style={{ borderTop: "1px solid #ebebeb", paddingTop: 24, marginBottom: 36 }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
-            <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              latest additions
-            </div>
-            {lastSignalDate && (
-              <div style={{ fontSize: 10, color: "#ccc", letterSpacing: "0.04em" }}>
-                signals updated {lastSignalDate}
-              </div>
-            )}
+          <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 20 }}>
+            latest additions
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 28px" }}>
-            {topTrends.map(t => (
+            {topTrends.map(t => {
+              const lastDate = latestSignalByTrend[t.id];
+              return (
               <div key={t.id} onClick={() => onOpenRadar(t.topics?.[0])} style={{ cursor: "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.color, display: "inline-block", flexShrink: 0 }} />
@@ -89,11 +90,16 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
                 <div style={{ fontSize: 15, fontWeight: 700, fontFamily: "'EB Garamond', Georgia, serif", color: "#111", lineHeight: 1.3, marginBottom: 5 }}>
                   {t.name}
                 </div>
-                <div style={{ fontSize: 12, color: "#888", lineHeight: 1.55 }}>
+                <div style={{ fontSize: 12, color: "#888", lineHeight: 1.55, marginBottom: lastDate ? 6 : 0 }}>
                   {t.description.split(/\.(\s|$)/)[0].trim()}.
                 </div>
+                {lastDate && (
+                  <div style={{ fontSize: 10, color: "#ccc", letterSpacing: "0.04em" }}>
+                    signals updated {formatDate(lastDate)}
+                  </div>
+                )}
               </div>
-            ))}
+            )})}
           </div>
         </div>
 
