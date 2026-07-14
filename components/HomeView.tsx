@@ -18,7 +18,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
     EXTENDED_TRENDS.slice(-4).reverse(),
   []);
 
-  // Latest signal date per trend
+  // Latest signal date per trend (static baseline)
   const latestSignalByTrend = useMemo(() => {
     const map: Record<string, string> = {};
     for (const s of EXTENDED_SIGNALS) {
@@ -28,6 +28,36 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
     }
     return map;
   }, []);
+
+  // Live signal dates fetched on mount
+  const [liveSignalDates, setLiveSignalDates] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const topics = [...new Set(topTrends.flatMap(t => t.topics ?? []))];
+    const trendData = topTrends.map(t => ({ id: t.id, name: t.name, description: t.description }));
+    fetch("/api/live-signals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topics, trends: trendData }),
+    })
+      .then(r => r.json())
+      .then(({ signals }: { signals: Signal[] }) => {
+        const dates: Record<string, string> = {};
+        for (const s of signals) {
+          if (s.trendId && s.date) {
+            if (!dates[s.trendId] || s.date > dates[s.trendId]) dates[s.trendId] = s.date;
+          }
+        }
+        setLiveSignalDates(dates);
+      })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Live dates take priority over static
+  const effectiveSignalDates = useMemo(() => ({
+    ...latestSignalByTrend,
+    ...liveSignalDates,
+  }), [latestSignalByTrend, liveSignalDates]);
 
   const topName = topTrends[0]?.name ?? "something";
 
@@ -78,7 +108,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 28px" }}>
             {topTrends.map(t => {
-              const lastDate = latestSignalByTrend[t.id];
+              const lastDate = effectiveSignalDates[t.id];
               return (
               <div key={t.id} onClick={() => onOpenRadar(t.topics?.[0])} style={{ cursor: "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
