@@ -17,13 +17,10 @@ function darkenColor(hex: string, factor = 0.62): string {
 }
 
 // Grid for dynamically added trends — 3 columns, 760 px apart.
-// A large trend blob + full signal orbit extends ~180 px from center,
-// so 760 px between centers gives ~400 px clear gap between adjacent orbits.
 function computeTrendPosition(idx: number): { x: number; y: number } {
   return { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
 }
 
-// 20-color palette — distinct enough that no two adjacent blobs clash.
 const BOARD_PALETTE = [
   "#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C",
   "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C",
@@ -31,7 +28,6 @@ const BOARD_PALETTE = [
   "#4A9368", "#6BB9A0", "#B490BE", "#FFA03A", "#95C468",
 ];
 
-// Assign palette colors in order so no two trends on the same board share a color.
 function assignUniqueColors(trends: Trend[]): Trend[] {
   const used = new Set<string>();
   return trends.map((t, i) => {
@@ -44,6 +40,8 @@ function assignUniqueColors(trends: Trend[]): Trend[] {
     return { ...t, color };
   });
 }
+
+const QUICK_STARTS = ["fashion", "ai", "wellness", "sustainability", "gaming"];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -73,16 +71,9 @@ export default function HomePage() {
   const liveTopicsRef = useRef<string[]>([]);
   const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
 
-  useEffect(() => {
-    liveTopicsRef.current = appliedTopics;
-  }, [appliedTopics]);
+  useEffect(() => { liveTopicsRef.current = appliedTopics; }, [appliedTopics]);
+  useEffect(() => { liveTrendsRef.current = appliedDynamicTrends.map(t => ({ id: t.id, name: t.name, description: t.description })); }, [appliedDynamicTrends]);
 
-  useEffect(() => {
-    liveTrendsRef.current = appliedDynamicTrends.map(t => ({ id: t.id, name: t.name, description: t.description }));
-  }, [appliedDynamicTrends]);
-
-  // Restart the interval (and do an immediate fetch) whenever the topic set changes.
-  // Using a serialised key as the dependency keeps the ref-based fetch function stable.
   const topicsKey = appliedTopics.join(",");
   useEffect(() => {
     if (!topicsKey) return;
@@ -137,20 +128,15 @@ export default function HomePage() {
         const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
         const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
         const newDynamic = baseTrends.length > 0
-          // Appending to an existing board: keep existing positions, place new trends after
           ? assignUniqueColors([
               ...baseTrends,
               ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) })),
             ])
-          // First load: sort by relevance so highest score is top-left
-          : assignUniqueColors(
-              sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(i) }))
-            );
+          : assignUniqueColors(sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(i) })));
         setDynamicTrends(newDynamic);
         setAppliedDynamicTrends(newDynamic);
         setGeneratedSignals(sorted.flatMap(i => i.signals));
         setGenerationError(null);
-        // Stamp the generation time so the 48 h staleness check knows when to refresh
         try {
           const stored = localStorage.getItem("ar_trendGeneratedAt");
           const ts: Record<string, number> = stored ? JSON.parse(stored) : {};
@@ -193,8 +179,6 @@ export default function HomePage() {
     if (failedTopic) runGeneration(failedTopic, [failedTopic]);
   }, [activeTopics, dynamicTrends, runGeneration]);
 
-  // Silently regenerate AI trends that are >48 h old on mount.
-  // Library topics are skipped — their trends are curated, not time-sensitive.
   const TREND_TTL_MS = 48 * 60 * 60 * 1000;
   useEffect(() => {
     const stored = localStorage.getItem("ar_trendGeneratedAt");
@@ -206,7 +190,6 @@ export default function HomePage() {
       const last = timestamps[topic] ?? 0;
       if (now - last > TREND_TTL_MS) runGeneration(topic, [topic], []);
     });
-  // Run once on mount only
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -225,13 +208,11 @@ export default function HomePage() {
       try { localStorage.setItem("ar_topicAddedAt", JSON.stringify(next)); } catch { /* ignore */ }
     }
 
-    // If this is the first topic, load fresh
     if (activeTopics.length === 0) {
       await loadTopic(key);
       return;
     }
 
-    // Multiple topics active — generate intersection trends (clear board, regenerate)
     setDynamicTrends([]);
     setAppliedDynamicTrends([]);
     setGeneratedSignals([]);
@@ -249,11 +230,9 @@ export default function HomePage() {
       return;
     }
     if (remaining.length === 1) {
-      // Back to a single topic — reload its dedicated trends
       loadTopic(remaining[0]);
       return;
     }
-    // Still multi-topic — regenerate intersection of remaining topics
     setDynamicTrends([]);
     setAppliedDynamicTrends([]);
     setGeneratedSignals([]);
@@ -274,81 +253,25 @@ export default function HomePage() {
   }, [appliedDynamicTrends]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#F5F2EC", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#fff", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-      {/* Header */}
+      {/* ── Header ────────────────────────────────────────────────────────────── */}
       <div style={{
-        flexShrink: 0, height: isDesktop ? 56 : 48, padding: "0 12px",
-        display: "flex", alignItems: "center", gap: isDesktop ? 12 : 8,
+        flexShrink: 0, height: isDesktop ? 56 : 48, padding: "0 16px",
+        display: "flex", alignItems: "center",
         background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)", zIndex: 10,
       }}>
-        {/* Logo */}
-        <button
-          onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
-          style={{ fontSize: isDesktop ? 14 : 12, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
-        >Augmented Culture</button>
 
-        {/* Topic search bar — chips + input in one pill */}
-        <div style={{ flex: 1, position: "relative", maxWidth: 520 }}>
-          <div style={{
-            display: "flex", alignItems: "center", flexWrap: "wrap", gap: 5,
-            background: "#f5f3ef", borderRadius: 24, padding: "6px 10px",
-            minHeight: 36, cursor: "text",
-          }}
-            onClick={() => (document.getElementById("topic-search-input") as HTMLInputElement)?.focus()}
-          >
-            {activeTopics.map(topic => {
-              const color = TOPIC_COLORS[topic] ?? "#aaa";
-              const darkC = `#${["1,3","3,5","5,7"].map(r => Math.round(parseInt(color.slice(...r.split(",").map(Number)),16)*0.55).toString(16).padStart(2,"0")).join("")}`;
-              return (
-                <div key={topic} style={{ display: "flex", alignItems: "center", gap: 3, background: `${color}22`, border: `1px solid ${color}55`, borderRadius: 20, padding: "2px 6px 2px 10px", flexShrink: 0 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: darkC, letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{topic.replace(/-/g, " ")}</span>
-                  <button onClick={(e) => { e.stopPropagation(); removeTopic(topic); }} style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 14, color: darkC, lineHeight: 1, display: "flex", alignItems: "center" }}>×</button>
-                </div>
-              );
-            })}
-            {generatingTopic ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#aaa", padding: "0 4px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
-                generating {generatingTopic}…
-              </div>
-            ) : (
-              <input
-                id="topic-search-input"
-                value={topicInput}
-                onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && topicInput.trim()) { addTopic(topicInput.trim()); setTopicInput(""); setShowSuggestions(false); }
-                  if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 300)}
-                placeholder={activeTopics.length === 0 ? "search a topic…" : "add topic…"}
-                style={{ flex: 1, minWidth: 120, background: "none", border: "none", outline: "none", fontSize: 12, fontWeight: 500, color: "#333", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "0 4px" }}
-              />
-            )}
-          </div>
-
-          {/* Autocomplete dropdown */}
-          {showSuggestions && topicSuggestions.length > 0 && (
-            <div style={{
-              position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
-              background: "#fff", border: "1px solid #e8e4de", borderRadius: 16,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 240, overflowY: "auto", padding: "6px 0",
-            }}>
-              {topicSuggestions.map(topic => (
-                <button
-                  key={topic}
-                  onPointerDown={(e) => { e.preventDefault(); addTopic(topic); setTopicInput(""); setShowSuggestions(false); }}
-                  style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "9px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left", fontSize: 12, fontWeight: 600, color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
-                >
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
-                  {topic.replace(/-/g, " ")}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Logo + tagline */}
+        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+          <button
+            onClick={() => { setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
+            style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
+          >Augmented Culture</button>
+          <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", display: isDesktop ? "inline" : "none" }}>
+            Culture × Technology
+          </span>
         </div>
 
         {/* Right side */}
@@ -394,9 +317,134 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Culture map — fills remaining space */}
+      {/* ── Map canvas ────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
         <CultureMap dynamicTrends={appliedDynamicTrends} activeTopics={appliedTopics} />
+
+        {/* Empty-state overlay — shown when no topic is active */}
+        {appliedTopics.length === 0 && !generatingTopic && (
+          <div style={{
+            position: "absolute", inset: 0,
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            gap: 16, padding: "0 24px 80px",
+            pointerEvents: "none",
+          }}>
+            <div style={{ textAlign: "center", maxWidth: 340 }}>
+              <div style={{ fontSize: isDesktop ? 22 : 18, fontWeight: 700, color: "#111", letterSpacing: "-0.025em", fontFamily: "'EB Garamond', Georgia, serif", marginBottom: 10, lineHeight: 1.25 }}>
+                Where culture meets technology
+              </div>
+              <div style={{ fontSize: 13, color: "#999", lineHeight: 1.6, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                Life arenas and cultural tensions mapped against emerging tech trends.
+                <br />Tap a node to explore, or search a topic below.
+              </div>
+            </div>
+
+            {/* Legend pills */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f4f4f4", borderRadius: 20, padding: "5px 12px" }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#E87B7B" }} />
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#777", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Life arenas</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f4f4f4", borderRadius: 20, padding: "5px 12px" }}>
+                <div style={{ width: 10, height: 10, transform: "rotate(45deg)", background: "#8C93C7" }} />
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#777", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Cultural tensions</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f4f4f4", borderRadius: 20, padding: "5px 12px" }}>
+                <div style={{ width: 16, height: 2, background: "linear-gradient(90deg, #E87B7B, #8C93C7)", borderRadius: 2 }} />
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#777", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Trend connections</span>
+              </div>
+            </div>
+
+            {/* Quick-start topic chips */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", pointerEvents: "auto" }}>
+              {QUICK_STARTS.map(t => (
+                <button
+                  key={t}
+                  onClick={() => addTopic(t)}
+                  style={{
+                    padding: "7px 18px", borderRadius: 20, fontSize: 12, fontWeight: 600,
+                    background: "#fff", border: "1.5px solid #e0e0e0", color: "#444",
+                    cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                  }}
+                >{t}</button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Bottom search bar ─────────────────────────────────────────────────── */}
+      <div style={{
+        flexShrink: 0,
+        background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)",
+        borderTop: "1px solid rgba(0,0,0,0.07)", zIndex: 10,
+        padding: "10px 16px",
+        paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
+      }}>
+        <div style={{ position: "relative", maxWidth: 600, margin: "0 auto" }}>
+
+          {/* Suggestions — pops upward */}
+          {showSuggestions && topicSuggestions.length > 0 && (
+            <div style={{
+              position: "absolute", bottom: "calc(100% + 8px)", left: 0, right: 0, zIndex: 200,
+              background: "#fff", border: "1px solid #e8e4de", borderRadius: 16,
+              boxShadow: "0 -8px 24px rgba(0,0,0,0.1)", maxHeight: 240, overflowY: "auto", padding: "6px 0",
+            }}>
+              {topicSuggestions.map(topic => (
+                <button
+                  key={topic}
+                  onPointerDown={(e) => { e.preventDefault(); addTopic(topic); setTopicInput(""); setShowSuggestions(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "9px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left", fontSize: 12, fontWeight: 600, color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+                >
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                  {topic.replace(/-/g, " ")}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Input pill */}
+          <div
+            style={{
+              display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6,
+              background: "#f5f5f5", borderRadius: 28, padding: "8px 14px",
+              minHeight: 46, cursor: "text",
+            }}
+            onClick={() => (document.getElementById("topic-search-input") as HTMLInputElement)?.focus()}
+          >
+            {activeTopics.map(topic => {
+              const color = TOPIC_COLORS[topic] ?? "#aaa";
+              const darkC = darkenColor(color);
+              return (
+                <div key={topic} style={{ display: "flex", alignItems: "center", gap: 3, background: `${color}22`, border: `1px solid ${color}55`, borderRadius: 20, padding: "3px 8px 3px 10px", flexShrink: 0 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: darkC, letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{topic.replace(/-/g, " ")}</span>
+                  <button onClick={(e) => { e.stopPropagation(); removeTopic(topic); }} style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 15, color: darkC, lineHeight: 1, display: "flex", alignItems: "center" }}>×</button>
+                </div>
+              );
+            })}
+            {generatingTopic ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#aaa", padding: "0 4px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ccc", animation: "pulse 1.2s infinite" }} />
+                generating {generatingTopic}…
+              </div>
+            ) : (
+              <input
+                id="topic-search-input"
+                value={topicInput}
+                onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && topicInput.trim()) { addTopic(topicInput.trim()); setTopicInput(""); setShowSuggestions(false); }
+                  if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 300)}
+                placeholder={activeTopics.length === 0 ? "Search a topic to filter the map…" : "Add another topic…"}
+                style={{ flex: 1, minWidth: 120, background: "none", border: "none", outline: "none", fontSize: 13, fontWeight: 500, color: "#333", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "0 4px" }}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}
