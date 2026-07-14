@@ -407,7 +407,11 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       onAddTopic={onAddTopic}
       onRemoveTopic={onRemoveTopic}
       onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}
-      onSelectSignal={(sig) => setActiveSignal(sig)}
+      onSelectSignal={(sig) => {
+        setActiveSignal(sig);
+        const sigTrend = allTrends.find(t => t.id === sig.trendId);
+        if (sigTrend) setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) });
+      }}
     />
   );
 
@@ -441,7 +445,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   function renderSidebarBody() {
     if (activeSignal) {
-      const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
+      const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
       return (
         <SignalPopup signal={activeSignal} mode="sidebar"
           trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
@@ -536,7 +540,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               <div style={{ width: 40, height: 4, borderRadius: 2, background: "#ddd" }} />
             </div>
             {activeSignal ? (() => {
-              const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
+              const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
               return (
                 <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
                   <SignalPopup signal={activeSignal}
