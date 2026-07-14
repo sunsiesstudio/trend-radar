@@ -119,7 +119,10 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
   const allBlobs: Blob[] = [];
   const allSignalPlacements: P[] = [];
 
-  trends.forEach((trend, idx) => {
+  // Sort by relevance descending so highest-score blobs get top-left positions
+  const sorted = [...trends].sort((a, b) => (b.relevanceScore ?? 50) - (a.relevanceScore ?? 50));
+
+  sorted.forEach((trend, idx) => {
     const pos = trend.position ?? { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
     const trendSignals = signals
       .filter((s) => s.trendId === trend.id)
