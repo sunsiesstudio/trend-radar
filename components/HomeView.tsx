@@ -1,11 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import { EXTENDED_TRENDS } from "@/lib/extended-trends";
+import { EXTENDED_TRENDS, EXTENDED_SIGNALS } from "@/lib/extended-trends";
 
 interface Props {
   onExploreMap: () => void;
   onOpenRadar: (topic?: string) => void;
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
 export function HomeView({ onExploreMap, onOpenRadar }: Props) {
@@ -13,7 +18,12 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
     EXTENDED_TRENDS.slice(-4).reverse(),
   []);
 
-  const topName = topTrends[0]?.name ?? "a lot";
+  const lastSignalDate = useMemo(() => {
+    const dates = EXTENDED_SIGNALS.map(s => s.date ?? "").filter(Boolean).sort().reverse();
+    return dates[0] ? formatDate(dates[0]) : null;
+  }, []);
+
+  const topName = topTrends[0]?.name ?? "something";
 
   return (
     <div style={{
@@ -39,26 +49,33 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
           letterSpacing: "-0.03em", lineHeight: 1.12,
           color: "#111", margin: "0 0 20px",
         }}>
-          so, here&apos;s what&apos;s<br />going on right now
+          here&apos;s what i&apos;m<br />watching right now
         </h1>
 
-        {/* Casual brief */}
+        {/* Brief */}
         <p style={{
           fontSize: "clamp(15px, 2vw, 17px)",
           fontFamily: "'EB Garamond', Georgia, serif",
           lineHeight: 1.75, color: "#444", margin: "0 0 36px",
         }}>
-          {topName} is having a proper moment — and honestly, there&apos;s
-          a lot more shifting underneath it. Tech keeps bleeding into every
-          corner of culture, and some of it is obvious, some of it you&apos;d
-          only notice if you know where to look. This is our attempt to keep
-          track of it all.
+          {topName} is one I keep coming back to lately. I track the places
+          where technology is quietly reshaping how people live, spend, feel,
+          look — all of it. Most of it doesn&apos;t look like a trend from the
+          inside. But the signals are there if you know what to look for.
+          This is where I put it all.
         </p>
 
         {/* Trend cards */}
         <div style={{ borderTop: "1px solid #ebebeb", paddingTop: 24, marginBottom: 36 }}>
-          <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 20 }}>
-            things worth knowing about
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
+            <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              latest additions
+            </div>
+            {lastSignalDate && (
+              <div style={{ fontSize: 10, color: "#ccc", letterSpacing: "0.04em" }}>
+                signals updated {lastSignalDate}
+              </div>
+            )}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 28px" }}>
             {topTrends.map(t => (
@@ -82,9 +99,6 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
 
         {/* Navigation */}
         <div style={{ borderTop: "1px solid #ebebeb", paddingTop: 24 }}>
-          <div style={{ fontSize: 11, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 20 }}>
-            where do you want to go?
-          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
 
             {/* Culture Map */}
@@ -100,7 +114,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
                 Culture Map
               </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
-                See how all the trends connect to each other — domains, tensions, the whole picture.
+                Every trend mapped against cultural domains and human tensions. The full picture.
               </div>
               <div style={{ marginTop: 14, fontSize: 14, color: "rgba(255,255,255,0.6)" }}>→</div>
             </button>
@@ -118,7 +132,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
                 Trends Radar
               </div>
               <div style={{ fontSize: 12, color: "#888", lineHeight: 1.5 }}>
-                Pick something you&apos;re curious about and see what&apos;s coming through.
+                Search a topic and see every signal I&apos;ve been tracking on it.
               </div>
               <div style={{ marginTop: 14, fontSize: 14, color: "#bbb" }}>→</div>
             </button>
