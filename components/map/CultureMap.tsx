@@ -118,7 +118,7 @@ type Selection =
   | { type: "trend";  trend: Trend; domain: CulturalDomain; need: Need }
   | null;
 
-type View = "card" | "map" | "radar";
+type View = "map" | "radar";
 
 interface Props {
   dynamicTrends:  Trend[];
@@ -141,7 +141,7 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
-  const [view,         setView]         = useState<View>("card");
+  const [view,         setView]         = useState<View>("map");
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
@@ -320,71 +320,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
     </>
   );
 
-  // ── Card grid view ────────────────────────────────────────────────────────────
-
-  const cardGrid = (
-    <div style={{
-      flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch",
-      padding: isMobile ? "20px 16px 24px" : "32px 40px 32px",
-    } as React.CSSProperties}>
-      <div style={{ marginBottom: isMobile ? 24 : 32 }}>
-        <div style={{ fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em", textTransform: "uppercase" as const, marginBottom: 12, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-          Life Arenas
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: isMobile ? 8 : 12 }}>
-          {CULTURAL_DOMAINS.map(domain => {
-            const color = DOMAIN_COLORS[domain];
-            const isSelected = selection?.type === "domain" && selection.domain === domain;
-            const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
-            return (
-              <div key={domain}
-                onClick={() => setSelection(isSelected ? null : { type: "domain", domain, trends: domainTrends })}
-                style={{
-                  borderRadius: isMobile ? 14 : 18, padding: isMobile ? "16px 10px" : "20px 14px",
-                  background: color, cursor: "pointer", textAlign: "center",
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                  boxShadow: isSelected ? `0 0 0 3px #fff, 0 0 0 5px ${color}, 0 6px 20px ${color}55` : "0 2px 10px rgba(0,0,0,0.10)",
-                  transform: isSelected ? "scale(1.03)" : "scale(1)",
-                  transition: "all 0.15s ease", userSelect: "none",
-                }}>
-                <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#fff", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
-                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontFamily: "'DM Sans', sans-serif" }}>{domainTrends.length} trends</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div>
-        <div style={{ fontSize: 10, fontWeight: 800, color: "#bbb", letterSpacing: "0.14em", textTransform: "uppercase" as const, marginBottom: 12, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-          Cultural Tensions
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: isMobile ? 8 : 12 }}>
-          {NEEDS.map(need => {
-            const color = NEED_COLORS[need];
-            const isSelected = selection?.type === "need" && selection.need === need;
-            const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
-            return (
-              <div key={need}
-                onClick={() => setSelection(isSelected ? null : { type: "need", need, trends: needTrends })}
-                style={{
-                  borderRadius: isMobile ? 14 : 18, padding: isMobile ? "16px 10px" : "20px 14px",
-                  background: isSelected ? `${color}14` : "#fff", border: `2px solid ${isSelected ? color : `${color}66`}`,
-                  cursor: "pointer", textAlign: "center",
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                  boxShadow: isSelected ? `0 0 0 3px ${color}33, 0 6px 20px ${color}22` : "0 2px 10px rgba(0,0,0,0.06)",
-                  transform: isSelected ? "scale(1.03)" : "scale(1)",
-                  transition: "all 0.15s ease", userSelect: "none",
-                }}>
-                <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: isSelected ? color : "#333", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
-                <div style={{ fontSize: 10, color: isSelected ? color : "#aaa", fontFamily: "'DM Sans', sans-serif" }}>{needTrends.length} trends</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-
   // ── Map view (spatial, on-demand connections) ─────────────────────────────────
 
   const svgMap = (
@@ -472,7 +407,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   // ── View toggle ───────────────────────────────────────────────────────────────
 
-  const VIEW_LABELS: Record<View, string> = { card: "Grid", map: "Map", radar: "Radar" };
+  const VIEW_LABELS: Record<View, string> = { map: "Map", radar: "Radar" };
 
   const viewToggle = (
     <div style={{
@@ -480,7 +415,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       display: "flex", background: "#f0f0f0", borderRadius: 10, padding: 3, gap: 2,
       boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
     }}>
-      {(["card", "map", "radar"] as View[]).map(v => (
+      {(["map", "radar"] as View[]).map(v => (
         <button key={v} onClick={() => setView(v)}
           style={{
             padding: "5px 12px", borderRadius: 8, border: "none", cursor: "pointer",
@@ -518,7 +453,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   // ── Render ────────────────────────────────────────────────────────────────────
 
   const footerHints: Record<View, string> = {
-    card:  "Tap a life arena or cultural tension to explore trends",
     map:   "Tap a node to reveal its connections",
     radar: "Tap a trend blob to explore it · pinch or scroll to zoom",
   };
@@ -530,7 +464,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
         {/* Canvas area */}
         <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          {view === "card"  ? cardGrid  : null}
           {view === "map"   ? svgMap    : null}
           {view === "radar" ? blobRadar : null}
           {viewToggle}
