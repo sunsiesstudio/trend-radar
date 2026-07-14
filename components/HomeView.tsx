@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { EXTENDED_TRENDS, FEATURED_TOPICS, TOPIC_COLORS } from "@/lib/extended-trends";
+import { useMemo } from "react";
+import { EXTENDED_TRENDS } from "@/lib/extended-trends";
 
 interface Props {
   onExploreMap: () => void;
@@ -9,27 +9,9 @@ interface Props {
 }
 
 export function HomeView({ onExploreMap, onOpenRadar }: Props) {
-  const [topicInput, setTopicInput] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
   const topTrends = useMemo(() =>
     EXTENDED_TRENDS.slice(-4).reverse(),
   []);
-
-  const suggestions = useMemo(() => {
-    const q = topicInput.toLowerCase().trim();
-    if (!q) return [];
-    return FEATURED_TOPICS.filter(t =>
-      t.includes(q) || t.replace(/-/g, " ").includes(q)
-    ).slice(0, 6);
-  }, [topicInput]);
-
-  function submitRadar(raw: string) {
-    const key = raw.trim();
-    if (!key) return;
-    onOpenRadar(key);
-    setTopicInput("");
-  }
 
   const topName = topTrends[0]?.name ?? "a lot";
 
@@ -124,88 +106,22 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
             </button>
 
             {/* Radar */}
-            <div style={{ padding: "20px 18px", borderRadius: 14, background: "#f5f4f1", textAlign: "left" }}>
-              <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "'EB Garamond', Georgia, serif", color: "#111", lineHeight: 1.2, marginBottom: 8 }}>
+            <button
+              onClick={() => onOpenRadar()}
+              style={{
+                padding: "20px 18px", borderRadius: 14,
+                background: "#f5f4f1", color: "#111", border: "none",
+                cursor: "pointer", textAlign: "left",
+              }}
+            >
+              <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 8 }}>
                 Trends Radar
               </div>
-              <div style={{ fontSize: 12, color: "#888", lineHeight: 1.5, marginBottom: 14 }}>
+              <div style={{ fontSize: 12, color: "#888", lineHeight: 1.5 }}>
                 Pick something you&apos;re curious about and see what&apos;s coming through.
               </div>
-
-              {/* Inline search */}
-              <div style={{ position: "relative" }}>
-                {showSuggestions && suggestions.length > 0 && (
-                  <div style={{
-                    position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 100,
-                    background: "#fff", border: "1px solid #e8e4de", borderRadius: 10,
-                    boxShadow: "0 8px 20px rgba(0,0,0,0.08)", padding: "4px 0", overflow: "hidden",
-                  }}>
-                    {suggestions.map(t => (
-                      <button
-                        key={t}
-                        onPointerDown={(e) => { e.preventDefault(); submitRadar(t); }}
-                        style={{
-                          display: "flex", alignItems: "center", gap: 8, width: "100%",
-                          padding: "8px 14px", background: "none", border: "none",
-                          cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#222", textAlign: "left",
-                        }}
-                      >
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: TOPIC_COLORS[t] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
-                        {t.replace(/-/g, " ")}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#fff", borderRadius: 24, padding: "6px 6px 6px 14px" }}>
-                  <input
-                    value={topicInput}
-                    onChange={e => { setTopicInput(e.target.value); setShowSuggestions(true); }}
-                    onKeyDown={e => {
-                      if (e.key === "Enter") submitRadar(suggestions[0] ?? topicInput);
-                      if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
-                    }}
-                    onFocus={() => setShowSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="what are you into right now?"
-                    style={{
-                      flex: 1, background: "none", border: "none", outline: "none",
-                      fontSize: 12, fontWeight: 500, color: "#333", minWidth: 0,
-                    }}
-                  />
-                  <button
-                    onClick={() => topicInput.trim() ? submitRadar(topicInput) : onOpenRadar()}
-                    style={{
-                      width: 30, height: 30, borderRadius: "50%", background: "#111",
-                      border: "none", cursor: "pointer",
-                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                    }}
-                  >
-                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {!topicInput && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 10 }}>
-                  {FEATURED_TOPICS.slice(0, 4).map(t => (
-                    <button
-                      key={t}
-                      onClick={() => submitRadar(t)}
-                      style={{
-                        padding: "4px 10px", borderRadius: 16,
-                        background: "#fff", border: "1px solid #e8e4de",
-                        fontSize: 11, fontWeight: 600, color: "#555",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {t.replace(/-/g, " ")}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+              <div style={{ marginTop: 14, fontSize: 14, color: "#bbb" }}>→</div>
+            </button>
 
           </div>
         </div>
