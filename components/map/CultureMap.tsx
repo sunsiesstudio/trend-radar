@@ -148,6 +148,9 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
+  const [sheetOffset,  setSheetOffset]  = useState(0);
+  const touchStartY    = useRef<number>(0);
+  const isDragging     = useRef(false);
 
   const allSignals = useMemo(() => {
     const base = [...SIGNALS, ...EXTENDED_SIGNALS];
@@ -197,7 +200,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
 
-  function clearSelection() { setSelection(null); }
+  function clearSelection() { setSelection(null); setSheetOffset(0); }
 
   // ── Shared geometry ───────────────────────────────────────────────────────────
 
@@ -505,8 +508,33 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             borderRadius: "20px 20px 0 0", height: "72svh",
             display: "flex", flexDirection: "column", overflow: "hidden",
             zIndex: 201, boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
+            transform: `translateY(${Math.max(0, sheetOffset)}px)`,
+            transition: isDragging.current ? "none" : "transform 0.25s ease",
           }}>
-            <div style={{ width: 40, height: 4, borderRadius: 2, background: "#ddd", margin: "12px auto 0", flexShrink: 0 }} />
+            <div
+              onClick={clearSelection}
+              onTouchStart={e => {
+                touchStartY.current = e.touches[0].clientY;
+                isDragging.current = true;
+                setSheetOffset(0);
+              }}
+              onTouchMove={e => {
+                const dy = e.touches[0].clientY - touchStartY.current;
+                setSheetOffset(Math.max(0, dy));
+              }}
+              onTouchEnd={() => {
+                isDragging.current = false;
+                if (sheetOffset > 80) {
+                  clearSelection();
+                  setSheetOffset(0);
+                } else {
+                  setSheetOffset(0);
+                }
+              }}
+              style={{ width: "100%", padding: "16px 0 8px", display: "flex", justifyContent: "center", cursor: "grab", flexShrink: 0 }}
+            >
+              <div style={{ width: 40, height: 4, borderRadius: 2, background: "#ddd" }} />
+            </div>
             {activeSignal ? (() => {
               const sigTrend = selection?.type === "trend" ? selection.trend : allTrends.find(t => t.id === activeSignal.trendId);
               return (

@@ -13,9 +13,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const topTrends = useMemo(() =>
-    [...EXTENDED_TRENDS]
-      .sort((a, b) => (b.relevanceScore ?? 50) - (a.relevanceScore ?? 50))
-      .slice(0, 4),
+    EXTENDED_TRENDS.slice(-4).reverse(),
   []);
 
   const suggestions = useMemo(() => {
@@ -82,7 +80,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 28px" }}>
             {topTrends.map(t => (
-              <div key={t.id}>
+              <div key={t.id} onClick={() => onOpenRadar(t.topics?.[0])} style={{ cursor: "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.color, display: "inline-block", flexShrink: 0 }} />
                   <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.08em", textTransform: "uppercase" }}>
