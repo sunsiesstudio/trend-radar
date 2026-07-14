@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import ReactFlow, {
   Node,
   Edge,
   NodeProps,
-  NodeMouseHandler,
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
@@ -54,14 +53,15 @@ const CIRCLE_D = 164;
 
 // ── Node components ───────────────────────────────────────────────────────────
 
-type TrendNodeData = { id: string; name: string; color: string; score: number; d: number; latestDate?: string };
-type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string };
+type TrendNodeData = { id: string; name: string; color: string; score: number; d: number; latestDate?: string; onTap?: () => void };
+type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   return (
-    <div>
-      <div style={{
+    <div
+      onClick={(e) => { e.stopPropagation(); data.onTap?.(); }}
+      style={{
         width: data.d, height: data.d,
         borderRadius: blobFromId(data.id),
         background: blobColor,
@@ -71,12 +71,11 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
         boxShadow: `0 6px 32px ${data.color}66`,
       }}>
-        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
-          {data.name}
-        </div>
-        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-          {data.score}%
-        </div>
+      <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
+        {data.name}
+      </div>
+      <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        {data.score}%
       </div>
     </div>
   );
@@ -84,18 +83,20 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
   return (
-    <div style={{
-      width: data.w, height: data.h,
-      background: `${data.color}${data.fillAlpha}`,
-      border: `1.5px solid ${data.color}${data.borderAlpha}`,
-      borderRadius: blobFromId(data.id),
-      padding: "8px",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      textAlign: "center",
-      cursor: "pointer", userSelect: "none",
-      boxSizing: "border-box",
-      boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
-    }}>
+    <div
+      onClick={(e) => { e.stopPropagation(); data.onTap?.(); }}
+      style={{
+        width: data.w, height: data.h,
+        background: `${data.color}${data.fillAlpha}`,
+        border: `1.5px solid ${data.color}${data.borderAlpha}`,
+        borderRadius: blobFromId(data.id),
+        padding: "8px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        textAlign: "center",
+        cursor: "pointer", userSelect: "none",
+        boxSizing: "border-box",
+        boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
+      }}>
       <div style={{ fontSize: 9.5, fontWeight: 500, color: "#000", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {data.title}
       </div>
@@ -219,31 +220,33 @@ function BoardController({ fitViewRef }: {
 }) {
   const { fitView } = useReactFlow();
   useEffect(() => {
-    fitViewRef.current = () => fitView({ duration: 420, padding: 0.22 });
+    fitViewRef.current = () => fitView({ duration: 420, padding: 0.08 });
   }, [fitView, fitViewRef]);
   return null;
 }
 
-function FocusController({ trend, idx }: { trend: Trend | undefined; idx: number }) {
-  const { fitBounds } = useReactFlow();
-  const prevIdx = useRef(-1);
+// idx === -1 → overview (fitView all); idx >= 0 → zoom to trend cluster
+function FocusController({ trendId, signalIds, idx }: {
+  trendId: string | undefined;
+  signalIds: string[];
+  idx: number;
+}) {
+  const { fitView } = useReactFlow();
+  const prevKey = useRef("");
   useEffect(() => {
-    if (!trend) return;
-    const isInitial = prevIdx.current === -1;
-    if (!isInitial && idx === prevIdx.current) return;
-    prevIdx.current = idx;
-    const pos = trend.position ?? { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
-    const cx = pos.x + CIRCLE_D / 2;
-    const cy = pos.y + CIRCLE_D / 2;
-    const viewR = 300;
-    const delay = isInitial ? 150 : 0;
+    const key = idx < 0 ? "__overview__" : `${trendId ?? "?"}:${idx}`;
+    if (key === prevKey.current) return;
+    const isFirst = prevKey.current === "";
+    prevKey.current = key;
     setTimeout(() => {
-      fitBounds(
-        { x: cx - viewR, y: cy - viewR, width: viewR * 2, height: viewR * 2 },
-        { duration: 420 },
-      );
-    }, delay);
-  }, [trend, idx, fitBounds]);
+      if (idx < 0) {
+        fitView({ duration: 500, padding: 0.08 });
+      } else if (trendId) {
+        const fitNodes = [{ id: trendId }, ...signalIds.map(id => ({ id }))];
+        fitView({ nodes: fitNodes, duration: 420, padding: 0.18 });
+      }
+    }, isFirst ? 140 : 0);
+  }, [trendId, signalIds, idx, fitView]);
   return null;
 }
 
@@ -267,19 +270,20 @@ export function BlobRadarView({
   onSelectTrend, onSelectSignal,
 }: Props) {
   const fitViewRef = useRef<(() => void) | null>(null);
-  const [focusIdx, setFocusIdx] = useState(0);
+  // -1 = overview (zoomed out); >= 0 = focused on that trend
+  const [focusIdx, setFocusIdx] = useState(-1);
   const [topicInput, setTopicInput] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sort highest-relevance first — same order as displayed bottom nav
+  // Sort highest-relevance first
   const sorted = useMemo(
     () => [...trends].sort((a, b) => (b.relevanceScore ?? 50) - (a.relevanceScore ?? 50)),
     [trends],
   );
 
-  // Reset focus when the trend set changes
-  useEffect(() => { setFocusIdx(0); }, [trends]);
+  // Reset to overview when topic set changes
+  useEffect(() => { setFocusIdx(-1); }, [trends]);
 
   const allSignals = useMemo(() => {
     const extra = signals ?? [];
@@ -288,29 +292,49 @@ export function BlobRadarView({
     return [...extra, ...base.filter(s => !extraIds.has(s.id))];
   }, [signals]);
 
-  const { nodes, edges } = useMemo(
+  // Stable refs so node tap handlers don't need to be in useMemo deps
+  const onSelectTrendRef = useRef(onSelectTrend);
+  const onSelectSignalRef = useRef(onSelectSignal);
+  onSelectTrendRef.current = onSelectTrend;
+  onSelectSignalRef.current = onSelectSignal;
+
+  const { nodes: baseNodes, edges } = useMemo(
     () => buildGraph(sorted, allSignals, topicAddedAt),
     [sorted, allSignals, topicAddedAt],
   );
 
-  const handleNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
-    if (node.type === "trendCircle") {
-      const trend = sorted.find((t) => t.id === node.id);
-      if (trend) {
-        setFocusIdx(sorted.indexOf(trend));
-        onSelectTrend?.(trend);
+  // Inject tap handlers into node data (refs keep this stable)
+  const nodes = useMemo(() => {
+    const trendMap = new Map(sorted.map((t, i) => [t.id, { trend: t, idx: i }]));
+    const sigMap   = new Map(allSignals.map(s => [s.id, s]));
+    return baseNodes.map(node => {
+      if (node.type === "trendCircle") {
+        const entry = trendMap.get(node.id);
+        return { ...node, data: { ...node.data, onTap: () => {
+          if (entry) { setFocusIdx(entry.idx); onSelectTrendRef.current?.(entry.trend); }
+        }}};
       }
-    } else if (node.type === "signalOrbit") {
-      const sig = allSignals.find((s) => s.id === node.id);
-      if (sig) onSelectSignal?.(sig);
-    }
-  }, [sorted, allSignals, onSelectTrend, onSelectSignal]);
+      if (node.type === "signalOrbit") {
+        const sig = sigMap.get(node.id);
+        return { ...node, data: { ...node.data, onTap: () => {
+          if (sig) onSelectSignalRef.current?.(sig);
+        }}};
+      }
+      return node;
+    });
+  }, [baseNodes, sorted, allSignals]);
 
-  const safeIdx = sorted.length > 0 ? Math.min(focusIdx, sorted.length - 1) : 0;
-  const focusTrend = sorted[safeIdx];
+  const safeIdx    = focusIdx >= 0 ? Math.min(focusIdx, sorted.length - 1) : -1;
+  const focusTrend = safeIdx >= 0 ? sorted[safeIdx] : undefined;
 
-  const prev = () => setFocusIdx(i => Math.max(0, i - 1));
-  const next = () => setFocusIdx(i => Math.min(sorted.length - 1, i + 1));
+  const focusSignalIds = useMemo(() => {
+    if (!focusTrend) return [];
+    return allSignals.filter(s => s.trendId === focusTrend.id).map(s => s.id);
+  }, [focusTrend, allSignals]);
+
+  // From overview: pressing either arrow zooms to first trend
+  const prev = () => setFocusIdx(i => i < 0 ? 0 : Math.max(0, i - 1));
+  const next = () => setFocusIdx(i => i < 0 ? 0 : Math.min(sorted.length - 1, i + 1));
 
   // ── Search helpers ────────────────────────────────────────────────────────────
 
@@ -462,6 +486,8 @@ export function BlobRadarView({
     );
   }
 
+  const isOverview = safeIdx < 0;
+
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
       {/* ReactFlow canvas */}
@@ -470,9 +496,8 @@ export function BlobRadarView({
           nodes={nodes}
           edges={edges}
           nodeTypes={NODE_TYPES}
-          onNodeClick={handleNodeClick}
           nodesDraggable={false}
-          minZoom={0.06}
+          minZoom={0.04}
           maxZoom={2}
           panOnDrag
           zoomOnPinch
@@ -482,11 +507,11 @@ export function BlobRadarView({
           style={{ background: "#ffffff" }}
         >
           <BoardController fitViewRef={fitViewRef} />
-          <FocusController trend={focusTrend} idx={safeIdx} />
+          <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} />
         </ReactFlow>
       </div>
 
-      {/* Bottom nav — arrows + trend name + count */}
+      {/* Bottom nav */}
       {sorted.length > 0 && (
         <div style={{
           flexShrink: 0,
@@ -499,42 +524,55 @@ export function BlobRadarView({
         }}>
           <button
             onClick={prev}
-            disabled={safeIdx === 0}
+            disabled={isOverview}
             style={{
               width: 40, height: 40, borderRadius: "50%",
-              background: safeIdx === 0 ? "#f5f5f5" : "#000",
-              border: "none", cursor: safeIdx === 0 ? "default" : "pointer",
+              background: isOverview ? "#f5f5f5" : "#000",
+              border: "none", cursor: isOverview ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0,
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7L9 12" stroke={safeIdx === 0 ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 2L4 7L9 12" stroke={isOverview ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
 
           <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
-              {focusTrend?.name}
-            </div>
-            <div style={{ fontSize: 10, color: "#bbb", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-              {safeIdx + 1} / {sorted.length}
-            </div>
+            {isOverview ? (
+              <>
+                <div style={{ fontSize: 12, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  {sorted.length} trends — tap one to explore
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
+                  {focusTrend?.name}
+                </div>
+                <div style={{ fontSize: 10, color: "#bbb", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  {safeIdx + 1} / {sorted.length}
+                </div>
+              </>
+            )}
           </div>
 
           <button
             onClick={next}
-            disabled={safeIdx === sorted.length - 1}
+            disabled={!isOverview && safeIdx === sorted.length - 1}
             style={{
               width: 40, height: 40, borderRadius: "50%",
-              background: safeIdx === sorted.length - 1 ? "#f5f5f5" : "#000",
-              border: "none", cursor: safeIdx === sorted.length - 1 ? "default" : "pointer",
+              background: (!isOverview && safeIdx === sorted.length - 1) ? "#f5f5f5" : "#000",
+              border: "none",
+              cursor: (!isOverview && safeIdx === sorted.length - 1) ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0,
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M5 2L10 7L5 12" stroke={safeIdx === sorted.length - 1 ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M5 2L10 7L5 12"
+                stroke={(!isOverview && safeIdx === sorted.length - 1) ? "#ccc" : "#fff"}
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
