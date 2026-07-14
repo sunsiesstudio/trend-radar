@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { EXTENDED_TRENDS, EXTENDED_SIGNALS } from "@/lib/extended-trends";
+import { Signal } from "@/types";
 
 interface Props {
   onExploreMap: () => void;
