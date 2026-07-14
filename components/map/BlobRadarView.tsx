@@ -58,9 +58,17 @@ type SignalNodeData = { id: string; title: string; color: string; isNew: boolean
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
+  const ptr = useRef<{ x: number; y: number } | null>(null);
   return (
     <div
-      onClick={(e) => { e.stopPropagation(); data.onTap?.(); }}
+      onPointerDown={(e) => { e.stopPropagation(); ptr.current = { x: e.clientX, y: e.clientY }; }}
+      onPointerUp={(e) => {
+        e.stopPropagation();
+        if (!ptr.current) return;
+        const moved = Math.abs(e.clientX - ptr.current.x) + Math.abs(e.clientY - ptr.current.y);
+        ptr.current = null;
+        if (moved < 8) data.onTap?.();
+      }}
       style={{
         width: data.d, height: data.d,
         borderRadius: blobFromId(data.id),
@@ -82,9 +90,17 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 }
 
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
+  const ptr = useRef<{ x: number; y: number } | null>(null);
   return (
     <div
-      onClick={(e) => { e.stopPropagation(); data.onTap?.(); }}
+      onPointerDown={(e) => { e.stopPropagation(); ptr.current = { x: e.clientX, y: e.clientY }; }}
+      onPointerUp={(e) => {
+        e.stopPropagation();
+        if (!ptr.current) return;
+        const moved = Math.abs(e.clientX - ptr.current.x) + Math.abs(e.clientY - ptr.current.y);
+        ptr.current = null;
+        if (moved < 8) data.onTap?.();
+      }}
       style={{
         width: data.w, height: data.h,
         background: `${data.color}${data.fillAlpha}`,
