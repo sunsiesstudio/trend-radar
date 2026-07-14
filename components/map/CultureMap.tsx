@@ -7,6 +7,7 @@ import { SIGNALS } from "@/lib/trends";
 import { EXTENDED_SIGNALS } from "@/lib/extended-trends";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
+import { BlobRadarView } from "@/components/map/BlobRadarView";
 
 // ── Life arenas ───────────────────────────────────────────────────────────────
 
@@ -120,8 +121,10 @@ type Selection =
 type View = "card" | "map" | "radar";
 
 interface Props {
-  dynamicTrends: Trend[];
-  activeTopics:  string[];
+  dynamicTrends:  Trend[];
+  activeTopics:   string[];
+  extraSignals?:  Signal[];
+  topicAddedAt?:  Record<string, string>;
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
@@ -135,7 +138,7 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function CultureMap({ dynamicTrends, activeTopics }: Props) {
+export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
   const [view,         setView]         = useState<View>("card");
@@ -143,7 +146,12 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
 
-  const allSignals = useMemo(() => [...SIGNALS, ...EXTENDED_SIGNALS], []);
+  const allSignals = useMemo(() => {
+    const base = [...SIGNALS, ...EXTENDED_SIGNALS];
+    if (!extraSignals?.length) return base;
+    const extraIds = new Set(extraSignals.map(s => s.id));
+    return [...extraSignals, ...base.filter(s => !extraIds.has(s.id))];
+  }, [extraSignals]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -450,85 +458,16 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
     </svg>
   );
 
-  // ── Radar view (chord diagram) ────────────────────────────────────────────────
+  // ── Radar view (blob canvas) ──────────────────────────────────────────────────
 
-  const svgRadar = (
-    <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block" }}>
-      <defs>
-        <filter id="shad2" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#000" floodOpacity="0.10" />
-        </filter>
-      </defs>
-
-      {/* Chord lines — drawn first so nodes sit on top */}
-      {groups.map(group => {
-        const dn = domainNodes.find(n => n.domain === group.domain);
-        const nn = needNodes.find(n => n.need === group.need);
-        if (!dn || !nn) return null;
-        const highlighted = isHighlighted(group.domain, group.need);
-        const dimmed      = selection !== null && !highlighted;
-        const weight      = group.trends.length / maxCount;
-        const color       = DOMAIN_COLORS[group.domain];
-        const opacity     = dimmed ? 0.04 : highlighted ? 0.72 : 0.22 + weight * 0.38;
-        const strokeW     = highlighted ? 2.5 + weight * 2.5 : 0.8 + weight * 1.4;
-        const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nn.x, nn.y, domR, needR);
-        return (
-          <g key={`${group.domain}--${group.need}`} style={{ cursor: "pointer" }}
-            onClick={() => setSelection(highlighted ? null : {
-              type: "need", need: group.need,
-              trends: enriched.filter(e => e.need === group.need).map(e => e.trend),
-            })}>
-            <line x1={dn.x} y1={dn.y} x2={nn.x} y2={nn.y} stroke="transparent" strokeWidth={14} />
-            <line x1={sx} y1={sy} x2={ex} y2={ey}
-              stroke={color} strokeWidth={strokeW} opacity={opacity} strokeLinecap="round" />
-          </g>
-        );
-      })}
-
-      {/* Domain circles — outer ring */}
-      {domainNodes.map(({ domain, x, y }) => {
-        const color = DOMAIN_COLORS[domain];
-        const isSel = selection?.type === "domain" && selection.domain === domain;
-        const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
-        const fs = Math.min(13, Math.max(9, domR * 0.30));
-        const words = domain.split(" ");
-        const lines = words.length > 1 ? words : [domain];
-        return (
-          <g key={domain} style={{ cursor: "pointer" }}
-            onClick={() => setSelection(isSel ? null : { type: "domain", domain, trends: domainTrends })}>
-            {isSel && <circle cx={x} cy={y} r={domR + 6} fill="none" stroke={color} strokeWidth={2} opacity={0.35} />}
-            <circle cx={x} cy={y} r={domR} fill={color}
-              stroke={isSel ? "#fff" : "rgba(255,255,255,0.2)"} strokeWidth={isSel ? 2.5 : 1} filter="url(#shad2)" />
-            {lines.map((line, li) => (
-              <text key={li} x={x} y={y + (li - (lines.length - 1) / 2) * (fs + 2)}
-                textAnchor="middle" dominantBaseline="middle"
-                fontSize={fs} fontWeight={800} fill="#fff" fontFamily="'DM Sans', sans-serif">{line}</text>
-            ))}
-          </g>
-        );
-      })}
-
-      {/* Tension diamonds — inner ring */}
-      {needNodes.map(({ need, x, y }) => {
-        const color = NEED_COLORS[need];
-        const isSel = selection?.type === "need" && selection.need === need;
-        const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
-        const d = needR;
-        const pts = `${x},${y - d} ${x + d},${y} ${x},${y + d} ${x - d},${y}`;
-        const fs = Math.min(11, needR * 0.30);
-        return (
-          <g key={need} style={{ cursor: "pointer" }}
-            onClick={() => setSelection(isSel ? null : { type: "need", need, trends: needTrends })}>
-            <polygon points={pts}
-              fill={isSel ? `${color}18` : "#fff"}
-              stroke={color} strokeWidth={isSel ? 2.5 : 1.8} filter="url(#shad2)" />
-            <text x={x} y={y} textAnchor="middle" dominantBaseline="middle"
-              fontSize={fs} fontWeight={isSel ? 700 : 600}
-              fill={isSel ? color : "#333"} fontFamily="'DM Sans', sans-serif">{need}</text>
-          </g>
-        );
-      })}
-    </svg>
+  const blobRadar = (
+    <BlobRadarView
+      trends={allTrends}
+      signals={allSignals}
+      topicAddedAt={topicAddedAt}
+      onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}
+      onSelectSignal={(sig) => setActiveSignal(sig)}
+    />
   );
 
   // ── View toggle ───────────────────────────────────────────────────────────────
@@ -581,7 +520,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
   const footerHints: Record<View, string> = {
     card:  "Tap a life arena or cultural tension to explore trends",
     map:   "Tap a node to reveal its connections",
-    radar: "Tap a chord to explore a tension · Tap a node to explore a domain",
+    radar: "Tap a trend blob to explore it · pinch or scroll to zoom",
   };
 
   return (
@@ -593,7 +532,7 @@ export function CultureMap({ dynamicTrends, activeTopics }: Props) {
         <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
           {view === "card"  ? cardGrid  : null}
           {view === "map"   ? svgMap    : null}
-          {view === "radar" ? svgRadar  : null}
+          {view === "radar" ? blobRadar : null}
           {viewToggle}
         </div>
 

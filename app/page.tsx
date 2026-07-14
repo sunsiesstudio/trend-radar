@@ -237,6 +237,11 @@ export default function HomePage() {
     runGeneration(remaining[0], remaining, [], remaining);
   }, [activeTopics, loadTopic, runGeneration]);
 
+  const allExtraSignals = useMemo(
+    () => [...generatedSignals, ...extraSignals, ...liveSignals],
+    [generatedSignals, extraSignals, liveSignals],
+  );
+
   const handleAddSignal = useCallback((s: Signal) => {
     setExtraSignals((prev) => [...prev, s]);
     setShowAdd(false);
@@ -317,7 +322,12 @@ export default function HomePage() {
 
       {/* ── Map canvas ────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-        <CultureMap dynamicTrends={appliedDynamicTrends} activeTopics={appliedTopics} />
+        <CultureMap
+          dynamicTrends={appliedDynamicTrends}
+          activeTopics={appliedTopics}
+          extraSignals={allExtraSignals}
+          topicAddedAt={topicAddedAt}
+        />
       </div>
 
       {/* ── Bottom search bar ─────────────────────────────────────────────────── */}
