@@ -312,7 +312,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const INNER_RATIO = 0.43;
   const innerRx = outerRx * INNER_RATIO;
   const innerRy = outerRy * INNER_RATIO;
-  const needR   = Math.min(34, Math.max(20, Math.min(innerRx, innerRy) * 0.52));
+  const needR   = Math.min(46, Math.max(28, Math.min(innerRx, innerRy) * 0.74));
   // Pill width for map view
   const pillW = needR * 2.4;
   const pillH = needR * 1.1;
@@ -464,8 +464,8 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
         const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
         const hasNoTrends = activeTopics.length > 0 && needTrends.length === 0;
-        const fs = Math.min(10, Math.max(7, needR * 0.30));
-        const fillColor = darkenColor(color, isSel ? 0.68 : 0.82);
+        const fs = Math.min(12, Math.max(8, needR * 0.32));
+        const fillColor = darkenColor(color, isSel ? 0.72 : 0.88);
         return (
           <div
             key={need}
