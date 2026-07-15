@@ -127,8 +127,7 @@ interface Props {
   generatingTopic?: string | null;
   onAddTopic:      (topic: string) => void;
   onRemoveTopic:   (topic: string) => void;
-  view:            View;
-  onSetView:       (v: View) => void;
+  initialView?:    "map" | "radar";
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
@@ -142,9 +141,10 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, view, onSetView }: Props) {
+export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, initialView }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
+  const [view,         setView]         = useState<View>(initialView ?? "map");
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
@@ -534,5 +534,3 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
     </div>
   );
 }
-
-export default CultureMap;

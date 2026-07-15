@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
 
 import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 import { AddTrendModal } from "@/components/map/AddTrendModal";
-
-// CultureMap uses ReactFlow which requires browser APIs — skip SSR entirely
-const CultureMap = dynamic(() => import("@/components/map/CultureMap"), { ssr: false });
+import { CultureMap } from "@/components/map/CultureMap";
+import { HomeView } from "@/components/HomeView";
 
 function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
@@ -54,7 +52,10 @@ export default function HomePage() {
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
-  const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>({});
+  const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
+    if (typeof window === "undefined") return {};
+    try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
+  });
   const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
@@ -63,8 +64,8 @@ export default function HomePage() {
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [view, setView] = useState<"radar" | "map">("radar");
-  const [mounted, setMounted] = useState(false);
+  const [showHome, setShowHome] = useState(true);
+  const [initialMapView, setInitialMapView] = useState<"map" | "radar">("map");
 
   const liveTopicsRef = useRef<string[]>([]);
   const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
@@ -95,14 +96,6 @@ export default function HomePage() {
     return () => { cancelled = true; clearInterval(interval); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicsKey]);
-
-  // Persist active topics — skip before mount so we don't overwrite stored data
-  // before the mount effect has had a chance to read and restore it.
-  // (Effects run in declaration order; this effect fires before the mount effect.)
-  useEffect(() => {
-    if (!mounted) return;
-    try { localStorage.setItem("ar_activeTopics", JSON.stringify(activeTopics)); } catch { /* ignore */ }
-  }, [activeTopics, mounted]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -178,55 +171,17 @@ export default function HomePage() {
     if (failedTopic) runGeneration(failedTopic, [failedTopic]);
   }, [activeTopics, dynamicTrends, runGeneration]);
 
-  // 24-hour TTL — refresh trends daily on revisit
-  const TREND_TTL_MS = 24 * 60 * 60 * 1000;
-
-  // On mount: show the radar immediately, then restore the user's last session.
-  // If their trends are stale (> 24 h), silently regenerate with Claude in the background.
+  const TREND_TTL_MS = 48 * 60 * 60 * 1000;
   useEffect(() => {
-    setMounted(true);
-
-    // Restore topicAddedAt (safe to read localStorage here — client-only)
-    try {
-      const storedAddedAt = JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}");
-      if (Object.keys(storedAddedAt).length > 0) setTopicAddedAt(storedAddedAt);
-    } catch { /* ignore */ }
-
-    // Read last session's topics directly from storage (activeTopics is [] at this point)
-    let topics: string[] = [];
-    try { topics = JSON.parse(localStorage.getItem("ar_activeTopics") ?? "[]"); } catch { }
-    if (topics.length > 0) setActiveTopics(topics);
-    if (topics.length === 0) return;
-
-    const timestamps: Record<string, number> = (() => {
-      try { return JSON.parse(localStorage.getItem("ar_trendGeneratedAt") ?? "{}"); } catch { return {}; }
-    })();
+    const stored = localStorage.getItem("ar_trendGeneratedAt");
+    const timestamps: Record<string, number> = stored ? JSON.parse(stored) : {};
     const now = Date.now();
-
-    if (topics.length === 1) {
-      const topic = topics[0];
-      const isStale = now - (timestamps[topic] ?? 0) > TREND_TTL_MS;
-      const libraryTrends = [...(TOPIC_LIBRARY[topic] ?? [])]
-        .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
-        .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
-
-      setAppliedTopics([topic]);
-
-      if (libraryTrends.length) {
-        // Show library data instantly, then refresh in background if stale
-        const colored = assignUniqueColors(libraryTrends);
-        setDynamicTrends(colored);
-        setAppliedDynamicTrends(colored);
-        if (isStale) runGeneration(topic, [topic], []);
-      } else {
-        // No library data — always regenerate (Claude-only topics)
-        runGeneration(topic, [topic], []);
-      }
-    } else {
-      // Multi-topic: re-run intersection generation
-      setAppliedTopics(topics);
-      runGeneration(topics[0], topics, [], topics);
-    }
+    activeTopics.forEach(topic => {
+      const hasLibrary = (TOPIC_LIBRARY[topic] ?? []).length > 0;
+      if (hasLibrary) return;
+      const last = timestamps[topic] ?? 0;
+      if (now - last > TREND_TTL_MS) runGeneration(topic, [topic], []);
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -308,7 +263,7 @@ export default function HomePage() {
         {/* Logo + tagline */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
           <button
-            onClick={() => { setView("radar"); setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
+            onClick={() => { setShowHome(true); setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
             style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
           >Augmented Culture</button>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", display: isDesktop ? "inline" : "none" }}>
@@ -317,23 +272,7 @@ export default function HomePage() {
         </div>
 
         {/* Right side */}
-        <div style={{ display: "flex", gap: 12, alignItems: "center", marginLeft: "auto", flexShrink: 0 }}>
-          {/* View toggle */}
-          {view === "radar" ? (
-            <button
-              onClick={() => setView("map")}
-              style={{ fontSize: 12, fontWeight: 600, color: "#666", background: "none", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 20, padding: "5px 12px", cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}
-            >
-              Culture Map
-            </button>
-          ) : (
-            <button
-              onClick={() => setView("radar")}
-              style={{ fontSize: 12, fontWeight: 600, color: "#666", background: "none", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 20, padding: "5px 12px", cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}
-            >
-              ← Radar
-            </button>
-          )}
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginLeft: "auto", flexShrink: 0 }}>
           {lastUpdated && isDesktop && (
             <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
               {(() => {
@@ -375,8 +314,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Filter chip sub-bar (when a topic is active in radar) ──────────── */}
-      {view === "radar" && appliedTopics.length > 0 && (
+      {/* ── Filter chip sub-bar (when a topic is active) ─────────────────────── */}
+      {!showHome && appliedTopics.length > 0 && (
         <div style={{
           flexShrink: 0, padding: "6px 16px",
           background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.05)",
@@ -414,9 +353,19 @@ export default function HomePage() {
       )}
 
       {/* ── Main canvas ───────────────────────────────────────────────────────── */}
-      <div style={{ flex: 1, minHeight: 0, position: "relative", background: "#fff" }}>
-        {mounted && (
+      <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
+        {showHome ? (
+          <HomeView
+            onExploreMap={() => { setShowHome(false); setInitialMapView("map"); }}
+            onOpenRadar={async (topic) => {
+              setShowHome(false);
+              setInitialMapView("radar");
+              if (topic) await addTopic(topic);
+            }}
+          />
+        ) : (
           <CultureMap
+            key={initialMapView}
             dynamicTrends={appliedDynamicTrends}
             activeTopics={appliedTopics}
             extraSignals={allExtraSignals}
@@ -424,8 +373,7 @@ export default function HomePage() {
             generatingTopic={generatingTopic}
             onAddTopic={addTopic}
             onRemoveTopic={removeTopic}
-            view={view}
-            onSetView={setView}
+            initialView={initialMapView}
           />
         )}
       </div>

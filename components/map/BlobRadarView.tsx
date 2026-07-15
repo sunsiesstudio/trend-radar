@@ -14,8 +14,7 @@ import { EXTENDED_SIGNALS, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_COLORS } from 
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function darkenColor(hex: string | undefined, factor = 0.62): string {
-  if (!hex || hex[0] !== "#" || hex.length < 7) return "#1B5E8C";
+function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
   const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
   const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
@@ -39,8 +38,7 @@ function ageAlpha(date: string | undefined): { fillAlpha: string; borderAlpha: s
   };
 }
 
-function blobFromId(id: string | undefined): string {
-  if (!id) return "40% 60% 55% 45% / 50% 45% 55% 50%";
+function blobFromId(id: string): string {
   let h = 2166136261;
   for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
   h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
@@ -52,20 +50,6 @@ function blobFromId(id: string | undefined): string {
 }
 
 const CIRCLE_D = 164;
-
-// Water color palette — river, lake, sea tones
-const WATER_PALETTE = [
-  "#0A4A6E", "#1B5E8C", "#2C7BB6", "#4A8DC8",
-  "#5B9ED6", "#6AAFD4", "#7EC8E3", "#A8D4EC",
-  "#2471A3", "#1B6CA8", "#85C4E8", "#3A89C9",
-];
-
-function waterColor(id: string): string {
-  let h = 2166136261;
-  for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-  h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
-  return WATER_PALETTE[h % WATER_PALETTE.length];
-}
 
 // ── Tap hook (works on iOS Safari + Android Chrome inside ReactFlow) ──────────
 
@@ -96,8 +80,7 @@ type TrendNodeData = { id: string; name: string; color: string; score: number; d
 type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const color = data.color ?? "#2C7BB6";
-  const blobColor = darkenColor(color, blobAgeFactor(data.latestDate));
+  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   const tap = useTapHandlers(data.onTap);
   return (
     <div
@@ -110,7 +93,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: 22,
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: `0 6px 32px ${color}66`,
+        boxShadow: `0 6px 32px ${data.color}66`,
       }}>
       <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
         {data.name}
@@ -324,14 +307,8 @@ export function BlobRadarView({
     [trends],
   );
 
-  // Apply water palette — deterministic per trend id
-  const waterSorted = useMemo(
-    () => sorted.map(t => ({ ...t, color: waterColor(t.id) })),
-    [sorted],
-  );
-
-  // Auto-focus first trend when topics load; overview only while empty
-  useEffect(() => { setFocusIdx(trends.length > 0 ? 0 : -1); }, [trends]);
+  // Reset to overview when topic set changes
+  useEffect(() => { setFocusIdx(-1); }, [trends]);
 
   const allSignals = useMemo(() => {
     const extra = signals ?? [];
@@ -347,13 +324,13 @@ export function BlobRadarView({
   onSelectSignalRef.current = onSelectSignal;
 
   const { nodes: baseNodes, edges } = useMemo(
-    () => buildGraph(waterSorted, allSignals, topicAddedAt),
-    [waterSorted, allSignals, topicAddedAt],
+    () => buildGraph(sorted, allSignals, topicAddedAt),
+    [sorted, allSignals, topicAddedAt],
   );
 
   // Inject tap handlers into node data (refs keep this stable)
   const nodes = useMemo(() => {
-    const trendMap = new Map(waterSorted.map((t, i) => [t.id, { trend: t, idx: i }]));
+    const trendMap = new Map(sorted.map((t, i) => [t.id, { trend: t, idx: i }]));
     const sigMap   = new Map(allSignals.map(s => [s.id, s]));
     return baseNodes.map(node => {
       if (node.type === "trendCircle") {
@@ -370,7 +347,7 @@ export function BlobRadarView({
       }
       return node;
     });
-  }, [baseNodes, waterSorted, allSignals]);
+  }, [baseNodes, sorted, allSignals]);
 
   const safeIdx    = focusIdx >= 0 ? Math.min(focusIdx, sorted.length - 1) : -1;
   const focusTrend = safeIdx >= 0 ? sorted[safeIdx] : undefined;
@@ -572,17 +549,17 @@ export function BlobRadarView({
         }}>
           <button
             onClick={prev}
-            disabled={safeIdx <= 0}
+            disabled={isOverview}
             style={{
               width: 40, height: 40, borderRadius: "50%",
-              background: safeIdx <= 0 ? "#f5f5f5" : "#000",
-              border: "none", cursor: safeIdx <= 0 ? "default" : "pointer",
+              background: isOverview ? "#f5f5f5" : "#000",
+              border: "none", cursor: isOverview ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0,
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7L9 12" stroke={safeIdx <= 0 ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 2L4 7L9 12" stroke={isOverview ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
 
