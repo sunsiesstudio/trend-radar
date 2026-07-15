@@ -161,14 +161,17 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, view, onSetView }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef      = useRef<HTMLDivElement>(null);
+  const sheetRef          = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
   const [sheetOffset,  setSheetOffset]  = useState(0);
-  const touchStartY    = useRef<number>(0);
-  const isDragging     = useRef(false);
+  const touchStartY       = useRef<number>(0);
+  const isDragging        = useRef(false);
+  const sheetOffsetRef    = useRef(0);
+  const clearSelectionRef = useRef<() => void>(() => {});
 
   // Clear panel state when switching views
   useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); }, [view]);
@@ -222,6 +225,58 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
 
   function clearSelection() { setSelection(null); setActiveSignal(null); setSheetOffset(0); }
+  clearSelectionRef.current = clearSelection;
+
+  // Non-passive touchmove on the sheet so we can call preventDefault and prevent
+  // native scroll while dragging the sheet down to dismiss.
+  useEffect(() => {
+    const el = sheetRef.current;
+    if (!el) return;
+
+    const onStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+      isDragging.current = false;
+      sheetOffsetRef.current = 0;
+      setSheetOffset(0);
+    };
+
+    const onMove = (e: TouchEvent) => {
+      const dy = e.touches[0].clientY - touchStartY.current;
+      if (!isDragging.current) {
+        if (dy < 10) return;
+        // Only start sheet-drag when no scrollable ancestor inside the sheet is scrolled
+        let node = e.target as HTMLElement | null;
+        while (node && node !== el) {
+          if (node.scrollTop > 0) return;
+          node = node.parentElement;
+        }
+        isDragging.current = true;
+      }
+      e.preventDefault();
+      const offset = Math.max(0, dy);
+      sheetOffsetRef.current = offset;
+      setSheetOffset(offset);
+    };
+
+    const onEnd = () => {
+      isDragging.current = false;
+      if (sheetOffsetRef.current > 80) {
+        clearSelectionRef.current();
+      }
+      sheetOffsetRef.current = 0;
+      setSheetOffset(0);
+    };
+
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove",  onMove,  { passive: false });
+    el.addEventListener("touchend",   onEnd,   { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove",  onMove);
+      el.removeEventListener("touchend",   onEnd);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selection]);
 
   // ── Shared geometry ───────────────────────────────────────────────────────────
 
@@ -231,7 +286,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const portrait = h > w * 1.15;
 
   // Outer ring (domains)
-  const domR = Math.min(minDim < 600 ? 42 : 54, Math.max(28, minDim * 0.08));
+  const domR = Math.min(minDim < 600 ? 56 : 70, Math.max(34, minDim * 0.105));
   const PAD  = 14;
   const maxRx = w / 2 - domR - PAD;
   const maxRy = h / 2 - domR - PAD;
@@ -534,7 +589,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         <>
           <div onClick={clearSelection}
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }} />
-          <div style={{
+          <div ref={sheetRef} style={{
             position: "fixed", left: 0, right: 0, bottom: 0, background: "#fff",
             borderRadius: "20px 20px 0 0", height: "calc(100svh - 56px)",
             display: "flex", flexDirection: "column", overflow: "hidden",
@@ -542,26 +597,9 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             transform: `translateY(${Math.max(0, sheetOffset)}px)`,
             transition: isDragging.current ? "none" : "transform 0.25s ease",
           }}>
+            {/* Drag handle — visual only, touch handled on whole sheet */}
             <div
               onClick={clearSelection}
-              onTouchStart={e => {
-                touchStartY.current = e.touches[0].clientY;
-                isDragging.current = true;
-                setSheetOffset(0);
-              }}
-              onTouchMove={e => {
-                const dy = e.touches[0].clientY - touchStartY.current;
-                setSheetOffset(Math.max(0, dy));
-              }}
-              onTouchEnd={() => {
-                isDragging.current = false;
-                if (sheetOffset > 80) {
-                  clearSelection();
-                  setSheetOffset(0);
-                } else {
-                  setSheetOffset(0);
-                }
-              }}
               style={{ width: "100%", padding: "16px 0 8px", display: "flex", justifyContent: "center", cursor: "grab", flexShrink: 0 }}
             >
               <div style={{ width: 40, height: 4, borderRadius: 2, background: "#ddd" }} />
