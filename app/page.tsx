@@ -250,50 +250,62 @@ export default function HomePage() {
 
       {/* ── Header ────────────────────────────────────────────────────────────── */}
       <div style={{
-        flexShrink: 0, height: isDesktop ? 56 : 48, padding: "0 16px",
-        display: "flex", alignItems: "center",
-        background: "rgba(245,242,236,0.92)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(0,0,0,0.07)", zIndex: 10,
+        flexShrink: 0, height: isDesktop ? 60 : 52, padding: "0 20px",
+        display: "flex", alignItems: "center", gap: 14,
+        background: "rgba(245,242,236,0.96)", backdropFilter: "blur(18px)",
+        borderBottom: "1px solid rgba(0,0,0,0.06)", zIndex: 10,
       }}>
 
-        {/* Logo + tagline */}
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <span onClick={() => setView("radar")} style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", fontFamily: "inherit", cursor: "pointer" }}>Augmented Culture</span>
-          <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", display: isDesktop ? "inline" : "none" }}>
-            Culture × Technology
+        {/* Logo */}
+        <div onClick={() => setView("radar")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", gap: 1, flexShrink: 0 }}>
+          <span style={{ fontSize: isDesktop ? 18 : 16, fontWeight: 400, letterSpacing: "-0.02em", color: "#111", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1 }}>
+            Augmented Culture
           </span>
+          {isDesktop && (
+            <span style={{ fontSize: 8, color: "#bbb", letterSpacing: "0.18em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1 }}>
+              Culture × Technology
+            </span>
+          )}
         </div>
 
-        {/* View toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: 2, background: "#f5f5f5", borderRadius: 20, padding: 3, marginLeft: 16 }}>
-          {(["radar", "map"] as const).map(v => (
-            <button key={v} onClick={() => setView(v)} style={{
-              padding: "4px 14px", borderRadius: 16, border: "none", cursor: "pointer",
-              fontSize: 11, fontWeight: 600, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              background: view === v ? "#000" : "transparent",
-              color: view === v ? "#fff" : "#999",
-              transition: "all 0.15s",
-            }}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
-          ))}
+        {/* View toggle — centered */}
+        <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 1, background: "rgba(0,0,0,0.06)", borderRadius: 24, padding: 3 }}>
+            {(["Radar", "Map"] as const).map(v => {
+              const active = view === v.toLowerCase();
+              return (
+                <button key={v} onClick={() => setView(v.toLowerCase() as "radar" | "map")} style={{
+                  padding: "5px 18px", borderRadius: 20, border: "none", cursor: "pointer",
+                  fontSize: 11, fontWeight: active ? 700 : 500,
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  letterSpacing: "0.04em",
+                  background: active ? "#fff" : "transparent",
+                  color: active ? "#111" : "#999",
+                  boxShadow: active ? "0 1px 4px rgba(0,0,0,0.10)" : "none",
+                  transition: "all 0.18s",
+                }}>{v}</button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Right side */}
-        <div style={{ display: "flex", gap: 10, alignItems: "center", marginLeft: "auto", flexShrink: 0 }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
           {lastUpdated && isDesktop && (
-            <span style={{ fontSize: 11, color: "#aaa", fontWeight: 500, whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
               {(() => {
                 const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
-                if (mins < 1) return "Updated just now";
-                if (mins === 1) return "Updated 1 min ago";
-                return `Updated ${mins} min ago`;
+                if (mins < 1) return "just now";
+                if (mins === 1) return "1 min ago";
+                return `${mins} min ago`;
               })()}
             </span>
           )}
-          {/* Round + FAB */}
+          {/* + button */}
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setShowAddMenu(m => !m)}
-              style={{ width: 36, height: 36, borderRadius: "50%", background: "#000", color: "#fff", border: "none", fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, fontWeight: 300 }}
+              style={{ width: 34, height: 34, borderRadius: "50%", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", color: "#333", fontSize: 21, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, fontWeight: 300, transition: "all 0.15s" }}
             >+</button>
             {showAddMenu && (
               <>

@@ -463,6 +463,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const isSel = selection?.type === "need" && selection.need === need;
         const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
         const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+        const hasNoTrends = activeTopics.length > 0 && needTrends.length === 0;
         const fs = Math.min(10, Math.max(7, needR * 0.30));
         const fillColor = darkenColor(color, isSel ? 0.68 : 0.82);
         return (
@@ -485,7 +486,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               padding: 4,
               boxSizing: "border-box",
               cursor: "pointer",
-              opacity: dimmed ? 0.25 : 1,
+              opacity: dimmed ? 0.25 : hasNoTrends ? 0.22 : 1,
               boxShadow: isSel ? `0 6px 24px ${color}88` : `0 3px 14px ${color}44`,
               transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
@@ -503,6 +504,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const isSel = selection?.type === "domain" && selection.domain === domain;
         const dimmed = selection !== null && !isSel && !connDomains?.has(domain) && selection.type !== "trend";
         const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
+        const hasNoTrends = activeTopics.length > 0 && domainTrends.length === 0;
         const fs = Math.min(12, Math.max(9, domR * 0.27));
         const blobColor = isSel ? darkenColor(color, 0.82) : color;
         return (
@@ -525,7 +527,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               padding: 6,
               boxSizing: "border-box",
               cursor: "pointer",
-              opacity: dimmed ? 0.28 : 1,
+              opacity: dimmed ? 0.28 : hasNoTrends ? 0.22 : 1,
               boxShadow: isSel ? `0 8px 28px ${color}88` : `0 4px 20px ${color}55`,
               transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
