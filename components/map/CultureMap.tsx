@@ -413,7 +413,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const dimmed = selection !== null && !isSel && !connDomains?.has(domain) && selection.type !== "trend";
         const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
         const fs = Math.min(12, Math.max(9, domR * 0.27));
-        const blobColor = darkenColor(color, isSel ? 0.70 : 0.82);
+        const blobColor = isSel ? darkenColor(color, 0.82) : color;
         return (
           <div
             key={domain}
