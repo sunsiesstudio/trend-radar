@@ -67,6 +67,7 @@ export default function HomePage() {
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
   const [view, setView] = useState<"radar" | "map">("radar");
+  const [mounted, setMounted] = useState(false);
 
   const liveTopicsRef = useRef<string[]>([]);
   const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
@@ -97,6 +98,8 @@ export default function HomePage() {
     return () => { cancelled = true; clearInterval(interval); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicsKey]);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -370,18 +373,20 @@ export default function HomePage() {
       )}
 
       {/* ── Main canvas ───────────────────────────────────────────────────────── */}
-      <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-        <CultureMap
-          dynamicTrends={appliedDynamicTrends}
-          activeTopics={appliedTopics}
-          extraSignals={allExtraSignals}
-          topicAddedAt={topicAddedAt}
-          generatingTopic={generatingTopic}
-          onAddTopic={addTopic}
-          onRemoveTopic={removeTopic}
-          view={view}
-          onSetView={setView}
-        />
+      <div style={{ flex: 1, minHeight: 0, position: "relative", background: "#fff" }}>
+        {mounted && (
+          <CultureMap
+            dynamicTrends={appliedDynamicTrends}
+            activeTopics={appliedTopics}
+            extraSignals={allExtraSignals}
+            topicAddedAt={topicAddedAt}
+            generatingTopic={generatingTopic}
+            onAddTopic={addTopic}
+            onRemoveTopic={removeTopic}
+            view={view}
+            onSetView={setView}
+          />
+        )}
       </div>
 
       {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}
