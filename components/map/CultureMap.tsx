@@ -523,7 +523,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }} />
           <div style={{
             position: "fixed", left: 0, right: 0, bottom: 0, background: "#fff",
-            borderRadius: "20px 20px 0 0", height: "72svh",
+            borderRadius: "20px 20px 0 0", height: "calc(100svh - 56px)",
             display: "flex", flexDirection: "column", overflow: "hidden",
             zIndex: 201, boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
             transform: `translateY(${Math.max(0, sheetOffset)}px)`,
