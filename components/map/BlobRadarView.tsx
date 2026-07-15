@@ -259,24 +259,27 @@ function FocusController({ trendId, signalIds, idx, trendsKey }: {
   trendsKey: string;
 }) {
   const { fitView } = useReactFlow();
-  const prevKey  = useRef("");
-  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const prevKey       = useRef("");
+  const prevTrendsKey = useRef("");
+  const timerRef      = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
     const key = idx < 0 ? `__overview__:${trendsKey}` : `${trendId ?? "?"}:${idx}`;
     if (key === prevKey.current) return;
-    const isFirst = prevKey.current === "";
-    prevKey.current = key;
-    // Cancel any pending fit so a rapid idx change (e.g. overview → trend 0 on load)
-    // doesn't flash the overview zoom before landing on the trend.
+    const isFirst      = prevKey.current === "";
+    const trendsChanged = trendsKey !== prevTrendsKey.current;
+    prevKey.current       = key;
+    prevTrendsKey.current = trendsKey;
+    // Instant when topic loads (isFirst or trendsChanged); animated only for arrow navigation
+    const instant = isFirst || trendsChanged;
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       if (idx < 0) {
-        fitView({ duration: isFirst ? 0 : 600, padding: 0.42 });
+        fitView({ duration: instant ? 0 : 600, padding: 0.42 });
       } else if (trendId) {
         const fitNodes = [{ id: trendId }, ...signalIds.map(id => ({ id }))];
-        fitView({ nodes: fitNodes, duration: 420, padding: 0.22 });
+        fitView({ nodes: fitNodes, duration: instant ? 0 : 420, padding: 0.22 });
       }
-    }, isFirst ? 350 : 400);
+    }, instant ? 80 : 400);
   }, [trendId, signalIds, idx, trendsKey, fitView]);
   return null;
 }
