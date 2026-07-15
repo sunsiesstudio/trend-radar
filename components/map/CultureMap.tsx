@@ -518,18 +518,14 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             {activeSignal ? (() => {
               const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
               return (
-                <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-                  <SignalPopup signal={activeSignal}
-                    trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
-                    allSignals={allSignals} onClose={() => setActiveSignal(null)}
-                    onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
-                  />
-                </div>
+                <SignalPopup signal={activeSignal}
+                  trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
+                  allSignals={allSignals} onClose={() => setActiveSignal(null)}
+                  onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+                />
               );
             })() : selection?.type === "trend" ? (
-              <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-                <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar" />
-              </div>
+              <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar" />
             ) : listContent}
           </div>
         </>
