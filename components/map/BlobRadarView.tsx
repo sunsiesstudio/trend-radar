@@ -259,13 +259,17 @@ function FocusController({ trendId, signalIds, idx, trendsKey }: {
   trendsKey: string;
 }) {
   const { fitView } = useReactFlow();
-  const prevKey = useRef("");
+  const prevKey  = useRef("");
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => {
     const key = idx < 0 ? `__overview__:${trendsKey}` : `${trendId ?? "?"}:${idx}`;
     if (key === prevKey.current) return;
     const isFirst = prevKey.current === "";
     prevKey.current = key;
-    setTimeout(() => {
+    // Cancel any pending fit so a rapid idx change (e.g. overview → trend 0 on load)
+    // doesn't flash the overview zoom before landing on the trend.
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
       if (idx < 0) {
         fitView({ duration: isFirst ? 0 : 600, padding: 0.42 });
       } else if (trendId) {
@@ -312,8 +316,8 @@ export function BlobRadarView({
   // A stable string that changes whenever the trend set changes — used by FocusController
   const trendsKey = useMemo(() => sorted.map(t => t.id).join(","), [sorted]);
 
-  // Reset to overview when topic set changes
-  useEffect(() => { setFocusIdx(-1); }, [trends]);
+  // Focus first trend when topic loads; back to overview when cleared
+  useEffect(() => { setFocusIdx(trends.length > 0 ? 0 : -1); }, [trends]);
 
   const allSignals = useMemo(() => {
     const extra = signals ?? [];
