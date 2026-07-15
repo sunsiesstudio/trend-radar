@@ -113,7 +113,6 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
       style={{
         width: data.w, height: data.h,
         background: `${data.color}${data.fillAlpha}`,
-        border: `1.5px solid ${data.color}${data.borderAlpha}`,
         borderRadius: blobFromId(data.id),
         padding: "8px",
         display: "flex", alignItems: "center", justifyContent: "center",
