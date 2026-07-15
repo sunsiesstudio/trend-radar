@@ -8,7 +8,6 @@ import { Trend, Signal } from "@/types";
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 import { AddTrendModal } from "@/components/map/AddTrendModal";
 import { CultureMap } from "@/components/map/CultureMap";
-import { HomeView } from "@/components/HomeView";
 
 function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
@@ -64,8 +63,7 @@ export default function HomePage() {
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [showHome, setShowHome] = useState(true);
-  const [initialMapView, setInitialMapView] = useState<"map" | "radar">("map");
+  const [view, setView] = useState<"map" | "radar">("radar");
 
   const liveTopicsRef = useRef<string[]>([]);
   const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
@@ -262,13 +260,23 @@ export default function HomePage() {
 
         {/* Logo + tagline */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <button
-            onClick={() => { setShowHome(true); setActiveTopics([]); setAppliedTopics([]); setDynamicTrends([]); setAppliedDynamicTrends([]); setGeneratedSignals([]); setGenerationError(null); }}
-            style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0, fontFamily: "inherit" }}
-          >Augmented Culture</button>
+          <span style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", fontFamily: "inherit" }}>Augmented Culture</span>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", display: isDesktop ? "inline" : "none" }}>
             Culture × Technology
           </span>
+        </div>
+
+        {/* View toggle */}
+        <div style={{ display: "flex", alignItems: "center", gap: 2, background: "#f5f5f5", borderRadius: 20, padding: 3, marginLeft: 16 }}>
+          {(["radar", "map"] as const).map(v => (
+            <button key={v} onClick={() => setView(v)} style={{
+              padding: "4px 14px", borderRadius: 16, border: "none", cursor: "pointer",
+              fontSize: 11, fontWeight: 600, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              background: view === v ? "#000" : "transparent",
+              color: view === v ? "#fff" : "#999",
+              transition: "all 0.15s",
+            }}>{v.charAt(0).toUpperCase() + v.slice(1)}</button>
+          ))}
         </div>
 
         {/* Right side */}
@@ -315,7 +323,7 @@ export default function HomePage() {
       </div>
 
       {/* ── Filter chip sub-bar (when a topic is active) ─────────────────────── */}
-      {!showHome && appliedTopics.length > 0 && (
+      {appliedTopics.length > 0 && (
         <div style={{
           flexShrink: 0, padding: "6px 16px",
           background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.05)",
@@ -354,28 +362,17 @@ export default function HomePage() {
 
       {/* ── Main canvas ───────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-        {showHome ? (
-          <HomeView
-            onExploreMap={() => { setShowHome(false); setInitialMapView("map"); }}
-            onOpenRadar={async (topic) => {
-              setShowHome(false);
-              setInitialMapView("radar");
-              if (topic) await addTopic(topic);
-            }}
-          />
-        ) : (
-          <CultureMap
-            key={initialMapView}
-            dynamicTrends={appliedDynamicTrends}
-            activeTopics={appliedTopics}
-            extraSignals={allExtraSignals}
-            topicAddedAt={topicAddedAt}
-            generatingTopic={generatingTopic}
-            onAddTopic={addTopic}
-            onRemoveTopic={removeTopic}
-            initialView={initialMapView}
-          />
-        )}
+        <CultureMap
+          dynamicTrends={appliedDynamicTrends}
+          activeTopics={appliedTopics}
+          extraSignals={allExtraSignals}
+          topicAddedAt={topicAddedAt}
+          generatingTopic={generatingTopic}
+          onAddTopic={addTopic}
+          onRemoveTopic={removeTopic}
+          view={view}
+          onSetView={setView}
+        />
       </div>
 
       {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}
