@@ -534,3 +534,5 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
     </div>
   );
 }
+
+export default CultureMap;

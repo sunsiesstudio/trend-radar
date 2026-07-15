@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import dynamic from "next/dynamic";
 
 import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
 import { AddTrendModal } from "@/components/map/AddTrendModal";
-import { CultureMap } from "@/components/map/CultureMap";
+
+// CultureMap uses ReactFlow which requires browser APIs — skip SSR entirely
+const CultureMap = dynamic(() => import("@/components/map/CultureMap"), { ssr: false });
 
 function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
