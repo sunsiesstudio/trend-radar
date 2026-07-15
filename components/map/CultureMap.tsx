@@ -17,15 +17,15 @@ const CULTURAL_DOMAINS = [
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  Body:      "#FF8BB4",
-  Home:      "#FFB04A",
-  Work:      "#8C93C7",
-  Play:      "#FFD65C",
-  Style:     "#C4A0CE",
-  Food:      "#FD8326",
-  Community: "#78C9A8",
-  Mind:      "#B6D693",
-  Nature:    "#53A373",
+  Body:      "#FFC0C0",  // Peony Bundle
+  Home:      "#F4D242",  // Pure Sun
+  Work:      "#80B0E8",  // Airplane View
+  Play:      "#D6D35F",  // Limeade
+  Style:     "#C45F3F",  // Tomato Jam
+  Food:      "#D1CAEA",  // Autumn Lavender
+  Community: "#008471",  // Tropical Rain
+  Mind:      "#D1CAEA",  // Autumn Lavender
+  Nature:    "#898E46",  // Monet Ponds
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
@@ -56,12 +56,12 @@ const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity",
 type Need = typeof NEEDS[number];
 
 const NEED_COLORS: Record<Need, string> = {
-  Control:      "#FD8326",
-  Connection:   "#FF8BB4",
-  Escape:       "#8C93C7",
-  Recognition:  "#FFD65C",
-  Authenticity: "#78C9A8",
-  Resilience:   "#B6D693",
+  Control:      "#C45F3F",  // Tomato Jam
+  Connection:   "#FFC0C0",  // Peony Bundle
+  Escape:       "#80B0E8",  // Airplane View
+  Recognition:  "#F4D242",  // Pure Sun
+  Authenticity: "#D6D35F",  // Limeade
+  Resilience:   "#898E46",  // Monet Ponds
 };
 
 const TENSION_VIBES: Record<Need, string> = {
@@ -168,13 +168,27 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
   const [isMobile,     setIsMobile]     = useState(false);
   const [sheetOffset,  setSheetOffset]  = useState(0);
+  const [mapScale,     setMapScale]     = useState(1);
   const touchStartY       = useRef<number>(0);
   const isDragging        = useRef(false);
   const sheetOffsetRef    = useRef(0);
   const clearSelectionRef = useRef<() => void>(() => {});
+  const pinchRef          = useRef<{ dist: number; scale: number } | null>(null);
 
-  // Clear panel state when switching views
-  useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); }, [view]);
+  // Clear panel state and reset zoom when switching views
+  useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); }, [view]);
+
+  // Wheel zoom on map
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || view !== "map") return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      setMapScale(s => Math.min(3, Math.max(0.35, s * (e.deltaY < 0 ? 1.1 : 0.91))));
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [view]);
 
   const allSignals = useMemo(() => {
     const base = [...SIGNALS, ...EXTENDED_SIGNALS];
@@ -400,8 +414,30 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   // ── Map view (spatial, on-demand connections) ─────────────────────────────────
 
+  const onPinchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[1].clientX - e.touches[0].clientX;
+      const dy = e.touches[1].clientY - e.touches[0].clientY;
+      pinchRef.current = { dist: Math.hypot(dx, dy), scale: mapScale };
+    }
+  };
+  const onPinchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      const dx = e.touches[1].clientX - e.touches[0].clientX;
+      const dy = e.touches[1].clientY - e.touches[0].clientY;
+      const dist = Math.hypot(dx, dy);
+      setMapScale(Math.min(3, Math.max(0.35, pinchRef.current.scale * (dist / pinchRef.current.dist))));
+    }
+  };
+  const onPinchEnd = () => { pinchRef.current = null; };
+
   const svgMap = (
-    <>
+    <div
+      onTouchStart={onPinchStart}
+      onTouchMove={onPinchMove}
+      onTouchEnd={onPinchEnd}
+      style={{ position: "absolute", inset: 0, transform: `scale(${mapScale})`, transformOrigin: "50% 50%" }}
+    >
       {/* SVG — connection lines only; pointer-events off so HTML blobs receive clicks */}
       <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block", pointerEvents: "none" }}>
         {/* Connection lines — revealed on selection only */}
@@ -428,7 +464,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
         const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
         const fs = Math.min(10, Math.max(7, needR * 0.30));
-        const borderColor = darkenColor(color, isSel ? 0.60 : 0.75);
+        const fillColor = darkenColor(color, isSel ? 0.68 : 0.82);
         return (
           <div
             key={need}
@@ -440,8 +476,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               width: needR * 2,
               height: needR * 2,
               borderRadius: blobFromId(need),
-              background: isSel ? `${color}18` : "transparent",
-              border: `2px solid ${borderColor}`,
+              background: fillColor,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -451,25 +486,25 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               boxSizing: "border-box",
               cursor: "pointer",
               opacity: dimmed ? 0.25 : 1,
-              boxShadow: isSel ? `0 0 0 3px ${color}55` : "none",
-              transition: "opacity 0.2s, box-shadow 0.15s, background 0.15s",
+              boxShadow: isSel ? `0 0 0 3px ${color}, 0 4px 18px ${color}66` : `0 3px 14px ${color}44`,
+              transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
             } as React.CSSProperties}
           >
-            <div style={{ fontSize: fs, fontWeight: 800, color: borderColor, lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
-            <div style={{ fontSize: Math.max(6, fs * 0.78), color: `${borderColor}99`, fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} trends</div>
+            <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
+            <div style={{ fontSize: Math.max(6, fs * 0.78), color: "rgba(255,255,255,0.7)", fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} trends</div>
           </div>
         );
       })}
 
-      {/* Domain blobs — outer ring */}
+      {/* Domain blobs — outer ring, stroke-only */}
       {domainNodes.map(({ domain, x, y }) => {
         const color = DOMAIN_COLORS[domain];
         const isSel = selection?.type === "domain" && selection.domain === domain;
         const dimmed = selection !== null && !isSel && !connDomains?.has(domain) && selection.type !== "trend";
         const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
         const fs = Math.min(12, Math.max(9, domR * 0.27));
-        const blobColor = isSel ? darkenColor(color, 0.82) : color;
+        const strokeColor = darkenColor(color, isSel ? 0.62 : 0.72);
         return (
           <div
             key={domain}
@@ -481,7 +516,8 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               width: domR * 2,
               height: domR * 2,
               borderRadius: blobFromId(domain),
-              background: blobColor,
+              background: isSel ? `${color}22` : "transparent",
+              border: `2.5px solid ${strokeColor}`,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -491,17 +527,17 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               boxSizing: "border-box",
               cursor: "pointer",
               opacity: dimmed ? 0.28 : 1,
-              boxShadow: isSel ? `0 0 0 3px ${color}, 0 6px 24px ${color}66` : `0 4px 20px ${color}55`,
+              boxShadow: isSel ? `0 0 0 3px ${color}66, 0 6px 24px ${color}44` : "none",
               transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
             } as React.CSSProperties}
           >
-            <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
-            <div style={{ fontSize: Math.max(7, fs * 0.78), color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{domainTrends.length} trends</div>
+            <div style={{ fontSize: fs, fontWeight: 800, color: strokeColor, lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
+            <div style={{ fontSize: Math.max(7, fs * 0.78), color: strokeColor + "aa", fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{domainTrends.length} trends</div>
           </div>
         );
       })}
-    </>
+    </div>
   );
 
   // ── Radar view (blob canvas) ──────────────────────────────────────────────────

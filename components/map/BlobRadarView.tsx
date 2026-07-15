@@ -260,7 +260,7 @@ function FocusController({ trendId, signalIds, idx, trendsKey }: {
 }) {
   const { fitView } = useReactFlow();
   const prevKey  = useRef("");
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
     const key = idx < 0 ? `__overview__:${trendsKey}` : `${trendId ?? "?"}:${idx}`;
     if (key === prevKey.current) return;

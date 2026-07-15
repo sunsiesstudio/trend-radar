@@ -6,10 +6,7 @@ export const maxDuration = 120;
 const client = new Anthropic();
 
 const PALETTE = [
-  "#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C",
-  "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C",
-  "#80B0E8", "#FFC0C0", "#008471", "#D1CAEA", "#D6D35F",
-  "#C45F3F", "#F4D242", "#898E46",
+  "#80B0E8", "#FFC0C0", "#008471", "#D1CAEA", "#D6D35F", "#C45F3F", "#F4D242", "#898E46",
 ];
 const GRID_COLS = 3;
 const GRID_SPACING = 760;
