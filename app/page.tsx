@@ -22,8 +22,9 @@ function computeTrendPosition(idx: number): { x: number; y: number } {
 }
 
 const BOARD_PALETTE = [
-  "#FF8BB4", "#FD8326", "#8C93C7", "#B6D693", "#FFD65C",
-  "#53A373", "#78C9A8", "#C4A0CE", "#FFB04A", "#A7D47C",
+  "#FF8BB4", "#FD8326", "#80B0E8", "#B6D693", "#FFD65C",
+  "#008471", "#78C9A8", "#D1CAEA", "#FFB04A", "#A7D47C",
+  "#C45F3F", "#FFC0C0", "#8C93C7", "#F4D242", "#D6D35F", "#898E46",
 ];
 
 function assignUniqueColors(trends: Trend[]): Trend[] {

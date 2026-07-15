@@ -17,15 +17,15 @@ const CULTURAL_DOMAINS = [
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  Body:      "#FF8BB4",
-  Home:      "#FFB04A",
-  Work:      "#8C93C7",
-  Play:      "#FFD65C",
-  Style:     "#C4A0CE",
-  Food:      "#FD8326",
-  Community: "#78C9A8",
-  Mind:      "#B6D693",
-  Nature:    "#53A373",
+  Body:      "#FF8BB4",  // bright pink
+  Home:      "#FFB04A",  // warm orange
+  Work:      "#80B0E8",  // airplane view
+  Play:      "#FFD65C",  // sunny yellow
+  Style:     "#D1CAEA",  // autumn lavender
+  Food:      "#FD8326",  // vivid orange
+  Community: "#008471",  // tropical rain
+  Mind:      "#B6D693",  // light green
+  Nature:    "#D6D35F",  // limeade
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
@@ -55,13 +55,14 @@ function getDomain(topic: string): CulturalDomain {
 const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity", "Resilience"] as const;
 type Need = typeof NEEDS[number];
 
+// Needs use colors not present in DOMAIN_COLORS so nothing repeats on screen
 const NEED_COLORS: Record<Need, string> = {
-  Control:      "#FD8326",
-  Connection:   "#FF8BB4",
-  Escape:       "#8C93C7",
-  Recognition:  "#FFD65C",
-  Authenticity: "#78C9A8",
-  Resilience:   "#53A373",
+  Control:      "#C45F3F",  // tomato jam
+  Connection:   "#FFC0C0",  // peony bundle
+  Escape:       "#8C93C7",  // periwinkle
+  Recognition:  "#F4D242",  // pure sun
+  Authenticity: "#78C9A8",  // mint teal
+  Resilience:   "#898E46",  // monet ponds
 };
 
 const TENSION_VIBES: Record<Need, string> = {
