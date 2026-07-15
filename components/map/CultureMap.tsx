@@ -347,54 +347,66 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const svgMap = (
     <>
-      {/* SVG — lines + tension pills only; pointer-events off at root so domain blobs receive clicks */}
+      {/* SVG — connection lines only; pointer-events off so HTML blobs receive clicks */}
       <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block", pointerEvents: "none" }}>
-        <defs>
-          <filter id="shad" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="2" stdDeviation="5" floodColor="#000" floodOpacity="0.09" />
-          </filter>
-        </defs>
-
         {/* Connection lines — revealed on selection only */}
         {selDomain && connNeeds && needNodes.map(({ need, x: nx, y: ny }) => {
           if (!connNeeds.has(need)) return null;
           const dn = domainNodes.find(n => n.domain === selDomain)!;
-          const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nx, ny, domR, pillH * 0.6);
+          const { sx, sy, ex, ey } = edgePts(dn.x, dn.y, nx, ny, domR, needR);
           return <line key={need} x1={sx} y1={sy} x2={ex} y2={ey}
             stroke={DOMAIN_COLORS[selDomain]} strokeWidth={1.5} opacity={0.5} strokeLinecap="round" />;
         })}
         {selNeed && connDomains && domainNodes.map(({ domain, x: dx, y: dy }) => {
           if (!connDomains.has(domain)) return null;
           const nn = needNodes.find(n => n.need === selNeed)!;
-          const { sx, sy, ex, ey } = edgePts(dx, dy, nn.x, nn.y, domR, pillH * 0.6);
+          const { sx, sy, ex, ey } = edgePts(dx, dy, nn.x, nn.y, domR, needR);
           return <line key={domain} x1={sx} y1={sy} x2={ex} y2={ey}
             stroke={DOMAIN_COLORS[domain]} strokeWidth={1.5} opacity={0.5} strokeLinecap="round" />;
         })}
-
-        {/* Tension pills — explicit pointer events so they receive clicks through the SVG */}
-        {needNodes.map(({ need, x, y }) => {
-          const color = NEED_COLORS[need];
-          const isSel = selection?.type === "need" && selection.need === need;
-          const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
-          const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
-          const fs = Math.min(11, Math.max(8, pillW * 0.12));
-          return (
-            <g key={need} style={{ cursor: "pointer", pointerEvents: "auto" }} opacity={dimmed ? 0.28 : 1}
-              onClick={() => setSelection(isSel ? null : { type: "need", need, trends: needTrends })}>
-              <rect x={x - pillW / 2} y={y - pillH / 2} width={pillW} height={pillH} rx={pillH / 2}
-                fill={isSel ? `${color}18` : "#fff"} stroke={color} strokeWidth={isSel ? 2.2 : 1.5} filter="url(#shad)" />
-              <text x={x} y={y - 4} textAnchor="middle" dominantBaseline="middle"
-                fontSize={fs} fontWeight={700} fill={isSel ? color : "#333"} fontFamily="'DM Sans', sans-serif">{need}</text>
-              <text x={x} y={y + fs + 2} textAnchor="middle" dominantBaseline="middle"
-                fontSize={Math.max(6, fs * 0.78)} fill={isSel ? color : "#aaa"} fontFamily="'DM Sans', sans-serif">
-                {needTrends.length} trends
-              </text>
-            </g>
-          );
-        })}
       </svg>
 
-      {/* Domain blobs — HTML divs with organic border-radius */}
+      {/* Need blobs — inner ring */}
+      {needNodes.map(({ need, x, y }) => {
+        const color = NEED_COLORS[need];
+        const isSel = selection?.type === "need" && selection.need === need;
+        const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
+        const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
+        const fs = Math.min(10, Math.max(7, needR * 0.30));
+        const blobColor = darkenColor(color, isSel ? 0.68 : 0.80);
+        return (
+          <div
+            key={need}
+            onClick={() => setSelection(isSel ? null : { type: "need", need, trends: needTrends })}
+            style={{
+              position: "absolute",
+              left: x - needR,
+              top: y - needR,
+              width: needR * 2,
+              height: needR * 2,
+              borderRadius: blobFromId(need),
+              background: blobColor,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              padding: 4,
+              boxSizing: "border-box",
+              cursor: "pointer",
+              opacity: dimmed ? 0.28 : 1,
+              boxShadow: isSel ? `0 0 0 3px ${color}, 0 4px 18px ${color}66` : `0 3px 14px ${color}44`,
+              transition: "opacity 0.2s, box-shadow 0.15s",
+              userSelect: "none",
+            } as React.CSSProperties}
+          >
+            <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
+            <div style={{ fontSize: Math.max(6, fs * 0.78), color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} trends</div>
+          </div>
+        );
+      })}
+
+      {/* Domain blobs — outer ring */}
       {domainNodes.map(({ domain, x, y }) => {
         const color = DOMAIN_COLORS[domain];
         const isSel = selection?.type === "domain" && selection.domain === domain;
