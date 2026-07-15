@@ -362,16 +362,12 @@ export function BlobRadarView({
     return allSignals.filter(s => s.trendId === focusTrend.id).map(s => s.id);
   }, [focusTrend, allSignals]);
 
-  // From overview: pressing either arrow zooms to first trend
+  // Arrows navigate radar focus only — tap a blob to open detail
   const prev = () => {
-    const newIdx = focusIdx < 0 ? 0 : Math.max(0, focusIdx - 1);
-    setFocusIdx(newIdx);
-    if (sorted[newIdx]) onSelectTrendRef.current?.(sorted[newIdx]);
+    setFocusIdx(i => i < 0 ? 0 : Math.max(0, i - 1));
   };
   const next = () => {
-    const newIdx = focusIdx < 0 ? 0 : Math.min(sorted.length - 1, focusIdx + 1);
-    setFocusIdx(newIdx);
-    if (sorted[newIdx]) onSelectTrendRef.current?.(sorted[newIdx]);
+    setFocusIdx(i => i < 0 ? 0 : Math.min(sorted.length - 1, i + 1));
   };
 
   // ── Search helpers ────────────────────────────────────────────────────────────
