@@ -54,14 +54,8 @@ export default function HomePage() {
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
-  const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
-    if (typeof window === "undefined") return {};
-    try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
-  });
-  const [activeTopics,     setActiveTopics]     = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem("ar_activeTopics") ?? "[]"); } catch { return []; }
-  });
+  const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>({});
+  const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
   const [generatingTopic,  setGeneratingTopic]  = useState<string | null>(null);
@@ -188,15 +182,26 @@ export default function HomePage() {
   // If their trends are stale (> 24 h), silently regenerate with Claude in the background.
   useEffect(() => {
     setMounted(true);
-    if (activeTopics.length === 0) return;
+
+    // Restore topicAddedAt (safe to read localStorage here — client-only)
+    try {
+      const storedAddedAt = JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}");
+      if (Object.keys(storedAddedAt).length > 0) setTopicAddedAt(storedAddedAt);
+    } catch { /* ignore */ }
+
+    // Read last session's topics directly from storage (activeTopics is [] at this point)
+    let topics: string[] = [];
+    try { topics = JSON.parse(localStorage.getItem("ar_activeTopics") ?? "[]"); } catch { }
+    if (topics.length > 0) setActiveTopics(topics);
+    if (topics.length === 0) return;
 
     const timestamps: Record<string, number> = (() => {
       try { return JSON.parse(localStorage.getItem("ar_trendGeneratedAt") ?? "{}"); } catch { return {}; }
     })();
     const now = Date.now();
 
-    if (activeTopics.length === 1) {
-      const topic = activeTopics[0];
+    if (topics.length === 1) {
+      const topic = topics[0];
       const isStale = now - (timestamps[topic] ?? 0) > TREND_TTL_MS;
       const libraryTrends = [...(TOPIC_LIBRARY[topic] ?? [])]
         .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
@@ -216,8 +221,8 @@ export default function HomePage() {
       }
     } else {
       // Multi-topic: re-run intersection generation
-      setAppliedTopics(activeTopics);
-      runGeneration(activeTopics[0], activeTopics, [], activeTopics);
+      setAppliedTopics(topics);
+      runGeneration(topics[0], topics, [], topics);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
