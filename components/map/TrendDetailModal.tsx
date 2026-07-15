@@ -561,8 +561,10 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                       const sigYear = s.date ? new Date(s.date).getFullYear() : null;
                       const dateFmt = s.date ? new Date(s.date).toLocaleDateString("en-US", { month: "short", day: "numeric", ...(sigYear !== now ? { year: "2-digit" } : {}) }) : "";
                       const corroborated = cluster.length > 1;
+                      const ageDays = s.date ? (Date.now() - new Date(s.date).getTime()) / 86_400_000 : 30;
+                      const cardOpacity = Math.max(0.38, 1 - (Math.min(ageDays, 180) / 180) * 0.62);
                       return (
-                        <div key={ci}>
+                        <div key={ci} style={{ opacity: cardOpacity }}>
                           {corroborated && (
                             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, paddingLeft: 2 }}>
                               <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 20, padding: "2px 8px", letterSpacing: "0.06em" }}>
