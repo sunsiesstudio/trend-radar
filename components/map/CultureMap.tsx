@@ -17,15 +17,15 @@ const CULTURAL_DOMAINS = [
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  Body:      "#FFC0C0",  // Peony Bundle
-  Home:      "#F4D242",  // Pure Sun
-  Work:      "#80B0E8",  // Airplane View
-  Play:      "#D6D35F",  // Limeade
-  Style:     "#C45F3F",  // Tomato Jam
-  Food:      "#D1CAEA",  // Autumn Lavender
-  Community: "#008471",  // Tropical Rain
-  Mind:      "#D1CAEA",  // Autumn Lavender
-  Nature:    "#898E46",  // Monet Ponds
+  Body:      "#FF8BB4",
+  Home:      "#FFB04A",
+  Work:      "#8C93C7",
+  Play:      "#FFD65C",
+  Style:     "#C4A0CE",
+  Food:      "#FD8326",
+  Community: "#78C9A8",
+  Mind:      "#B6D693",
+  Nature:    "#53A373",
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
@@ -56,12 +56,12 @@ const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity",
 type Need = typeof NEEDS[number];
 
 const NEED_COLORS: Record<Need, string> = {
-  Control:      "#C45F3F",  // Tomato Jam
-  Connection:   "#FFC0C0",  // Peony Bundle
-  Escape:       "#80B0E8",  // Airplane View
-  Recognition:  "#F4D242",  // Pure Sun
-  Authenticity: "#D6D35F",  // Limeade
-  Resilience:   "#898E46",  // Monet Ponds
+  Control:      "#FD8326",
+  Connection:   "#FF8BB4",
+  Escape:       "#8C93C7",
+  Recognition:  "#FFD65C",
+  Authenticity: "#78C9A8",
+  Resilience:   "#53A373",
 };
 
 const TENSION_VIBES: Record<Need, string> = {
@@ -312,7 +312,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const INNER_RATIO = 0.43;
   const innerRx = outerRx * INNER_RATIO;
   const innerRy = outerRy * INNER_RATIO;
-  const needR   = Math.min(44, Math.max(26, Math.min(innerRx, innerRy) * 0.72));
+  const needR   = Math.min(34, Math.max(20, Math.min(innerRx, innerRy) * 0.52));
   // Pill width for map view
   const pillW = needR * 2.4;
   const pillH = needR * 1.1;
@@ -486,7 +486,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               boxSizing: "border-box",
               cursor: "pointer",
               opacity: dimmed ? 0.25 : 1,
-              boxShadow: isSel ? `0 0 0 3px ${color}, 0 4px 18px ${color}66` : `0 3px 14px ${color}44`,
+              boxShadow: isSel ? `0 6px 24px ${color}88` : `0 3px 14px ${color}44`,
               transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
             } as React.CSSProperties}
@@ -526,7 +526,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               boxSizing: "border-box",
               cursor: "pointer",
               opacity: dimmed ? 0.28 : 1,
-              boxShadow: isSel ? `0 0 0 3px ${color}, 0 6px 24px ${color}66` : `0 4px 20px ${color}55`,
+              boxShadow: isSel ? `0 8px 28px ${color}88` : `0 4px 20px ${color}55`,
               transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
             } as React.CSSProperties}
