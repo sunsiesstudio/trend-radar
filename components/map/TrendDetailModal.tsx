@@ -393,7 +393,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
         {mode === "sidebar" ? (
           /* Sidebar header — white background */
-          <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
+          <div style={{ padding: "12px 20px 10px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
               <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trend.color}18`, padding: "3px 10px", borderRadius: 20 }}>Trend</span>
               <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>

@@ -358,8 +358,16 @@ export function BlobRadarView({
   }, [focusTrend, allSignals]);
 
   // From overview: pressing either arrow zooms to first trend
-  const prev = () => setFocusIdx(i => i < 0 ? 0 : Math.max(0, i - 1));
-  const next = () => setFocusIdx(i => i < 0 ? 0 : Math.min(sorted.length - 1, i + 1));
+  const prev = () => {
+    const newIdx = focusIdx < 0 ? 0 : Math.max(0, focusIdx - 1);
+    setFocusIdx(newIdx);
+    if (sorted[newIdx]) onSelectTrendRef.current?.(sorted[newIdx]);
+  };
+  const next = () => {
+    const newIdx = focusIdx < 0 ? 0 : Math.min(sorted.length - 1, focusIdx + 1);
+    setFocusIdx(newIdx);
+    if (sorted[newIdx]) onSelectTrendRef.current?.(sorted[newIdx]);
+  };
 
   // ── Search helpers ────────────────────────────────────────────────────────────
 
@@ -403,12 +411,9 @@ export function BlobRadarView({
               <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
                 What&apos;s on your radar?
               </div>
-              <div style={{ fontSize: 13, color: "#bbb", marginTop: 4, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                Search a culture topic to start
-              </div>
 
               {/* Search input */}
-              <div style={{ position: "relative", marginTop: 22 }}>
+              <div style={{ position: "relative", marginTop: 18 }}>
 
                 {/* Suggestions dropdown — opens downward */}
                 {showSuggestions && topicSuggestions.length > 0 && (
@@ -450,7 +455,7 @@ export function BlobRadarView({
                     }}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="fashion, gaming, wellness…"
+                    placeholder="Search a culture topic to start"
                     style={{
                       flex: 1, background: "none", border: "none", outline: "none",
                       fontSize: 14, fontWeight: 500, color: "#333",

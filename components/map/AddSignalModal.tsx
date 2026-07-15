@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Signal, Trend } from "@/types";
 import { TRENDS } from "@/lib/trends";
+import { EXTENDED_TRENDS } from "@/lib/extended-trends";
 
 interface Props {
   onAdd: (signal: Signal) => void;
@@ -12,7 +13,9 @@ interface Props {
 }
 
 export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedTrends }: Props) {
-  const trendList = (passedTrends && passedTrends.length > 0) ? passedTrends : TRENDS;
+  const base = passedTrends ?? [];
+  const extra = EXTENDED_TRENDS.filter(t => !base.some(b => b.id === t.id));
+  const trendList = [...base, ...extra].length > 0 ? [...base, ...extra] : TRENDS;
   const [trendId, setTrendId]       = useState(defaultTrendId ?? trendList[0].id);
   const [title, setTitle]           = useState("");
   const [summary, setSummary]       = useState("");
@@ -62,7 +65,8 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
     WebkitAppearance: "none",
     boxSizing: "border-box",
     minHeight: 48,
-  };
+    colorScheme: "light",
+  } as React.CSSProperties;
 
   return (
     <div
