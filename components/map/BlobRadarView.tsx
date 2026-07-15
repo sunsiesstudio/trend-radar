@@ -51,6 +51,29 @@ function blobFromId(id: string): string {
 
 const CIRCLE_D = 164;
 
+// ── Tap hook (works on iOS Safari + Android Chrome inside ReactFlow) ──────────
+
+function useTapHandlers(onTap: (() => void) | undefined) {
+  const start = useRef<{ x: number; y: number } | null>(null);
+  return {
+    onTouchStart: (e: React.TouchEvent) => {
+      e.stopPropagation();
+      start.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      e.stopPropagation();
+      if (!start.current || !onTap) return;
+      const moved = Math.hypot(
+        e.changedTouches[0].clientX - start.current.x,
+        e.changedTouches[0].clientY - start.current.y,
+      );
+      start.current = null;
+      if (moved < 8) { e.preventDefault(); onTap(); }
+    },
+    onClick: (e: React.MouseEvent) => { e.stopPropagation(); onTap?.(); },
+  };
+}
+
 // ── Node components ───────────────────────────────────────────────────────────
 
 type TrendNodeData = { id: string; name: string; color: string; score: number; d: number; latestDate?: string; onTap?: () => void };
@@ -58,18 +81,10 @@ type SignalNodeData = { id: string; title: string; color: string; isNew: boolean
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
-  const ptr = useRef<{ x: number; y: number } | null>(null);
+  const tap = useTapHandlers(data.onTap);
   return (
     <div
-      className="nopan"
-      onPointerDown={(e) => { e.stopPropagation(); ptr.current = { x: e.clientX, y: e.clientY }; }}
-      onPointerUp={(e) => {
-        e.stopPropagation();
-        if (!ptr.current) return;
-        const moved = Math.abs(e.clientX - ptr.current.x) + Math.abs(e.clientY - ptr.current.y);
-        ptr.current = null;
-        if (moved < 8) data.onTap?.();
-      }}
+      {...tap}
       style={{
         width: data.d, height: data.d,
         borderRadius: blobFromId(data.id),
@@ -91,18 +106,10 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
 }
 
 function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
-  const ptr = useRef<{ x: number; y: number } | null>(null);
+  const tap = useTapHandlers(data.onTap);
   return (
     <div
-      className="nopan"
-      onPointerDown={(e) => { e.stopPropagation(); ptr.current = { x: e.clientX, y: e.clientY }; }}
-      onPointerUp={(e) => {
-        e.stopPropagation();
-        if (!ptr.current) return;
-        const moved = Math.abs(e.clientX - ptr.current.x) + Math.abs(e.clientY - ptr.current.y);
-        ptr.current = null;
-        if (moved < 8) data.onTap?.();
-      }}
+      {...tap}
       style={{
         width: data.w, height: data.h,
         background: `${data.color}${data.fillAlpha}`,
