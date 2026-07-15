@@ -260,7 +260,7 @@ export default function HomePage() {
 
         {/* Logo + tagline */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <span style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", fontFamily: "inherit" }}>Augmented Culture</span>
+          <span onClick={() => setView("radar")} style={{ fontSize: isDesktop ? 14 : 13, fontWeight: 800, letterSpacing: "-0.03em", color: "#000", fontFamily: "inherit", cursor: "pointer" }}>Augmented Culture</span>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", display: isDesktop ? "inline" : "none" }}>
             Culture × Technology
           </span>
