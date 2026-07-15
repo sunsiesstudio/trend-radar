@@ -96,10 +96,13 @@ export default function HomePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicsKey]);
 
-  // Persist active topics whenever they change
+  // Persist active topics — skip before mount so we don't overwrite stored data
+  // before the mount effect has had a chance to read and restore it.
+  // (Effects run in declaration order; this effect fires before the mount effect.)
   useEffect(() => {
+    if (!mounted) return;
     try { localStorage.setItem("ar_activeTopics", JSON.stringify(activeTopics)); } catch { /* ignore */ }
-  }, [activeTopics]);
+  }, [activeTopics, mounted]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
