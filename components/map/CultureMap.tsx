@@ -551,7 +551,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   };
 
   return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#fff" }}>
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#F5F2EC" }}>
 
       <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
 

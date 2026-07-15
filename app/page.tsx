@@ -248,13 +248,13 @@ export default function HomePage() {
   }, [appliedDynamicTrends]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#fff", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#F5F2EC", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
       {/* ── Header ────────────────────────────────────────────────────────────── */}
       <div style={{
         flexShrink: 0, height: isDesktop ? 56 : 48, padding: "0 16px",
         display: "flex", alignItems: "center",
-        background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
+        background: "rgba(245,242,236,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.07)", zIndex: 10,
       }}>
 
@@ -326,7 +326,7 @@ export default function HomePage() {
       {appliedTopics.length > 0 && (
         <div style={{
           flexShrink: 0, padding: "6px 16px",
-          background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.05)",
+          background: "#F5F2EC", borderBottom: "1px solid rgba(0,0,0,0.05)",
           display: "flex", alignItems: "center", gap: 8, zIndex: 9,
         }}>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
