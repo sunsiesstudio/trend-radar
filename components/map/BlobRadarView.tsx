@@ -251,27 +251,29 @@ function BoardController({ fitViewRef }: {
 }
 
 // idx === -1 → overview (fitView all); idx >= 0 → zoom to trend cluster
-function FocusController({ trendId, signalIds, idx }: {
+// trendsKey changes whenever the trend set changes, forcing a re-fit on new topic loads
+function FocusController({ trendId, signalIds, idx, trendsKey }: {
   trendId: string | undefined;
   signalIds: string[];
   idx: number;
+  trendsKey: string;
 }) {
   const { fitView } = useReactFlow();
   const prevKey = useRef("");
   useEffect(() => {
-    const key = idx < 0 ? "__overview__" : `${trendId ?? "?"}:${idx}`;
+    const key = idx < 0 ? `__overview__:${trendsKey}` : `${trendId ?? "?"}:${idx}`;
     if (key === prevKey.current) return;
     const isFirst = prevKey.current === "";
     prevKey.current = key;
     setTimeout(() => {
       if (idx < 0) {
-        fitView({ duration: isFirst ? 0 : 400, padding: isFirst ? 0.22 : 0.1 });
+        fitView({ duration: isFirst ? 0 : 500, padding: 0.18 });
       } else if (trendId) {
         const fitNodes = [{ id: trendId }, ...signalIds.map(id => ({ id }))];
         fitView({ nodes: fitNodes, duration: 420, padding: 0.18 });
       }
-    }, isFirst ? 220 : 0);
-  }, [trendId, signalIds, idx, fitView]);
+    }, isFirst ? 300 : 180);
+  }, [trendId, signalIds, idx, trendsKey, fitView]);
   return null;
 }
 
@@ -306,6 +308,9 @@ export function BlobRadarView({
     () => [...trends].sort((a, b) => (b.relevanceScore ?? 50) - (a.relevanceScore ?? 50)),
     [trends],
   );
+
+  // A stable string that changes whenever the trend set changes — used by FocusController
+  const trendsKey = useMemo(() => sorted.map(t => t.id).join(","), [sorted]);
 
   // Reset to overview when topic set changes
   useEffect(() => { setFocusIdx(-1); }, [trends]);
@@ -537,7 +542,7 @@ export function BlobRadarView({
           style={{ background: "#ffffff" }}
         >
           <BoardController fitViewRef={fitViewRef} />
-          <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} />
+          <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} trendsKey={trendsKey} />
         </ReactFlow>
       </div>
 
