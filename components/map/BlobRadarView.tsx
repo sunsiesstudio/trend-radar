@@ -265,12 +265,12 @@ function FocusController({ trendId, signalIds, idx }: {
     prevKey.current = key;
     setTimeout(() => {
       if (idx < 0) {
-        fitView({ duration: 500, padding: 0.08 });
+        fitView({ duration: isFirst ? 0 : 400, padding: isFirst ? 0.22 : 0.1 });
       } else if (trendId) {
         const fitNodes = [{ id: trendId }, ...signalIds.map(id => ({ id }))];
         fitView({ nodes: fitNodes, duration: 420, padding: 0.18 });
       }
-    }, isFirst ? 140 : 0);
+    }, isFirst ? 220 : 0);
   }, [trendId, signalIds, idx, fitView]);
   return null;
 }

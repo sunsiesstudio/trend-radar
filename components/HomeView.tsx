@@ -14,6 +14,40 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
+// Water-toned background blobs — river, lake, sea
+const WATER_BLOBS = [
+  {
+    color: "#1B5E8C", left: "-18%", top: "-10%", w: 520, h: 480,
+    shape: "62% 38% 70% 30% / 48% 58% 42% 52%",
+    blur: 80, op: 0.07, dx: 24, dy: 18, ds: 0.06, dur: 24,
+  },
+  {
+    color: "#5B9ED6", left: "68%", top: "-6%", w: 360, h: 340,
+    shape: "38% 62% 28% 72% / 68% 32% 60% 40%",
+    blur: 65, op: 0.06, dx: -18, dy: 28, ds: -0.07, dur: 19,
+  },
+  {
+    color: "#0A4A6E", left: "58%", top: "36%", w: 440, h: 420,
+    shape: "68% 32% 52% 48% / 38% 62% 48% 52%",
+    blur: 90, op: 0.055, dx: -26, dy: -16, ds: 0.09, dur: 29,
+  },
+  {
+    color: "#6AAFD4", left: "-14%", top: "60%", w: 380, h: 350,
+    shape: "48% 52% 38% 62% / 58% 42% 68% 32%",
+    blur: 70, op: 0.065, dx: 16, dy: -22, ds: -0.05, dur: 21,
+  },
+  {
+    color: "#A8D4EC", left: "30%", top: "22%", w: 270, h: 250,
+    shape: "58% 42% 65% 35% / 42% 58% 38% 62%",
+    blur: 60, op: 0.045, dx: 12, dy: 18, ds: 0.04, dur: 17,
+  },
+  {
+    color: "#2C7BB6", left: "20%", top: "75%", w: 310, h: 290,
+    shape: "45% 55% 60% 40% / 52% 48% 55% 45%",
+    blur: 75, op: 0.05, dx: -10, dy: -20, ds: 0.06, dur: 22,
+  },
+];
+
 export function HomeView({ onExploreMap, onOpenRadar }: Props) {
   const topTrends = useMemo(() =>
     EXTENDED_TRENDS.slice(-4).reverse(),
@@ -62,6 +96,14 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
 
   const topName = topTrends[0]?.name ?? "something";
 
+  // Generate CSS keyframes for each blob
+  const blobKeyframes = WATER_BLOBS.map((b, i) => `
+    @keyframes homeBlob${i} {
+      from { transform: translate(0px, 0px) scale(1); }
+      to   { transform: translate(${b.dx}px, ${b.dy}px) scale(${1 + b.ds}); }
+    }
+  `).join("");
+
   return (
     <div style={{
       position: "absolute", inset: 0,
@@ -69,7 +111,26 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
       display: "flex", flexDirection: "column",
       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
     }}>
-      <div style={{ flex: 1, maxWidth: 640, width: "100%", margin: "0 auto", padding: "36px 24px 60px" }}>
+
+      {/* Water blob background */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+        {WATER_BLOBS.map((b, i) => (
+          <div key={i} style={{
+            position: "absolute",
+            left: b.left, top: b.top,
+            width: b.w, height: b.h,
+            background: b.color,
+            borderRadius: b.shape,
+            filter: `blur(${b.blur}px)`,
+            opacity: b.op,
+            animation: `homeBlob${i} ${b.dur}s ease-in-out infinite alternate`,
+            willChange: "transform",
+          }} />
+        ))}
+        <style>{blobKeyframes}</style>
+      </div>
+
+      <div style={{ flex: 1, maxWidth: 640, width: "100%", margin: "0 auto", padding: "36px 24px 60px", position: "relative", zIndex: 1 }}>
 
         {/* Eyebrow */}
         <div style={{
