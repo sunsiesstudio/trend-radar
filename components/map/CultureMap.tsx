@@ -300,7 +300,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const portrait = h > w * 1.15;
 
   // Outer ring (domains)
-  const domR = Math.min(minDim < 600 ? 56 : 70, Math.max(34, minDim * 0.105));
+  const domR = Math.min(minDim < 600 ? 44 : 54, Math.max(26, minDim * 0.084));
   const PAD  = 14;
   const maxRx = w / 2 - domR - PAD;
   const maxRy = h / 2 - domR - PAD;
