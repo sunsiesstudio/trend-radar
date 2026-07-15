@@ -497,14 +497,14 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         );
       })}
 
-      {/* Domain blobs — outer ring, stroke-only */}
+      {/* Domain blobs — outer ring */}
       {domainNodes.map(({ domain, x, y }) => {
         const color = DOMAIN_COLORS[domain];
         const isSel = selection?.type === "domain" && selection.domain === domain;
         const dimmed = selection !== null && !isSel && !connDomains?.has(domain) && selection.type !== "trend";
         const domainTrends = enriched.filter(e => e.domain === domain).map(e => e.trend);
         const fs = Math.min(12, Math.max(9, domR * 0.27));
-        const strokeColor = darkenColor(color, isSel ? 0.62 : 0.72);
+        const blobColor = isSel ? darkenColor(color, 0.82) : color;
         return (
           <div
             key={domain}
@@ -516,8 +516,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               width: domR * 2,
               height: domR * 2,
               borderRadius: blobFromId(domain),
-              background: isSel ? `${color}22` : "transparent",
-              border: `2.5px solid ${strokeColor}`,
+              background: blobColor,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -527,13 +526,13 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               boxSizing: "border-box",
               cursor: "pointer",
               opacity: dimmed ? 0.28 : 1,
-              boxShadow: isSel ? `0 0 0 3px ${color}66, 0 6px 24px ${color}44` : "none",
+              boxShadow: isSel ? `0 0 0 3px ${color}, 0 6px 24px ${color}66` : `0 4px 20px ${color}55`,
               transition: "opacity 0.2s, box-shadow 0.15s",
               userSelect: "none",
             } as React.CSSProperties}
           >
-            <div style={{ fontSize: fs, fontWeight: 800, color: strokeColor, lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
-            <div style={{ fontSize: Math.max(7, fs * 0.78), color: strokeColor + "aa", fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{domainTrends.length} trends</div>
+            <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
+            <div style={{ fontSize: Math.max(7, fs * 0.78), color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{domainTrends.length} trends</div>
           </div>
         );
       })}
