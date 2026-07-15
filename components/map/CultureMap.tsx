@@ -428,7 +428,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const dimmed = selection !== null && !isSel && !connNeeds?.has(need) && selection.type !== "trend";
         const needTrends = enriched.filter(e => e.need === need).map(e => e.trend);
         const fs = Math.min(10, Math.max(7, needR * 0.30));
-        const blobColor = darkenColor(color, isSel ? 0.68 : 0.80);
+        const borderColor = darkenColor(color, isSel ? 0.60 : 0.75);
         return (
           <div
             key={need}
@@ -440,7 +440,8 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               width: needR * 2,
               height: needR * 2,
               borderRadius: blobFromId(need),
-              background: blobColor,
+              background: isSel ? `${color}18` : "transparent",
+              border: `2px solid ${borderColor}`,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -449,14 +450,14 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               padding: 4,
               boxSizing: "border-box",
               cursor: "pointer",
-              opacity: dimmed ? 0.28 : 1,
-              boxShadow: isSel ? `0 0 0 3px ${color}, 0 4px 18px ${color}66` : `0 3px 14px ${color}44`,
-              transition: "opacity 0.2s, box-shadow 0.15s",
+              opacity: dimmed ? 0.25 : 1,
+              boxShadow: isSel ? `0 0 0 3px ${color}55` : "none",
+              transition: "opacity 0.2s, box-shadow 0.15s, background 0.15s",
               userSelect: "none",
             } as React.CSSProperties}
           >
-            <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
-            <div style={{ fontSize: Math.max(6, fs * 0.78), color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} trends</div>
+            <div style={{ fontSize: fs, fontWeight: 800, color: borderColor, lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
+            <div style={{ fontSize: Math.max(6, fs * 0.78), color: `${borderColor}99`, fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} trends</div>
           </div>
         );
       })}
