@@ -152,6 +152,9 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const touchStartY    = useRef<number>(0);
   const isDragging     = useRef(false);
 
+  // Clear panel state when switching views
+  useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); }, [view]);
+
   const allSignals = useMemo(() => {
     const base = [...SIGNALS, ...EXTENDED_SIGNALS];
     if (!extraSignals?.length) return base;
@@ -200,7 +203,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const maxCount = Math.max(1, ...groups.map(g => g.trends.length));
 
-  function clearSelection() { setSelection(null); setSheetOffset(0); }
+  function clearSelection() { setSelection(null); setActiveSignal(null); setSheetOffset(0); }
 
   // ── Shared geometry ───────────────────────────────────────────────────────────
 
