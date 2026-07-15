@@ -17,15 +17,15 @@ const CULTURAL_DOMAINS = [
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  Body:      "#E87B7B",
-  Home:      "#D4A76A",
-  Work:      "#6B8FBB",
+  Body:      "#FF8BB4",
+  Home:      "#FFB04A",
+  Work:      "#8C93C7",
   Play:      "#FFD65C",
   Style:     "#C4A0CE",
   Food:      "#FD8326",
-  Community: "#FF8BB4",
-  Mind:      "#78C9A8",
-  Nature:    "#6BAD6B",
+  Community: "#78C9A8",
+  Mind:      "#B6D693",
+  Nature:    "#53A373",
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
