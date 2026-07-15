@@ -58,7 +58,10 @@ export default function HomePage() {
     if (typeof window === "undefined") return {};
     try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
   });
-  const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
+  const [activeTopics,     setActiveTopics]     = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("ar_activeTopics") ?? "[]"); } catch { return []; }
+  });
   const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
   const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
   const [generatingTopic,  setGeneratingTopic]  = useState<string | null>(null);
@@ -99,7 +102,10 @@ export default function HomePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicsKey]);
 
-  useEffect(() => { setMounted(true); }, []);
+  // Persist active topics whenever they change
+  useEffect(() => {
+    try { localStorage.setItem("ar_activeTopics", JSON.stringify(activeTopics)); } catch { /* ignore */ }
+  }, [activeTopics]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -175,17 +181,44 @@ export default function HomePage() {
     if (failedTopic) runGeneration(failedTopic, [failedTopic]);
   }, [activeTopics, dynamicTrends, runGeneration]);
 
-  const TREND_TTL_MS = 48 * 60 * 60 * 1000;
+  // 24-hour TTL — refresh trends daily on revisit
+  const TREND_TTL_MS = 24 * 60 * 60 * 1000;
+
+  // On mount: show the radar immediately, then restore the user's last session.
+  // If their trends are stale (> 24 h), silently regenerate with Claude in the background.
   useEffect(() => {
-    const stored = localStorage.getItem("ar_trendGeneratedAt");
-    const timestamps: Record<string, number> = stored ? JSON.parse(stored) : {};
+    setMounted(true);
+    if (activeTopics.length === 0) return;
+
+    const timestamps: Record<string, number> = (() => {
+      try { return JSON.parse(localStorage.getItem("ar_trendGeneratedAt") ?? "{}"); } catch { return {}; }
+    })();
     const now = Date.now();
-    activeTopics.forEach(topic => {
-      const hasLibrary = (TOPIC_LIBRARY[topic] ?? []).length > 0;
-      if (hasLibrary) return;
-      const last = timestamps[topic] ?? 0;
-      if (now - last > TREND_TTL_MS) runGeneration(topic, [topic], []);
-    });
+
+    if (activeTopics.length === 1) {
+      const topic = activeTopics[0];
+      const isStale = now - (timestamps[topic] ?? 0) > TREND_TTL_MS;
+      const libraryTrends = [...(TOPIC_LIBRARY[topic] ?? [])]
+        .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+        .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
+
+      setAppliedTopics([topic]);
+
+      if (libraryTrends.length) {
+        // Show library data instantly, then refresh in background if stale
+        const colored = assignUniqueColors(libraryTrends);
+        setDynamicTrends(colored);
+        setAppliedDynamicTrends(colored);
+        if (isStale) runGeneration(topic, [topic], []);
+      } else {
+        // No library data — always regenerate (Claude-only topics)
+        runGeneration(topic, [topic], []);
+      }
+    } else {
+      // Multi-topic: re-run intersection generation
+      setAppliedTopics(activeTopics);
+      runGeneration(activeTopics[0], activeTopics, [], activeTopics);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

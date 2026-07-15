@@ -1,0 +1,18 @@
+name: Daily trend & signal refresh
+
+# Runs every morning at 07:00 UTC to warm the signal cache and keep
+# Reddit/RSS data fresh before users open the app.
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch: # allow manual trigger from GitHub Actions tab
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh signal cache
+        run: |
+          curl -fsSL \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/refresh-signals"
