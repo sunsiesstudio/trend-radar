@@ -415,32 +415,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
     />
   );
 
-  // ── View toggle ───────────────────────────────────────────────────────────────
-
-  const VIEW_LABELS: Record<View, string> = { map: "Map", radar: "Radar" };
-
-  const viewToggle = (
-    <div style={{
-      position: "absolute", top: 12, right: 12, zIndex: 5,
-      display: "flex", background: "#f0f0f0", borderRadius: 10, padding: 3, gap: 2,
-      boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-    }}>
-      {(["map", "radar"] as View[]).map(v => (
-        <button key={v} onClick={() => setView(v)}
-          style={{
-            padding: "5px 12px", borderRadius: 8, border: "none", cursor: "pointer",
-            fontSize: 11, fontWeight: 700, fontFamily: "'DM Sans', sans-serif",
-            background: view === v ? "#fff" : "transparent",
-            color: view === v ? "#111" : "#999",
-            boxShadow: view === v ? "0 1px 3px rgba(0,0,0,0.10)" : "none",
-            transition: "all 0.15s",
-          }}>
-          {VIEW_LABELS[v]}
-        </button>
-      ))}
-    </div>
-  );
-
   // ── Sidebar helpers ───────────────────────────────────────────────────────────
 
   function renderSidebarBody() {
