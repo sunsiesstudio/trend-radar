@@ -402,7 +402,8 @@ export function BlobRadarView({
 
   if (trends.length === 0) {
     return (
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8f7f3" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#f8f7f3" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
           {generatingTopic ? (
@@ -517,10 +518,10 @@ export function BlobRadarView({
             </>
           )}
         </div>
+        </div>
 
-        <div style={{ marginTop: 32, fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-          We map emerging tech against culture.{" "}
-          By Martina from{" "}
+        <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
+          We map emerging tech against culture. By Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
             style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
             Augmented Rarity
