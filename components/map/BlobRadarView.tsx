@@ -492,25 +492,27 @@ export function BlobRadarView({
                     or try
                   </span>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginTop: 10 }}>
-                    {inspirationPills.map(topic => (
-                      <button
-                        key={topic}
-                        onClick={() => submitTopic(topic)}
-                        style={{
-                          padding: "6px 13px", borderRadius: 20,
-                          background: "#fff", border: "1px solid #e8e4de",
-                          fontSize: 12, fontWeight: 600, color: "#444",
-                          cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                          display: "flex", alignItems: "center", gap: 6,
-                          transition: "border-color 0.12s",
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.borderColor = TOPIC_COLORS[topic] ?? "#aaa")}
-                        onMouseLeave={e => (e.currentTarget.style.borderColor = "#e8e4de")}
-                      >
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", display: "inline-block", flexShrink: 0 }} />
-                        {topic.replace(/-/g, " ")}
-                      </button>
-                    ))}
+                    {inspirationPills.map(topic => {
+                      const color = TOPIC_COLORS[topic] ?? "#aaa";
+                      const dark = darkenColor(color);
+                      return (
+                        <button
+                          key={topic}
+                          onClick={() => submitTopic(topic)}
+                          style={{
+                            padding: "4px 10px 4px 8px", borderRadius: 20,
+                            background: `${color}18`, border: `1px solid ${color}44`,
+                            fontSize: 11, fontWeight: 700, color: dark,
+                            cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            display: "flex", alignItems: "center", gap: 5,
+                            letterSpacing: "0.02em",
+                          }}
+                        >
+                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, display: "inline-block", flexShrink: 0 }} />
+                          {topic.replace(/-/g, " ")}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
