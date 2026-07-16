@@ -373,7 +373,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
-        backgroundColor: "#fbfbf0",
+        backgroundColor: "#f8f7f3",
         borderRadius: mode === "sidebar" ? 0 : (isDesktop ? "24px" : "24px 24px 0 0"),
         width: "100%",
         maxWidth: mode === "sidebar" ? undefined : (isDesktop ? 640 : 680),
@@ -412,7 +412,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>{trend.relevanceScore}% relevance</span>
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
-                  style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#fbfbf0", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, fontFamily: "serif" } as React.CSSProperties}
+                  style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#f8f7f3", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, fontFamily: "serif" } as React.CSSProperties}
                 >i</button>
               </div>
               {showRelevanceInfo && (
@@ -443,7 +443,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                 <span style={{ fontSize: 11, color: "#999", fontWeight: 700, whiteSpace: "nowrap" }}>{trend.relevanceScore}% relevance</span>
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowRelevanceInfo(v => !v); }}
-                  style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#fbfbf0", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
+                  style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid #d0ccc6", background: "#f8f7f3", color: "#aaa", fontSize: 10, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent", fontFamily: "serif" } as React.CSSProperties}
                 >i</button>
               </div>
               {showRelevanceInfo && (
@@ -592,7 +592,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                                   const csYear = cs.date ? new Date(cs.date).getFullYear() : null;
                                   const csFmt = cs.date ? new Date(cs.date).toLocaleDateString("en-US", { month: "short", ...(csYear !== now ? { year: "2-digit" } : {}) }) : "";
                                   return (
-                                    <button key={k} onClick={() => onSelectSignal(cs)} style={{ display: "flex", alignItems: "center", gap: 4, background: "#fbfbf0", border: "1px solid #eee", borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontSize: 10, color: "#555", fontWeight: 600, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
+                                    <button key={k} onClick={() => onSelectSignal(cs)} style={{ display: "flex", alignItems: "center", gap: 4, background: "#f8f7f3", border: "1px solid #eee", borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontSize: 10, color: "#555", fontWeight: 600, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>
                                       <span>{getSourceIcon(cs.source)}</span>
                                       <span>{cs.sourceName}</span>
                                       {csFmt && <span style={{ color: "#bbb", fontWeight: 400 }}>· {csFmt}</span>}
@@ -617,7 +617,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
 
         {/* Footer — modal only */}
         {mode !== "sidebar" && (
-          <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#fbfbf0" }}>
+          <div style={{ padding: "12px 20px", paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))", borderTop: "1px solid #f0ede8", flexShrink: 0, background: "#f8f7f3" }}>
             <button
               onClick={() => exportPDF(trend, signals)}
               style={{ width: "100%", padding: "14px 0", borderRadius: 14, border: "none", backgroundColor: textCol, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
