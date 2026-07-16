@@ -254,7 +254,7 @@ export default function HomePage() {
         flexShrink: 0, height: isDesktop ? 60 : 52, padding: "0 20px",
         display: "flex", alignItems: "center", gap: 14,
         background: "rgba(248,247,243,0.96)", backdropFilter: "blur(18px)",
-        borderBottom: "1px solid rgba(0,0,0,0.06)", zIndex: 10,
+        borderBottom: "1px solid #dcd7c3", zIndex: 10,
       }}>
 
         {/* Logo */}
@@ -294,7 +294,7 @@ export default function HomePage() {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setShowAddMenu(m => !m)}
-              style={{ width: 34, height: 34, borderRadius: "50%", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+              style={{ width: 34, height: 34, borderRadius: "50%", background: "transparent", border: "1.5px solid #dcd7c3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
             >
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                 <path d="M6.5 1v11M1 6.5h11" stroke="#333" strokeWidth="1.8" strokeLinecap="round" />
@@ -329,7 +329,7 @@ export default function HomePage() {
       {appliedTopics.length > 0 && (
         <div style={{
           flexShrink: 0, padding: "6px 16px",
-          background: "#f8f7f3", borderBottom: "1px solid rgba(0,0,0,0.05)",
+          background: "#f8f7f3", borderBottom: "1px solid #dcd7c3",
           display: "flex", alignItems: "center", gap: 8, zIndex: 9,
         }}>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
