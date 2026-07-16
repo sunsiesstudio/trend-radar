@@ -508,7 +508,6 @@ export function BlobRadarView({
                             letterSpacing: "0.02em",
                           }}
                         >
-                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, display: "inline-block", flexShrink: 0 }} />
                           {topic.replace(/-/g, " ")}
                         </button>
                       );
