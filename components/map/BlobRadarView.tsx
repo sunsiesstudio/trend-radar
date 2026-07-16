@@ -14,31 +14,6 @@ import { EXTENDED_SIGNALS, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_COLORS } from 
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const BLOB_PALETTE = [
-  "#80B0E8", // Airplane View
-  "#FFC0C0", // Peony Bundle
-  "#008471", // Tropical Rain
-  "#D1CAEA", // Autumn Lavender
-  "#D6D35F", // Limeade
-  "#C45F3F", // Tomato Jam
-  "#F4D242", // Pure Sun
-  "#898E46", // Monet Ponds
-  "#F7A8C4", // Bubble Gum
-  "#FF8BB4", // Bright Pink
-  "#FFB04A", // Warm Orange
-  "#8C93C7", // Periwinkle
-  "#78C9A8", // Mint Teal
-  "#B6D693", // Light Green
-  "#FFD65C", // Sunny Yellow
-  "#FD8326", // Vivid Orange
-];
-
-function colorFromId(id: string): string {
-  let h = 2166136261;
-  for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-  h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
-  return BLOB_PALETTE[h % BLOB_PALETTE.length];
-}
 
 function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
@@ -106,8 +81,7 @@ type TrendNodeData = { id: string; name: string; color: string; score: number; d
 type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  // Higher relevance = slightly brighter; keep colors vivid (range 0.78–0.92)
-  const blobColor = darkenColor(data.color, 0.78 + (data.score / 100) * 0.14);
+  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   const tap = useTapHandlers(data.onTap);
   return (
     <div
@@ -178,7 +152,7 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
       .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
     const topicKey = trend.topics?.[0];
     const latestDate = topicKey ? topicAddedAt[topicKey] : undefined;
-    const color = colorFromId(trend.id);
+    const color = trend.color ?? "#888";
     const d = Math.round(75 + ((trend.relevanceScore ?? 50) / 100) * 140);
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
