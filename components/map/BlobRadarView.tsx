@@ -421,9 +421,10 @@ export function BlobRadarView({
               width: b.size, height: b.size,
               left: `${b.x}%`, top: `${b.y}%`,
               transform: "translate(-50%, -50%)",
-              background: b.color,
-              opacity: 0.13,
-              filter: "blur(8px)",
+              background: "transparent",
+              border: `1.5px solid ${b.color}`,
+              opacity: 0.35,
+              filter: "none",
               animation: `homeBlobDrift${i} ${b.dur}s ease-in-out infinite alternate`,
               borderRadius: b.br,
             }} />
