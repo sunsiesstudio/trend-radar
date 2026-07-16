@@ -408,22 +408,24 @@ export function BlobRadarView({
         {/* Animated blob background */}
         <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
           {([
-            { color: "#80B0E8", size: 380, x: 15,  y: 20,  dur: 26 },
-            { color: "#FFC0C0", size: 300, x: 72,  y: 65,  dur: 33 },
-            { color: "#D6D35F", size: 240, x: 25,  y: 72,  dur: 21 },
-            { color: "#C45F3F", size: 320, x: 80,  y: 18,  dur: 38 },
-            { color: "#D1CAEA", size: 280, x: 50,  y: 50,  dur: 29 },
-          ] as { color: string; size: number; x: number; y: number; dur: number }[]).map((b, i) => (
+            { color: "#80B0E8", size: 90,  x: 12, y: 18, dur: 26, br: "60% 40% 70% 30%/50% 60% 40% 70%" },
+            { color: "#FFC0C0", size: 70,  x: 78, y: 62, dur: 33, br: "50% 70% 40% 60%/60% 30% 70% 40%" },
+            { color: "#D6D35F", size: 60,  x: 22, y: 75, dur: 21, br: "70% 30% 50% 50%/40% 60% 50% 60%" },
+            { color: "#C45F3F", size: 80,  x: 82, y: 22, dur: 38, br: "40% 60% 60% 40%/70% 40% 60% 30%" },
+            { color: "#D1CAEA", size: 75,  x: 55, y: 48, dur: 29, br: "55% 45% 65% 35%/45% 55% 45% 55%" },
+            { color: "#898E46", size: 55,  x: 40, y: 85, dur: 24, br: "65% 35% 45% 55%/35% 65% 55% 45%" },
+            { color: "#F4D242", size: 65,  x: 68, y: 10, dur: 32, br: "45% 55% 35% 65%/55% 45% 65% 35%" },
+          ] as { color: string; size: number; x: number; y: number; dur: number; br: string }[]).map((b, i) => (
             <div key={i} style={{
               position: "absolute",
               width: b.size, height: b.size,
               left: `${b.x}%`, top: `${b.y}%`,
               transform: "translate(-50%, -50%)",
               background: b.color,
-              opacity: 0.18,
-              filter: "blur(32px)",
+              opacity: 0.13,
+              filter: "blur(2px)",
               animation: `homeBlobDrift${i} ${b.dur}s ease-in-out infinite alternate`,
-              borderRadius: "60% 40% 70% 30% / 50% 60% 40% 70%",
+              borderRadius: b.br,
             }} />
           ))}
         </div>
