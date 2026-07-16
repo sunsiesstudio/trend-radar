@@ -1961,7 +1961,7 @@ export const LIBRARY_TOPICS = [
 
 // Curated topics shown on the initial empty state screen
 export const FEATURED_TOPICS = [
-  "fashion", "beauty", "gaming", "music", "food-tech", "travel",
+  "fashion", "beauty", "gaming", "music", "food", "travel",
   "wellness", "luxury", "dating", "fitness", "sustainability", "social",
 ];
 
