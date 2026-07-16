@@ -465,7 +465,7 @@ export function BlobRadarView({
                     }}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="Search a topic eg fashion"
+                    placeholder="Search a topic, e.g. fashion"
                     style={{
                       flex: 1, background: "none", border: "none", outline: "none",
                       fontSize: 14, fontWeight: 400, color: "#333",
@@ -523,7 +523,7 @@ export function BlobRadarView({
         </div>
 
         <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-          Martina from{" "}
+          By Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
             style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
             Augmented Rarity
