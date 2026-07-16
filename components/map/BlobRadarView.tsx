@@ -80,7 +80,8 @@ type TrendNodeData = { id: string; name: string; color: string; score: number; d
 type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
+  // Higher relevance = brighter shade; range 0.48–0.80
+  const blobColor = darkenColor(data.color, 0.48 + (data.score / 100) * 0.32);
   const tap = useTapHandlers(data.onTap);
   return (
     <div
@@ -151,6 +152,7 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
       .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
     const topicKey = trend.topics?.[0];
     const latestDate = topicKey ? topicAddedAt[topicKey] : undefined;
+    const color = TOPIC_COLORS[topicKey ?? ""] ?? trend.color ?? "#888";
     const d = Math.round(75 + ((trend.relevanceScore ?? 50) / 100) * 140);
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
@@ -160,7 +162,7 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
     nodes.push({
       id: trend.id, type: "trendCircle",
       position: { x: cx - d / 2, y: cy - d / 2 },
-      data: { id: trend.id, name: trend.name, color: trend.color, score: trend.relevanceScore ?? 50, d, latestDate } as TrendNodeData,
+      data: { id: trend.id, name: trend.name, color, score: trend.relevanceScore ?? 50, d, latestDate } as TrendNodeData,
     });
 
     const MAX_R = d / 2 + 280;
@@ -225,11 +227,11 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
       nodes.push({
         id: sig.id, type: "signalOrbit",
         position: { x, y },
-        data: { id: sig.id, title: sig.title, color: trend.color, isNew, w, h, fillAlpha, borderAlpha } as SignalNodeData,
+        data: { id: sig.id, title: sig.title, color, isNew, w, h, fillAlpha, borderAlpha } as SignalNodeData,
       });
       edges.push({
         id: `spoke-${trend.id}-${sig.id}`, source: trend.id, target: sig.id, type: "straight",
-        style: { stroke: trend.color, strokeWidth: 1, opacity: 0.18 },
+        style: { stroke: color, strokeWidth: 1, opacity: 0.18 },
       });
     });
   });
