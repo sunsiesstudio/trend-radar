@@ -360,14 +360,12 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {selection.type === "need" && (
               <>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block", flexShrink: 0 }} />
                 <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.need}</span>
                 <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} {selection.trends.length === 1 ? "trend" : "trends"}</span>
               </>
             )}
             {selection.type === "domain" && (
               <>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
                 <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.domain}</span>
                 <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} {selection.trends.length === 1 ? "trend" : "trends"}</span>
               </>
