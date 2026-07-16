@@ -419,10 +419,7 @@ export function BlobRadarView({
             /* Search state */
             <>
               <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
-                Where emerging tech meets cultural shifts
-              </div>
-              <div style={{ fontSize: 13, color: "#999", lineHeight: 1.55, marginTop: 10, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
-                Search or select a topic to see the forces transforming consumer behavior.
+                Where emerging tech meets culture
               </div>
               {/* Search input */}
               <div style={{ position: "relative", marginTop: 18 }}>
@@ -468,7 +465,7 @@ export function BlobRadarView({
                     }}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="e.g. fashion, wellness, gaming"
+                    placeholder="Search a topic eg fashion"
                     style={{
                       flex: 1, background: "none", border: "none", outline: "none",
                       fontSize: 14, fontWeight: 400, color: "#333",
@@ -526,8 +523,7 @@ export function BlobRadarView({
         </div>
 
         <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-          Mapping emerging tech against culture.<br />
-          By Martina from{" "}
+          Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
             style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
             Augmented Rarity
