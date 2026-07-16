@@ -405,6 +405,28 @@ export function BlobRadarView({
   if (trends.length === 0) {
     return (
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#f8f7f3" }}>
+        {/* Animated blob background */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
+          {([
+            { color: "#80B0E8", size: 380, x: 15,  y: 20,  dur: 26 },
+            { color: "#FFC0C0", size: 300, x: 72,  y: 65,  dur: 33 },
+            { color: "#D6D35F", size: 240, x: 25,  y: 72,  dur: 21 },
+            { color: "#C45F3F", size: 320, x: 80,  y: 18,  dur: 38 },
+            { color: "#D1CAEA", size: 280, x: 50,  y: 50,  dur: 29 },
+          ] as { color: string; size: number; x: number; y: number; dur: number }[]).map((b, i) => (
+            <div key={i} style={{
+              position: "absolute",
+              width: b.size, height: b.size,
+              left: `${b.x}%`, top: `${b.y}%`,
+              transform: "translate(-50%, -50%)",
+              background: b.color,
+              opacity: 0.07,
+              filter: "blur(48px)",
+              animation: `homeBlobDrift${i} ${b.dur}s ease-in-out infinite alternate`,
+              borderRadius: "60% 40% 70% 30% / 50% 60% 40% 70%",
+            }} />
+          ))}
+        </div>
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
@@ -530,7 +552,14 @@ export function BlobRadarView({
           </a>.
         </div>
 
-        <style>{`@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
+        <style>{`
+          @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+          @keyframes homeBlobDrift0 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:60% 40% 70% 30%/50% 60% 40% 70% } 100% { transform:translate(calc(-50% + 55px),calc(-50% + 35px)) scale(1.08); border-radius:40% 60% 30% 70%/60% 40% 70% 30% } }
+          @keyframes homeBlobDrift1 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:50% 70% 40% 60%/60% 30% 70% 40% } 100% { transform:translate(calc(-50% - 45px),calc(-50% + 25px)) scale(0.94); border-radius:70% 30% 60% 40%/40% 70% 30% 60% } }
+          @keyframes homeBlobDrift2 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:70% 30% 50% 50%/40% 60% 50% 60% } 100% { transform:translate(calc(-50% + 40px),calc(-50% - 30px)) scale(1.05); border-radius:30% 70% 60% 40%/60% 40% 50% 50% } }
+          @keyframes homeBlobDrift3 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:40% 60% 60% 40%/70% 40% 60% 30% } 100% { transform:translate(calc(-50% - 60px),calc(-50% + 40px)) scale(1.1);  border-radius:60% 40% 40% 60%/30% 60% 40% 70% } }
+          @keyframes homeBlobDrift4 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:55% 45% 65% 35%/45% 55% 45% 55% } 100% { transform:translate(calc(-50% + 30px),calc(-50% - 45px)) scale(0.96); border-radius:45% 55% 35% 65%/55% 45% 55% 45% } }
+        `}</style>
       </div>
     );
   }
