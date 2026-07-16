@@ -325,12 +325,13 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Filter chip sub-bar (always visible for view toggle) ───────────── */}
-      <div style={{
-        flexShrink: 0, padding: "6px 16px",
-        background: "#f8f7f3", borderBottom: "1px solid rgba(0,0,0,0.05)",
-        display: "flex", alignItems: "center", gap: 8, zIndex: 9,
-      }}>
+      {/* ── Filter chip sub-bar (when a topic is active) ─────────────────────── */}
+      {appliedTopics.length > 0 && (
+        <div style={{
+          flexShrink: 0, padding: "6px 16px",
+          background: "#f8f7f3", borderBottom: "1px solid rgba(0,0,0,0.05)",
+          display: "flex", alignItems: "center", gap: 8, zIndex: 9,
+        }}>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
             Emerging tech &amp;
           </span>
@@ -377,7 +378,8 @@ export default function HomePage() {
               );
             })}
           </div>
-      </div>
+        </div>
+      )}
 
       {/* ── Main canvas ───────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
