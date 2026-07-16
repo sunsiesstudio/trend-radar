@@ -454,9 +454,9 @@ export function BlobRadarView({
                   <div style={{
                     position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
                     background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 220, overflowY: "auto", padding: "6px 0",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 280, overflowY: "auto", padding: "6px 0",
                   }}>
-                    {topicSuggestions.slice(0, 8).map(topic => (
+                    {topicSuggestions.map(topic => (
                       <button
                         key={topic}
                         onPointerDown={(e) => { e.preventDefault(); submitTopic(topic); }}
