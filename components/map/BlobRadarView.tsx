@@ -310,6 +310,7 @@ export function BlobRadarView({
   const [focusIdx, setFocusIdx] = useState(-1);
   const [topicInput, setTopicInput] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [shuffledTopics] = useState(() => [...LIBRARY_TOPICS].sort(() => Math.random() - 0.5));
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Sort highest-relevance first
@@ -383,10 +384,11 @@ export function BlobRadarView({
 
   const topicSuggestions = useMemo(() => {
     const q = topicInput.toLowerCase().trim();
-    const available = LIBRARY_TOPICS.filter(t => !activeTopics.includes(t));
+    const base = q ? LIBRARY_TOPICS : shuffledTopics;
+    const available = base.filter(t => !activeTopics.includes(t));
     if (!q) return available;
     return available.filter(t => t.includes(q) || t.replace(/-/g, " ").includes(q));
-  }, [topicInput, activeTopics]);
+  }, [topicInput, activeTopics, shuffledTopics]);
 
   const inspirationPills = useMemo(
     () => FEATURED_TOPICS.filter(t => !activeTopics.includes(t)).slice(0, 8),
