@@ -416,7 +416,7 @@ export function BlobRadarView({
             /* Search state */
             <>
               <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
-                What&apos;s on your radar?
+                What are we tracking?
               </div>
 
               {/* Search input */}
