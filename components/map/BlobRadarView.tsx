@@ -465,7 +465,7 @@ export function BlobRadarView({
                     }}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="Search a topic, e.g. fashion"
+                    placeholder="Search a topic, e.g. art"
                     style={{
                       flex: 1, background: "none", border: "none", outline: "none",
                       fontSize: 14, fontWeight: 400, color: "#333",
