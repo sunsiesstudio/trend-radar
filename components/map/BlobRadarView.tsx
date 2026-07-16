@@ -50,6 +50,12 @@ function blobFromId(id: string): string {
   return `${v(h & 0xff)}% ${v((h >> 8) & 0xff)}% ${v((h >> 16) & 0xff)}% ${v((h >>> 24) & 0xff)}% / ${v(g & 0xff)}% ${v((g >> 8) & 0xff)}% ${v((g >> 16) & 0xff)}% ${v((g >>> 24) & 0xff)}%`;
 }
 
+function blobMorphDur(id: string): number {
+  let s = 0;
+  for (let i = 0; i < id.length; i++) s = (s * 31 + id.charCodeAt(i)) >>> 0;
+  return 18 + (s % 14);
+}
+
 const CIRCLE_D = 164;
 
 // ── Tap hook (works on iOS Safari + Android Chrome inside ReactFlow) ──────────
@@ -83,26 +89,32 @@ type SignalNodeData = { id: string; title: string; color: string; isNew: boolean
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
   const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
   const tap = useTapHandlers(data.onTap);
+  const animId = "bm-" + data.id.replace(/[^a-zA-Z0-9]/g, "-");
+  const dur = blobMorphDur(data.id);
   return (
-    <div
-      {...tap}
-      style={{
-        width: data.d, height: data.d,
-        borderRadius: blobFromId(data.id),
-        background: blobColor,
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        textAlign: "center", padding: 22,
-        boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: `0 6px 32px ${data.color}66`,
-      }}>
-      <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
-        {data.name}
+    <>
+      <style>{`@keyframes ${animId}{from{border-radius:${blobFromId(data.id)}}to{border-radius:${blobFromId(data.id + "-m")}}}`}</style>
+      <div
+        {...tap}
+        style={{
+          width: data.d, height: data.d,
+          borderRadius: blobFromId(data.id),
+          animation: `${animId} ${dur}s ease-in-out infinite alternate`,
+          background: blobColor,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          textAlign: "center", padding: 22,
+          boxSizing: "border-box", cursor: "pointer", userSelect: "none",
+          boxShadow: `0 6px 32px ${data.color}66`,
+        }}>
+        <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
+          {data.name}
+        </div>
+        <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+          {data.score}%
+        </div>
       </div>
-      <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-        {data.score}%
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -621,8 +633,13 @@ export function BlobRadarView({
 
           <div style={{ flex: 1, textAlign: "center" }}>
             {isOverview ? (
-              <div style={{ fontSize: 11, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.02em" }}>
-                {sorted.length} trends — tap one to explore
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
+                  {sorted.length} {sorted.length === 1 ? "trend" : "trends"}
+                </div>
+                <div style={{ fontSize: 10, color: "#bbb", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  tap a trend to explore
+                </div>
               </div>
             ) : (
               <>

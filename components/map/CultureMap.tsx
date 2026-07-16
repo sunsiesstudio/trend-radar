@@ -17,15 +17,15 @@ const CULTURAL_DOMAINS = [
 type CulturalDomain = typeof CULTURAL_DOMAINS[number];
 
 const DOMAIN_COLORS: Record<CulturalDomain, string> = {
-  Body:      "#FF8BB4",  // bright pink
-  Home:      "#FFB04A",  // warm orange
-  Work:      "#80B0E8",  // airplane view
-  Play:      "#FFD65C",  // sunny yellow
-  Style:     "#D1CAEA",  // autumn lavender
-  Food:      "#FD8326",  // vivid orange
-  Community: "#008471",  // tropical rain
-  Mind:      "#B6D693",  // light green
-  Nature:    "#D6D35F",  // limeade
+  Body:      "#F5ADBE",  // bubble gum (palette)
+  Home:      "#E8B87A",  // warm amber (palette-extended)
+  Work:      "#80B0E8",  // airplane view (palette)
+  Play:      "#F4D242",  // pure sun (palette)
+  Style:     "#D1CAEA",  // autumn lavender (palette)
+  Food:      "#C4733E",  // terracotta (palette-extended)
+  Community: "#008471",  // tropical rain (palette)
+  Mind:      "#9DC47C",  // soft sage (palette-extended)
+  Nature:    "#D6D35F",  // limeade (palette)
 };
 
 const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
@@ -64,12 +64,12 @@ type Need = typeof NEEDS[number];
 
 // Needs use colors not present in DOMAIN_COLORS so nothing repeats on screen
 const NEED_COLORS: Record<Need, string> = {
-  Control:      "#C45F3F",  // tomato jam
-  Connection:   "#FFC0C0",  // peony bundle
-  Escape:       "#8C93C7",  // periwinkle
-  Recognition:  "#F4D242",  // pure sun
-  Authenticity: "#78C9A8",  // mint teal
-  Resilience:   "#898E46",  // monet ponds
+  Control:      "#C45F3F",  // tomato jam (palette)
+  Connection:   "#FFC0C0",  // peony bundle (palette)
+  Escape:       "#9298C8",  // soft periwinkle (palette-extended)
+  Recognition:  "#E8C840",  // warm gold, pure sun variant (palette-extended)
+  Authenticity: "#5BBFA2",  // soft teal, tropical rain variant (palette-extended)
+  Resilience:   "#898E46",  // monet ponds (palette)
 };
 
 const TENSION_VIBES: Record<Need, string> = {
@@ -158,6 +158,17 @@ function darkenColor(hex: string, factor = 0.62): string {
   const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
+
+function blobMorphDur(id: string): number {
+  let s = 0;
+  for (let i = 0; i < id.length; i++) s = (s * 31 + id.charCodeAt(i)) >>> 0;
+  return 18 + (s % 14);
+}
+
+const MAP_BLOB_CSS = [...Object.keys(DOMAIN_COLORS), ...Object.keys(NEED_COLORS)].map(id => {
+  const safe = id.replace(/[^a-zA-Z0-9]/g, "-");
+  return `@keyframes bm-${safe}{from{border-radius:${blobFromId(id)}}to{border-radius:${blobFromId(id + "-m")}}}`;
+}).join("");
 
 function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2: number) {
   const dx = x2 - x1, dy = y2 - y1;
@@ -475,6 +486,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       onClickCapture={(e) => { if (didDragMap.current) { e.stopPropagation(); didDragMap.current = false; } }}
       style={{ position: "absolute", inset: 0, transform: `translate(${mapOffset.x}px, ${mapOffset.y}px) scale(${mapScale})`, transformOrigin: "50% 50%", cursor: mouseStartRef.current ? "grabbing" : "grab" }}
     >
+      <style>{MAP_BLOB_CSS}</style>
       {/* SVG — connection lines only; pointer-events off so HTML blobs receive clicks */}
       <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block", pointerEvents: "none" }}>
         {/* Connection lines — revealed on selection only */}
@@ -523,9 +535,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               padding: 4,
               boxSizing: "border-box",
               cursor: "pointer",
-              opacity: dimmed ? 0.25 : hasNoTrends ? 0.22 : 1,
+              opacity: dimmed ? 0.25 : hasNoTrends ? 0.09 : 1,
               boxShadow: isSel ? `0 6px 24px ${color}88` : `0 3px 14px ${color}44`,
               transition: "opacity 0.2s, box-shadow 0.15s",
+              animation: `bm-${need} ${blobMorphDur(need)}s ease-in-out infinite alternate`,
               userSelect: "none",
             } as React.CSSProperties}
           >
@@ -564,9 +577,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               padding: 6,
               boxSizing: "border-box",
               cursor: "pointer",
-              opacity: dimmed ? 0.28 : hasNoTrends ? 0.22 : 1,
+              opacity: dimmed ? 0.28 : hasNoTrends ? 0.09 : 1,
               boxShadow: isSel ? `0 8px 28px ${color}88` : `0 4px 20px ${color}55`,
               transition: "opacity 0.2s, box-shadow 0.15s",
+              animation: `bm-${domain} ${blobMorphDur(domain)}s ease-in-out infinite alternate`,
               userSelect: "none",
             } as React.CSSProperties}
           >
