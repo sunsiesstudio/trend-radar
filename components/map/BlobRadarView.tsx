@@ -14,6 +14,28 @@ import { EXTENDED_SIGNALS, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_COLORS } from 
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+function colorFromId(id: string): string {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
+  const hue = h % 360;
+  const sat = 45 + ((h >> 8) % 30);
+  const lit = 42 + ((h >> 16) % 22);
+  const s = sat / 100, l = lit / 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (hue < 60)       { r = c; g = x; b = 0; }
+  else if (hue < 120) { r = x; g = c; b = 0; }
+  else if (hue < 180) { r = 0; g = c; b = x; }
+  else if (hue < 240) { r = 0; g = x; b = c; }
+  else if (hue < 300) { r = x; g = 0; b = c; }
+  else                { r = c; g = 0; b = x; }
+  const hex = (n: number) => Math.round((n + m) * 255).toString(16).padStart(2, "0");
+  return `#${hex(r)}${hex(g)}${hex(b)}`;
+}
+
 function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
   const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
@@ -152,7 +174,7 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
       .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
     const topicKey = trend.topics?.[0];
     const latestDate = topicKey ? topicAddedAt[topicKey] : undefined;
-    const color = trend.color ?? TOPIC_COLORS[topicKey ?? ""] ?? "#888";
+    const color = colorFromId(trend.id);
     const d = Math.round(75 + ((trend.relevanceScore ?? 50) / 100) * 140);
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
