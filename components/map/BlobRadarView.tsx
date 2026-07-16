@@ -292,7 +292,7 @@ function FocusController({ trendId, signalIds, idx, trendsKey }: {
         const fitNodes = [{ id: trendId }, ...signalIds.map(id => ({ id }))];
         fitView({ nodes: fitNodes, duration: instant ? 0 : 420, padding: 0.22 });
       }
-    }, instant ? 80 : 400);
+    }, instant ? 180 : 400);
   }, [trendId, signalIds, idx, trendsKey, fitView]);
   return null;
 }
@@ -591,6 +591,8 @@ export function BlobRadarView({
           nodesDraggable={false}
           minZoom={0.04}
           maxZoom={2}
+          fitView
+          fitViewOptions={{ padding: 0.35 }}
           panOnDrag
           zoomOnPinch
           zoomOnScroll
