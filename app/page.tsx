@@ -324,7 +324,7 @@ export default function HomePage() {
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
             tech
           </span>
-          <span style={{ fontSize: 11, color: "#ddd", fontWeight: 400 }}>&amp;
+          <span style={{ fontSize: 11, color: "#ddd", fontWeight: 400 }}>&amp;</span>
           {appliedTopics.map(topic => {
             const color = TOPIC_COLORS[topic] ?? "#aaa";
             const dark = darkenColor(color);

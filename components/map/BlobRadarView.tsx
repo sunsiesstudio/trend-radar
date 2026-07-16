@@ -555,33 +555,33 @@ export function BlobRadarView({
           display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "10px 16px",
           paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
-          background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)",
-          borderTop: "1px solid rgba(0,0,0,0.07)",
+          background: "rgba(245,242,236,0.96)", backdropFilter: "blur(18px)",
+          borderTop: "1px solid rgba(0,0,0,0.06)",
           gap: 12,
         }}>
           <button
             onClick={prev}
             disabled={isOverview}
             style={{
-              width: 40, height: 40, borderRadius: "50%",
-              background: isOverview ? "#f5f5f5" : "#000",
-              border: "none", cursor: isOverview ? "default" : "pointer",
+              width: 36, height: 36, borderRadius: "50%",
+              background: isOverview ? "transparent" : "#fff",
+              border: isOverview ? "none" : "1px solid rgba(0,0,0,0.10)",
+              boxShadow: isOverview ? "none" : "0 1px 4px rgba(0,0,0,0.08)",
+              cursor: isOverview ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
+              flexShrink: 0, transition: "all 0.15s",
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7L9 12" stroke={isOverview ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M9 2L4 7L9 12" stroke={isOverview ? "#ccc" : "#333"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
 
           <div style={{ flex: 1, textAlign: "center" }}>
             {isOverview ? (
-              <>
-                <div style={{ fontSize: 12, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  {sorted.length} trends — tap one to explore
-                </div>
-              </>
+              <div style={{ fontSize: 11, color: "#aaa", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.02em" }}>
+                {sorted.length} trends — tap one to explore
+              </div>
             ) : (
               <>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
@@ -598,17 +598,18 @@ export function BlobRadarView({
             onClick={next}
             disabled={!isOverview && safeIdx === sorted.length - 1}
             style={{
-              width: 40, height: 40, borderRadius: "50%",
-              background: (!isOverview && safeIdx === sorted.length - 1) ? "#f5f5f5" : "#000",
-              border: "none",
+              width: 36, height: 36, borderRadius: "50%",
+              background: (!isOverview && safeIdx === sorted.length - 1) ? "transparent" : "#fff",
+              border: (!isOverview && safeIdx === sorted.length - 1) ? "none" : "1px solid rgba(0,0,0,0.10)",
+              boxShadow: (!isOverview && safeIdx === sorted.length - 1) ? "none" : "0 1px 4px rgba(0,0,0,0.08)",
               cursor: (!isOverview && safeIdx === sorted.length - 1) ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
+              flexShrink: 0, transition: "all 0.15s",
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
               <path d="M5 2L10 7L5 12"
-                stroke={(!isOverview && safeIdx === sorted.length - 1) ? "#ccc" : "#fff"}
+                stroke={(!isOverview && safeIdx === sorted.length - 1) ? "#ccc" : "#333"}
                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
