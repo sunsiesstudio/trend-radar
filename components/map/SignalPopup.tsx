@@ -200,7 +200,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: "#F5F2EC",
         borderRadius: mode === "sidebar" ? 0 : (isDesktop ? "24px" : "24px 24px 0 0"),
         width: "100%",
         maxWidth: mode === "sidebar" ? undefined : (isDesktop ? 560 : 680),
@@ -331,7 +331,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                       key={r.id}
                       onClick={() => onSelectSignal?.(r)}
                       style={{
-                        textAlign: "left", background: "#fff",
+                        textAlign: "left", background: "#F5F2EC",
                         padding: "10px 16px", cursor: "pointer", width: "100%", boxSizing: "border-box", border: "none", borderTop: "1px solid #f5f4f2",
                       }}
                     >
