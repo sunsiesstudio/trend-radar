@@ -455,7 +455,7 @@ export function BlobRadarView({
             /* Search state */
             <>
               <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
-                Where emerging tech meets culture
+                Where emerging tech<br />meets culture
               </div>
               {/* Search input */}
               <div style={{ position: "relative", marginTop: 18 }}>
