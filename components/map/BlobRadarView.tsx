@@ -300,6 +300,98 @@ interface Props {
   onSetView?: (v: "map" | "radar") => void;
 }
 
+// ── Map preview (scroll-expand animation on home screen) ─────────────────────
+
+const MAP_PREVIEW_DOMAINS = [
+  { name: "Body",      color: "#F5ADBE" },
+  { name: "Home",      color: "#E8B87A" },
+  { name: "Work",      color: "#80B0E8" },
+  { name: "Play",      color: "#F4D242" },
+  { name: "Style",     color: "#D1CAEA" },
+  { name: "Food",      color: "#C4733E" },
+  { name: "Community", color: "#008471" },
+  { name: "Mind",      color: "#9DC47C" },
+  { name: "Nature",    color: "#D6D35F" },
+];
+const MAP_PREVIEW_NEEDS = [
+  { name: "Control",      color: "#C45F3F" },
+  { name: "Connection",   color: "#FFC0C0" },
+  { name: "Escape",       color: "#9298C8" },
+  { name: "Recognition",  color: "#E8C840" },
+  { name: "Authenticity", color: "#5BBFA2" },
+  { name: "Resilience",   color: "#898E46" },
+];
+
+function MapPreviewSection({ onSetView }: { onSetView: (v: "map" | "radar") => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setExpanded(true); },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const W = 300, H = 280;
+  const cx = W / 2, cy = H / 2;
+  const outerRx = 126, outerRy = 106;
+  const innerRx = outerRx * 0.43, innerRy = outerRy * 0.43;
+  const DOM_R = 20, NEED_R = 13;
+
+  return (
+    <div
+      ref={ref}
+      onClick={() => onSetView("map")}
+      style={{ padding: "16px 24px 64px", display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
+    >
+      <div style={{ fontSize: 10, color: "#ccc", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 20, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        tap to explore the map
+      </div>
+      <div style={{ position: "relative", width: W, height: H, maxWidth: "calc(100vw - 48px)", flexShrink: 0 }}>
+        {MAP_PREVIEW_DOMAINS.map(({ name, color }, i) => {
+          const angle = (i / MAP_PREVIEW_DOMAINS.length) * Math.PI * 2 - Math.PI / 2;
+          const tx = cx + outerRx * Math.cos(angle) - DOM_R;
+          const ty = cy + outerRy * Math.sin(angle) - DOM_R;
+          const sx = cx - DOM_R;
+          const sy = cy - DOM_R;
+          return (
+            <div key={name} style={{
+              position: "absolute", left: 0, top: 0,
+              width: DOM_R * 2, height: DOM_R * 2,
+              background: color + "dd",
+              borderRadius: blobFromId(`mprev-d-${name}`),
+              transform: `translate(${expanded ? tx : sx}px, ${expanded ? ty : sy}px)`,
+              transition: `transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 45}ms`,
+            }} />
+          );
+        })}
+        {MAP_PREVIEW_NEEDS.map(({ name, color }, i) => {
+          const angle = (i / MAP_PREVIEW_NEEDS.length) * Math.PI * 2 - Math.PI / 2;
+          const tx = cx + innerRx * Math.cos(angle) - NEED_R;
+          const ty = cy + innerRy * Math.sin(angle) - NEED_R;
+          const sx = cx - NEED_R;
+          const sy = cy - NEED_R;
+          return (
+            <div key={name} style={{
+              position: "absolute", left: 0, top: 0,
+              width: NEED_R * 2, height: NEED_R * 2,
+              background: color + "bb",
+              borderRadius: blobFromId(`mprev-n-${name}`),
+              transform: `translate(${expanded ? tx : sx}px, ${expanded ? ty : sy}px)`,
+              transition: `transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) ${100 + i * 55}ms`,
+            }} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function BlobRadarView({
   trends, signals, topicAddedAt = {},
   activeTopics, generatingTopic, onAddTopic, onRemoveTopic,
@@ -432,132 +524,132 @@ export function BlobRadarView({
             }} />
           ))}
         </div>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1 }}>
-        <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" as const, position: "relative", zIndex: 1 }}>
+          {/* First screen — centered search content */}
+          <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 32px 40px" }}>
+            <div style={{ textAlign: "center", width: "100%", maxWidth: 460 }}>
 
-          {generatingTopic ? (
-            /* Loading state */
-            <>
-              <div style={{ fontSize: 15, color: "#aaa", fontFamily: "'EB Garamond', Georgia, serif" }}>
-                Generating <em>{generatingTopic}</em>…
-              </div>
-            </>
-          ) : (
-            /* Search state */
-            <>
-              <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
-                Where emerging tech<br />meets culture
-              </div>
-              {/* Search input */}
-              <div style={{ position: "relative", marginTop: 18 }}>
+              {generatingTopic ? (
+                /* Loading state */
+                <>
+                  <div style={{ fontSize: 15, color: "#aaa", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                    Generating <em>{generatingTopic}</em>…
+                  </div>
+                </>
+              ) : (
+                /* Search state */
+                <>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
+                    Where emerging tech<br />meets culture
+                  </div>
+                  {/* Search input */}
+                  <div style={{ position: "relative", marginTop: 18 }}>
 
-                {/* Suggestions dropdown — opens downward */}
-                {showSuggestions && topicSuggestions.length > 0 && (
-                  <div style={{
-                    position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
-                    background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 280, overflowY: "auto", padding: "6px 0",
-                  }}>
-                    {topicSuggestions.map(topic => (
-                      <button
-                        key={topic}
-                        onPointerDown={(e) => { e.preventDefault(); submitTopic(topic); }}
+                    {/* Suggestions dropdown — opens downward */}
+                    {showSuggestions && topicSuggestions.length > 0 && (
+                      <div style={{
+                        position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
+                        background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 280, overflowY: "auto", padding: "6px 0",
+                      }}>
+                        {topicSuggestions.map(topic => (
+                          <button
+                            key={topic}
+                            onPointerDown={(e) => { e.preventDefault(); submitTopic(topic); }}
+                            style={{
+                              display: "flex", alignItems: "center", gap: 10,
+                              width: "100%", padding: "9px 16px",
+                              background: "none", border: "none", cursor: "pointer",
+                              textAlign: "left", fontSize: 12, fontWeight: 600,
+                              color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            }}
+                          >
+                            <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                            {topic.replace(/-/g, " ")}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 8,
+                      background: "transparent", borderRadius: 28, padding: "10px 10px 10px 18px",
+                      border: "1.5px solid rgba(0,0,0,0.18)",
+                    }}>
+                      <input
+                        ref={inputRef}
+                        value={topicInput}
+                        onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") { submitTopic(topicSuggestions[0] ?? topicInput); }
+                          if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                        placeholder="Search a topic, e.g. art"
                         style={{
-                          display: "flex", alignItems: "center", gap: 10,
-                          width: "100%", padding: "9px 16px",
-                          background: "none", border: "none", cursor: "pointer",
-                          textAlign: "left", fontSize: 12, fontWeight: 600,
-                          color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          flex: 1, background: "none", border: "none", outline: "none",
+                          fontSize: 14, fontWeight: 400, color: "#333",
+                          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        }}
+                      />
+                      <button
+                        onClick={() => submitTopic(topicSuggestions[0] ?? topicInput)}
+                        style={{
+                          background: "none", border: "none", padding: "0 4px",
+                          cursor: topicInput.trim() ? "pointer" : "default",
+                          display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                         }}
                       >
-                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
-                        {topic.replace(/-/g, " ")}
+                        <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+                          <path d="M2 7h10M8 3l4 4-4 4" stroke={topicInput.trim() ? "#333" : "#ccc"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                       </button>
-                    ))}
+                    </div>
                   </div>
-                )}
 
-                <div style={{
-                  display: "flex", alignItems: "center", gap: 8,
-                  background: "transparent", borderRadius: 28, padding: "10px 10px 10px 18px",
-                  border: "1.5px solid rgba(0,0,0,0.18)",
-                }}>
-                  <input
-                    ref={inputRef}
-                    value={topicInput}
-                    onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") { submitTopic(topicSuggestions[0] ?? topicInput); }
-                      if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
-                    }}
-                    onFocus={() => setShowSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="Search a topic, e.g. art"
-                    style={{
-                      flex: 1, background: "none", border: "none", outline: "none",
-                      fontSize: 14, fontWeight: 400, color: "#333",
-                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    }}
-                  />
-                  <button
-                    onClick={() => submitTopic(topicSuggestions[0] ?? topicInput)}
-                    style={{
-                      background: "none", border: "none", padding: "0 4px",
-                      cursor: topicInput.trim() ? "pointer" : "default",
-                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                    }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7h10M8 3l4 4-4 4" stroke={topicInput.trim() ? "#333" : "#ccc"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+                  {/* Or try pills */}
+                  {!topicInput && inspirationPills.length > 0 && (
+                    <div style={{ marginTop: 18 }}>
+                      <span style={{ fontSize: 11, color: "#ccc", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                        or try
+                      </span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginTop: 10 }}>
+                        {inspirationPills.map(topic => {
+                          const color = TOPIC_COLORS[topic] ?? "#aaa";
+                          const dark = darkenColor(color);
+                          return (
+                            <button
+                              key={topic}
+                              onClick={() => submitTopic(topic)}
+                              style={{
+                                padding: "4px 10px 4px 8px", borderRadius: 20,
+                                background: `${color}18`, border: `1px solid ${color}44`,
+                                fontSize: 11, fontWeight: 700, color: dark,
+                                cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                                display: "flex", alignItems: "center", gap: 5,
+                                letterSpacing: "0.02em",
+                              }}
+                            >
+                              {topic.replace(/-/g, " ")}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Or try pills */}
-              {!topicInput && inspirationPills.length > 0 && (
-                <div style={{ marginTop: 18 }}>
-                  <span style={{ fontSize: 11, color: "#ccc", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                    or try
-                  </span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginTop: 10 }}>
-                    {inspirationPills.map(topic => {
-                      const color = TOPIC_COLORS[topic] ?? "#aaa";
-                      const dark = darkenColor(color);
-                      return (
-                        <button
-                          key={topic}
-                          onClick={() => submitTopic(topic)}
-                          style={{
-                            padding: "4px 10px 4px 8px", borderRadius: 20,
-                            background: `${color}18`, border: `1px solid ${color}44`,
-                            fontSize: 11, fontWeight: 700, color: dark,
-                            cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                            display: "flex", alignItems: "center", gap: 5,
-                            letterSpacing: "0.02em",
-                          }}
-                        >
-                          {topic.replace(/-/g, " ")}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                  {/* Scroll hint */}
+                  {!topicInput && onSetView && (
+                    <div style={{ marginTop: 28, fontSize: 13, color: "#ddd", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>↓</div>
+                  )}
+                </>
               )}
+            </div>
+          </div>
 
-              {onSetView && (
-                <div style={{ marginTop: 22 }}>
-                  <button
-                    onClick={() => onSetView("map")}
-                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.04em", textDecoration: "underline", textUnderlineOffset: 3 }}
-                  >
-                    or explore the map
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+          {/* Scroll-expand map preview */}
+          {!generatingTopic && onSetView && <MapPreviewSection onSetView={onSetView} />}
         </div>
 
         <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1 }}>
