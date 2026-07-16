@@ -418,11 +418,11 @@ export function BlobRadarView({
           ) : (
             /* Search state */
             <>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
-                What are we tracking?
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
+                Where emerging tech meets cultural shifts
               </div>
               <div style={{ fontSize: 13, color: "#999", lineHeight: 1.55, marginTop: 10, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
-                An interactive database of real-world signals tracking how emerging technology is reshaping consumer behavior.
+                Search or select a topic to see the forces transforming consumer behavior.
               </div>
               {/* Search input */}
               <div style={{ position: "relative", marginTop: 18 }}>
