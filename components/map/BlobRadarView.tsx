@@ -418,10 +418,6 @@ export function BlobRadarView({
               <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
                 What are we tracking?
               </div>
-              <div style={{ fontSize: 13, color: "#aaa", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic", marginTop: 6, lineHeight: 1.5 }}>
-                We map emerging tech against culture.
-              </div>
-
               {/* Search input */}
               <div style={{ position: "relative", marginTop: 18 }}>
 
@@ -520,6 +516,15 @@ export function BlobRadarView({
               )}
             </>
           )}
+        </div>
+
+        <div style={{ marginTop: 32, fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
+          We map emerging tech against culture.{" "}
+          By Martina from{" "}
+          <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
+            style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
+            Augmented Rarity
+          </a>.
         </div>
 
         <style>{`@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
