@@ -450,7 +450,8 @@ export function BlobRadarView({
 
                 <div style={{
                   display: "flex", alignItems: "center", gap: 8,
-                  background: "#f5f5f5", borderRadius: 28, padding: "10px 10px 10px 18px",
+                  background: "transparent", borderRadius: 28, padding: "10px 10px 10px 18px",
+                  border: "1.5px solid rgba(0,0,0,0.18)",
                 }}>
                   <input
                     ref={inputRef}
@@ -465,7 +466,7 @@ export function BlobRadarView({
                     placeholder="Search a culture topic to start"
                     style={{
                       flex: 1, background: "none", border: "none", outline: "none",
-                      fontSize: 14, fontWeight: 500, color: "#333",
+                      fontSize: 14, fontWeight: 400, color: "#333",
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                     }}
                   />
