@@ -50,6 +50,13 @@ function getDomain(topic: string): CulturalDomain {
   return TOPIC_TO_DOMAIN[topic] ?? "Work";
 }
 
+function getDomainForTrend(topics: string[] | undefined): CulturalDomain {
+  for (const t of topics ?? []) {
+    if (TOPIC_TO_DOMAIN[t]) return TOPIC_TO_DOMAIN[t];
+  }
+  return "Work";
+}
+
 // ── Cultural tensions ─────────────────────────────────────────────────────────
 
 const NEEDS = ["Control", "Connection", "Escape", "Recognition", "Authenticity", "Resilience"] as const;
@@ -223,7 +230,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   }, [dynamicTrends]);
 
   const enriched = useMemo(() => allTrends.map(t => ({
-    trend: t, domain: getDomain(t.topics?.[0] ?? ""), need: getTrendNeed(t),
+    trend: t, domain: getDomainForTrend(t.topics), need: getTrendNeed(t),
   })), [allTrends]);
 
   // Groups used by the radar chord lines
@@ -385,7 +392,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {[...selection.trends].sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)).map(t => {
-            const tDomain = getDomain(t.topics?.[0] ?? "");
+            const tDomain = getDomainForTrend(t.topics);
             const tNeed   = getTrendNeed(t);
             const color   = t.color || DOMAIN_COLORS[tDomain];
             return (
