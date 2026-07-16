@@ -362,14 +362,14 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               <>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: NEED_COLORS[selection.need], display: "inline-block", flexShrink: 0 }} />
                 <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.need}</span>
-                <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
+                <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} {selection.trends.length === 1 ? "trend" : "trends"}</span>
               </>
             )}
             {selection.type === "domain" && (
               <>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: DOMAIN_COLORS[selection.domain], display: "inline-block", flexShrink: 0 }} />
                 <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.domain}</span>
-                <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} trends</span>
+                <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} {selection.trends.length === 1 ? "trend" : "trends"}</span>
               </>
             )}
           </div>
@@ -501,7 +501,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             } as React.CSSProperties}
           >
             <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{need}</div>
-            <div style={{ fontSize: Math.max(6, fs * 0.78), color: "rgba(255,255,255,0.7)", fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} trends</div>
+            <div style={{ fontSize: Math.max(6, fs * 0.78), color: "rgba(255,255,255,0.7)", fontFamily: "'DM Sans', sans-serif", marginTop: 1 }}>{needTrends.length} {needTrends.length === 1 ? "trend" : "trends"}</div>
           </div>
         );
       })}
@@ -542,7 +542,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             } as React.CSSProperties}
           >
             <div style={{ fontSize: fs, fontWeight: 800, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>{domain}</div>
-            <div style={{ fontSize: Math.max(7, fs * 0.78), color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{domainTrends.length} trends</div>
+            <div style={{ fontSize: Math.max(7, fs * 0.78), color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{domainTrends.length} {domainTrends.length === 1 ? "trend" : "trends"}</div>
           </div>
         );
       })}
