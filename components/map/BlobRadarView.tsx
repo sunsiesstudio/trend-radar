@@ -408,13 +408,13 @@ export function BlobRadarView({
         {/* Animated blob background */}
         <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
           {([
-            { color: "#80B0E8", size: 300, x: -4,  y: 5,   dur: 26, br: "60% 40% 70% 30%/50% 60% 40% 70%" },
-            { color: "#FFC0C0", size: 280, x: 104, y: 8,   dur: 33, br: "50% 70% 40% 60%/60% 30% 70% 40%" },
-            { color: "#D6D35F", size: 260, x: -4,  y: 92,  dur: 21, br: "70% 30% 50% 50%/40% 60% 50% 60%" },
-            { color: "#C45F3F", size: 300, x: 104, y: 88,  dur: 38, br: "40% 60% 60% 40%/70% 40% 60% 30%" },
-            { color: "#D1CAEA", size: 220, x: 50,  y: -4,  dur: 29, br: "55% 45% 65% 35%/45% 55% 45% 55%" },
-            { color: "#F4D242", size: 220, x: 50,  y: 104, dur: 32, br: "45% 55% 35% 65%/55% 45% 65% 35%" },
-          ] as { color: string; size: number; x: number; y: number; dur: number; br: string }[]).map((b, i) => (
+            { color: "#80B0E8", size: 300, x: -4,  y: 5,   dur: 26, seed: "bg-blob-sky" },
+            { color: "#FFC0C0", size: 280, x: 104, y: 8,   dur: 33, seed: "bg-blob-peony" },
+            { color: "#D6D35F", size: 260, x: -4,  y: 92,  dur: 21, seed: "bg-blob-lime" },
+            { color: "#C45F3F", size: 300, x: 104, y: 88,  dur: 38, seed: "bg-blob-tomato" },
+            { color: "#D1CAEA", size: 220, x: 50,  y: -4,  dur: 29, seed: "bg-blob-lavender" },
+            { color: "#F4D242", size: 220, x: 50,  y: 104, dur: 32, seed: "bg-blob-sun" },
+          ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
             <div key={i} style={{
               position: "absolute",
               width: b.size, height: b.size,
@@ -425,7 +425,7 @@ export function BlobRadarView({
               opacity: 0.35,
               filter: "none",
               animation: `homeBlobDrift${i} ${b.dur}s ease-in-out infinite alternate`,
-              borderRadius: b.br,
+              borderRadius: blobFromId(b.seed),
             }} />
           ))}
         </div>
