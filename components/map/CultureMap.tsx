@@ -589,6 +589,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       generatingTopic={generatingTopic}
       onAddTopic={onAddTopic}
       onRemoveTopic={onRemoveTopic}
+      onSetView={onSetView}
       onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}
       onSelectSignal={(sig) => {
         setActiveSignal(sig);

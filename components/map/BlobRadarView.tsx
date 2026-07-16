@@ -297,12 +297,13 @@ interface Props {
   onRemoveTopic: (topic: string) => void;
   onSelectTrend?: (trend: Trend) => void;
   onSelectSignal?: (signal: Signal) => void;
+  onSetView?: (v: "map" | "radar") => void;
 }
 
 export function BlobRadarView({
   trends, signals, topicAddedAt = {},
   activeTopics, generatingTopic, onAddTopic, onRemoveTopic,
-  onSelectTrend, onSelectSignal,
+  onSelectTrend, onSelectSignal, onSetView,
 }: Props) {
   const fitViewRef = useRef<(() => void) | null>(null);
   // -1 = overview (zoomed out); >= 0 = focused on that trend
@@ -539,6 +540,17 @@ export function BlobRadarView({
                       );
                     })}
                   </div>
+                </div>
+              )}
+
+              {onSetView && (
+                <div style={{ marginTop: 22 }}>
+                  <button
+                    onClick={() => onSetView("map")}
+                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.04em", textDecoration: "underline", textUnderlineOffset: 3 }}
+                  >
+                    or explore the map
+                  </button>
                 </div>
               )}
             </>
