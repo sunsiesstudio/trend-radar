@@ -300,90 +300,6 @@ interface Props {
   onSetView?: (v: "map" | "radar") => void;
 }
 
-// ── Map preview (scroll-expand animation on home screen) ─────────────────────
-
-const MAP_PREVIEW_DOMAINS = [
-  { name: "Body",      color: "#F5ADBE" },
-  { name: "Home",      color: "#E8B87A" },
-  { name: "Work",      color: "#80B0E8" },
-  { name: "Play",      color: "#F4D242" },
-  { name: "Style",     color: "#D1CAEA" },
-  { name: "Food",      color: "#C4733E" },
-  { name: "Community", color: "#008471" },
-  { name: "Mind",      color: "#9DC47C" },
-  { name: "Nature",    color: "#D6D35F" },
-];
-const MAP_PREVIEW_NEEDS = [
-  { name: "Control",      color: "#C45F3F" },
-  { name: "Connection",   color: "#FFC0C0" },
-  { name: "Escape",       color: "#9298C8" },
-  { name: "Recognition",  color: "#E8C840" },
-  { name: "Authenticity", color: "#5BBFA2" },
-  { name: "Resilience",   color: "#898E46" },
-];
-
-function MapPreviewSection({ onSetView }: { onSetView: (v: "map" | "radar") => void }) {
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setExpanded(true), 500);
-    return () => clearTimeout(t);
-  }, []);
-
-  const W = 300, H = 280;
-  const cx = W / 2, cy = H / 2;
-  const outerRx = 126, outerRy = 106;
-  const innerRx = outerRx * 0.43, innerRy = outerRy * 0.43;
-  const DOM_R = 20, NEED_R = 13;
-
-  return (
-    <div
-      onClick={() => onSetView("map")}
-      style={{ padding: "16px 24px 64px", display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
-    >
-      <div style={{ fontSize: 10, color: "#ccc", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 20, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-        tap to explore the map
-      </div>
-      <div style={{ position: "relative", width: W, height: H, maxWidth: "calc(100vw - 48px)", flexShrink: 0 }}>
-        {MAP_PREVIEW_DOMAINS.map(({ name, color }, i) => {
-          const angle = (i / MAP_PREVIEW_DOMAINS.length) * Math.PI * 2 - Math.PI / 2;
-          const tx = cx + outerRx * Math.cos(angle) - DOM_R;
-          const ty = cy + outerRy * Math.sin(angle) - DOM_R;
-          const sx = cx - DOM_R;
-          const sy = cy - DOM_R;
-          return (
-            <div key={name} style={{
-              position: "absolute", left: 0, top: 0,
-              width: DOM_R * 2, height: DOM_R * 2,
-              background: color + "dd",
-              borderRadius: blobFromId(`mprev-d-${name}`),
-              transform: `translate(${expanded ? tx : sx}px, ${expanded ? ty : sy}px)`,
-              transition: `transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 45}ms`,
-            }} />
-          );
-        })}
-        {MAP_PREVIEW_NEEDS.map(({ name, color }, i) => {
-          const angle = (i / MAP_PREVIEW_NEEDS.length) * Math.PI * 2 - Math.PI / 2;
-          const tx = cx + innerRx * Math.cos(angle) - NEED_R;
-          const ty = cy + innerRy * Math.sin(angle) - NEED_R;
-          const sx = cx - NEED_R;
-          const sy = cy - NEED_R;
-          return (
-            <div key={name} style={{
-              position: "absolute", left: 0, top: 0,
-              width: NEED_R * 2, height: NEED_R * 2,
-              background: color + "bb",
-              borderRadius: blobFromId(`mprev-n-${name}`),
-              transform: `translate(${expanded ? tx : sx}px, ${expanded ? ty : sy}px)`,
-              transition: `transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) ${100 + i * 55}ms`,
-            }} />
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export function BlobRadarView({
   trends, signals, topicAddedAt = {},
   activeTopics, generatingTopic, onAddTopic, onRemoveTopic,
@@ -516,13 +432,8 @@ export function BlobRadarView({
             }} />
           ))}
         </div>
-        <div
-          style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" as const, position: "relative", zIndex: 1 }}
-          onScroll={(e) => { if (e.currentTarget.scrollTop > 55 && onSetView) onSetView("map"); }}
-        >
-          {/* First screen — centered search content, leaves 100px so map preview peeks */}
-          <div style={{ minHeight: "calc(100% - 100px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 32px 40px" }}>
-            <div style={{ textAlign: "center", width: "100%", maxWidth: 460 }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
               {generatingTopic ? (
                 /* Loading state */
@@ -635,17 +546,19 @@ export function BlobRadarView({
                     </div>
                   )}
 
-                  {/* Scroll hint */}
-                  {!topicInput && onSetView && (
-                    <div style={{ marginTop: 28, fontSize: 13, color: "#ddd", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>↓</div>
+                  {onSetView && (
+                    <div style={{ marginTop: 22 }}>
+                      <button
+                        onClick={() => onSetView("map")}
+                        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.04em", textDecoration: "underline", textUnderlineOffset: 3 }}
+                      >
+                        or explore the map
+                      </button>
+                    </div>
                   )}
                 </>
               )}
-            </div>
-          </div>
-
-          {/* Scroll-expand map preview */}
-          {!generatingTopic && onSetView && <MapPreviewSection onSetView={onSetView} />}
+        </div>
         </div>
 
         <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1 }}>
