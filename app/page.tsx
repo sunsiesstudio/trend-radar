@@ -266,7 +266,7 @@ export default function HomePage() {
           setGeneratedSignals([]);
           setView("radar");
         }} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", gap: 1, flexShrink: 0 }}>
-          <span style={{ fontSize: isDesktop ? 18 : 16, fontWeight: 400, letterSpacing: "-0.02em", color: "#111", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1 }}>
+          <span style={{ fontSize: isDesktop ? 18 : 16, fontWeight: 700, letterSpacing: "-0.02em", color: "#111", fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1 }}>
             Augmented Culture
           </span>
           {isDesktop && (
