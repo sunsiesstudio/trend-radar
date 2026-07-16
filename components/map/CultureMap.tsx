@@ -177,14 +177,18 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const [isMobile,     setIsMobile]     = useState(false);
   const [sheetOffset,  setSheetOffset]  = useState(0);
   const [mapScale,     setMapScale]     = useState(1);
+  const [mapOffset,    setMapOffset]    = useState({ x: 0, y: 0 });
   const touchStartY       = useRef<number>(0);
   const isDragging        = useRef(false);
   const sheetOffsetRef    = useRef(0);
   const clearSelectionRef = useRef<() => void>(() => {});
   const pinchRef          = useRef<{ dist: number; scale: number } | null>(null);
+  const singleTouchRef    = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const mouseStartRef     = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const didDragMap        = useRef(false);
 
-  // Clear panel state and reset zoom when switching views
-  useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); }, [view]);
+  // Clear panel state and reset zoom/pan when switching views
+  useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); setMapOffset({ x: 0, y: 0 }); }, [view]);
 
   // Wheel zoom on map
   useEffect(() => {
@@ -422,27 +426,54 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const onPinchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
+      singleTouchRef.current = null;
       const dx = e.touches[1].clientX - e.touches[0].clientX;
       const dy = e.touches[1].clientY - e.touches[0].clientY;
       pinchRef.current = { dist: Math.hypot(dx, dy), scale: mapScale };
+    } else if (e.touches.length === 1) {
+      singleTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, ox: mapOffset.x, oy: mapOffset.y };
     }
   };
   const onPinchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && pinchRef.current) {
+      singleTouchRef.current = null;
       const dx = e.touches[1].clientX - e.touches[0].clientX;
       const dy = e.touches[1].clientY - e.touches[0].clientY;
       const dist = Math.hypot(dx, dy);
       setMapScale(Math.min(3, Math.max(0.35, pinchRef.current.scale * (dist / pinchRef.current.dist))));
+    } else if (e.touches.length === 1 && singleTouchRef.current && !pinchRef.current) {
+      setMapOffset({
+        x: singleTouchRef.current.ox + e.touches[0].clientX - singleTouchRef.current.x,
+        y: singleTouchRef.current.oy + e.touches[0].clientY - singleTouchRef.current.y,
+      });
     }
   };
-  const onPinchEnd = () => { pinchRef.current = null; };
+  const onPinchEnd = () => { pinchRef.current = null; singleTouchRef.current = null; };
+
+  const onMapMouseDown = (e: React.MouseEvent) => {
+    mouseStartRef.current = { x: e.clientX, y: e.clientY, ox: mapOffset.x, oy: mapOffset.y };
+    didDragMap.current = false;
+  };
+  const onMapMouseMove = (e: React.MouseEvent) => {
+    if (!mouseStartRef.current) return;
+    const dx = e.clientX - mouseStartRef.current.x;
+    const dy = e.clientY - mouseStartRef.current.y;
+    if (!didDragMap.current && Math.hypot(dx, dy) > 4) didDragMap.current = true;
+    if (didDragMap.current) setMapOffset({ x: mouseStartRef.current.ox + dx, y: mouseStartRef.current.oy + dy });
+  };
+  const onMapMouseUp = () => { mouseStartRef.current = null; };
 
   const svgMap = (
     <div
       onTouchStart={onPinchStart}
       onTouchMove={onPinchMove}
       onTouchEnd={onPinchEnd}
-      style={{ position: "absolute", inset: 0, transform: `scale(${mapScale})`, transformOrigin: "50% 50%" }}
+      onMouseDown={onMapMouseDown}
+      onMouseMove={onMapMouseMove}
+      onMouseUp={onMapMouseUp}
+      onMouseLeave={onMapMouseUp}
+      onClickCapture={(e) => { if (didDragMap.current) { e.stopPropagation(); didDragMap.current = false; } }}
+      style={{ position: "absolute", inset: 0, transform: `translate(${mapOffset.x}px, ${mapOffset.y}px) scale(${mapScale})`, transformOrigin: "50% 50%", cursor: mouseStartRef.current ? "grabbing" : "grab" }}
     >
       {/* SVG — connection lines only; pointer-events off so HTML blobs receive clicks */}
       <svg width={w} height={h} style={{ position: "absolute", inset: 0, display: "block", pointerEvents: "none" }}>
