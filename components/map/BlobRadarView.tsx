@@ -19,8 +19,8 @@ function colorFromId(id: string): string {
   for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
   h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
   const hue = h % 360;
-  const sat = 45 + ((h >> 8) % 30);
-  const lit = 42 + ((h >> 16) % 22);
+  const sat = 68 + ((h >> 8) % 22);   // 68–90% — vivid
+  const lit = 46 + ((h >> 16) % 12);  // 46–58% — never too light or too dark
   const s = sat / 100, l = lit / 100;
   const c = (1 - Math.abs(2 * l - 1)) * s;
   const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
@@ -102,8 +102,8 @@ type TrendNodeData = { id: string; name: string; color: string; score: number; d
 type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  // Higher relevance = brighter shade; range 0.48–0.80
-  const blobColor = darkenColor(data.color, 0.48 + (data.score / 100) * 0.32);
+  // Higher relevance = slightly brighter; keep colors vivid (range 0.78–0.92)
+  const blobColor = darkenColor(data.color, 0.78 + (data.score / 100) * 0.14);
   const tap = useTapHandlers(data.onTap);
   return (
     <div
