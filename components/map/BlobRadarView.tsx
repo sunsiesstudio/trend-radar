@@ -475,15 +475,12 @@ export function BlobRadarView({
                   <button
                     onClick={() => submitTopic(topicSuggestions[0] ?? topicInput)}
                     style={{
-                      width: 34, height: 34, borderRadius: "50%",
-                      background: "transparent",
-                      border: `1.5px solid ${topicInput.trim() ? "rgba(0,0,0,0.25)" : "rgba(0,0,0,0.1)"}`,
+                      background: "none", border: "none", padding: "0 4px",
                       cursor: topicInput.trim() ? "pointer" : "default",
                       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                      transition: "border-color 0.15s",
                     }}
                   >
-                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
                       <path d="M2 7h10M8 3l4 4-4 4" stroke={topicInput.trim() ? "#333" : "#ccc"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
