@@ -355,7 +355,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const listContent = selection && (selection.type === "need" || selection.type === "domain") && (
     <>
-      <div style={{ padding: "16px 20px 12px", flexShrink: 0, borderBottom: "1px solid #f0ede8", background: "#fff" }}>
+      <div style={{ padding: "16px 20px 12px", flexShrink: 0, borderBottom: "1px solid #f0ede8", background: "#fbfbf0" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {selection.type === "need" && (
@@ -611,7 +611,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         {!isMobile && (selection || activeSignal) && (
           <div style={{
             width: "38vw", minWidth: 300, maxWidth: 540, flexShrink: 0,
-            background: "#fff", borderLeft: "1px solid rgba(0,0,0,0.07)",
+            background: "#fbfbf0", borderLeft: "1px solid rgba(0,0,0,0.07)",
             display: "flex", flexDirection: "column", overflowY: "auto",
           }}>
             {renderSidebarBody()}
@@ -623,7 +623,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         <div style={{
           flexShrink: 0, padding: "7px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          borderTop: "1px solid rgba(0,0,0,0.05)", background: "#fff",
+          borderTop: "1px solid rgba(0,0,0,0.05)", background: "#fbfbf0",
         }}>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{footerHints[view]}</span>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{allTrends.length} trends mapped</span>
@@ -636,7 +636,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           <div onClick={clearSelection}
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }} />
           <div ref={sheetRef} style={{
-            position: "fixed", left: 0, right: 0, bottom: 0, background: "#fff",
+            position: "fixed", left: 0, right: 0, bottom: 0, background: "#fbfbf0",
             borderRadius: "20px 20px 0 0", height: "calc(100svh - 56px)",
             display: "flex", flexDirection: "column", overflow: "hidden",
             zIndex: 201, boxShadow: "0 -8px 48px rgba(0,0,0,0.2)",
