@@ -269,26 +269,7 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* View toggle — centered */}
-        <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 1, background: "rgba(0,0,0,0.06)", borderRadius: 24, padding: 3 }}>
-            {(["Radar", "Map"] as const).map(v => {
-              const active = view === v.toLowerCase();
-              return (
-                <button key={v} onClick={() => setView(v.toLowerCase() as "radar" | "map")} style={{
-                  padding: "5px 18px", borderRadius: 20, border: "none", cursor: "pointer",
-                  fontSize: 11, fontWeight: active ? 700 : 500,
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  letterSpacing: "0.04em",
-                  background: active ? "#fff" : "transparent",
-                  color: active ? "#111" : "#999",
-                  boxShadow: active ? "0 1px 4px rgba(0,0,0,0.10)" : "none",
-                  transition: "all 0.18s",
-                }}>{v}</button>
-              );
-            })}
-          </div>
-        </div>
+        <div style={{ flex: 1 }} />
 
         {/* Right side */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
@@ -368,6 +349,25 @@ export default function HomePage() {
               generating…
             </span>
           )}
+
+          {/* View toggle — right side of filter bar */}
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 1, background: "rgba(0,0,0,0.06)", borderRadius: 20, padding: 2 }}>
+            {(["Radar", "Map"] as const).map(v => {
+              const active = view === v.toLowerCase();
+              return (
+                <button key={v} onClick={() => setView(v.toLowerCase() as "radar" | "map")} style={{
+                  padding: "4px 13px", borderRadius: 16, border: "none", cursor: "pointer",
+                  fontSize: 10, fontWeight: active ? 700 : 500,
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  letterSpacing: "0.04em",
+                  background: active ? "#fff" : "transparent",
+                  color: active ? "#111" : "#999",
+                  boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.18s",
+                }}>{v}</button>
+              );
+            })}
+          </div>
         </div>
       )}
 
