@@ -152,7 +152,7 @@ function buildGraph(trends: Trend[], signals: Signal[], topicAddedAt: Record<str
       .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
     const topicKey = trend.topics?.[0];
     const latestDate = topicKey ? topicAddedAt[topicKey] : undefined;
-    const color = TOPIC_COLORS[topicKey ?? ""] ?? trend.color ?? "#888";
+    const color = trend.color ?? TOPIC_COLORS[topicKey ?? ""] ?? "#888";
     const d = Math.round(75 + ((trend.relevanceScore ?? 50) / 100) * 140);
     const cx = pos.x + CIRCLE_D / 2;
     const cy = pos.y + CIRCLE_D / 2;
