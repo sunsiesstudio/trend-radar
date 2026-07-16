@@ -546,7 +546,7 @@ export function BlobRadarView({
         </div>
 
         <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6 }}>
-          mapping emerging tech against culture.<br />
+          Mapping emerging tech against culture.<br />
           By Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
             style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
