@@ -186,6 +186,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const singleTouchRef    = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   const mouseStartRef     = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   const didDragMap        = useRef(false);
+  const pullStartY        = useRef<number | null>(null);
 
   // Clear panel state and reset zoom/pan when switching views
   useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); setMapOffset({ x: 0, y: 0 }); }, [view]);
@@ -635,6 +636,22 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
           {view === "map"   ? svgMap    : null}
           {view === "radar" ? blobRadar : null}
+
+          {/* Pull-to-home handle — shown on full-database map (no active topics) */}
+          {view === "map" && !dynamicTrends.length && onSetView && (
+            <div
+              style={{ position: "absolute", top: 0, left: 0, right: 0, height: 44, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+              onTouchStart={(e) => { pullStartY.current = e.touches[0].clientY; }}
+              onTouchEnd={(e) => {
+                const dy = e.changedTouches[0].clientY - (pullStartY.current ?? 0);
+                pullStartY.current = null;
+                if (dy > 20) onSetView("radar");
+              }}
+              onClick={() => onSetView("radar")}
+            >
+              <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(0,0,0,0.13)" }} />
+            </div>
+          )}
         </div>
 
         {/* Desktop right sidebar */}

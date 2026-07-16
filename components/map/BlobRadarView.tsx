@@ -323,18 +323,11 @@ const MAP_PREVIEW_NEEDS = [
 ];
 
 function MapPreviewSection({ onSetView }: { onSetView: (v: "map" | "radar") => void }) {
-  const ref = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setExpanded(true); },
-      { threshold: 0.25 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const t = setTimeout(() => setExpanded(true), 500);
+    return () => clearTimeout(t);
   }, []);
 
   const W = 300, H = 280;
@@ -345,7 +338,6 @@ function MapPreviewSection({ onSetView }: { onSetView: (v: "map" | "radar") => v
 
   return (
     <div
-      ref={ref}
       onClick={() => onSetView("map")}
       style={{ padding: "16px 24px 64px", display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
     >
@@ -524,9 +516,12 @@ export function BlobRadarView({
             }} />
           ))}
         </div>
-        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" as const, position: "relative", zIndex: 1 }}>
-          {/* First screen — centered search content */}
-          <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 32px 40px" }}>
+        <div
+          style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" as const, position: "relative", zIndex: 1 }}
+          onScroll={(e) => { if (e.currentTarget.scrollTop > 55 && onSetView) onSetView("map"); }}
+        >
+          {/* First screen — centered search content, leaves 100px so map preview peeks */}
+          <div style={{ minHeight: "calc(100% - 100px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 32px 40px" }}>
             <div style={{ textAlign: "center", width: "100%", maxWidth: 460 }}>
 
               {generatingTopic ? (
