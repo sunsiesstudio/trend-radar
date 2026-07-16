@@ -561,18 +561,18 @@ export function BlobRadarView({
         }}>
           <button
             onClick={prev}
-            disabled={isOverview}
+            disabled={isOverview || safeIdx <= 0}
             style={{
               width: 36, height: 36, borderRadius: "50%",
-              background: isOverview ? "transparent" : "#a2a2c8",
-              border: "none",
-              cursor: isOverview ? "default" : "pointer",
+              background: "transparent",
+              border: (isOverview || safeIdx <= 0) ? "1.5px solid rgba(0,0,0,0.08)" : "1.5px solid rgba(0,0,0,0.18)",
+              cursor: (isOverview || safeIdx <= 0) ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0, transition: "all 0.15s",
             }}
           >
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7L9 12" stroke={isOverview ? "#ccc" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 2L4 7L9 12" stroke={(isOverview || safeIdx <= 0) ? "#ccc" : "#333"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
 
@@ -598,8 +598,8 @@ export function BlobRadarView({
             disabled={!isOverview && safeIdx === sorted.length - 1}
             style={{
               width: 36, height: 36, borderRadius: "50%",
-              background: (!isOverview && safeIdx === sorted.length - 1) ? "transparent" : "#a2a2c8",
-              border: "none",
+              background: "transparent",
+              border: (!isOverview && safeIdx === sorted.length - 1) ? "1.5px solid rgba(0,0,0,0.08)" : "1.5px solid rgba(0,0,0,0.18)",
               cursor: (!isOverview && safeIdx === sorted.length - 1) ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0, transition: "all 0.15s",
@@ -607,7 +607,7 @@ export function BlobRadarView({
           >
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
               <path d="M5 2L10 7L5 12"
-                stroke={(!isOverview && safeIdx === sorted.length - 1) ? "#ccc" : "#fff"}
+                stroke={(!isOverview && safeIdx === sorted.length - 1) ? "#ccc" : "#333"}
                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
