@@ -421,6 +421,9 @@ export function BlobRadarView({
               <div style={{ fontSize: 20, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em" }}>
                 What are we tracking?
               </div>
+              <div style={{ fontSize: 13, color: "#999", lineHeight: 1.55, marginTop: 10, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>
+                An interactive database of real-world signals tracking how emerging technology is reshaping consumer behavior.
+              </div>
               {/* Search input */}
               <div style={{ position: "relative", marginTop: 18 }}>
 
