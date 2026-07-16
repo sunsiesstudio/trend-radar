@@ -597,8 +597,13 @@ export function BlobRadarView({
               </div>
             ) : (
               <>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
-                  {focusTrend?.name}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  {focusTrend?.color && (
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: focusTrend.color, flexShrink: 0, display: "inline-block" }} />
+                  )}
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
+                    {focusTrend?.name}
+                  </div>
                 </div>
                 <div style={{ fontSize: 10, color: "#bbb", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   {safeIdx + 1} / {sorted.length}
