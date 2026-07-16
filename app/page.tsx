@@ -294,8 +294,12 @@ export default function HomePage() {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setShowAddMenu(m => !m)}
-              style={{ width: 34, height: 34, borderRadius: "50%", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", color: "#333", fontSize: 21, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, fontWeight: 300, transition: "all 0.15s" }}
-            >+</button>
+              style={{ width: 34, height: 34, borderRadius: "50%", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+            >
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M6.5 1v11M1 6.5h11" stroke="#333" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
             {showAddMenu && (
               <>
                 <div onClick={() => setShowAddMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 40 }} />
