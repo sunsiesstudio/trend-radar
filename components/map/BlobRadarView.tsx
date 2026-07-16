@@ -402,7 +402,7 @@ export function BlobRadarView({
 
   if (trends.length === 0) {
     return (
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#F5F2EC" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fbfbf0" }}>
         <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
           {generatingTopic ? (
@@ -542,7 +542,7 @@ export function BlobRadarView({
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#F5F2EC" }}
+          style={{ background: "#fbfbf0" }}
         >
           <BoardController fitViewRef={fitViewRef} />
           <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} trendsKey={trendsKey} />
