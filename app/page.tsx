@@ -333,7 +333,7 @@ export default function HomePage() {
           display: "flex", alignItems: "center", gap: 8, zIndex: 9,
         }}>
           <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
-            tech &amp;
+            Emerging tech &amp;
           </span>
           {appliedTopics.map(topic => {
             const color = TOPIC_COLORS[topic] ?? "#aaa";
