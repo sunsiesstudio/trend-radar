@@ -540,9 +540,24 @@ export function BlobRadarView({
   }
 
   const isOverview = safeIdx < 0;
+  const breadcrumbTopic = activeTopics[0] ? activeTopics[0].replace(/-/g, " ") : null;
 
   return (
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
+      {/* Breadcrumb */}
+      {!isOverview && focusTrend && breadcrumbTopic && (
+        <div style={{
+          flexShrink: 0, padding: "8px 18px",
+          display: "flex", alignItems: "center", gap: 6,
+          fontSize: 11, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          borderBottom: "1px solid rgba(0,0,0,0.05)",
+          background: "rgba(248,247,243,0.96)", backdropFilter: "blur(12px)",
+        }}>
+          <span style={{ color: "#aaa", textTransform: "capitalize" }}>{breadcrumbTopic}</span>
+          <span style={{ color: "#ccc" }}>›</span>
+          <span style={{ color: "#555", fontWeight: 600 }}>{focusTrend.name}</span>
+        </div>
+      )}
       {/* ReactFlow canvas */}
       <div style={{ flex: 1, position: "relative" }}>
         <ReactFlow
