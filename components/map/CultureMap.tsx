@@ -611,7 +611,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         {!isMobile && (selection || activeSignal) && (
           <div style={{
             width: "38vw", minWidth: 300, maxWidth: 540, flexShrink: 0,
-            background: "#f8f7f3", borderLeft: "1px solid #dcd7c3",
+            background: "#f8f7f3", borderLeft: "1px solid rgba(0,0,0,0.07)",
             display: "flex", flexDirection: "column", overflowY: "auto",
           }}>
             {renderSidebarBody()}
@@ -623,7 +623,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         <div style={{
           flexShrink: 0, padding: "7px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          borderTop: "1px solid #dcd7c3", background: "#f8f7f3",
+          borderTop: "1px solid rgba(0,0,0,0.05)", background: "#f8f7f3",
         }}>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{footerHints[view]}</span>
           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "'DM Sans', sans-serif" }}>{allTrends.length} trends mapped</span>

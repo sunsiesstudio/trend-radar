@@ -451,7 +451,7 @@ export function BlobRadarView({
                 <div style={{
                   display: "flex", alignItems: "center", gap: 8,
                   background: "transparent", borderRadius: 28, padding: "10px 10px 10px 18px",
-                  border: "1.5px solid #dcd7c3",
+                  border: "1.5px solid rgba(0,0,0,0.18)",
                 }}>
                   <input
                     ref={inputRef}
@@ -568,7 +568,7 @@ export function BlobRadarView({
           padding: "10px 16px",
           paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
           background: "rgba(248,247,243,0.96)", backdropFilter: "blur(18px)",
-          borderTop: "1px solid #dcd7c3",
+          borderTop: "1px solid rgba(0,0,0,0.06)",
           gap: 12,
         }}>
           <button
