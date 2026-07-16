@@ -556,7 +556,7 @@ export function BlobRadarView({
           display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "10px 16px",
           paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
-          background: "rgba(245,242,236,0.96)", backdropFilter: "blur(18px)",
+          background: "rgba(248,247,243,0.96)", backdropFilter: "blur(18px)",
           borderTop: "1px solid rgba(0,0,0,0.06)",
           gap: 12,
         }}>

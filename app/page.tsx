@@ -253,7 +253,7 @@ export default function HomePage() {
       <div style={{
         flexShrink: 0, height: isDesktop ? 60 : 52, padding: "0 20px",
         display: "flex", alignItems: "center", gap: 14,
-        background: "rgba(245,242,236,0.96)", backdropFilter: "blur(18px)",
+        background: "rgba(248,247,243,0.96)", backdropFilter: "blur(18px)",
         borderBottom: "1px solid rgba(0,0,0,0.06)", zIndex: 10,
       }}>
 
