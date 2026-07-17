@@ -516,119 +516,111 @@ export function BlobRadarView({
             </div>
           ) : (
             <div style={{
-              display: "flex", flexDirection: isDesktop ? "row" : "column",
-              alignItems: isDesktop ? "center" : "stretch",
-              gap: isDesktop ? 72 : 0,
-              width: "100%", maxWidth: isDesktop ? 980 : 460,
-              padding: isDesktop ? "0 64px" : "0 32px",
-              boxSizing: "border-box",
+              textAlign: "center",
+              width: "100%", maxWidth: isDesktop ? 620 : 460,
+              padding: "0 32px", boxSizing: "border-box",
             }}>
-
-              {/* Title — left col on desktop, top on mobile */}
-              <div style={{ flex: isDesktop ? "0 0 auto" : undefined, width: isDesktop ? "42%" : "100%", textAlign: isDesktop ? "left" : "center" }}>
-                <div style={{ fontSize: isDesktop ? 52 : 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.12 }}>
-                  {isDesktop
-                    ? <>A research tool<br />to identify emerging<br />tech trends in culture</>
-                    : "A research tool to identify emerging tech trends in culture"}
-                </div>
+              {/* Title */}
+              <div style={{ fontSize: isDesktop ? 48 : 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+                {isDesktop
+                  ? <>A research tool to identify<br />emerging tech trends in culture</>
+                  : "A research tool to identify emerging tech trends in culture"}
               </div>
 
-              {/* Search + pills — right col on desktop, below on mobile */}
-              <div style={{ flex: 1, marginTop: isDesktop ? 0 : 18 }}>
-                {/* Search input */}
-                <div style={{ position: "relative" }}>
-                  {showSuggestions && topicSuggestions.length > 0 && (
-                    <div style={{
-                      position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
-                      background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 280, overflowY: "auto", padding: "6px 0",
-                      overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" as const,
-                    }}>
-                      {topicSuggestions.map(topic => (
-                        <button
-                          key={topic}
-                          onPointerDown={(e) => { e.preventDefault(); submitTopic(topic); }}
-                          style={{
-                            display: "flex", alignItems: "center", gap: 10,
-                            width: "100%", padding: "9px 16px",
-                            background: "none", border: "none", cursor: "pointer",
-                            textAlign: "left", fontSize: 12, fontWeight: 600,
-                            color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                          }}
-                        >
-                          <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
-                          {topic.replace(/-/g, " ")}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+              {/* Search input */}
+              <div style={{ position: "relative", marginTop: isDesktop ? 28 : 18 }}>
+                {showSuggestions && topicSuggestions.length > 0 && (
                   <div style={{
-                    display: "flex", alignItems: "center", gap: 8,
-                    background: "transparent", borderRadius: 28, padding: "10px 10px 10px 18px",
-                    border: "1.5px solid rgba(0,0,0,0.18)",
+                    position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
+                    background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)", maxHeight: 280, overflowY: "auto", padding: "6px 0",
+                    overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" as const,
                   }}>
-                    <input
-                      ref={inputRef}
-                      value={topicInput}
-                      onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") { submitTopic(topicSuggestions[0] ?? topicInput); }
-                        if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
-                      }}
-                      onFocus={() => setShowSuggestions(true)}
-                      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                      placeholder="Start by searching a topic, e.g. art"
-                      style={{
-                        flex: 1, background: "none", border: "none", outline: "none",
-                        fontSize: 14, fontWeight: 400, color: "#333",
-                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      }}
-                    />
-                    <button
-                      onClick={() => submitTopic(topicSuggestions[0] ?? topicInput)}
-                      style={{
-                        background: "none", border: "none", padding: "0 4px",
-                        cursor: topicInput.trim() ? "pointer" : "default",
-                        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
-                        <path d="M2 7h10M8 3l4 4-4 4" stroke={topicInput.trim() ? "#333" : "#ccc"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Or try pills */}
-                {!topicInput && inspirationPills.length > 0 && (
-                  <div style={{ marginTop: 14 }}>
-                    <span style={{ fontSize: 11, color: "#ccc", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                      or try
-                    </span>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isDesktop ? "flex-start" : "center", marginTop: 10 }}>
-                      {inspirationPills.map(topic => {
-                        const color = TOPIC_COLORS[topic] ?? "#aaa";
-                        const dark = darkenColor(color);
-                        return (
-                          <button
-                            key={topic}
-                            onClick={() => submitTopic(topic)}
-                            style={{
-                              padding: "5px 12px", borderRadius: 20,
-                              background: `${color}18`, border: `1px solid ${color}44`,
-                              fontSize: 11, fontWeight: 700, color: dark,
-                              cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                              letterSpacing: "0.02em",
-                            }}
-                          >
-                            {topic.replace(/-/g, " ")}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    {topicSuggestions.map(topic => (
+                      <button
+                        key={topic}
+                        onPointerDown={(e) => { e.preventDefault(); submitTopic(topic); }}
+                        style={{
+                          display: "flex", alignItems: "center", gap: 10,
+                          width: "100%", padding: "9px 16px",
+                          background: "none", border: "none", cursor: "pointer",
+                          textAlign: "left", fontSize: 12, fontWeight: 600,
+                          color: "#222", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        }}
+                      >
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: TOPIC_COLORS[topic] ?? "#ccc", flexShrink: 0, display: "inline-block" }} />
+                        {topic.replace(/-/g, " ")}
+                      </button>
+                    ))}
                   </div>
                 )}
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  background: "transparent", borderRadius: 28,
+                  padding: isDesktop ? "12px 12px 12px 22px" : "10px 10px 10px 18px",
+                  border: "1.5px solid rgba(0,0,0,0.18)",
+                }}>
+                  <input
+                    ref={inputRef}
+                    value={topicInput}
+                    onChange={(e) => { setTopicInput(e.target.value); setShowSuggestions(true); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") { submitTopic(topicSuggestions[0] ?? topicInput); }
+                      if (e.key === "Escape") { setTopicInput(""); setShowSuggestions(false); }
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    placeholder="Start by searching a topic, e.g. art"
+                    style={{
+                      flex: 1, background: "none", border: "none", outline: "none",
+                      fontSize: isDesktop ? 16 : 14, fontWeight: 400, color: "#333",
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    }}
+                  />
+                  <button
+                    onClick={() => submitTopic(topicSuggestions[0] ?? topicInput)}
+                    style={{
+                      background: "none", border: "none", padding: "0 4px",
+                      cursor: topicInput.trim() ? "pointer" : "default",
+                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 7h10M8 3l4 4-4 4" stroke={topicInput.trim() ? "#333" : "#ccc"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
               </div>
+
+              {/* Or try pills */}
+              {!topicInput && inspirationPills.length > 0 && (
+                <div style={{ marginTop: isDesktop ? 20 : 18 }}>
+                  <span style={{ fontSize: 11, color: "#ccc", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                    or try
+                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginTop: 10 }}>
+                    {inspirationPills.map(topic => {
+                      const color = TOPIC_COLORS[topic] ?? "#aaa";
+                      const dark = darkenColor(color);
+                      return (
+                        <button
+                          key={topic}
+                          onClick={() => submitTopic(topic)}
+                          style={{
+                            padding: "5px 12px", borderRadius: 20,
+                            background: `${color}18`, border: `1px solid ${color}44`,
+                            fontSize: 11, fontWeight: 700, color: dark,
+                            cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            letterSpacing: "0.02em",
+                          }}
+                        >
+                          {topic.replace(/-/g, " ")}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
