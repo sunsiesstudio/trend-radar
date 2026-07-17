@@ -15,7 +15,7 @@ html, body {
 }
 
 body {
-  background: #f8f7f3;
+  background: #eaeaea;
   color: #1a1a1a;
   font-family: 'DM Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -44,7 +44,7 @@ body {
   background: white !important;
 }
 .react-flow__controls-button {
-  border-bottom: 1px solid #f0ede8 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
   background: white !important;
 }
 .react-flow__controls-button svg { fill: #999; }
