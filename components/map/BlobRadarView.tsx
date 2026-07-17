@@ -498,7 +498,7 @@ export function BlobRadarView({
             }} />
           ))}
         </div>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1, background: "#f8f7f3" }}>
         <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
               {generatingTopic ? (
@@ -618,7 +618,7 @@ export function BlobRadarView({
 
         {/* Last arrivals — latest signal per trend, most recent first */}
         {latestSignals.length > 0 && (
-          <div style={{ flexShrink: 0, paddingBottom: 8, position: "relative", zIndex: 1 }}>
+          <div style={{ flexShrink: 0, paddingBottom: 8, position: "relative", zIndex: 1, background: "#f8f7f3" }}>
             <div style={{ padding: "0 24px 10px" }}>
               <span style={{ fontSize: 9, color: "#c0bbb4", letterSpacing: "0.13em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                 Last arrivals
@@ -661,7 +661,7 @@ export function BlobRadarView({
           </div>
         )}
 
-        <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1 }}>
+        <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1, background: "#f8f7f3" }}>
           By Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
             style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
