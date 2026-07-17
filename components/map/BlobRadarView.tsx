@@ -22,6 +22,15 @@ function darkenColor(hex: string, factor = 0.62): string {
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
 
+function fmtDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const diffDays = Math.round((Date.now() - d.getTime()) / 86_400_000);
+  if (diffDays === 0) return "today";
+  if (diffDays === 1) return "yesterday";
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 function blobAgeFactor(latestDate?: string): number {
   const ageDays = latestDate ? (Date.now() - new Date(latestDate).getTime()) / 86_400_000 : 30;
   const t = Math.min(1, Math.max(0, ageDays / 30));
@@ -641,6 +650,11 @@ export function BlobRadarView({
                     <div style={{ fontSize: 11, fontWeight: 500, color: "#333", lineHeight: 1.35, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
                       {item.signal.title}
                     </div>
+                    {item.signal.date && (
+                      <div style={{ fontSize: 9, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", marginTop: 1 }}>
+                        {fmtDate(item.signal.date)}
+                      </div>
+                    )}
                   </div>
                 )
               ))}
