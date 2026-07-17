@@ -52,6 +52,16 @@ export const TOPIC_COLORS: Record<string, string> = {
   "synthetic-biology":"#53A373",
   "future-of-work":  "#FFD65C",
   aesthetics:        "#D1CAEA",
+  longevity:         "#78C9A8",
+  sleep:             "#8C93C7",
+  sound:             "#FF8BB4",
+  attention:         "#C4A0CE",
+  identity:          "#FFD65C",
+  architecture:      "#B6D693",
+  craft:             "#FD8326",
+  ritual:            "#C4A0CE",
+  community:         "#53A373",
+  privacy:           "#8C93C7",
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
@@ -100,6 +110,16 @@ export const TOPIC_DESCRIPTIONS: Record<string, string> = {
   cybersecurity:     "Cybersecurity is a growth category driven by threat. AI-generated attacks, deepfake fraud, critical infrastructure vulnerabilities, and post-quantum cryptography are pushing security from IT budget line to board-level priority.",
   "synthetic-biology": "Synthetic biology is programming living systems. Biofabricated materials, lab-grown leather, engineered microbiomes, and DNA data storage are all coming out of the lab. The living factory is the next industrial revolution.",
   "future-of-work":  "Work is being structurally redesigned by AI, remote infrastructure, and generational expectation shifts. The office, the career ladder, and the 40-hour week are all being renegotiated simultaneously.",
+  longevity:         "Longevity has left the fringe and entered the mainstream. GLP-1 drugs, biological age testing, NAD+ supplements, and rejuvenation clinics are all real consumer categories now. The question is who gets to live longer and at what cost.",
+  sleep:             "Sleep is the new fitness. Oura rings, chronobiology, sleep coaching, AI-optimised schedules, and magnesium everything have turned unconsciousness into a performance category. The $80bn sleep industry is just getting started.",
+  sound:             "Sound is being redesigned by AI at every layer. Spatial audio, AI-generated music, sonic branding systems, and voice interfaces are all maturing simultaneously. The ear is the next contested interface.",
+  attention:         "Attention is the scarce resource the entire tech economy is built on extracting. But the counter-culture is commercialising: dopamine detoxes, focus apps, distraction-free devices, and deep-work as a status signal.",
+  identity:          "Digital identity is fragmenting and multiplying. Your avatar, your AI persona, your biometric profile, your platform footprint: people are managing multiple selves across multiple contexts, and products are being built for each one.",
+  architecture:      "Architecture is being redesigned by computation, AI, and ecological pressure. Parametric buildings, AI-generated spatial plans, living materials, and adaptive structures are turning buildings from objects into systems.",
+  craft:             "Craft is having a cultural moment precisely because AI is everywhere. Hand-making, provenance, material knowledge, and visible labour are all gaining value as signals of authenticity. Tech is accelerating the premium on the handmade.",
+  ritual:            "Ritual is a design category. Morning routines, evening protocols, micro-ceremonies, and habit architecture are being engineered by apps, supplement brands, and wellness companies. The secular need for ceremony is a huge commercial opportunity.",
+  community:         "Community is migrating, fragmenting, and being commercialised. IRL revival, micro-communities built around shared obsessions, and platform-native belonging are all competing with each other. The question is what makes people actually show up.",
+  privacy:           "Privacy has become a luxury product. VPNs, encrypted messaging, private search, and off-grid aesthetics signal high status in a world where data extraction is assumed. The post-surveillance consumer is an emerging demographic.",
 };
 
 const TOPIC_ALIASES: Record<string, string> = {
@@ -1958,6 +1978,8 @@ export const LIBRARY_TOPICS = [
   "photography", "film", "branding", "retail", "social", "education",
   "sport", "mobility", "dating", "nightlife", "coffee", "finance",
   "pets", "parenting", "kids", "spirituality", "fragrance", "jewellery",
+  "longevity", "sleep", "sound", "attention", "identity", "architecture",
+  "craft", "ritual", "community", "privacy",
 ];
 
 // Curated topics shown on the initial empty state screen

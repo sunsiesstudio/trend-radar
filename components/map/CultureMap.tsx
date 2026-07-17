@@ -42,7 +42,12 @@ const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
   food: "Food", "food-tech": "Food", coffee: "Food",
   social: "Community", dating: "Community", parenting: "Community",
   kids: "Community", pets: "Community", spirituality: "Community",
-  "mental-health": "Mind",
+  "mental-health": "Mind", attention: "Mind", ritual: "Mind", privacy: "Mind",
+  longevity: "Body", sleep: "Body",
+  sound: "Play",
+  identity: "Style", craft: "Style",
+  architecture: "Home",
+  community: "Community",
   sustainability: "Nature", "climate-tech": "Nature", space: "Nature",
 };
 
