@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
+import { Inter, Corben } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
-const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-serif" });
+const corben = Corben({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
   title: "Augmented Culture",
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${cormorant.variable}`}>{children}</body>
+      <body className={`${inter.className} ${corben.variable}`}>{children}</body>
     </html>
   );
 }
