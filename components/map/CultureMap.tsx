@@ -608,8 +608,11 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}
       onSelectSignal={(sig) => {
         setActiveSignal(sig);
-        const sigTrend = allTrends.find(t => t.id === sig.trendId);
-        if (sigTrend) setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) });
+        // Only open trend panel when already in the radar (has topics); from home screen just show signal popup
+        if (activeTopics.length > 0) {
+          const sigTrend = allTrends.find(t => t.id === sig.trendId);
+          if (sigTrend) setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) });
+        }
       }}
       initialFocusTrendId={focusTrendId}
     />
@@ -625,6 +628,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
           allSignals={allSignals} onClose={() => {
             setActiveSignal(null);
+            setSelection(null);
             if (activeTopics.length === 0 && sigTrend?.topics?.[0]) {
               setFocusTrendId(sigTrend.id);
               onAddTopic(sigTrend.topics[0]);
@@ -710,7 +714,11 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
                   trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
                   allSignals={allSignals} onClose={() => {
                     setActiveSignal(null);
-                    if (activeTopics.length === 0 && sigTrend?.topics?.[0]) onAddTopic(sigTrend.topics[0]);
+                    setSelection(null);
+                    if (activeTopics.length === 0 && sigTrend?.topics?.[0]) {
+                      setFocusTrendId(sigTrend.id);
+                      onAddTopic(sigTrend.topics[0]);
+                    }
                   }}
                   onSelectSignal={s => setActiveSignal(s)}
                   onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
