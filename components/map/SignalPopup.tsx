@@ -200,7 +200,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
-        backgroundColor: "#eaeaea",
+        backgroundColor: "#f8f7f3",
         borderRadius: mode === "sidebar" ? 0 : (isDesktop ? "24px" : "24px 24px 0 0"),
         width: "100%",
         maxWidth: mode === "sidebar" ? undefined : (isDesktop ? 560 : 680),
@@ -220,7 +220,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
 
         {/* Sidebar header — pinned outside the scroll area */}
         {mode === "sidebar" && (
-          <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #e0e0e0", flexShrink: 0 }}>
+          <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
             {/* Row 1: SIGNAL chip + trend dot + trend name (clickable) + close */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trendColor}14`, padding: "3px 10px", borderRadius: 20, flexShrink: 0 }}>
@@ -289,7 +289,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
           </div>
 
           {/* Divider */}
-          <div style={{ margin: mode === "sidebar" ? "0 20px 14px" : "0 24px 18px", height: 1, background: "#e0e0e0" }} />
+          <div style={{ margin: mode === "sidebar" ? "0 20px 14px" : "0 24px 18px", height: 1, background: "#f0ede8" }} />
 
           {/* Summary — primary content */}
           <div style={{ padding: mode === "sidebar" ? "0 20px 18px" : "0 24px 24px" }}>
@@ -298,7 +298,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
 
           {/* Trend link + related — grouped at bottom */}
           {((mode !== "sidebar" && onOpenTrend) || related.length > 0) && (
-            <div style={{ margin: mode === "sidebar" ? "0 20px 20px" : "0 24px 24px", borderRadius: 10, border: "1px solid #e0e0e0", overflow: "hidden" }}>
+            <div style={{ margin: mode === "sidebar" ? "0 20px 20px" : "0 24px 24px", borderRadius: 10, border: "1px solid #f0ede8", overflow: "hidden" }}>
 
               {/* Trend link — only in modal (sidebar header already shows it) */}
               {mode !== "sidebar" && onOpenTrend && (
@@ -331,7 +331,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
                       key={r.id}
                       onClick={() => onSelectSignal?.(r)}
                       style={{
-                        textAlign: "left", background: "#eaeaea",
+                        textAlign: "left", background: "#f8f7f3",
                         padding: "10px 16px", cursor: "pointer", width: "100%", boxSizing: "border-box", border: "none", borderTop: "1px solid #f5f4f2",
                       }}
                     >
@@ -357,7 +357,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
 
         {/* Footer — modal only */}
         {mode !== "sidebar" && (
-          <div style={{ padding: "10px 20px", paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))", borderTop: "1px solid #e0e0e0", flexShrink: 0, textAlign: "center" } as React.CSSProperties}>
+          <div style={{ padding: "10px 20px", paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))", borderTop: "1px solid #f0ede8", flexShrink: 0, textAlign: "center" } as React.CSSProperties}>
             <p style={{ fontSize: 10, color: "#ccc", margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
               Augmented Culture maps emerging tech against culture.<br />By Martina from{" "}
               <a href="https://open.substack.com/pub/augmentedrarity" target="_blank" rel="noopener noreferrer" style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
