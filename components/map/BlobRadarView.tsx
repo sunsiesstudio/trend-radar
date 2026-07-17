@@ -596,11 +596,10 @@ export function BlobRadarView({
                               key={topic}
                               onClick={() => submitTopic(topic)}
                               style={{
-                                padding: "4px 10px 4px 8px", borderRadius: 20,
+                                padding: "5px 12px", borderRadius: 20,
                                 background: `${color}18`, border: `1px solid ${color}44`,
                                 fontSize: 11, fontWeight: 700, color: dark,
                                 cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                                display: "flex", alignItems: "center", gap: 5,
                                 letterSpacing: "0.02em",
                               }}
                             >
