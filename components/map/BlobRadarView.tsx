@@ -15,6 +15,13 @@ import { EXTENDED_SIGNALS, EXTENDED_TRENDS, LIBRARY_TOPICS, FEATURED_TOPICS, TOP
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 
+function mixWithWhite(hex: string, ratio: number): string {
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * ratio + 255 * (1 - ratio));
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * ratio + 255 * (1 - ratio));
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * ratio + 255 * (1 - ratio));
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
 function darkenColor(hex: string, factor = 0.62): string {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
   const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
@@ -554,7 +561,7 @@ export function BlobRadarView({
                 )}
                 <div style={{
                   display: "flex", alignItems: "center", gap: 8,
-                  background: "rgba(248,247,243,0.92)", borderRadius: 28,
+                  background: "#f8f7f3", borderRadius: 28,
                   padding: isDesktop ? "12px 12px 12px 22px" : "10px 10px 10px 18px",
                   border: "1.5px solid rgba(0,0,0,0.18)",
                 }}>
@@ -606,7 +613,7 @@ export function BlobRadarView({
                           onClick={() => submitTopic(topic)}
                           style={{
                             padding: "5px 12px", borderRadius: 20,
-                            background: `${color}55`, border: `1px solid ${color}88`,
+                            background: mixWithWhite(color, 0.28), border: `1px solid ${color}88`,
                             fontSize: 11, fontWeight: 700, color: dark,
                             cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                             letterSpacing: "0.02em",
@@ -639,7 +646,7 @@ export function BlobRadarView({
                     onClick={() => onAddTopic(item.trend!.topics?.[0] ?? "")}
                     style={{
                       flexShrink: 0, width: 172, cursor: "pointer",
-                      background: `${item.color}60`,
+                      background: mixWithWhite(item.color, 0.32),
                       border: `1px solid ${item.color}88`,
                       borderRadius: 12, padding: "10px 13px",
                       display: "flex", flexDirection: "column", gap: 5,
