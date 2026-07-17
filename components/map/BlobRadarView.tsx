@@ -15,10 +15,12 @@ import { EXTENDED_SIGNALS, EXTENDED_TRENDS, LIBRARY_TOPICS, FEATURED_TOPICS, TOP
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 
-function mixWithWhite(hex: string, ratio: number): string {
-  const r = Math.round(parseInt(hex.slice(1, 3), 16) * ratio + 255 * (1 - ratio));
-  const g = Math.round(parseInt(hex.slice(3, 5), 16) * ratio + 255 * (1 - ratio));
-  const b = Math.round(parseInt(hex.slice(5, 7), 16) * ratio + 255 * (1 - ratio));
+function mixWithBase(hex: string, ratio: number): string {
+  // Mix color into the app beige (#f8f7f3) — this lightens AND desaturates, avoiding neon pastels
+  const br = 0xf8, bg = 0xf7, bb = 0xf3;
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * ratio + br * (1 - ratio));
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * ratio + bg * (1 - ratio));
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * ratio + bb * (1 - ratio));
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
 
@@ -524,11 +526,11 @@ export function BlobRadarView({
           ) : (
             <div style={{
               textAlign: "center",
-              width: "100%", maxWidth: isDesktop ? 620 : 460,
+              width: "100%", maxWidth: isDesktop ? 800 : 460,
               padding: "0 32px", boxSizing: "border-box",
             }}>
               {/* Title */}
-              <div style={{ fontSize: isDesktop ? 48 : 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+              <div style={{ fontSize: isDesktop ? 42 : 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
                 A research tool to identify<br />emerging tech trends in culture
               </div>
 
@@ -613,7 +615,7 @@ export function BlobRadarView({
                           onClick={() => submitTopic(topic)}
                           style={{
                             padding: "5px 12px", borderRadius: 20,
-                            background: mixWithWhite(color, 0.28), border: `1px solid ${color}88`,
+                            background: mixWithBase(color, 0.18), border: `1px solid ${color}66`,
                             fontSize: 11, fontWeight: 700, color: dark,
                             cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                             letterSpacing: "0.02em",
@@ -646,14 +648,14 @@ export function BlobRadarView({
                     onClick={() => onAddTopic(item.trend!.topics?.[0] ?? "")}
                     style={{
                       flexShrink: 0, width: 172, cursor: "pointer",
-                      background: mixWithWhite(item.color, 0.32),
-                      border: `1px solid ${item.color}88`,
+                      background: mixWithBase(item.color, 0.22),
+                      border: `1px solid ${item.color}66`,
                       borderRadius: 12, padding: "10px 13px",
                       display: "flex", flexDirection: "column", gap: 5,
                       transition: "border-color 0.15s",
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}bb`)}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}88`)}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}99`)}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}66`)}
                   >
                     <div>
                       <span style={{ fontSize: 8.5, fontWeight: 700, color: darkenColor(item.color, 0.7), letterSpacing: "0.08em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
