@@ -179,6 +179,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
+  const [focusTrendId, setFocusTrendId] = useState<string | undefined>(undefined);
   const [isMobile,     setIsMobile]     = useState(() => typeof window !== "undefined" ? window.innerWidth < 768 : true);
   const [sheetOffset,  setSheetOffset]  = useState(0);
   const [mapScale,     setMapScale]     = useState(1);
@@ -194,6 +195,14 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   // Clear panel state and reset zoom/pan when switching views
   useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); setMapOffset({ x: 0, y: 0 }); }, [view]);
+
+  // Once pending focus trend is visible in the loaded trends, clear the request
+  useEffect(() => {
+    if (focusTrendId && dynamicTrends.some(t => t.id === focusTrendId)) {
+      const t = setTimeout(() => setFocusTrendId(undefined), 600);
+      return () => clearTimeout(t);
+    }
+  }, [dynamicTrends, focusTrendId]);
 
   // Wheel zoom on map
   useEffect(() => {
@@ -602,6 +611,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         const sigTrend = allTrends.find(t => t.id === sig.trendId);
         if (sigTrend) setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) });
       }}
+      initialFocusTrendId={focusTrendId}
     />
   );
 
@@ -615,7 +625,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
           allSignals={allSignals} onClose={() => {
             setActiveSignal(null);
-            if (activeTopics.length === 0 && sigTrend?.topics?.[0]) onAddTopic(sigTrend.topics[0]);
+            if (activeTopics.length === 0 && sigTrend?.topics?.[0]) {
+              setFocusTrendId(sigTrend.id);
+              onAddTopic(sigTrend.topics[0]);
+            }
           }}
           onSelectSignal={s => setActiveSignal(s)}
           onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}

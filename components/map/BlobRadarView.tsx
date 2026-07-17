@@ -330,12 +330,13 @@ interface Props {
   onSelectTrend?: (trend: Trend) => void;
   onSelectSignal?: (signal: Signal) => void;
   onSetView?: (v: "map" | "radar") => void;
+  initialFocusTrendId?: string;
 }
 
 export function BlobRadarView({
   trends, signals, topicAddedAt = {},
   activeTopics, generatingTopic, panelOpen = false, onAddTopic, onRemoveTopic,
-  onSelectTrend, onSelectSignal, onSetView,
+  onSelectTrend, onSelectSignal, onSetView, initialFocusTrendId,
 }: Props) {
   const fitViewRef = useRef<(() => void) | null>(null);
   // -1 = overview (zoomed out); >= 0 = focused on that trend
@@ -363,8 +364,17 @@ export function BlobRadarView({
   // A stable string that changes whenever the trend set changes — used by FocusController
   const trendsKey = useMemo(() => sorted.map(t => t.id).join(","), [sorted]);
 
-  // Focus first trend when topic loads; back to overview when cleared
-  useEffect(() => { setFocusIdx(trends.length > 0 ? 0 : -1); }, [trends]);
+  // Focus specific trend on load if requested, otherwise first trend
+  useEffect(() => {
+    if (trends.length === 0) { setFocusIdx(-1); return; }
+    if (initialFocusTrendId) {
+      const idx = sorted.findIndex(t => t.id === initialFocusTrendId);
+      setFocusIdx(idx >= 0 ? idx : 0);
+    } else {
+      setFocusIdx(0);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trends]);
 
   const allSignals = useMemo(() => {
     const extra = signals ?? [];
