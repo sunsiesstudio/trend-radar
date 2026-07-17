@@ -645,7 +645,7 @@ export function BlobRadarView({
                 item.trend && (
                   <div
                     key={item.signal.id}
-                    onClick={() => onAddTopic(item.trend!.topics?.[0] ?? "")}
+                    onClick={() => onSelectSignal?.(item.signal)}
                     style={{
                       flexShrink: 0, width: 172, cursor: "pointer",
                       background: mixWithBase(item.color, 0.22),
