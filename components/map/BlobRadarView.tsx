@@ -455,9 +455,12 @@ export function BlobRadarView({
         {/* Animated blob background */}
         <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
           {([
-            { color: "#80B0E8", size: 300, x: -4,  y: 5,  dur: 26, seed: "bg-blob-sky" },
-            { color: "#FFC0C0", size: 280, x: 104, y: 8,  dur: 33, seed: "bg-blob-peony" },
-            { color: "#D1CAEA", size: 220, x: 50,  y: -4, dur: 29, seed: "bg-blob-lavender" },
+            { color: "#80B0E8", size: 300, x: -4,  y: 5,   dur: 26, seed: "bg-blob-sky" },
+            { color: "#FFC0C0", size: 280, x: 104, y: 8,   dur: 33, seed: "bg-blob-peony" },
+            { color: "#D6D35F", size: 260, x: -4,  y: 92,  dur: 21, seed: "bg-blob-lime" },
+            { color: "#C45F3F", size: 300, x: 104, y: 88,  dur: 38, seed: "bg-blob-tomato" },
+            { color: "#D1CAEA", size: 220, x: 50,  y: -4,  dur: 29, seed: "bg-blob-lavender" },
+            { color: "#F4D242", size: 220, x: 50,  y: 104, dur: 32, seed: "bg-blob-sun" },
           ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
             <div key={i} style={{
               position: "absolute",
@@ -474,10 +477,12 @@ export function BlobRadarView({
           ))}
           {/* Desktop-only extra blobs — fill the inner space on larger screens */}
           {([
-            { color: "#78C9A8", size: 320, x: -4,  y: 50, dur: 28, seed: "bg-d-teal" },
-            { color: "#E8B87A", size: 320, x: 104, y: 50, dur: 34, seed: "bg-d-amber" },
-            { color: "#FD8326", size: 280, x: 25,  y: -4, dur: 25, seed: "bg-d-orange" },
-            { color: "#9DC47C", size: 280, x: 75,  y: -4, dur: 31, seed: "bg-d-sage" },
+            { color: "#78C9A8", size: 320, x: -4,  y: 50,  dur: 28, seed: "bg-d-teal" },
+            { color: "#E8B87A", size: 320, x: 104, y: 50,  dur: 34, seed: "bg-d-amber" },
+            { color: "#FD8326", size: 280, x: 25,  y: -4,  dur: 25, seed: "bg-d-orange" },
+            { color: "#9DC47C", size: 280, x: 75,  y: -4,  dur: 31, seed: "bg-d-sage" },
+            { color: "#FF8BB4", size: 280, x: 25,  y: 104, dur: 36, seed: "bg-d-rose" },
+            { color: "#C4A0CE", size: 280, x: 75,  y: 104, dur: 27, seed: "bg-d-mauve" },
           ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
             <div key={`d${i}`} className="home-desktop-blob" style={{
               position: "absolute",
