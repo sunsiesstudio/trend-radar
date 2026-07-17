@@ -601,7 +601,7 @@ export function BlobRadarView({
 
               {/* Or try pills */}
               {!topicInput && inspirationPills.length > 0 && (
-                <div style={{ marginTop: isDesktop ? 20 : 18 }}>
+                <div style={{ marginTop: isDesktop ? 20 : 18, maxWidth: isDesktop ? 500 : "100%", margin: `${isDesktop ? 20 : 18}px auto 0` }}>
                   <span style={{ fontSize: 11, color: "#ccc", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                     or try
                   </span>
