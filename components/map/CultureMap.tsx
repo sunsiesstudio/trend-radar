@@ -174,7 +174,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
-  const [isMobile,     setIsMobile]     = useState(false);
+  const [isMobile,     setIsMobile]     = useState(() => typeof window !== "undefined" ? window.innerWidth < 768 : true);
   const [sheetOffset,  setSheetOffset]  = useState(0);
   const [mapScale,     setMapScale]     = useState(1);
   const [mapOffset,    setMapOffset]    = useState({ x: 0, y: 0 });

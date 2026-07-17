@@ -61,7 +61,7 @@ export default function HomePage() {
   const [generationError,  setGenerationError]  = useState<string | null>(null);
   const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
   const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => typeof window !== "undefined" ? window.innerWidth >= 768 : false);
   const [view, setView] = useState<"map" | "radar">("radar");
 
   const liveTopicsRef = useRef<string[]>([]);
