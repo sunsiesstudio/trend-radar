@@ -383,6 +383,26 @@ export const EXTENDED_TRENDS: Trend[] = [
 
   // ── GAMING ──────────────────────────────────────────────────────────────────
   {
+    id: "gaming-npc-aesthetics",
+    name: "NPC Aesthetics",
+    description: "Video game NPC aesthetics have crossed from ironic meme into genuine fashion direction. That blank affect, the uniform dressing, the repetition — brands are actually running with it now.",
+    color: "#78C9A8",
+    topics: ["gaming", "fashion", "lifestyle"],
+    relevanceScore: 71,
+    redditQuery: "NPC aesthetic fashion streetwear",
+    newsQuery: "NPC aesthetic fashion trend",
+    position: { x: 368, y: 1968 },
+    whyRelevant: "When a gaming aesthetic becomes a fashion direction it signals that gaming culture has enough mainstream reach to influence taste, not just consume product.",
+    trajectory: "NPC aesthetics will peak as irony and cross into earnest adoption within 12 months, the same path normcore and gorpcore took.",
+    nextSteps: [],
+    brandMoves: [
+      { label: "A-Cold-Wall* releases a 'System NPC' capsule referencing game-character uniformity in wearable garments", url: "https://a-cold-wall.com" },
+      { label: "Nike drops a limited Air Max colourway inspired by default NPC character palettes, sells out in under an hour", url: "https://nike.com" },
+      { label: "Bottega Veneta's 2025 collection uses deliberately blank, interchangeable silhouettes that critics read as NPC homage", url: "https://bottegaveneta.com" },
+      { label: "Roblox and Zara co-create wearable digital-to-physical NPC-style looks available in-game and in-store simultaneously", url: "https://zara.com" }
+    ],
+  },
+  {
     id: "gaming-drop-economy",
     name: "The Drop Economy",
     description: "Gaming rewired how a generation thinks about scarcity and timing. Loot boxes, seasonal drops, battle pass exclusives: all of it trained people to feel urgency in a very specific way, and fashion is borrowing those same mechanics.",
@@ -1850,6 +1870,13 @@ export const EXTENDED_SIGNALS: Signal[] = [
 
   // gaming-drop-economy
   { id: "gdrop-s1", trendId: "gaming-drop-economy", title: "Nike SNKRS waitlist psychology crosses into luxury", summary: "Limited digital drops in gaming have trained a generation to expect scarcity theatre; fashion brands are copying the mechanics wholesale.", source: "news", sourceName: "Business of Fashion", date: "2026-07-16", crossLinks: [] },
+  { id: "gnpc-s1", trendId: "gaming-npc-aesthetics", title: "Miu Miu AW24 collection references NPC stillness", summary: "High fashion borrowing the visual language of video game NPCs — blank affect, uniform dressing, deliberate repetition — marks the moment gaming aesthetics became a genuine design input.", source: "news", sourceName: "Vogue", date: "2026-07-14", crossLinks: [] },
+  { id: "gnpc-s2", trendId: "gaming-npc-aesthetics", title: "r/streetwear: NPC mode is the new core aesthetic", summary: "Streetwear community adopting NPC mode as a coherent aesthetic signals how deeply gaming visual grammar has penetrated mainstream style discourse.", source: "reddit", sourceName: "r/streetwear", date: "2026-06-20", crossLinks: [] },
+  { id: "gnpc-s3", trendId: "gaming-npc-aesthetics", title: "SSENSE editorial: 'dressing like you spawned'", summary: "Editorial content reframing game-spawn aesthetics as fashion direction shows how cultural intermediaries are translating gaming language into luxury contexts.", source: "news", sourceName: "SSENSE", date: "2026-05-18", crossLinks: [] },
+  { id: "gnpc-s7", trendId: "gaming-npc-aesthetics", title: "TikTok NPC fashion filter drives 2B views", summary: "A TikTok filter that renders users as low-polygon NPCs reaching 2B views demonstrates how gaming visual language spreads through social platform mechanics.", source: "news", sourceName: "TechCrunch", date: "2026-04-10", crossLinks: [] },
+  { id: "gnpc-s8", trendId: "gaming-npc-aesthetics", title: "Zara NPC lookbook outperforms its entire SS26 editorial campaign", summary: "A mass-market retailer's gaming-coded campaign outperforming traditional editorial shows how thoroughly gaming aesthetics have mainstreamed.", source: "news", sourceName: "Retail Week", date: "2026-03-22", crossLinks: [] },
+  { id: "gnpc-old1", trendId: "gaming-npc-aesthetics", title: "TikTok NPC roleplay videos cross 5 billion views", summary: "NPC roleplay content reaching 5B views on TikTok shows gaming behaviour and aesthetics becoming a dominant mode of self-expression on social platforms.", source: "news", sourceName: "The Verge", date: "2025-11-14", crossLinks: [] },
+  { id: "gnpc-old2", trendId: "gaming-npc-aesthetics", title: "r/gamedev modding communities document the visual grammar of NPC character design", summary: "Gamedev communities systematically analysing NPC visual grammar is the origin point of the aesthetic — cultural influence flowing from developer subculture outward.", source: "reddit", sourceName: "r/gamedev", date: "2025-09-08", crossLinks: [] },
   { id: "gdrop-s6", trendId: "gaming-drop-economy", title: "H&M gamifies its loyalty app with 'unlock' mechanics, engagement up 60%", summary: "Mass market retail adopting gaming unlock mechanics for loyalty programs signals that the drop economy has diffused into everyday retail infrastructure.", source: "news", sourceName: "Retail Week", date: "2026-03-15", crossLinks: [] },
 
   // wellness-cold-ritual,
