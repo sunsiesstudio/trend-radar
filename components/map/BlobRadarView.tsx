@@ -546,16 +546,6 @@ export function BlobRadarView({
                     </div>
                   )}
 
-                  {onSetView && (
-                    <div style={{ marginTop: 22 }}>
-                      <button
-                        onClick={() => onSetView("map")}
-                        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.04em", textDecoration: "underline", textUnderlineOffset: 3 }}
-                      >
-                        or explore the map
-                      </button>
-                    </div>
-                  )}
                 </>
               )}
         </div>
