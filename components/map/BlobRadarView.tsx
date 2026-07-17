@@ -554,7 +554,7 @@ export function BlobRadarView({
                 )}
                 <div style={{
                   display: "flex", alignItems: "center", gap: 8,
-                  background: "transparent", borderRadius: 28,
+                  background: "rgba(248,247,243,0.92)", borderRadius: 28,
                   padding: isDesktop ? "12px 12px 12px 22px" : "10px 10px 10px 18px",
                   border: "1.5px solid rgba(0,0,0,0.18)",
                 }}>
@@ -606,7 +606,7 @@ export function BlobRadarView({
                           onClick={() => submitTopic(topic)}
                           style={{
                             padding: "5px 12px", borderRadius: 20,
-                            background: `${color}18`, border: `1px solid ${color}44`,
+                            background: `${color}55`, border: `1px solid ${color}88`,
                             fontSize: 11, fontWeight: 700, color: dark,
                             cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                             letterSpacing: "0.02em",
@@ -639,14 +639,14 @@ export function BlobRadarView({
                     onClick={() => onAddTopic(item.trend!.topics?.[0] ?? "")}
                     style={{
                       flexShrink: 0, width: 172, cursor: "pointer",
-                      background: `${item.color}30`,
-                      border: `1px solid ${item.color}55`,
+                      background: `${item.color}60`,
+                      border: `1px solid ${item.color}88`,
                       borderRadius: 12, padding: "10px 13px",
                       display: "flex", flexDirection: "column", gap: 5,
                       transition: "border-color 0.15s",
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}70`)}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}38`)}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}bb`)}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}88`)}
                   >
                     <div>
                       <span style={{ fontSize: 8.5, fontWeight: 700, color: darkenColor(item.color, 0.7), letterSpacing: "0.08em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
