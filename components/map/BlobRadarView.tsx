@@ -530,12 +530,12 @@ export function BlobRadarView({
               padding: "0 32px", boxSizing: "border-box",
             }}>
               {/* Title */}
-              <div style={{ fontSize: isDesktop ? 42 : 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+              <div style={{ fontSize: isDesktop ? 42 : 26, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
                 A research tool to identify<br />emerging tech trends in culture
               </div>
 
               {/* Search input */}
-              <div style={{ position: "relative", marginTop: isDesktop ? 28 : 18 }}>
+              <div style={{ position: "relative", marginTop: isDesktop ? 28 : 18, maxWidth: isDesktop ? 500 : "100%", margin: `${isDesktop ? 28 : 18}px auto 0` }}>
                 {showSuggestions && topicSuggestions.length > 0 && (
                   <div style={{
                     position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 200,
