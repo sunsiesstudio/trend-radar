@@ -522,9 +522,7 @@ export function BlobRadarView({
             }}>
               {/* Title */}
               <div style={{ fontSize: isDesktop ? 48 : 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
-                {isDesktop
-                  ? <>A research tool to identify<br />emerging tech trends in culture</>
-                  : "A research tool to identify emerging tech trends in culture"}
+                A research tool to identify<br />emerging tech trends in culture
               </div>
 
               {/* Search input */}
