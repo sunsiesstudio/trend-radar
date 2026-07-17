@@ -613,7 +613,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       return (
         <SignalPopup signal={activeSignal} mode="sidebar"
           trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
-          allSignals={allSignals} onClose={() => setActiveSignal(null)}
+          allSignals={allSignals} onClose={() => {
+            setActiveSignal(null);
+            if (activeTopics.length === 0 && sigTrend?.topics?.[0]) onAddTopic(sigTrend.topics[0]);
+          }}
           onSelectSignal={s => setActiveSignal(s)}
           onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
         />
@@ -692,7 +695,10 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
               return (
                 <SignalPopup signal={activeSignal} mode="sidebar"
                   trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
-                  allSignals={allSignals} onClose={() => setActiveSignal(null)}
+                  allSignals={allSignals} onClose={() => {
+                    setActiveSignal(null);
+                    if (activeTopics.length === 0 && sigTrend?.topics?.[0]) onAddTopic(sigTrend.topics[0]);
+                  }}
                   onSelectSignal={s => setActiveSignal(s)}
                   onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
                 />
