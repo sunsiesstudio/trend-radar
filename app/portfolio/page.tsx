@@ -155,7 +155,7 @@ export default function PortfolioPage() {
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#bbb", fontFamily: "'DM Sans',system-ui,sans-serif", marginBottom: 10 }}>
           Martina Soles
         </p>
-        <h1 style={{ fontSize: 30, fontWeight: 800, lineHeight: 1.22, color: "#111", letterSpacing: "-0.025em", fontFamily: "'EB Garamond',Georgia,serif", maxWidth: 560, margin: "0 auto" }}>
+        <h1 style={{ fontSize: 30, fontWeight: 800, lineHeight: 1.22, color: "#111", letterSpacing: "-0.025em", fontFamily: "var(--font-serif),serif", maxWidth: 560, margin: "0 auto" }}>
           Creative Concept Strategist &amp;<br />Cultural Intelligence Researcher
         </h1>
         <p style={{ fontSize: 13, color: "#999", marginTop: 12, fontFamily: "'DM Sans',system-ui,sans-serif", fontStyle: "italic" }}>
@@ -220,7 +220,7 @@ export default function PortfolioPage() {
               zIndex: 3,
             }}
           >
-            <div style={{ fontSize: 15.5, fontWeight: 800, color: "#111", lineHeight: 1.18, letterSpacing: "-0.015em", fontFamily: "'EB Garamond',Georgia,serif" }}>
+            <div style={{ fontSize: 15.5, fontWeight: 800, color: "#111", lineHeight: 1.18, letterSpacing: "-0.015em", fontFamily: "var(--font-serif),serif" }}>
               {n.label}
             </div>
             <div style={{ fontSize: 10, color: "#777", marginTop: 5, fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 500, lineHeight: 1.55, whiteSpace: "pre-line" }}>
@@ -237,7 +237,7 @@ export default function PortfolioPage() {
             textAlign: "center", pointerEvents: "none", zIndex: 3,
           }}
         >
-          <div style={{ fontSize: 19, fontWeight: 800, color: "#111", letterSpacing: "-0.025em", fontFamily: "'EB Garamond',Georgia,serif" }}>
+          <div style={{ fontSize: 19, fontWeight: 800, color: "#111", letterSpacing: "-0.025em", fontFamily: "var(--font-serif),serif" }}>
             Martina
           </div>
           <div style={{ fontSize: 8, color: "#aaa", fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginTop: 5 }}>

@@ -136,11 +136,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;color:#1a1a1a;background:#fff;pa
 /* Cover */
 .cover{padding-bottom:40px;margin-bottom:52px;border-bottom:3px solid #1a1a1a}
 .report-label{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#aaa;margin-bottom:20px}
-h1{font-family:'EB Garamond',Georgia,serif;font-size:52px;font-weight:600;letter-spacing:-.02em;line-height:1.05;color:#1a1a1a;margin-bottom:14px}
+h1{font-family:var(--font-serif),serif;font-size:52px;font-weight:600;letter-spacing:-.02em;line-height:1.05;color:#1a1a1a;margin-bottom:14px}
 .trend-color-bar{height:5px;width:80px;background:${c};border-radius:2px;margin-bottom:20px}
-.desc{font-size:16px;color:#444;line-height:1.8;max-width:680px;font-family:'EB Garamond',Georgia,serif;font-style:italic;margin-bottom:24px}
+.desc{font-size:16px;color:#444;line-height:1.8;max-width:680px;font-family:var(--font-serif),serif;font-style:italic;margin-bottom:24px}
 .pull-quote{margin:28px 0 0;padding:24px 28px;border-left:4px solid ${c};background:${c}08;border-radius:0 12px 12px 0}
-.pull-quote-text{font-family:'EB Garamond',Georgia,serif;font-size:19px;font-style:italic;color:#111;line-height:1.65;margin-bottom:8px}
+.pull-quote-text{font-family:var(--font-serif),serif;font-size:19px;font-style:italic;color:#111;line-height:1.65;margin-bottom:8px}
 .pull-quote-attr{font-size:9px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.12em}
 .score-row{display:flex;align-items:center;gap:12px;margin:22px 0 0}
 .score-bar{flex:1;height:3px;background:#f0f0f0;border-radius:2px;max-width:200px}
@@ -400,7 +400,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: trend.color, flexShrink: 0 }} />
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", lineHeight: 1.2, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", lineHeight: 1.2, margin: 0, fontFamily: "var(--font-serif), serif" }}>
                 {trend.name}
               </h3>
             </div>
@@ -461,7 +461,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           <div style={{ paddingTop: mode === "sidebar" ? 14 : 4, paddingBottom: 16, display: "flex", flexDirection: "column", gap: 0 }}>
 
             {/* What's happening */}
-            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#555", lineHeight: 1.7, margin: "0 0 16px", fontFamily: "'EB Garamond', Georgia, serif" }}>
+            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#555", lineHeight: 1.7, margin: "0 0 16px", fontFamily: "var(--font-serif), serif" }}>
               {trend.description}
             </p>
 
@@ -495,7 +495,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 16 }}>
               <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
               {trend.culturalContext ? (
-                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{trend.culturalContext}</p>
+                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "var(--font-serif), serif" }}>{trend.culturalContext}</p>
               ) : (
                 <p style={{ fontSize: 12, color: "#ccc", margin: 0, fontStyle: "italic" }}>Cultural context not yet tracked.</p>
               )}

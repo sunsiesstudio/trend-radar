@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
   title: "Augmented Culture",
@@ -20,7 +21,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} ${fraunces.variable}`}>{children}</body>
     </html>
   );
 }

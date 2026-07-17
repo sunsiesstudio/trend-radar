@@ -92,7 +92,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
 
         {/* Header — fixed, never scrolls away */}
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f0f0", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif", margin: 0 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif", margin: 0 }}>
             Add signal
           </h2>
           <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 18, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>×</button>

@@ -240,7 +240,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
               <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, marginLeft: "auto" }}>×</button>
             </div>
             {/* Row 2: signal title */}
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", lineHeight: 1.35, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", lineHeight: 1.35, margin: 0, fontFamily: "var(--font-serif), serif" }}>
               {signal.title}
             </h3>
           </div>
@@ -293,7 +293,7 @@ export function SignalPopup({ signal, trendColor, trendName, allSignals, onClose
 
           {/* Summary — primary content */}
           <div style={{ padding: mode === "sidebar" ? "0 20px 18px" : "0 24px 24px" }}>
-            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#333", lineHeight: 1.8, margin: 0, fontFamily: "'EB Garamond', Georgia, serif" }}>{signal.summary}</p>
+            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#333", lineHeight: 1.8, margin: 0, fontFamily: "var(--font-serif), serif" }}>{signal.summary}</p>
           </div>
 
           {/* Trend link + related — grouped at bottom */}

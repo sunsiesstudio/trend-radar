@@ -143,7 +143,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
         {/* Headline */}
         <h1 style={{
           fontSize: "clamp(28px, 5.5vw, 46px)", fontWeight: 800,
-          fontFamily: "'EB Garamond', Georgia, serif",
+          fontFamily: "var(--font-serif), serif",
           letterSpacing: "-0.03em", lineHeight: 1.12,
           color: "#111", margin: "0 0 20px",
         }}>
@@ -153,7 +153,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
         {/* Brief */}
         <p style={{
           fontSize: "clamp(15px, 2vw, 17px)",
-          fontFamily: "'EB Garamond', Georgia, serif",
+          fontFamily: "var(--font-serif), serif",
           lineHeight: 1.75, color: "#444", margin: "0 0 36px",
         }}>
           {topName} is one I keep coming back to lately. I track the places
@@ -179,7 +179,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
                     {t.topics?.[0]?.replace(/-/g, " ") ?? ""}
                   </span>
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 700, fontFamily: "'EB Garamond', Georgia, serif", color: "#111", lineHeight: 1.3, marginBottom: 5 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, fontFamily: "var(--font-serif), serif", color: "#111", lineHeight: 1.3, marginBottom: 5 }}>
                   {t.name}
                 </div>
                 <div style={{ fontSize: 12, color: "#888", lineHeight: 1.55, marginBottom: lastDate ? 6 : 0 }}>
@@ -208,7 +208,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
                 cursor: "pointer", textAlign: "left",
               }}
             >
-              <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 8 }}>
+              <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "var(--font-serif), serif", lineHeight: 1.2, marginBottom: 8 }}>
                 Culture Map
               </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
@@ -226,7 +226,7 @@ export function HomeView({ onExploreMap, onOpenRadar }: Props) {
                 cursor: "pointer", textAlign: "left",
               }}
             >
-              <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2, marginBottom: 8 }}>
+              <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "var(--font-serif), serif", lineHeight: 1.2, marginBottom: 8 }}>
                 Trends Radar
               </div>
               <div style={{ fontSize: 12, color: "#888", lineHeight: 1.5 }}>

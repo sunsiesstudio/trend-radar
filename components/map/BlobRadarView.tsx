@@ -105,7 +105,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
         boxShadow: `0 6px 32px ${data.color}66`,
       }}>
-      <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "'EB Garamond', Georgia, serif" }}>
+      <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif" }}>
         {data.name}
       </div>
       <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
@@ -499,14 +499,14 @@ export function BlobRadarView({
               {generatingTopic ? (
                 /* Loading state */
                 <>
-                  <div style={{ fontSize: 15, color: "#aaa", fontFamily: "'EB Garamond', Georgia, serif" }}>
+                  <div style={{ fontSize: 15, color: "#aaa", fontFamily: "var(--font-serif), serif" }}>
                     Generating <em>{generatingTopic}</em>…
                   </div>
                 </>
               ) : (
                 /* Search state */
                 <>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
                     A research tool to identify emerging tech trends in culture
                   </div>
                   {/* Search input */}
@@ -745,7 +745,7 @@ export function BlobRadarView({
           <div style={{ flex: 1, textAlign: "center" }}>
             {isOverview ? (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", lineHeight: 1.2 }}>
                   {sorted.length} {sorted.length === 1 ? "trend" : "trends"}
                 </div>
                 <div style={{ fontSize: 10, color: "#bbb", marginTop: 2, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
@@ -758,7 +758,7 @@ export function BlobRadarView({
                   {focusTrend?.color && (
                     <span style={{ width: 8, height: 8, borderRadius: "50%", background: focusTrend.color, flexShrink: 0, display: "inline-block" }} />
                   )}
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", lineHeight: 1.2 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", lineHeight: 1.2 }}>
                     {focusTrend?.name}
                   </div>
                 </div>

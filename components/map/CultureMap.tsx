@@ -369,13 +369,13 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {selection.type === "need" && (
               <>
-                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.need}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif" }}>{selection.need}</span>
                 <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} {selection.trends.length === 1 ? "trend" : "trends"}</span>
               </>
             )}
             {selection.type === "domain" && (
               <>
-                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif" }}>{selection.domain}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif" }}>{selection.domain}</span>
                 <span style={{ fontSize: 11, color: "#aaa" }}>{selection.trends.length} {selection.trends.length === 1 ? "trend" : "trends"}</span>
               </>
             )}
@@ -385,11 +385,11 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         </div>
         {selection.type === "domain" && (() => {
           const v = DOMAIN_VIBES[selection.domain];
-          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{v}</p> : null;
+          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "var(--font-serif), serif", fontStyle: "italic" }}>{v}</p> : null;
         })()}
         {selection.type === "need" && (() => {
           const v = TENSION_VIBES[selection.need];
-          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'EB Garamond', Georgia, serif", fontStyle: "italic" }}>{v}</p> : null;
+          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "var(--font-serif), serif", fontStyle: "italic" }}>{v}</p> : null;
         })()}
       </div>
       <div style={{
