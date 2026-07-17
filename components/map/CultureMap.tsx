@@ -37,7 +37,7 @@ const TOPIC_TO_DOMAIN: Record<string, CulturalDomain> = {
   education: "Work", "future-of-work": "Work", web3: "Work",
   gaming: "Play", sport: "Play", sports: "Play", nightlife: "Play",
   mobility: "Play", travel: "Play", film: "Play", music: "Play", "ar-vr": "Play",
-  beauty: "Style", fashion: "Style", luxury: "Style", fragrance: "Style",
+  beauty: "Style", aesthetics: "Style", fashion: "Style", luxury: "Style", fragrance: "Style",
   jewellery: "Style", art: "Style", photography: "Style", creativity: "Style",
   food: "Food", "food-tech": "Food", coffee: "Food",
   social: "Community", dating: "Community", parenting: "Community",

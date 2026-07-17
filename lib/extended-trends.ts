@@ -51,6 +51,7 @@ export const TOPIC_COLORS: Record<string, string> = {
   cybersecurity:     "#8C93C7",
   "synthetic-biology":"#53A373",
   "future-of-work":  "#FFD65C",
+  aesthetics:        "#D1CAEA",
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
@@ -494,7 +495,7 @@ export const EXTENDED_TRENDS: Trend[] = [
     name: "Dopamine Design",
     description: "Product designers and brand strategists are explicitly borrowing the neuroscience of reward and pleasure, designing for dopamine responses rather than functional utility.",
     color: "#C4A0CE",
-    topics: ["mental-health", "lifestyle", "beauty"],
+    topics: ["mental-health", "lifestyle", "aesthetics"],
     relevanceScore: 73,
     redditQuery: "dopamine design product UX reward psychology consumer",
     newsQuery: "dopamine design retail experience neuroscience brand",
@@ -1951,7 +1952,7 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
 // The "emerging tech" side (AI, AR/VR, robotics, web3…) is always the lens,
 // never the search term. Emerging Tech × Fashion, not Emerging Tech × AI.
 export const LIBRARY_TOPICS = [
-  "fashion", "beauty", "gaming", "wellness", "food-tech", "mental-health",
+  "fashion", "beauty", "aesthetics", "gaming", "wellness", "food-tech", "mental-health",
   "sustainability", "health", "interior-design", "travel", "fitness",
   "music", "art", "skincare", "luxury", "food", "creativity",
   "photography", "film", "branding", "retail", "social", "education",
