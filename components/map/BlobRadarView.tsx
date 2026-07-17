@@ -451,16 +451,13 @@ export function BlobRadarView({
 
   if (trends.length === 0) {
     return (
-      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#f8f7f3" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#eff7d6" }}>
         {/* Animated blob background */}
         <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
           {([
-            { color: "#80B0E8", size: 300, x: -4,  y: 5,   dur: 26, seed: "bg-blob-sky" },
-            { color: "#FFC0C0", size: 280, x: 104, y: 8,   dur: 33, seed: "bg-blob-peony" },
-            { color: "#D6D35F", size: 260, x: -4,  y: 92,  dur: 21, seed: "bg-blob-lime" },
-            { color: "#C45F3F", size: 300, x: 104, y: 88,  dur: 38, seed: "bg-blob-tomato" },
-            { color: "#D1CAEA", size: 220, x: 50,  y: -4,  dur: 29, seed: "bg-blob-lavender" },
-            { color: "#F4D242", size: 220, x: 50,  y: 104, dur: 32, seed: "bg-blob-sun" },
+            { color: "#80B0E8", size: 300, x: -4,  y: 5,  dur: 26, seed: "bg-blob-sky" },
+            { color: "#FFC0C0", size: 280, x: 104, y: 8,  dur: 33, seed: "bg-blob-peony" },
+            { color: "#D1CAEA", size: 220, x: 50,  y: -4, dur: 29, seed: "bg-blob-lavender" },
           ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
             <div key={i} style={{
               position: "absolute",
@@ -477,12 +474,10 @@ export function BlobRadarView({
           ))}
           {/* Desktop-only extra blobs — fill the inner space on larger screens */}
           {([
-            { color: "#78C9A8", size: 320, x: -4,  y: 50,  dur: 28, seed: "bg-d-teal" },
-            { color: "#E8B87A", size: 320, x: 104, y: 50,  dur: 34, seed: "bg-d-amber" },
-            { color: "#FD8326", size: 280, x: 25,  y: -4,  dur: 25, seed: "bg-d-orange" },
-            { color: "#9DC47C", size: 280, x: 75,  y: -4,  dur: 31, seed: "bg-d-sage" },
-            { color: "#FF8BB4", size: 280, x: 25,  y: 104, dur: 36, seed: "bg-d-rose" },
-            { color: "#C4A0CE", size: 280, x: 75,  y: 104, dur: 27, seed: "bg-d-mauve" },
+            { color: "#78C9A8", size: 320, x: -4,  y: 50, dur: 28, seed: "bg-d-teal" },
+            { color: "#E8B87A", size: 320, x: 104, y: 50, dur: 34, seed: "bg-d-amber" },
+            { color: "#FD8326", size: 280, x: 25,  y: -4, dur: 25, seed: "bg-d-orange" },
+            { color: "#9DC47C", size: 280, x: 75,  y: -4, dur: 31, seed: "bg-d-sage" },
           ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
             <div key={`d${i}`} className="home-desktop-blob" style={{
               position: "absolute",
@@ -498,7 +493,7 @@ export function BlobRadarView({
             }} />
           ))}
         </div>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1, background: "#f8f7f3" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1, background: "#eff7d6" }}>
         <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
               {generatingTopic ? (
@@ -512,7 +507,7 @@ export function BlobRadarView({
                 /* Search state */
                 <>
                   <div style={{ fontSize: 22, fontWeight: 700, color: "#111", fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.25 }}>
-                    Where emerging tech<br />meets culture
+                    A research tool to identify emerging tech trends in culture
                   </div>
                   {/* Search input */}
                   <div style={{ position: "relative", marginTop: 18 }}>
@@ -559,7 +554,7 @@ export function BlobRadarView({
                         }}
                         onFocus={() => setShowSuggestions(true)}
                         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                        placeholder="Search a topic, e.g. art"
+                        placeholder="Start by searching a topic, e.g. art"
                         style={{
                           flex: 1, background: "none", border: "none", outline: "none",
                           fontSize: 14, fontWeight: 400, color: "#333",
@@ -618,7 +613,7 @@ export function BlobRadarView({
 
         {/* Last arrivals — latest signal per trend, most recent first */}
         {latestSignals.length > 0 && (
-          <div style={{ flexShrink: 0, paddingBottom: 8, position: "relative", zIndex: 1, background: "#f8f7f3" }}>
+          <div style={{ flexShrink: 0, paddingBottom: 8, position: "relative", zIndex: 1, background: "#eff7d6" }}>
             <div style={{ padding: "0 24px 10px" }}>
               <span style={{ fontSize: 9, color: "#c0bbb4", letterSpacing: "0.13em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                 Last arrivals
@@ -661,7 +656,7 @@ export function BlobRadarView({
           </div>
         )}
 
-        <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1, background: "#f8f7f3" }}>
+        <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1, background: "#eff7d6" }}>
           By Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
             style={{ color: "#bbb", textDecoration: "underline", textUnderlineOffset: 2 }}>
@@ -712,7 +707,7 @@ export function BlobRadarView({
           zoomOnScroll
           preventScrolling
           proOptions={{ hideAttribution: true }}
-          style={{ background: "#f8f7f3" }}
+          style={{ background: "#eff7d6" }}
         >
           <BoardController fitViewRef={fitViewRef} />
           <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} trendsKey={trendsKey} panelOpen={panelOpen} />
@@ -726,7 +721,7 @@ export function BlobRadarView({
           display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "10px 16px",
           paddingBottom: "max(14px, env(safe-area-inset-bottom, 14px))",
-          background: "rgba(248,247,243,0.96)", backdropFilter: "blur(18px)",
+          background: "rgba(239,247,214,0.96)", backdropFilter: "blur(18px)",
           borderTop: "1px solid rgba(0,0,0,0.06)",
           gap: 12,
         }}>
