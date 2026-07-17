@@ -383,26 +383,6 @@ export const EXTENDED_TRENDS: Trend[] = [
 
   // ── GAMING ──────────────────────────────────────────────────────────────────
   {
-    id: "gaming-npc-aesthetics",
-    name: "NPC Aesthetics",
-    description: "Video game NPC aesthetics have crossed from ironic meme into genuine fashion direction. That blank affect, the uniform dressing, the repetition, brands are actually running with it now.",
-    color: "#78C9A8",
-    topics: ["gaming", "fashion", "lifestyle"],
-    relevanceScore: 71,
-    redditQuery: "NPC aesthetic fashion streetwear",
-    newsQuery: "NPC aesthetic fashion trend",
-    position: { x: 368, y: 1968 },
-    whyRelevant: "When a gaming aesthetic becomes a fashion direction it signals that gaming culture has enough mainstream reach to influence taste, not just consume product.",
-    trajectory: "NPC aesthetics will peak as irony and cross into earnest adoption within 12 months, the same path normcore and gorpcore took.",
-    nextSteps: [],
-    brandMoves: [
-      { label: "A-Cold-Wall* releases a 'System NPC' capsule referencing game-character uniformity in wearable garments", url: "https://a-cold-wall.com" },
-      { label: "Nike drops a limited Air Max colourway inspired by default NPC character palettes, sells out in under an hour", url: "https://nike.com" },
-      { label: "Bottega Veneta's 2025 collection uses deliberately blank, interchangeable silhouettes that critics read as NPC homage", url: "https://bottegaveneta.com" },
-      { label: "Roblox and Zara co-create wearable digital-to-physical NPC-style looks available in-game and in-store simultaneously", url: "https://zara.com" },
-    ],
-  },
-  {
     id: "gaming-drop-economy",
     name: "The Drop Economy",
     description: "Gaming rewired how a generation thinks about scarcity and timing. Loot boxes, seasonal drops, battle pass exclusives: all of it trained people to feel urgency in a very specific way, and fashion is borrowing those same mechanics.",
@@ -419,8 +399,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Supreme's weekly Thursday drop model is copied by Palace, Kith, and dozens of streetwear brands globally — the drop format becomes retail default", url: "https://supremenewyork.com" },
       { label: "Adidas Confirmed app uses battle-pass-style waitlists and raffles for Yeezy and Originals releases, driving millions of app installs", url: "https://adidas.com/us/confirmed" },
       { label: "Louis Vuitton x League of Legends collaboration sells capsule via countdown drop mechanic, merging luxury and gaming scarcity logic", url: "https://louisvuitton.com" },
-      { label: "SNKRS app by Nike employs draw and countdown drop mechanics borrowed directly from gaming loot systems, standard for all high-demand releases", url: "https://nike.com/launch" },
-    ],
+      { label: "SNKRS app by Nike employs draw and countdown drop mechanics borrowed directly from gaming loot systems, standard for all high-demand releases", url: "https://nike.com/launch" }
+],
   },
 
   // ── WELLNESS ────────────────────────────────────────────────────────────────
@@ -442,8 +422,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Wim Hof Method partners with luxury hotel chains including Six Senses to offer guided cold immersion retreats", url: "https://wimhofmethod.com" },
       { label: "lululemon introduces a cold-therapy apparel and accessory line featuring insulated post-plunge wraps and robes", url: "https://lululemon.com" },
       { label: "Lego-owner Kirkbi invests in ice-bath startup Monk Manual, validating the category for mainstream wellness investors", url: "https://plunge.com" },
-      { label: "Chelsea FC installs branded cold-plunge suites at Stamford Bridge sold as premium fan experience packages", url: "https://chelseafc.com" },
-    ],
+      { label: "Chelsea FC installs branded cold-plunge suites at Stamford Bridge sold as premium fan experience packages", url: "https://chelseafc.com" }
+],
   },
   {
     id: "wellness-cortisol",
@@ -462,8 +442,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Moon Juice launches Magnesi-Om and SuperYou cortisol-support supplements, building a $50M+ adaptogens line marketed explicitly around stress hormones", url: "https://moonjuice.com" },
       { label: "Hims & Hers adds cortisol management as a clinical category with telehealth consults and prescription adaptogens", url: "https://forhims.com" },
       { label: "The Nue Co builds an entire brand platform around cortisol, launching Destress and Prebiotic + Probiotic lines for the 'cortisol cocktail' moment", url: "https://thenueco.com" },
-      { label: "Whoop 4.0 adds a cortisol-proxy 'stress score' to its daily readiness metrics, making the hormone readable on the wrist", url: "https://whoop.com" },
-    ],
+      { label: "Whoop 4.0 adds a cortisol-proxy 'stress score' to its daily readiness metrics, making the hormone readable on the wrist", url: "https://whoop.com" }
+],
   },
 
   // ── FOOD-TECH ───────────────────────────────────────────────────────────────
@@ -485,8 +465,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Liquid Death reaches $263M revenue, proving water can carry brand identity as strong as energy drinks or soda", url: "https://liquiddeath.com" },
       { label: "Athletic Brewing non-alcoholic craft beer becomes the visible drink of choice at fitness events, tech conferences, and premium workplaces", url: "https://athleticbrewing.com" },
       { label: "Kin Euphorics launches a nootropic social drink positioned for display at dinner parties and boutique hotel minibars", url: "https://kineuphoric.com" },
-      { label: "Gorilla Mind and AG1 (Athletic Greens) dominate podcast-to-purchase funnels, turning supplement shakers into gym-bag identity markers", url: "https://drinkag1.com" },
-    ],
+      { label: "Gorilla Mind and AG1 (Athletic Greens) dominate podcast-to-purchase funnels, turning supplement shakers into gym-bag identity markers", url: "https://drinkag1.com" }
+],
   },
   {
     id: "foodtech-precision",
@@ -505,8 +485,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Zoe raises $45M Series B to expand its microbiome-based personalised nutrition service to US and Europe", url: "https://joinzoe.com" },
       { label: "Viome offers full-body intelligence tests combining gut microbiome, blood, and gene expression for hyper-personalised supplement plans", url: "https://viome.com" },
       { label: "Nestlé launches Nestlé Health Science division specifically targeting precision nutrition and microbiome-based products", url: "https://nestlehealthscience.com" },
-      { label: "Day Two brings CGM-based personalised nutrition out of diabetes management into consumer wellness subscriptions", url: "https://daytwo.com" },
-    ],
+      { label: "Day Two brings CGM-based personalised nutrition out of diabetes management into consumer wellness subscriptions", url: "https://daytwo.com" }
+],
   },
 
   // ── MENTAL-HEALTH ───────────────────────────────────────────────────────────
@@ -527,8 +507,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Glossier's flagship store redesign uses dopamine dressing colour theory throughout, bright pinks and greens explicitly to trigger positive emotional states", url: "https://glossier.com" },
       { label: "Duolingo's product team publicly describes streak mechanics and confetti animations as 'dopamine loops' — transparency about the design intent drives press and user growth", url: "https://duolingo.com" },
       { label: "Jacquemus designs unboxing experiences and campaign visuals explicitly for dopaminergic colour response, driving viral shareability", url: "https://jacquemus.com" },
-      { label: "BeReal's anti-dopamine design (no likes, no filters) becomes its marketing hook — the counterpoint validates the trend's centrality", url: "https://bereal.com" },
-    ],
+      { label: "BeReal's anti-dopamine design (no likes, no filters) becomes its marketing hook — the counterpoint validates the trend's centrality", url: "https://bereal.com" }
+],
   },
   {
     id: "mentalhealth-therapeutic",
@@ -547,8 +527,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Aesop's store design philosophy — muted terracotta, botanical scent, deliberate quiet — becomes a retail benchmark for therapeutic sensory environments", url: "https://aesop.com" },
       { label: "Muji expands its global footprint on an explicit 'anti-stimulation' visual identity, earning premium positioning through restraint", url: "https://muji.com" },
       { label: "Headspace partners with Nike to design calming colour palettes and softer material textures into recovery-wear collections", url: "https://headspace.com" },
-      { label: "Selfridges dedicates its 'Superself' wellness floor to therapeutic-aesthetic brands, curated around calm, texture, and sensory decompression", url: "https://selfridges.com" },
-    ],
+      { label: "Selfridges dedicates its 'Superself' wellness floor to therapeutic-aesthetic brands, curated around calm, texture, and sensory decompression", url: "https://selfridges.com" }
+],
   },
 
   // ── INTERIOR DESIGN ─────────────────────────────────────────────────────────
@@ -569,8 +549,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Autodesk integrates Stable Diffusion-based rendering directly into Revit, putting AI visualisation inside the architect's existing workflow", url: "https://autodesk.com" },
       { label: "Interior AI raises seed funding to build an AI-generated room redesign tool reaching 3M users in its first six months", url: "https://interiorai.com" },
       { label: "Zaha Hadid Architects adopts generative AI for parametric form exploration, publishing case studies on AI-accelerated design development", url: "https://zaha-hadid.com" },
-      { label: "Havenly integrates AI layout generation into its e-design service, reducing turnaround from two weeks to 48 hours", url: "https://havenly.com" },
-    ],
+      { label: "Havenly integrates AI layout generation into its e-design service, reducing turnaround from two weeks to 48 hours", url: "https://havenly.com" }
+],
   },
   {
     id: "interiordesign-ar-preview",
@@ -589,8 +569,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "IKEA Place app reaches 30M downloads, proving AR room preview drives measurable conversion lift and reduces return rates", url: "https://ikea.com" },
       { label: "Wayfair's View in Room 3D AR feature cited as a key driver of its DTC e-commerce growth, reducing return rates by 22%", url: "https://wayfair.com" },
       { label: "Apple Vision Pro launch includes spatial shopping apps from Wayfair and Lowe's as day-one partners, validating room-scale AR retail", url: "https://apple.com/apple-vision-pro" },
-      { label: "Houzz Pro AR tool allows designers to present full room simulations to clients in real time during consultation calls", url: "https://houzz.com/pro" },
-    ],
+      { label: "Houzz Pro AR tool allows designers to present full room simulations to clients in real time during consultation calls", url: "https://houzz.com/pro" }
+],
   },
   {
     id: "interiordesign-smart-materials",
@@ -609,8 +589,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Ecovative Design scales mycelium packaging and insulation panels into premium interior design applications in collaboration with Ikea and Hermès", url: "https://ecovativedesign.com" },
       { label: "Interface Carpet launches carbon-negative carpet tiles made from bio-based materials, targeting LEED-certified commercial interiors", url: "https://interface.com" },
       { label: "Biohm develops mycelium insulation blocks as a building material, partnering with UK housebuilders on pilot residential projects", url: "https://biohm.co.uk" },
-      { label: "Samsung SmartThings integrates with living wall systems from Naava to create air-quality-responsive biophilic installations for office design", url: "https://naava.io" },
-    ],
+      { label: "Samsung SmartThings integrates with living wall systems from Naava to create air-quality-responsive biophilic installations for office design", url: "https://naava.io" }
+],
   },
 
   // ── TRAVEL ──────────────────────────────────────────────────────────────────
@@ -631,8 +611,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Booking.com launches AI Trip Planner integrated into its app, enabling full itinerary generation with real-time pricing and booking in a single flow", url: "https://booking.com" },
       { label: "Airbnb's AI-powered search allows natural-language trip requests ('beach house for 6 with surf, May half-term') to return curated results", url: "https://airbnb.com" },
       { label: "Google Travel's Gemini integration enables conversational itinerary building across Maps, Hotels, and Flights simultaneously", url: "https://travel.google.com" },
-      { label: "Tripadvisor launches an AI travel assistant that generates personalised day-by-day itineraries based on past reviews and preferences", url: "https://tripadvisor.com" },
-    ],
+      { label: "Tripadvisor launches an AI travel assistant that generates personalised day-by-day itineraries based on past reviews and preferences", url: "https://tripadvisor.com" }
+],
   },
   {
     id: "travel-immersive-tourism",
@@ -651,8 +631,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "The Smithsonian deploys AI-guided AR tours across its National Museum of Natural History, layering extinct animal animations over fossil displays", url: "https://si.edu" },
       { label: "Athens launches AR app showing classical-era reconstructions overlaid on the Acropolis ruins, developed with Google Arts & Culture", url: "https://artsandculture.google.com" },
       { label: "Visit Dubai commissions a full AR walking experience across the historic Al Fahidi district, available through the Dubai Tourism app", url: "https://visitdubai.com" },
-      { label: "MSC Cruises integrates AR port-of-call experiences into its cruise app, enabling passengers to access immersive historical layers at each destination", url: "https://msccruises.com" },
-    ],
+      { label: "MSC Cruises integrates AR port-of-call experiences into its cruise app, enabling passengers to access immersive historical layers at each destination", url: "https://msccruises.com" }
+],
   },
 
   // ── FITNESS ─────────────────────────────────────────────────────────────────
@@ -673,8 +653,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Whoop 4.0 integrates HRV-based workout recommendations, pushing from data display into prescriptive AI coaching for 5M+ members", url: "https://whoop.com" },
       { label: "Oura Ring Generation 4 adds readiness and training load scores endorsed by NBA and Premier League performance teams", url: "https://ouraring.com" },
       { label: "Supersapiens CGM for athletes (Abbott Libre Sense powered) becomes standard kit at elite triathlon and cycling events", url: "https://supersapiens.com" },
-      { label: "Garmin's AI Training Status feature uses HRV, sleep, and load data to recommend rest or hard days — adopted across its entire Forerunner and Fenix lineup", url: "https://garmin.com" },
-    ],
+      { label: "Garmin's AI Training Status feature uses HRV, sleep, and load data to recommend rest or hard days — adopted across its entire Forerunner and Fenix lineup", url: "https://garmin.com" }
+],
   },
   {
     id: "fitness-social-performance",
@@ -693,8 +673,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Strava reaches 125M registered athletes and becomes the de facto social network for running and cycling identity expression", url: "https://strava.com" },
       { label: "Hyrox global fitness race series builds its entire spectator and entry experience around Strava and Whoop data sharing, fuelling viral growth", url: "https://hyrox.com" },
       { label: "Lululemon Studio (Mirror acquisition) pivots to social-first group workout features after hardware struggles, betting on community over equipment", url: "https://lululemon.com/en-us/studio" },
-      { label: "Nike Run Club adds 'Pace Groups' and competitive challenges, integrating social fitness mechanics directly into its free app to retain 50M users", url: "https://nike.com/nrc-app" },
-    ],
+      { label: "Nike Run Club adds 'Pace Groups' and competitive challenges, integrating social fitness mechanics directly into its free app to retain 50M users", url: "https://nike.com/nrc-app" }
+],
   },
 
   // ── MUSIC ───────────────────────────────────────────────────────────────────
@@ -715,8 +695,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Suno AI reaches 10M users generating full songs from text prompts, signing a licensing deal with major labels for training data", url: "https://suno.com" },
       { label: "Epidemic Sound launches AI-assisted music creation tools for its library of 40,000 tracks, targeting content creators and brand teams", url: "https://epidemicsound.com" },
       { label: "YouTube introduces AI music generation via Dream Track in Shorts, letting creators generate original soundtracks from text descriptions", url: "https://youtube.com" },
-      { label: "AWAL (Sony Music) partners with AI music startup Boomy to develop artist-friendly AI creation tools that retain royalties for human artists", url: "https://awal.com" },
-    ],
+      { label: "AWAL (Sony Music) partners with AI music startup Boomy to develop artist-friendly AI creation tools that retain royalties for human artists", url: "https://awal.com" }
+],
   },
   {
     id: "music-spatial-audio",
@@ -735,8 +715,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Apple adds Spatial Audio and head-tracking to AirPods Pro, making Dolby Atmos a standard consumer feature across its 100M+ AirPods user base", url: "https://apple.com/airpods-pro" },
       { label: "Spotify partners with Dolby to roll out Dolby Atmos music across its 600M users, making spatial audio the new streaming default", url: "https://spotify.com" },
       { label: "Calm launches a binaural audio sleep series, achieving 3M plays in the first month and validating spatial audio as a wellness format", url: "https://calm.com" },
-      { label: "Coldplay's Music of the Spheres world tour becomes the highest-grossing ever in part by delivering a proprietary spatial audio mix at every venue", url: "https://coldplay.com" },
-    ],
+      { label: "Coldplay's Music of the Spheres world tour becomes the highest-grossing ever in part by delivering a proprietary spatial audio mix at every venue", url: "https://coldplay.com" }
+],
   },
 
   // ── ART ─────────────────────────────────────────────────────────────────────
@@ -757,8 +737,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Christie's 'Augmented Intelligence' auction series sells AI-generated works by Refik Anadol and Holly Herndon at prices exceeding $200K, signalling institutional market formation", url: "https://christies.com" },
       { label: "MoMA acquires works by artist and AI researcher Sofia Crespo, becoming the first major US museum to formally collect AI-native art", url: "https://moma.org" },
       { label: "Refik Anadol's 'Unsupervised' installation at MoMA draws 3M visitors, the most-attended single work in the museum's recent history", url: "https://refikanadol.com" },
-      { label: "Sotheby's launches a dedicated 'Digital Art & AI' sale category, separating AI works from NFTs and creating a standalone market designation", url: "https://sothebys.com" },
-    ],
+      { label: "Sotheby's launches a dedicated 'Digital Art & AI' sale category, separating AI works from NFTs and creating a standalone market designation", url: "https://sothebys.com" }
+],
   },
   {
     id: "art-phygital-objects",
@@ -777,8 +757,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Damien Hirst's 'The Currency' project lets buyers choose between physical paintings or NFTs — 5,149 choose NFT, the physical versions are burned on camera", url: "https://heni.com" },
       { label: "Louis Vuitton's 'Via Trunk' NFT collection includes physical trunk access and exclusive events, blending collectible object with digital token", url: "https://louisvuitton.com" },
       { label: "Verisart provides blockchain certificates of authenticity for physical artworks by over 100,000 artists, building phygital provenance infrastructure", url: "https://verisart.com" },
-      { label: "Pace Gallery launches Pace Verso platform enabling artists to attach digital twins and AR layers to physical editions sold through the gallery", url: "https://pacegallery.com" },
-    ],
+      { label: "Pace Gallery launches Pace Verso platform enabling artists to attach digital twins and AR layers to physical editions sold through the gallery", url: "https://pacegallery.com" }
+],
   },
 
   // ── SKINCARE ────────────────────────────────────────────────────────────────
@@ -799,8 +779,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Augustinus Bader builds a $200M brand on TFC8 biotech active, turning a single proprietary ingredient into a global prestige franchise", url: "https://augustinusbader.com" },
       { label: "111SKIN launches an exosome-based serum developed with stem cell scientists at University College London, bridging clinical and consumer markets", url: "https://111skin.com" },
       { label: "L'Oréal's Active Cosmetics division acquires Skinbetter Science for $1.2B, betting on biotech-adjacent clinical actives as the future of mass prestige", url: "https://loreal.com" },
-      { label: "Allies of Skin launches a fermentation-first positioning platform, building its entire product architecture around biofermented actives at accessible luxury price points", url: "https://alliesofskin.com" },
-    ],
+      { label: "Allies of Skin launches a fermentation-first positioning platform, building its entire product architecture around biofermented actives at accessible luxury price points", url: "https://alliesofskin.com" }
+],
   },
   {
     id: "skincare-ai-personalisation",
@@ -819,8 +799,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Proven Skincare uses a 47-question AI quiz backed by 20,000+ academic papers to formulate personalised three-step routines for each customer", url: "https://provenskincare.com" },
       { label: "Shiseido launches Optune, an AI-powered skincare device that adjusts serum formulations daily based on skin sensor readings and weather data", url: "https://shiseido.com" },
       { label: "La Roche-Posay's SkinChecker AI tool analyses uploaded selfies for early signs of skin cancer, building diagnostic authority in mass skincare", url: "https://laroche-posay.co.uk" },
-      { label: "Curology uses AI-driven dermatology consultations to prescribe personalised tretinoin formulas, scaling to 600K+ subscribers", url: "https://curology.com" },
-    ],
+      { label: "Curology uses AI-driven dermatology consultations to prescribe personalised tretinoin formulas, scaling to 600K+ subscribers", url: "https://curology.com" }
+],
   },
 
   // ── LUXURY ──────────────────────────────────────────────────────────────────
@@ -841,8 +821,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "LVMH, Prada, and Cartier launch the Aura Blockchain Consortium, the first cross-brand luxury blockchain for product authentication with 40+ members", url: "https://auraluxuryblockchain.com" },
       { label: "Breitling attaches NFC-powered digital passports to every watch, enabling ownership transfer and service history on the blockchain", url: "https://breitling.com" },
       { label: "Arianee powers digital product passports for Richemont brands including Cartier and Vacheron Constantin, reaching 3M digital certificates issued", url: "https://arianee.com" },
-      { label: "Pangaia integrates QR-code digital passports on all garments, linking customers to fibre origin, manufacturing location, and carbon footprint data", url: "https://pangaia.com" },
-    ],
+      { label: "Pangaia integrates QR-code digital passports on all garments, linking customers to fibre origin, manufacturing location, and carbon footprint data", url: "https://pangaia.com" }
+],
   },
   {
     id: "luxury-ai-personalisation",
@@ -861,8 +841,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Net-a-Porter's AI stylist analyses purchase history and browsing to send weekly personal edit emails with 3x higher open rates than standard newsletters", url: "https://net-a-porter.com" },
       { label: "Farfetch Dream Assembler tool enables one-to-one bespoke product configuration for handbags and footwear across its luxury brand network", url: "https://farfetch.com" },
       { label: "Dior deploys AI-powered clienteling tools in boutiques, giving sales associates real-time preference profiles of VIP customers before they enter the store", url: "https://dior.com" },
-      { label: "Gucci's My Gucci monogramming service powered by AI design assistance allows fully bespoke product customisation at accessible luxury price points", url: "https://gucci.com" },
-    ],
+      { label: "Gucci's My Gucci monogramming service powered by AI design assistance allows fully bespoke product customisation at accessible luxury price points", url: "https://gucci.com" }
+],
   },
 
   // ── CREATIVITY ──────────────────────────────────────────────────────────────
@@ -884,8 +864,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Runway ML's Gen-3 video model is adopted by major advertising agencies including WPP's Hogarth for high-volume commercial production", url: "https://runwayml.com" },
       { label: "Midjourney reaches 16M Discord users and is cited in campaigns by Nestlé, Heinz, and Volkswagen as primary moodboard and concept visualisation tool", url: "https://midjourney.com" },
       { label: "WPP launches Open, a proprietary AI creative production platform built on Adobe, Getty, and OpenAI partnerships to serve all its agency brands", url: "https://wpp.com" },
-      { label: "Canva integrates Magic Studio AI tools including text-to-image and Magic Write into its 170M-user platform, democratising generative creative tools", url: "https://canva.com" },
-    ],
+      { label: "Canva integrates Magic Studio AI tools including text-to-image and Magic Write into its 170M-user platform, democratising generative creative tools", url: "https://canva.com" }
+],
   },
   {
     id: "creativity-human-ai-authorship",
@@ -904,8 +884,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Getty Images launches its own generative AI image tool trained exclusively on licensed content, offering indemnified outputs to commercial clients", url: "https://gettyimages.com/ai" },
       { label: "Adobe Content Credentials (C2PA) roll out across Creative Cloud apps, embedding provenance metadata to distinguish AI-assisted from human-only work", url: "https://contentcredentials.org" },
       { label: "Universal Music Group signs AI collaboration agreements with Anthropic and Google, establishing royalty frameworks for AI trained on label catalogues", url: "https://umusicgroup.com" },
-      { label: "Stability AI releases an 'Enterprise' tier with contractual IP indemnification, making authorship liability a commercial product differentiator", url: "https://stability.ai" },
-    ],
+      { label: "Stability AI releases an 'Enterprise' tier with contractual IP indemnification, making authorship liability a commercial product differentiator", url: "https://stability.ai" }
+],
   },
 
   // ── PHOTOGRAPHY ─────────────────────────────────────────────────────────────
@@ -926,8 +906,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "AP, Reuters, and AFP publish joint policy banning AI-generated images from news wires, establishing editorial photography's documentary standard", url: "https://ap.org" },
       { label: "Leica Camera launches the M11-P with built-in Content Credentials (C2PA) chip — the first camera to cryptographically sign every image at capture", url: "https://leica-camera.com" },
       { label: "Adobe's Content Authenticity Initiative reaches 3,500 member organisations committing to provenance transparency in visual media", url: "https://contentauthenticity.org" },
-      { label: "Nikon announces Content Credentials integration across its Z-series mirrorless lineup, bringing cryptographic image authentication to pro photographers", url: "https://nikon.com" },
-    ],
+      { label: "Nikon announces Content Credentials integration across its Z-series mirrorless lineup, bringing cryptographic image authentication to pro photographers", url: "https://nikon.com" }
+],
   },
   {
     id: "photography-computational",
@@ -946,8 +926,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Google Pixel 9's 'Add Me' and 'Best Take' AI features use computational photography to solve group-shot problems that no DSLR can match", url: "https://store.google.com/product/pixel_9" },
       { label: "Apple's iPhone 16 Pro shoots spatial video for Apple Vision Pro — computational photography enabling a new content category at consumer price points", url: "https://apple.com/iphone-16-pro" },
       { label: "Lightroom's AI Masking and Denoise features, powered by Adobe Sensei, process professional-grade edits in seconds that previously required hours", url: "https://lightroom.adobe.com" },
-      { label: "Sony launches AI-AF (autofocus) across its Alpha mirrorless lineup, using machine learning to track subjects that previously required manual focus pullers", url: "https://sony.com/en/articles/alpha-1" },
-    ],
+      { label: "Sony launches AI-AF (autofocus) across its Alpha mirrorless lineup, using machine learning to track subjects that previously required manual focus pullers", url: "https://sony.com/en/articles/alpha-1" }
+],
   },
 
   // ── FILM ────────────────────────────────────────────────────────────────────
@@ -968,8 +948,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Industrial Light & Magic deploys Deepfake/de-aging AI on Indiana Jones and the Dial of Destiny, de-aging Harrison Ford 45 years for the opening sequence", url: "https://ilm.com" },
       { label: "Disney's VP of virtual production cites AI LED volume stages as cutting location shooting budgets by 30% across Mandalorian-era productions", url: "https://disneyplus.com" },
       { label: "Runway ML's Gen-3 is used for background extension and VFX cleanup on multiple Netflix originals, cutting post-production time by weeks", url: "https://runwayml.com" },
-      { label: "SAG-AFTRA's 2023 AI consent framework sets industry precedent: actors must now explicitly licence digital likenesses for AI training separately from performance contracts", url: "https://sagaftra.org" },
-    ],
+      { label: "SAG-AFTRA's 2023 AI consent framework sets industry precedent: actors must now explicitly licence digital likenesses for AI training separately from performance contracts", url: "https://sagaftra.org" }
+],
   },
   {
     id: "film-algorithmic-culture",
@@ -988,8 +968,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Netflix's algorithm-driven greenlight of Squid Game Season 1 (based on data signals from similar content) becomes the most-watched show in platform history", url: "https://netflix.com" },
       { label: "A24 doubles down on anti-algorithm positioning — no data-driven commissioning, strong director vision — differentiating itself as auteur cinema against Netflix's data approach", url: "https://a24films.com" },
       { label: "YouTube's algorithmic recommendations drive 70% of watch time, forcing brands to design video content with algorithm-friendly hooks in the first 3 seconds", url: "https://youtube.com" },
-      { label: "Substack's anti-algorithmic newsletter platform reaches 35M paid subscribers, as writers and readers opt out of engagement-optimised recommendation systems", url: "https://substack.com" },
-    ],
+      { label: "Substack's anti-algorithmic newsletter platform reaches 35M paid subscribers, as writers and readers opt out of engagement-optimised recommendation systems", url: "https://substack.com" }
+],
   },
 
   // ── BRANDING ────────────────────────────────────────────────────────────────
@@ -1010,8 +990,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Coca-Cola's 'Create Real Magic' campaign uses DALL-E and GPT-4 to let fans generate on-brand artwork using Coke's visual archive as source material", url: "https://coca-cola.com" },
       { label: "Heinz runs an AI image generation experiment prompting 'ketchup' in Midjourney — every output looks like Heinz, validating the brand's visual dominance", url: "https://heinz.com" },
       { label: "Pentagram designs a generative identity for the Cooper Hewitt design museum that produces thousands of unique logo variations from a single algorithmic brief", url: "https://pentagram.com" },
-      { label: "Interbrand launches 'Sonic Branding AI' service generating brand-consistent audio identities at scale, reducing audio production costs by 70%", url: "https://interbrand.com" },
-    ],
+      { label: "Interbrand launches 'Sonic Branding AI' service generating brand-consistent audio identities at scale, reducing audio production costs by 70%", url: "https://interbrand.com" }
+],
   },
   {
     id: "branding-cultural-intelligence",
@@ -1030,8 +1010,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Brandwatch's Consumer Research AI analyses 500M+ social signals daily, used by Unilever and P&G to spot trend shifts weeks before competitors", url: "https://brandwatch.com" },
       { label: "Samba TV's AI cultural intelligence platform is used by Netflix and Disney to predict which cultural moments to activate around for marketing campaigns", url: "https://samba.tv" },
       { label: "Pulsar Platform's audience intelligence tools power strategy for Spotify Wrapped and Levi's campaign planning, processing cultural data at scale", url: "https://pulsarplatform.com" },
-      { label: "Kyu Collective builds cultural intelligence as a dedicated strategic practice, serving luxury and FMCG brands with proprietary AI-assisted cultural analysis", url: "https://kyu.com" },
-    ],
+      { label: "Kyu Collective builds cultural intelligence as a dedicated strategic practice, serving luxury and FMCG brands with proprietary AI-assisted cultural analysis", url: "https://kyu.com" }
+],
   },
 
   // ── FOOD (general) ──────────────────────────────────────────────────────────
@@ -1052,8 +1032,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "GOOD Meat (Eat Just) becomes the first company to sell cultivated chicken commercially in the US following FDA and USDA approval in 2023", url: "https://eat.just.com/products/good-meat" },
       { label: "Upside Foods secures USDA grant of inspection for cultivated chicken, partnering with José Andrés restaurants for its first commercial service", url: "https://upsidefoods.com" },
       { label: "Quorn reaches £250M revenue with mycoprotein products available in 17 countries, demonstrating commercial scale for non-animal protein mainstream adoption", url: "https://quorn.co.uk" },
-      { label: "Nature's Fynd's Fy protein (fermented fungi) launches in Whole Foods across the US, backed by $350M from SoftBank and Bill Gates", url: "https://naturesfynd.com" },
-    ],
+      { label: "Nature's Fynd's Fy protein (fermented fungi) launches in Whole Foods across the US, backed by $350M from SoftBank and Bill Gates", url: "https://naturesfynd.com" }
+],
   },
   {
     id: "food-ai-flavour",
@@ -1072,8 +1052,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Givaudan's CARTO AI platform analyses 1.6 trillion flavour data points to predict winning flavour combinations, used by Mars, Nestlé, and PepsiCo", url: "https://givaudan.com" },
       { label: "Firmenich's INSPIRE AI tool generates novel flavour accords from molecular data, cutting formulation time for new beverages from 18 months to 90 days", url: "https://firmenich.com" },
       { label: "McCormick uses IBM's AI platform to develop new product concepts in weeks rather than years, launching a flavour predicted by AI as a bestseller", url: "https://mccormick.com" },
-      { label: "Tastewise's food intelligence platform uses AI to analyse 1B+ consumer data points across social, menus, and reviews to predict the next trend flavour", url: "https://tastewise.io" },
-    ],
+      { label: "Tastewise's food intelligence platform uses AI to analyse 1B+ consumer data points across social, menus, and reviews to predict the next trend flavour", url: "https://tastewise.io" }
+],
   },
   // ── FRAGRANCE ───────────────────────────────────────────────────────────────
   {
@@ -1093,8 +1073,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Givaudan's Carto AI formulation tool is used by Symrise, IFF, and Firmenich to generate novel fragrance accords not reachable by human perfumers alone", url: "https://givaudan.com" },
       { label: "Philyra — IBM and Symrise's AI system — creates two commercially sold Brazilian perfumes, the first AI-authored fragrances to reach market", url: "https://ibm.com/ibm/philyra" },
       { label: "Dior uses AI-assisted analysis of 250 years of Dior fragrance archive data to inform the development of Miss Dior Blooming Bouquet reformulation", url: "https://dior.com/en_gb/fragrance" },
-      { label: "Buly 1803 launches a personalised fragrance service using AI profiling to recommend a unique accord from 70,000 possible combinations", url: "https://buly1803.com" },
-    ],
+      { label: "Buly 1803 launches a personalised fragrance service using AI profiling to recommend a unique accord from 70,000 possible combinations", url: "https://buly1803.com" }
+],
   },
   {
     id: "fragrance-emotional-tech",
@@ -1113,8 +1093,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Singapore Airlines' proprietary cabin scent 'Stefan Floridian Waters' is scientifically designed to reduce anxiety and is applied to hot towels and crew uniforms", url: "https://singaporeair.com" },
       { label: "Abercrombie & Fitch's Fierce scent ambient pumping strategy generates documented 20% uplift in dwell time and was copied across the retail industry", url: "https://abercrombie.com" },
       { label: "Moodo smart diffuser uses an app and interchangeable scent pods to personalise home olfactory environment, raising $5M to expand its emotional scent platform", url: "https://moodo.co" },
-      { label: "Selfridges commissions bespoke olfactory design from The Perfume Society for its Body Studio floor, treating scent as integral to the spatial retail experience", url: "https://selfridges.com" },
-    ],
+      { label: "Selfridges commissions bespoke olfactory design from The Perfume Society for its Body Studio floor, treating scent as integral to the spatial retail experience", url: "https://selfridges.com" }
+],
   },
 
   // ── JEWELLERY ────────────────────────────────────────────────────────────────
@@ -1135,8 +1115,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "De Beers launches Lightbox, a lab-grown diamond jewellery brand at $800/carat — explicitly separating lab-grown from natural diamonds by price and positioning", url: "https://lightboxjewelry.com" },
       { label: "Pandora commits to using 100% lab-grown diamonds across its entire jewellery range from 2022, making it the world's largest lab-grown diamond jewellery brand", url: "https://pandora.net" },
       { label: "Brilliant Earth reaches $400M revenue building its brand on conflict-free and lab-grown stones for ethically-minded millennial buyers", url: "https://brilliantearth.com" },
-      { label: "Signet Jewelers (owner of Zales and Kay) invests $490M in lab-grown diamond supply chain infrastructure, betting on category growth at accessible price points", url: "https://signetjewelers.com" },
-    ],
+      { label: "Signet Jewelers (owner of Zales and Kay) invests $490M in lab-grown diamond supply chain infrastructure, betting on category growth at accessible price points", url: "https://signetjewelers.com" }
+],
   },
   {
     id: "jewellery-digital-identity",
@@ -1155,8 +1135,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Tiffany & Co. sells 250 NFTiffs — custom CryptoPunk pendants in physical form, with matching digital necklace NFTs — at $50,000 each, selling out in minutes", url: "https://tiffany.com" },
       { label: "Bulgari creates digital jewellery NFTs worn by avatars in The Sandbox metaverse, extending its jewellery into gaming environments without requiring physical product", url: "https://bulgari.com" },
       { label: "Roblox users spend $3B annually on avatar accessories including digital jewellery, validating the market size for digital wearable identity expression", url: "https://roblox.com" },
-      { label: "RTFKT (acquired by Nike) creates virtual jewellery and accessories for CloneX avatars, integrating digital jewellery into a collectible avatar ecosystem", url: "https://rtfkt.com" },
-    ],
+      { label: "RTFKT (acquired by Nike) creates virtual jewellery and accessories for CloneX avatars, integrating digital jewellery into a collectible avatar ecosystem", url: "https://rtfkt.com" }
+],
   },
 
   // ── RETAIL ──────────────────────────────────────────────────────────────────
@@ -1177,8 +1157,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Amazon's recommendation engine drives 35% of total revenue, the most-studied AI personalisation system in retail history", url: "https://amazon.com" },
       { label: "ASOS StyleMatch uses visual AI to recommend products based on uploaded outfit photos, converting inspiration into purchase in a single flow", url: "https://asos.com" },
       { label: "Stitch Fix's algorithmic styling engine processes 85+ data points per customer to select personalised clothing boxes, building a $2B revenue business on AI curation", url: "https://stitchfix.com" },
-      { label: "Zalando's AI recommendation system — built with 50M customer preference signals — personalises search results and homepage for every visitor in real time", url: "https://zalando.com" },
-    ],
+      { label: "Zalando's AI recommendation system — built with 50M customer preference signals — personalises search results and homepage for every visitor in real time", url: "https://zalando.com" }
+],
   },
   {
     id: "retail-immersive-commerce",
@@ -1197,8 +1177,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "TikTok Shop reaches $20B GMV in its first full year globally, making livestream commerce a mainstream western retail channel for the first time", url: "https://shop.tiktok.com" },
       { label: "L'Oréal deploys AR try-on across 23 brands via Modiface technology, achieving 2.5x conversion uplift vs standard product pages", url: "https://loreal.com" },
       { label: "Snap's AR shopping lenses are used by 250M Snapchatters, with fashion and beauty brands seeing 94% higher purchase intent from try-on lens users", url: "https://snap.com/en-US/lens-studio" },
-      { label: "Farfetch's Store of the Future concept integrates AR mirrors, connected clothing rails, and real-time inventory in a single in-store immersive commerce environment", url: "https://farfetch.com" },
-    ],
+      { label: "Farfetch's Store of the Future concept integrates AR mirrors, connected clothing rails, and real-time inventory in a single in-store immersive commerce environment", url: "https://farfetch.com" }
+],
   },
 
   // ── SOCIAL MEDIA ────────────────────────────────────────────────────────────
@@ -1219,8 +1199,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Persado's AI copywriting platform is used by Marks & Spencer, Verizon, and Chase to generate emotionally optimised ad copy at scale, reporting 68% conversion lift", url: "https://persado.com" },
       { label: "Coca-Cola deploys an AI content studio with WPP, using generative AI to produce localised campaign assets across 90 markets simultaneously", url: "https://coca-cola.com" },
       { label: "Jasper AI reaches $1.5B valuation serving 100,000+ brand teams generating marketing copy at scale, with integrations into HubSpot and Salesforce", url: "https://jasper.ai" },
-      { label: "Klarna uses AI to replace 700 marketing agency contractors, producing social content in-house at higher output volume and lower cost", url: "https://klarna.com" },
-    ],
+      { label: "Klarna uses AI to replace 700 marketing agency contractors, producing social content in-house at higher output volume and lower cost", url: "https://klarna.com" }
+],
   },
   {
     id: "social-creator-economy",
@@ -1239,8 +1219,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "YouTube Shorts Fund distributes $100M to creators in its first year, followed by the Partner Programme expansion making monetisation accessible to 1M+ smaller creators", url: "https://youtube.com/creators" },
       { label: "Spotify signs exclusive podcast deals with creators including Joe Rogan ($200M) and The Ringer, building a creator-to-platform infrastructure model for audio", url: "https://spotify.com/podcasts" },
       { label: "Patreon reaches $1B in creator payouts annually, establishing the subscription infrastructure for independent creator businesses", url: "https://patreon.com" },
-      { label: "L'Oréal's creators-first 'Open to All' model builds a 35,000-creator network with dedicated production tools, educational resources, and co-creation briefs", url: "https://loreal.com" },
-    ],
+      { label: "L'Oréal's creators-first 'Open to All' model builds a 35,000-creator network with dedicated production tools, educational resources, and co-creation briefs", url: "https://loreal.com" }
+],
   },
 
   // ── EDUCATION ────────────────────────────────────────────────────────────────
@@ -1261,8 +1241,8 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Khan Academy's Khanmigo AI tutor is deployed in 50,000+ US classrooms, using GPT-4 to guide students through problems with Socratic questioning rather than answers", url: "https://khanacademy.org/khan-labs" },
       { label: "Duolingo Max launches with GPT-4 powered Explain My Answer and Roleplay features, demonstrating AI tutoring in the world's most-used language learning app", url: "https://duolingo.com/max" },
       { label: "Chegg's AI Cheggmate service launches as a 24/7 homework help assistant, reaching 3.5M users in its first semester despite disruption concerns from competitors", url: "https://chegg.com" },
-      { label: "Google's LearnLM model is integrated into Gemini specifically for tutoring use cases, optimising for learning outcomes rather than just question answering", url: "https://deepmind.google/discover/blog/learnlm" },
-    ],
+      { label: "Google's LearnLM model is integrated into Gemini specifically for tutoring use cases, optimising for learning outcomes rather than just question answering", url: "https://deepmind.google/discover/blog/learnlm" }
+],
   },
   {
     id: "education-skills-credentials",
@@ -1281,61 +1261,11 @@ export const EXTENDED_TRENDS: Trend[] = [
       { label: "Google Career Certificates launch in data analytics, project management, and UX design — completing in 6 months and accepted by 150+ employer partners including Walmart and Infosys", url: "https://grow.google/certificates" },
       { label: "LinkedIn Learning integrates skills assessments and badges directly into recruiter search filters, making micro-credentials searchable hiring signals at scale", url: "https://linkedin.com/learning" },
       { label: "IBM SkillsBuild offers 30,000 free courses with digital badges, partnering with universities in 60 countries to stack credentials alongside degrees", url: "https://skillsbuild.org" },
-      { label: "Salesforce's Trailhead platform issues 8M+ credentials to users who complete modular learning paths, making it the world's largest employer-specific credentialing system", url: "https://trailhead.salesforce.com" },
-    ],
+      { label: "Salesforce's Trailhead platform issues 8M+ credentials to users who complete modular learning paths, making it the world's largest employer-specific credentialing system", url: "https://trailhead.salesforce.com" }
+],
   },
 
   // ── FASHION ─────────────────────────────────────────────────────────────────
-  {
-    id: "fashion-resale-first",
-    name: "Resale Goes Primary",
-    description: "Secondhand is no longer the backup plan. Vinted, Depop, and ThredUp are growing 3x faster than new retail, and Gen Z shops resale first. The shift is structural: sustainability pressure, economic squeeze, and the thrill of the find are all pointing the same direction at the same time.",
-    color: "#FF8BB4",
-    topics: ["fashion", "retail", "sustainability"],
-    relevanceScore: 74,
-    redditQuery: "resale fashion Vinted Depop secondhand thrift",
-    newsQuery: "resale fashion market growth 2025",
-    position: { x: 0, y: 0 },
-    whyRelevant: "When secondhand becomes the primary market, the whole logic of new product development changes. Brands that ignore resale are leaving money on the table and ceding cultural relevance to platforms they don't control. The brands winning here treat resale as a channel, not a threat. Patagonia did it early. Levi's did it. The window for a credible brand resale play is still open but closing.",
-    trajectory: "Accelerating. The resale market will overtake fast fashion in value within 5 years. Brands that build their own resale programs now own the customer relationship. The ones that don't will watch Vinted own it instead.",
-    nextSteps: [
-      "Now (0-3 months): audit how your product shows up on Vinted and Depop. What's the secondary market price? That number tells you more about perceived value than any focus group.",
-      "Soon (3-12 months): launch a branded resale or take-back program. Patagonia's Worn Wear is the model. Own the resale of your own product before someone else does.",
-      "Bet (12-36 months): design for resale from the start. Products with provenance, repairability, and longevity built in command premium secondhand prices and drive first-sale demand.",
-    ],
-    culturalContext: "Gen Z grew up through the financial crisis and came of age in a pandemic economy — scarcity mindset is built in. Combined with climate guilt and the dopamine of the find, secondhand shopping hits three values at once: financial, environmental, and experiential. Thrifting became identity before it became a market.",
-    brandMoves: [
-      { label: "Levi's launches 'SecondHand' buyback and resale platform, taking brand control of the aftermarket", url: "https://levi.com" },
-      { label: "Patagonia's Worn Wear program becomes a standalone revenue channel generating $10M+ annually", url: "https://wornwear.patagonia.com" },
-      { label: "Burberry partners with TheRealReal for authenticated luxury resale, adding provenance data to physical tags", url: "https://therealreal.com" },
-      { label: "Zara launches a Pre-Owned section on its app — mainstream fast fashion entering the circular economy", url: "https://zara.com" },
-    ],
-  },
-  {
-    id: "fashion-micro-trend-fatigue",
-    name: "Micro-Trend Burnout",
-    description: "TikTok compressed the trend cycle to weeks and now the backlash is real. Mob wife, clean girl, coastal grandmother: they peak and die before brands can even respond. The consumer who's paying attention is exhausted. The counter-signal is a return to personal style over trend participation.",
-    color: "#FFB04A",
-    topics: ["fashion", "social", "lifestyle"],
-    relevanceScore: 66,
-    redditQuery: "micro trends tiktok fashion aesthetic fatigue burnout personal style",
-    newsQuery: "micro trend fashion TikTok burnout 2025",
-    position: { x: 0, y: 0 },
-    whyRelevant: "Brands chasing micro-trends are burning creative resources on content that's irrelevant before it ships. The opportunity is in the counter-movement: timelessness, craft, personal style. The brands positioned as anchors rather than trend-chasers are building more durable relationships. Being the thing people come back to when they're tired of chasing is a real strategic position.",
-    trajectory: "The micro-trend machine keeps running because engagement drives it, but the cultural backlash is real and growing. Expect bifurcation: trend-speed brands for pure volume, timeless brands for cultural credibility.",
-    nextSteps: [
-      "Now (0-3 months): audit your trend response time. If you can't ship in under 3 weeks, stop trying to chase micro-trends. Play a different game.",
-      "Soon (3-12 months): invest in evergreen content and product that doesn't date. Build an aesthetic identity that doesn't require trend participation to stay relevant.",
-      "Bet (12-36 months): brands with strong POV and consistent aesthetic are the ones people remember and return to. Define yours clearly enough that customers know immediately if something is 'you'.",
-    ],
-    culturalContext: "The algorithm's relentless optimisation for engagement accidentally killed the very thing that made fashion exciting: anticipation. When everything is a trend and trends last three weeks, nothing is aspirational anymore. Exhaustion is the inevitable output of a system designed for infinite scroll.",
-    brandMoves: [
-      { label: "Loro Piana doubles down on 'no logo, no trend' positioning — searches for 'quiet luxury' hit 5 billion TikTok views", url: "https://loropiana.com" },
-      { label: "Uniqlo's LifeWear philosophy becomes a marketing cornerstone, selling timelessness as the differentiator", url: "https://uniqlo.com" },
-      { label: "A.P.C. leans into 'never on trend, always relevant' as a brand truth, growing repeat purchase rate 40%", url: "https://apc.fr" },
-      { label: "COS shifts to slow-drop collections with 12-month production windows instead of trend-reactive sprints", url: "https://cos.com" },
-    ],
-  },
 
   // ── BEAUTY ───────────────────────────────────────────────────────────────────
   {
@@ -1353,15 +1283,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): integrate a skin quiz or AI diagnostic tool into your DTC purchase flow. Even a basic assessment improves conversion and makes product recommendations feel personal.",
       "Soon (3-12 months): partner with a skin diagnostic platform or build your own. Use the data to drive recommendations and reorder triggers.",
-      "Bet (12-36 months): move toward formulation-on-demand. The diagnostic data tells you exactly what someone's skin needs. The brand that can fulfill that precisely wins the loyalty.",
-    ],
+      "Bet (12-36 months): move toward formulation-on-demand. The diagnostic data tells you exactly what someone's skin needs. The brand that can fulfill that precisely wins the loyalty."
+],
     culturalContext: "The wellness boom convinced consumers that personalisation is their right, not a luxury. A generation that tracks sleep, macros, and HRV every day sees no reason their skincare shouldn't be equally data-driven. The dermatologist's authority hasn't disappeared — it's been democratised.",
     brandMoves: [
       { label: "Neutrogena's Skin360 AI scanner reaches 10M users, feeding personalised product recommendations that drive 3x conversion", url: "https://neutrogena.com" },
       { label: "L'Oréal acquires AI skin diagnostics startup Syntilay to bring analysis tech into mass-market channels", url: "https://loreal.com" },
       { label: "Sephora integrates skin scanner booths in flagship stores, creating a diagnostic-to-purchase funnel in-store", url: "https://sephora.com" },
-      { label: "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool", url: "https://esteelauder.com" },
-    ],
+      { label: "Estée Lauder's iMatch Virtual Try-On adds real-time skin health scoring to its foundation matching tool", url: "https://esteelauder.com" }
+],
   },
   {
     id: "beauty-biotech-actives",
@@ -1378,15 +1308,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): audit the origin of your key actives. The 'natural' marketing angle is being undermined by biotech alternatives with better efficacy profiles.",
       "Soon (3-12 months): explore partnerships with biotech ingredient suppliers — Geltor, Evolved By Nature, and Bolt Threads are all seeking brand partnerships.",
-      "Bet (12-36 months): the brand that positions as the biotech beauty authority — not just using the ingredients but educating on the science — will own the next decade of premium skincare.",
-    ],
+      "Bet (12-36 months): the brand that positions as the biotech beauty authority — not just using the ingredients but educating on the science — will own the next decade of premium skincare."
+],
     culturalContext: "The clean beauty movement created the demand for transparency about ingredient origins. Biotech actives are the next chapter: not just 'clean' but engineered to be better than nature. A consumer who already reads ingredient lists and asks where things come from is primed to understand and value the biotech story.",
     brandMoves: [
       { label: "Geltor raises $91M to scale lab-grown collagen for L'Oréal and Estée Lauder supply chains", url: "https://geltor.com" },
       { label: "Bolt Threads Microsilk licensed by Stella McCartney, lab-grown silk protein enters luxury fashion", url: "https://boltthreads.com" },
       { label: "Evolved By Nature silk proteins achieve clinical skincare efficacy in peer-reviewed trials", url: "https://evolvedbynature.com" },
-      { label: "BASF launches precision fermentation skincare actives division, major chemical group bets on biotech beauty", url: "https://basf.com" },
-    ],
+      { label: "BASF launches precision fermentation skincare actives division, major chemical group bets on biotech beauty", url: "https://basf.com" }
+],
   },
 
   // ── DATING ──────────────────────────────────────────────────────────────────
@@ -1405,40 +1335,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): if you're building in the social or dating space, add one AI feature and watch how users actually interact with it. Behavioral data beats any survey.",
       "Soon (3-12 months): design for human-AI collaboration, not replacement. Features that make people better at expressing themselves outperform features that express things for them.",
-      "Bet (12-36 months): the dating app that cracks genuine compatibility matching, not just swiping optimization, restructures the whole category.",
-    ],
+      "Bet (12-36 months): the dating app that cracks genuine compatibility matching, not just swiping optimization, restructures the whole category."
+],
     culturalContext: "Dating app fatigue and the loneliness epidemic created a vacuum at the same time. People want connection but are exhausted by the mechanics of the search. AI steps in not as a replacement for human feeling but as infrastructure — reducing the friction between wanting connection and having it.",
     brandMoves: [
       { label: "Hinge launches 'Your Turn' AI coach that reviews conversation patterns and suggests better openers", url: "https://hinge.co" },
       { label: "Match Group acquires AI relationship coaching startup Lara, integrating it across its entire app portfolio", url: "https://mtch.com" },
       { label: "Bumble adds AI profile review that scores bios and conversation starters, with suggested rewrites", url: "https://bumble.com" },
-      { label: "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months", url: "https://irisapp.ai" },
-    ],
-  },
-  {
-    id: "dating-slow",
-    name: "Slow Dating",
-    description: "Thursday (one day a week to match and meet), Once (one match per day), and a wave of IRL dating events are pushing back against swipe fatigue. People want fewer, better interactions. The infinite scroll model of dating is producing diminishing returns and the market knows it.",
-    color: "#8C93C7",
-    topics: ["dating", "lifestyle", "social"],
-    relevanceScore: 57,
-    redditQuery: "slow dating swipe fatigue app burnout IRL meeting people",
-    newsQuery: "slow dating trend Thursday app alternatives 2025",
-    position: { x: 0, y: 0 },
-    whyRelevant: "Slow dating is a signal about attention economics broadly: people are pushing back on infinite-scroll mechanics everywhere, not just in dating. The insight applies to content, social, and commerce. The brand that gives people a reason to slow down and pay genuine attention is doing something countercultural that actually converts and retains.",
-    trajectory: "Early but real. IRL events and curated formats are growing but niche. Watch whether the mainstream apps absorb slow-dating mechanics or whether Thursday builds to scale independently.",
-    nextSteps: [
-      "Now (0-3 months): look at your engagement metrics. If you measure success by volume of interactions, you might be optimising for the wrong thing entirely.",
-      "Soon (3-12 months): test a curated model. What happens to conversion and satisfaction when you give people fewer but better options?",
-      "Bet (12-36 months): the platform that figures out intentional social connection at scale wins a generation actively rejecting the attention-drain model.",
-    ],
-    culturalContext: "The post-pandemic generation experienced what happens when life speeds up to the point of breaking. Slow dating is partly a wellness behaviour and partly a rejection of the commodification of connection — swiping culture made people feel like products in a catalogue.",
-    brandMoves: [
-      { label: "Thursday app revives the single-day dating format: matches only available on Thursdays, building scarcity and anticipation", url: "https://thursday.dating" },
-      { label: "The League adds mandatory video dates before chat opens, forcing a minimum investment before swipe dynamics kick in", url: "https://theleague.com" },
-      { label: "Feeld rebrands around 'intentional connection', positioning depth of interaction over volume of matches", url: "https://feeld.co" },
-      { label: "Hinge's 'Most Compatible' feature surfaces one high-quality match per day, explicitly reducing decision fatigue", url: "https://hinge.co" },
-    ],
+      { label: "Iris AI dating app uses neural preference mapping to curate matches, growing 500K users in 6 months", url: "https://irisapp.ai" }
+],
   },
 
   // ── NIGHTLIFE ────────────────────────────────────────────────────────────────
@@ -1457,15 +1362,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): understand how your audience discovers events. The shift from word-of-mouth to algorithmic discovery is already happening — which platforms are mediating the decision?",
       "Soon (3-12 months): explore how AI event data can inform brand activation timing and placement. The platforms that know what experiences people are choosing have audience insight that is extremely valuable.",
-      "Bet (12-36 months): the brand embedded in the AI-curated night out — through the discovery platform, the smart venue partnership, or the experience brand — will own a high-value attention moment that is about to be algorithmically scaled.",
-    ],
+      "Bet (12-36 months): the brand embedded in the AI-curated night out — through the discovery platform, the smart venue partnership, or the experience brand — will own a high-value attention moment that is about to be algorithmically scaled."
+],
     culturalContext: "The same generation that lets Spotify and Netflix make entertainment decisions for them has no philosophical objection to algorithmic nightlife curation. The barrier was always product quality — recommendations had to be genuinely better than friend suggestions. Event AI is now reaching that bar.",
     brandMoves: [
       { label: "Dice FM passes 10M monthly active users, algorithmic event discovery replaces word-of-mouth for Gen Z", url: "https://dice.fm" },
       { label: "Resident Advisor personalisation engine increases ticket conversion 60% with ML-based event matching", url: "https://ra.co" },
       { label: "Boiler Room livestream platform launches AI-driven global event discovery, democratising access to niche nightlife", url: "https://boilerroom.tv" },
-      { label: "NFC wristband provider Intellitix processes 50M event check-ins, cashless biometric nightlife infrastructure scales", url: "https://intellitix.com" },
-    ],
+      { label: "NFC wristband provider Intellitix processes 50M event check-ins, cashless biometric nightlife infrastructure scales", url: "https://intellitix.com" }
+],
   },
   {
     id: "nightlife-immersive",
@@ -1482,15 +1387,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): audit your brand's experiential touchpoints. Is anything genuinely immersive or is it all standard activation formats that could belong to any brand?",
       "Soon (3-12 months): design one experience that couldn't exist as content. Something that requires presence to feel it. Even at small scale, the learning is valuable.",
-      "Bet (12-36 months): brands that own flagship experiential venues will have an unfair advantage in the attention economy. The experience is the moat.",
-    ],
+      "Bet (12-36 months): brands that own flagship experiential venues will have an unfair advantage in the attention economy. The experience is the moat."
+],
     culturalContext: "A generation raised on video games and social media doesn't just want to watch — it wants to be inside the experience. Passive entertainment feels insufficient after years of interactive digital worlds. Immersive nightlife is the physical world finally catching up to that expectation.",
     brandMoves: [
       { label: "Secret Cinema's events sell out in minutes at £100+ per ticket, proving the premium for participation over observation", url: "https://secretcinema.org" },
       { label: "Prada partners with artist collective Random International to create a sensory installation tour across five cities", url: "https://prada.com" },
       { label: "Electric Gamebox expands to 20 cities, tech-powered group experience venues becoming a distinct nightlife format", url: "https://electricgamebox.com" },
-      { label: "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building", url: "https://dior.com" },
-    ],
+      { label: "Dior's 'Garden of Dreams' pop-up attracts 200K visitors in 4 weeks — fashion houses entering experiential nightlife as brand-building", url: "https://dior.com" }
+],
   },
 
   // ── COFFEE ──────────────────────────────────────────────────────────────────
@@ -1509,15 +1414,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): study the precision coffee community on Reddit and YouTube. This is the early adopter cohort for data-driven sensory experience — understanding their behaviour predicts where wider lifestyle categories go.",
       "Soon (3-12 months): explore what 'data + ritual' means for your brand. The precision coffee consumer wants their daily ritual to be both meaningful and optimised. Products that serve both needs command premium pricing.",
-      "Bet (12-36 months): AI-guided sensory products — coffee, wine, food — will emerge as a premium consumer category. The brands that own the data layer of a sensory ritual will own the highest-LTV customer relationship.",
-    ],
+      "Bet (12-36 months): AI-guided sensory products — coffee, wine, food — will emerge as a premium consumer category. The brands that own the data layer of a sensory ritual will own the highest-LTV customer relationship."
+],
     culturalContext: "Specialty coffee already transformed a commodity into a luxury. Precision coffee is transforming that luxury into a craft with measurable standards. The extraction ratio, water temperature, and grind size are quantified and shared like fitness metrics. A generation that tracks everything has found a new thing to track.",
     brandMoves: [
       { label: "Decent Espresso DE1 backordered 6 months, connected espresso machine with shot-recording software demand exceeds supply", url: "https://decentespresso.com" },
       { label: "Acaia Pearl smart scale becomes the standard tool in 60% of specialty coffee competition setups globally", url: "https://acaia.co" },
       { label: "Fellow Stagg EKG+ connected kettle sells 500K units, smart precision brewing enters mass-premium market", url: "https://fellowproducts.com" },
-      { label: "Bottomless IoT coffee canister raises $12M, weight-sensor subscription proves smart replenishment model", url: "https://bottomless.com" },
-    ],
+      { label: "Bottomless IoT coffee canister raises $12M, weight-sensor subscription proves smart replenishment model", url: "https://bottomless.com" }
+],
   },
   {
     id: "coffee-biotech",
@@ -1534,15 +1439,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): map your coffee supply chain's climate vulnerability. The case for biotech coffee alternatives is not abstract — the risk is in your P&L.",
       "Soon (3-12 months): engage with the leading biotech coffee producers. Atomo, VTT, and Compound Foods are all seeking brand and retail partners to bring their products to market.",
-      "Bet (12-36 months): the coffee brand that positions biotech as the premium, sustainable future of the category will own the narrative when climate disruption makes the alternative supply story urgent.",
-    ],
+      "Bet (12-36 months): the coffee brand that positions biotech as the premium, sustainable future of the category will own the narrative when climate disruption makes the alternative supply story urgent."
+],
     culturalContext: "The same consumer who buys lab-grown meat because it's better for the planet will buy biotech coffee for the same reason — if it tastes as good. The specialty coffee community's obsession with flavour science makes it the ideal testing ground for a product that needs to win on taste before it wins on sustainability.",
     brandMoves: [
       { label: "Atomo Coffee raises $40M, brings molecular beanless coffee to specialty retail in US and UK", url: "https://atomocoffee.com" },
       { label: "VTT Technical Research demonstrates bioreactor coffee cell culture at 10,000 litre scale", url: "https://vttresearch.com" },
       { label: "Compound Foods closes $10M Series A for biofermented coffee production, precision fermentation enters beverages", url: "https://compoundfoods.com" },
-      { label: "Climate models project 50% of arabica farmland unsuitable by 2050, biotech coffee urgency reaches boardrooms", url: "https://worldcoffeeresearch.org" },
-    ],
+      { label: "Climate models project 50% of arabica farmland unsuitable by 2050, biotech coffee urgency reaches boardrooms", url: "https://worldcoffeeresearch.org" }
+],
   },
 
   // ── SPORT ───────────────────────────────────────────────────────────────────
@@ -1561,15 +1466,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): map your audience's recovery behaviours. Sleep, cold exposure, breathwork — which are they already doing? Meeting them there beats converting them.",
       "Soon (3-12 months): explore recovery-adjacent product or content. A brand that speaks intelligently about HRV or sleep quality earns credibility with the serious fitness consumer.",
-      "Bet (12-36 months): the fitness brand that builds an integrated performance + recovery ecosystem owns the daily health ritual. That's 365 touchpoints a year.",
-    ],
+      "Bet (12-36 months): the fitness brand that builds an integrated performance + recovery ecosystem owns the daily health ritual. That's 365 touchpoints a year."
+],
     culturalContext: "Hustle culture burned people out and the backlash is real. A generation that watched burnout destroy careers is approaching fitness with the same optimisation mindset applied to sustainability: push less, recover better, last longer. Recovery culture is anti-hustle cosplay for people who still want results.",
     brandMoves: [
       { label: "Whoop 4.0 reaches 1M+ subscribers with no screen, just biometric recovery coaching — hardware disappears into behaviour change", url: "https://whoop.com" },
       { label: "Theragun becomes a fixture in luxury hotel fitness suites, recovery technology normalised as a premium amenity", url: "https://therabody.com" },
       { label: "Oura Ring partners with NBA, NFL, and multiple national Olympic programs, elite sport legitimacy drives consumer adoption", url: "https://ouraring.com" },
-      { label: "Hyperice raises $300M to expand recovery tech into professional sports venues, gyms, and physical therapy clinics", url: "https://hyperice.com" },
-    ],
+      { label: "Hyperice raises $300M to expand recovery tech into professional sports venues, gyms, and physical therapy clinics", url: "https://hyperice.com" }
+],
   },
   {
     id: "sport-fan-economy",
@@ -1586,15 +1491,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): identify which athletes in your space have genuine creator communities. The athlete who speaks directly to their audience is worth more to a brand than a traditional endorsement.",
       "Soon (3-12 months): explore fan participation mechanics. Can your brand give fans a role, a voice, a stake? Even small community-building outperforms broadcast sponsorship for this audience.",
-      "Bet (12-36 months): brands that own a corner of the fan identity economy — not just the jersey, but the data, the bets, the community — will be category-defining.",
-    ],
+      "Bet (12-36 months): brands that own a corner of the fan identity economy — not just the jersey, but the data, the bets, the community — will be category-defining."
+],
     culturalContext: "Sports fandom was always identity-forming but the internet gave it infrastructure. A teenager who grew up watching their favourite athlete's daily YouTube vlog, following their brand on Instagram, and wearing their collab doesn't have a fan relationship — they have a parasocial one that operates at the intensity of friendship.",
     brandMoves: [
       { label: "LeBron James' SpringHill Company reaches $750M valuation, proving athlete-to-media-to-brand is a viable business model", url: "https://thespringhillco.com" },
       { label: "Fanatics grows to $31B valuation by owning the licensed merchandise, trading card, and gambling verticals simultaneously", url: "https://fanatics.com" },
       { label: "Socios fan token platform signs partnerships with 50 major sports clubs, financial fandom becomes a mainstream product", url: "https://socios.com" },
-      { label: "F1 Drive to Survive creates a new global fan base for a sport that was stagnating — content-led audience expansion works", url: "https://formula1.com" },
-    ],
+      { label: "F1 Drive to Survive creates a new global fan base for a sport that was stagnating — content-led audience expansion works", url: "https://formula1.com" }
+],
   },
 
   // ── PETS ────────────────────────────────────────────────────────────────────
@@ -1613,15 +1518,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): understand whether your pet consumer has tested their pet's DNA. The segment that has is different in purchase behaviour from the one that hasn't.",
       "Soon (3-12 months): explore how your pet product can reference or integrate with genomic health data. A nutrition product that responds to breed-specific needs has a defensible value proposition.",
-      "Bet (12-36 months): the pet brand that builds a data-informed relationship with the pet owner — integrating vet records, DNA data, and wearable health tracking — will have the most defensible lifetime relationship in the category.",
-    ],
+      "Bet (12-36 months): the pet brand that builds a data-informed relationship with the pet owner — integrating vet records, DNA data, and wearable health tracking — will have the most defensible lifetime relationship in the category."
+],
     culturalContext: "A generation that did 23andMe for themselves had no reason not to do it for their dogs. Embark arrived at exactly the right cultural moment: scientific curiosity about DNA was normalised, the price point dropped below $100, and social sharing of pet DNA results created organic word-of-mouth. The human genomics market found its pet parallel.",
     brandMoves: [
       { label: "Embark DNA testing surpasses 1M dogs tested, population-scale canine genomics database enables new health insights", url: "https://embarkvet.com" },
       { label: "Wisdom Panel partners with Mars Petcare to integrate DNA health data into personalised nutrition product lines", url: "https://wisdompanel.com" },
       { label: "Vetology AI diagnostic platform reads pet health imaging with veterinary specialist accuracy, telehealth for animals scales", url: "https://vetology.ai" },
-      { label: "Anivive biotech develops mRNA vaccine for canine cancer, precision medicine pipeline enters pet healthcare", url: "https://anivive.com" },
-    ],
+      { label: "Anivive biotech develops mRNA vaccine for canine cancer, precision medicine pipeline enters pet healthcare", url: "https://anivive.com" }
+],
   },
   {
     id: "pets-tech",
@@ -1638,15 +1543,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): understand which pet tech products your audience already uses. GPS and cameras have mainstream penetration; health wearables are the next step.",
       "Soon (3-12 months): if you're in wellness tech, explore pet data integration. The owner who sees their HRV next to their dog's sleep quality is deeply engaged with both products.",
-      "Bet (12-36 months): the platform that aggregates family health data — human and pet — and connects it to care recommendations will be the home health OS.",
-    ],
+      "Bet (12-36 months): the platform that aggregates family health data — human and pet — and connects it to care recommendations will be the home health OS."
+],
     culturalContext: "The quantified self movement produced a generation comfortable with constant biometric monitoring. That same comfort extended naturally to pets — if you track your sleep, why wouldn't you track your dog's heart rate? The technology infrastructure that made human health wearables possible at consumer price points is now making pet versions inevitable.",
     brandMoves: [
       { label: "Whistle Go Explore GPS + health collar reaches 500K units, pet location tracking becomes expected owner behaviour", url: "https://whistle.com" },
       { label: "Petcube Bites 2 camera with treat dispenser becomes the top-selling pet product on Amazon, remote pet interaction normalised", url: "https://petcube.com" },
       { label: "PetPace smart collar monitors vitals and sends vet alerts, clinical-grade pet monitoring enters the consumer market", url: "https://petpace.com" },
-      { label: "Fi Series 3 dog collar raises $30M with LTE GPS and step tracking — Fitbit for dogs achieves design-object status", url: "https://tryfi.com" },
-    ],
+      { label: "Fi Series 3 dog collar raises $30M with LTE GPS and step tracking — Fitbit for dogs achieves design-object status", url: "https://tryfi.com" }
+],
   },
 
   // ── PARENTING ────────────────────────────────────────────────────────────────
@@ -1665,40 +1570,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): understand the emotional stakes for your parent consumer. Screen anxiety is about identity ('what kind of parent am I?') as much as it is about outcomes. Speak to both.",
       "Soon (3-12 months): if you're in kids' products, lean into 'screen-free' as a value proposition. The parents paying attention will pay a premium for offline alternatives.",
-      "Bet (12-36 months): the brand that becomes the trusted guide for parents navigating tech — not just blocking it, but teaching healthy relationships with it — will be the parenting authority of the decade.",
-    ],
+      "Bet (12-36 months): the brand that becomes the trusted guide for parents navigating tech — not just blocking it, but teaching healthy relationships with it — will be the parenting authority of the decade."
+],
     culturalContext: "Parents are the first generation raising children with smartphones in their pockets while also being the generation whose own mental health was shaped by early internet adoption. They're not anti-tech — they're terrified of repeating what they recognise as their own story. That's a very specific emotional position and it creates very specific purchasing behaviour.",
     brandMoves: [
       { label: "Bark Technologies grows to 1M+ families monitoring their children's social media for safety signals", url: "https://bark.us" },
       { label: "Pinwheel launches 'the world's safest smartphone for kids', a feature phone with parental controls built in by design", url: "https://pinwheel.com" },
       { label: "Yoto Player (screen-free audio for kids) raises $25M, parent-approved no-screen entertainment enters mainstream", url: "https://yotoplay.com" },
-      { label: "Away from Screen summer camps sell out 18 months in advance at $8K+ per session — digital detox for kids as luxury experience", url: "https://awayfromscreencamp.com" },
-    ],
-  },
-  {
-    id: "parenting-village-model",
-    name: "It Takes a Village (App)",
-    description: "The nuclear family model is cracking under economic pressure and isolation. Parents are building co-parenting networks, sharing childcare, forming intentional communities, and using tech to coordinate the work of raising children that previous generations spread across extended families. Community parenting is being rebuilt from scratch — with apps.",
-    color: "#B6D693",
-    topics: ["parenting", "social", "lifestyle"],
-    relevanceScore: 59,
-    redditQuery: "co-parenting community childcare sharing neighbourhood family support network",
-    newsQuery: "community parenting childcare sharing village model 2025",
-    position: { x: 0, y: 0 },
-    whyRelevant: "Childcare costs are at record highs, parents are more isolated than any previous generation, and the extended family support structure has geographically dispersed. The vacuum is real and the market response is real: platforms that help parents coordinate care, share resources, and build community are solving a genuine infrastructure problem.",
-    trajectory: "Early stage but structurally important. The economics of childcare are forcing families to find creative solutions at scale. The platform or brand that becomes the coordination layer for community parenting owns a deeply habitual, daily-use relationship.",
-    nextSteps: [
-      "Now (0-3 months): map the community and coordination gaps your parent audience experiences. The friction points are product opportunities.",
-      "Soon (3-12 months): invest in community features over individual features. Parent products that connect people to each other are stickier than tools that serve individuals.",
-      "Bet (12-36 months): the brand that becomes the infrastructure for local parent networks — coordinating childcare, school, activities, and support — will be as important as the neighbourhood itself.",
-    ],
-    culturalContext: "Economic necessity is forcing a rethink of the isolated nuclear family model that consumerism built. When two incomes barely cover childcare, parents start asking what community could look like. The answer is being built in neighbourhood WhatsApp groups, Facebook parenting communities, and a new category of co-parenting apps.",
-    brandMoves: [
-      { label: "Winnie childcare app maps local providers and parent reviews, becoming the Yelp of childcare infrastructure", url: "https://winnie.com" },
-      { label: "Peanut — 'Tinder for mum friends' — reaches 2M users, solving parent social isolation at scale", url: "https://peanut-app.io" },
-      { label: "Babylist grows to $1B as a registry that becomes a parenting platform, community touchpoint through the whole journey", url: "https://babylist.com" },
-      { label: "UrbanSitter scales from babysitter marketplace to trusted neighbourhood care network in 60 US cities", url: "https://urbansitter.com" },
-    ],
+      { label: "Away from Screen summer camps sell out 18 months in advance at $8K+ per session — digital detox for kids as luxury experience", url: "https://awayfromscreencamp.com" }
+],
   },
 
   // ── KIDS ────────────────────────────────────────────────────────────────────
@@ -1717,15 +1597,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): look at where kids are creating in your category. Roblox, YouTube, TikTok — there's a creative economy operating for every demographic. Are you in it?",
       "Soon (3-12 months): give kids the tools to create with your brand. User-generated content at the kids level is brand education that's more effective than any campaign.",
-      "Bet (12-36 months): the brand that becomes part of a child's creative identity — not just a product they use but a tool they build with — has won a customer for decades.",
-    ],
+      "Bet (12-36 months): the brand that becomes part of a child's creative identity — not just a product they use but a tool they build with — has won a customer for decades."
+],
     culturalContext: "Children's media consumption peaked and is now being countered by a parent-led push toward creation. The same parents worried about screen time are willing to extend it for 'educational' screen time. Coding, making, and building are the sanctioned screens — smart brands are positioning their products as tools, not toys.",
     brandMoves: [
       { label: "Roblox passes 80M daily active users, the majority of whom spend time creating content rather than just consuming it", url: "https://roblox.com" },
       { label: "LEGO Spike robotics kits become the default STEM kit in 50,000 schools globally, building to computing pipeline established", url: "https://lego.com" },
       { label: "Kano computer kit pivots to AI education, teaching kids to build and interrogate AI systems rather than just use them", url: "https://kano.me" },
-      { label: "Osmo's hands-on iPad learning system reaches 30M kids, physical-digital creative play becomes a mainstream format", url: "https://playosmo.com" },
-    ],
+      { label: "Osmo's hands-on iPad learning system reaches 30M kids, physical-digital creative play becomes a mainstream format", url: "https://playosmo.com" }
+],
   },
   {
     id: "kids-ai-learning",
@@ -1742,15 +1622,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): understand what AI learning tools the parents in your audience are already using. The adoption is faster than most brands assume — Khanmigo is in 500+ US school districts.",
       "Soon (3-12 months): explore content and product integrations with AI learning platforms. Brands that understand a child's learning profile have a far richer context for product relevance.",
-      "Bet (12-36 months): the brand embedded in how children learn — through curriculum integration, co-creation tools, or educational content — will have a relationship with the next generation of consumers from day one.",
-    ],
+      "Bet (12-36 months): the brand embedded in how children learn — through curriculum integration, co-creation tools, or educational content — will have a relationship with the next generation of consumers from day one."
+],
     culturalContext: "The generation of parents who grew up with Google are now raising children with AI tutors. The shift is accelerating: teachers are adopting AI tools, schools are integrating them into curricula, and the private tutoring market is being restructured. A child starting school today will have AI as a permanent study partner throughout their education.",
     brandMoves: [
       { label: "Khan Academy Khanmigo adopted by 500 US school districts, AI Socratic tutoring enters mainstream education", url: "https://khanacademy.org" },
       { label: "Synthesis AI tutor raises $80M, personalised STEM education for children achieves category scale", url: "https://synthesis.com" },
       { label: "DreamBox Learning adaptive maths engine shows 47% better outcomes vs standard instruction in 5-year study", url: "https://dreambox.com" },
-      { label: "Google Socratic reaches 50M student downloads, AI homework assistant normalised for every age group", url: "https://socratic.org" },
-    ],
+      { label: "Google Socratic reaches 50M student downloads, AI homework assistant normalised for every age group", url: "https://socratic.org" }
+],
   },
 
   // ── MOBILITY ────────────────────────────────────────────────────────────────
@@ -1769,15 +1649,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): if your brand serves urban commuters, understand their micro-mobility behaviour. The consumer who bikes to work every day has a different morning routine than one who drives.",
       "Soon (3-12 months): explore micro-mobility partnership or co-branding. The brands embedded in the daily commute ritual are the ones people see every day.",
-      "Bet (12-36 months): cargo e-bikes will replace the car for the majority of urban family shopping and school runs in dense cities. The brands building for that use case now are a decade ahead.",
-    ],
+      "Bet (12-36 months): cargo e-bikes will replace the car for the majority of urban family shopping and school runs in dense cities. The brands building for that use case now are a decade ahead."
+],
     culturalContext: "Urban congestion, parking costs, and climate guilt combined with genuine product improvement (battery range, weight, design) to tip e-bikes from niche to necessary in European cities. It's not a values-led behaviour change — it's a utility-led one where the product is now better than the alternative. Culture follows product when the product is genuinely superior.",
     brandMoves: [
       { label: "Cowboy e-bike raises €80M and becomes the design-object e-bike in Brussels, Paris, and Amsterdam commuter culture", url: "https://cowboy.com" },
       { label: "Tern cargo e-bikes see 400% growth as urban families substitute school-run cars — the family car replacement thesis plays out", url: "https://ternbicycles.com" },
       { label: "Lime surpasses 400M scooter rides globally, shared micro-mobility embedded as utility infrastructure in 200+ cities", url: "https://li.me" },
-      { label: "VanMoof (despite bankruptcy) creates the template for fashion-forward e-bikes that competitors now replicate", url: "https://vanmoof.com" },
-    ],
+      { label: "VanMoof (despite bankruptcy) creates the template for fashion-forward e-bikes that competitors now replicate", url: "https://vanmoof.com" }
+],
   },
   {
     id: "mobility-ev-identity",
@@ -1794,15 +1674,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): study your target consumer's EV consideration behaviour. It's a lifestyle research process, not a car-shopping one. The community they consult matters.",
       "Soon (3-12 months): build content and community around your brand's values alignment with EV culture. Sustainability, tech, and design are the three pillars — which is yours?",
-      "Bet (12-36 months): the EV brand that builds the most coherent lifestyle ecosystem — events, charging network, software, community — will retain customers across multiple vehicle purchases.",
-    ],
+      "Bet (12-36 months): the EV brand that builds the most coherent lifestyle ecosystem — events, charging network, software, community — will retain customers across multiple vehicle purchases."
+],
     culturalContext: "Car ownership was already declining as an aspirational goal for urban Gen Z. The EV reframed it: instead of a car, it's a tech product that you happen to drive. That repositioning worked — EV ownership rates are highest among demographics that were trending away from car ownership entirely. The product change created a new consumer.",
     brandMoves: [
       { label: "Rivian builds owner community from day one — launch events, adventure partnerships, and software updates feel like Apple product drops", url: "https://rivian.com" },
       { label: "Polestar positions as the 'anti-Tesla' for design-conscious progressives, wins Scandinavian minimalist market through pure aesthetic positioning", url: "https://polestar.com" },
       { label: "NIO launches NIO House member clubs in major cities — EV brand as lifestyle club with physical presence", url: "https://nio.com" },
-      { label: "BYD reaches 3M annual EV sales, proving mass-market price points are viable and accelerating the whole category", url: "https://byd.com" },
-    ],
+      { label: "BYD reaches 3M annual EV sales, proving mass-market price points are viable and accelerating the whole category", url: "https://byd.com" }
+],
   },
 
   // ── SPIRITUALITY ─────────────────────────────────────────────────────────────
@@ -1821,15 +1701,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): understand the longevity consumer's daily protocol. It's a stack of rituals, not a single product purchase. Where your brand fits in the stack determines your relationship to their daily practice.",
       "Soon (3-12 months): explore how your brand can be positioned as a longevity ritual anchor rather than just a health product. The protocol-adherent consumer has radically higher retention once a product is integrated into their daily practice.",
-      "Bet (12-36 months): the brand that becomes the trusted scientific authority in the longevity ritual space — educating as much as selling — will own the most engaged and highest-spending wellness consumer segment.",
-    ],
+      "Bet (12-36 months): the brand that becomes the trusted scientific authority in the longevity ritual space — educating as much as selling — will own the most engaged and highest-spending wellness consumer segment."
+],
     culturalContext: "Institutional religion in decline created a meaning vacuum. The longevity movement filled it for a specific consumer: data-fluent, science-oriented, and deeply anxious about mortality. Bryan Johnson's willingness to make his entire biological optimisation public — and to frame it as a spiritual project as much as a scientific one — created the cultural permission structure for this consumer to exist.",
     brandMoves: [
       { label: "Bryan Johnson's Blueprint protocol followed by 100K people globally, open-source longevity as cultural movement", url: "https://blueprint.bryanjohnson.com" },
       { label: "Prenuvo full-body MRI screening waitlist hits 18 months in major US cities, preventive longevity medicine goes premium", url: "https://prenuvo.com" },
       { label: "TalentPath biological age test reaches 500K users, measuring real age vs chronological age becomes consumer behaviour", url: "https://trudiagnostic.com" },
-      { label: "Longevity retreat market grows 400%, 5-day biological optimisation experiences reach $10,000 price points", url: "https://longevity.technology" },
-    ],
+      { label: "Longevity retreat market grows 400%, 5-day biological optimisation experiences reach $10,000 price points", url: "https://longevity.technology" }
+],
   },
   {
     id: "spirituality-neurotech",
@@ -1845,15 +1725,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     trajectory: "Consumer neurotech for mindfulness will follow the wearable fitness arc: first premium, then accessible, then ubiquitous. EEG quality that required $50K lab equipment in 2010 is now in a $299 headband. Within 3 years, AI-guided neurofeedback meditation will be a standard wellness product.",
     nextSteps: [
       "Audit the neurofeedback and biometric meditation space — Muse, Neurosity, and Apollo are all proving different parts of the model",
-      "Explore content integrations with HRV and neurotech data to make mindfulness products feel evidence-based rather than aspirational",
-    ],
+      "Explore content integrations with HRV and neurotech data to make mindfulness products feel evidence-based rather than aspirational"
+],
     culturalContext: "A generation that quantifies everything — sleep, steps, glucose — needs mindfulness to speak the same language. Neurotech makes inner experience legible as data, which is exactly the framing a data-fluent consumer can trust and act on.",
     brandMoves: [
       { label: "Muse headband hits 1M users with real-time brainwave meditation feedback — neurofeedback goes consumer", url: "https://choosemuse.com" },
       { label: "Apollo Neuro wearable uses vibration to shift nervous system state, FDA breakthrough device designation", url: "https://apolloneuro.com" },
       { label: "Oura Ring adds HRV-guided meditation timing, pushing biometric spirituality into 2M existing users", url: "https://ouraring.com" },
-      { label: "Calm partners with neuroscience labs to develop AI meditation protocols adapting to real-time brainwave state", url: "https://calm.com" },
-    ],
+      { label: "Calm partners with neuroscience labs to develop AI meditation protocols adapting to real-time brainwave state", url: "https://calm.com" }
+],
   },
 
   // ── FINANCE ─────────────────────────────────────────────────────────────────
@@ -1872,40 +1752,15 @@ export const EXTENDED_TRENDS: Trend[] = [
     nextSteps: [
       "Now (0-3 months): audit what your financial product offers on idle cash. If the answer is less than a high-street savings rate, you're losing customers to apps that plug into DeFi yield.",
       "Soon (3-12 months): explore embedded yield products — BNPL providers, loyalty platforms, and e-commerce brands are all building on-chain earning into their customer wallets.",
-      "Bet (12-36 months): the brand that makes DeFi feel like a normal bank feature — not a crypto product — owns the mass-market financial consumer for a generation.",
-    ],
+      "Bet (12-36 months): the brand that makes DeFi feel like a normal bank feature — not a crypto product — owns the mass-market financial consumer for a generation."
+],
     culturalContext: "The 2022 crypto crash didn't kill decentralised finance — it killed the speculation framing. What survived was the infrastructure. A generation that watched savings rates sit at 0% for a decade is primed to route money toward wherever yield actually exists, even if the mechanism is a smart contract they'll never read.",
     brandMoves: [
       { label: "Revolut launches Revolut X crypto exchange and integrates staking directly into the main app for 40M users", url: "https://revolut.com" },
       { label: "PayPal's PYUSD stablecoin reaches $1B in circulation, mainstreaming stablecoin payments for e-commerce", url: "https://paypal.com" },
       { label: "Coinbase's Base L2 network processes more transactions than Ethereum mainnet, infrastructure scale achieved", url: "https://coinbase.com" },
-      { label: "Nubank in Brazil integrates DeFi yield products for 80M users, largest emerging-market fintech goes on-chain", url: "https://nubank.com.br" },
-    ],
-  },
-  {
-    id: "finance-financial-identity",
-    name: "Money as Self-Expression",
-    description: "How you spend, save, and invest has become a public identity statement. YNAB communities, Frugal subreddits, loud budgeting on TikTok, ethical investing portfolios shared openly: personal finance is no longer private. The tools that make financial behaviour visible and shareable are winning the generation that grew up posting everything.",
-    color: "#78C9A8",
-    topics: ["finance", "lifestyle", "social"],
-    relevanceScore: 61,
-    redditQuery: "loud budgeting frugal FIRE financial independence spending habits identity",
-    newsQuery: "loud budgeting financial identity Gen Z money trends 2025",
-    position: { x: 0, y: 0 },
-    whyRelevant: "When financial behaviour becomes identity, the brands that align with a financial value set earn loyalty that transcends product features. Frugal-coded brands, ethical-investment platforms, and loud-budgeting apps are building communities, not just customer bases. The opportunity is in making financial choices feel like a statement rather than a transaction.",
-    trajectory: "Stabilising into a cultural norm. Financial transparency is becoming expected rather than exceptional for Gen Z and younger Millennials. The brands that treat money talk as embarrassing are the ones that will feel dated.",
-    nextSteps: [
-      "Now (0-3 months): look at how your brand appears in financial identity communities — FIRE forums, frugal subreddits, ethical investing groups. Are you showing up at all?",
-      "Soon (3-12 months): build shareable financial features. A savings milestone, an impact report, a carbon-offset statement: give people a reason to post about their relationship with your product.",
-      "Bet (12-36 months): brands that make their customers feel smart and intentional about money will outlast brands that just compete on rates and fees.",
-    ],
-    culturalContext: "A generation locked out of home ownership and burdened by student debt found community in talking openly about money. Loud budgeting and FIRE culture are partly practical, partly political — a rejection of the consumerism that previous generations used money to fuel. Spending less became a flex before spending more stopped being one.",
-    brandMoves: [
-      { label: "YNAB (You Need A Budget) grows to 1M paid subscribers, community-driven financial planning becomes a cultural movement", url: "https://youneedabudget.com" },
-      { label: "Monzo's year-in-review spending summaries go viral annually, personal finance data as social content", url: "https://monzo.com" },
-      { label: "Claro Money (ethical fintech) grows 300% on the back of climate-conscious investing demand from under-35s", url: "https://claromoney.com" },
-      { label: "TikTok's #loudbudgeting reaches 500M views, financial transparency becomes a mainstream content format", url: "https://tiktok.com" },
-    ],
+      { label: "Nubank in Brazil integrates DeFi yield products for 80M users, largest emerging-market fintech goes on-chain", url: "https://nubank.com.br" }
+],
   },
 ];
 
@@ -1979,58 +1834,34 @@ export const LIBRARY_TOPICS = [
   "sport", "mobility", "dating", "nightlife", "coffee", "finance",
   "pets", "parenting", "kids", "spirituality", "fragrance", "jewellery",
   "longevity", "sleep", "sound", "attention", "identity", "architecture",
-  "craft", "ritual", "community", "privacy",
+  "craft", "ritual", "community", "privacy"
 ];
 
 // Curated topics shown on the initial empty state screen
 export const FEATURED_TOPICS = [
   "fashion", "beauty", "gaming", "music", "food", "travel",
-  "wellness", "luxury", "dating", "fitness", "sustainability", "social",
+  "wellness", "luxury", "dating", "fitness", "sustainability", "social"
 ];
 
 // ─── Extended Signals ─────────────────────────────────────────────────────────
 
 export const EXTENDED_SIGNALS: Signal[] = [
-  // gaming-npc-aesthetics
-  { id: "gnpc-s1", trendId: "gaming-npc-aesthetics", title: "Miu Miu AW24 collection references NPC stillness", summary: "Fashion houses are borrowing the deliberate flatness of video game character design as a counterpoint to the maximalism of the past decade.", source: "news", sourceName: "Vogue", date: "2026-07-14", crossLinks: [] },
-  { id: "gnpc-s2", trendId: "gaming-npc-aesthetics", title: "r/streetwear: NPC mode is the new core aesthetic", summary: "The NPC aesthetic has crossed from ironic TikTok content into genuine subcultural style positioning.", source: "reddit", sourceName: "r/streetwear", date: "2026-06-10", crossLinks: [] },
-  { id: "gnpc-s3", trendId: "gaming-npc-aesthetics", title: "SSENSE editorial: 'dressing like you spawned'", summary: "Independent fashion media is legitimising gaming-derived aesthetics with editorial frames, signalling movement from fringe to fashion mainstream.", source: "news", sourceName: "SSENSE", date: "2026-06-12", crossLinks: [] },
-
-  { id: "gnpc-s4", trendId: "gaming-npc-aesthetics", title: "Uniqlo NPC capsule sells out in 14 hours across 40 markets", summary: "Mass-market adoption of the NPC aesthetic confirms the trend has crossed from niche gaming culture into global mainstream fashion demand.", source: "news", sourceName: "Business of Fashion", date: "2026-05-28", crossLinks: [] },
-  { id: "gnpc-s5", trendId: "gaming-npc-aesthetics", title: "r/malefashionadvice: I went full NPC this month, only neutrals, one silhouette, no effort", summary: "Community-led style experiments with NPC dressing reveal a genuine consumer appetite for algorithmic minimalism as a relief from trend fatigue.", source: "reddit", sourceName: "r/malefashionadvice", date: "2026-05-30", crossLinks: [] },
-  { id: "gnpc-s6", trendId: "gaming-npc-aesthetics", title: "Dover Street Market dedicates floor to 'non-playable character' concept", summary: "Concept retail is treating NPC aesthetics as a serious design direction, signalling that gaming culture's influence on fashion has reached the luxury independent tier.", source: "news", sourceName: "Hypebeast", date: "2026-05-10", crossLinks: [] },
-  { id: "gnpc-s7", trendId: "gaming-npc-aesthetics", title: "TikTok NPC fashion filter drives 2B views, algorithm amplifies the aesthetic loop", summary: "Platform mechanics are accelerating the NPC aesthetic cycle: the same algorithmic flatness that inspires the look is now distributing it at unprecedented scale.", source: "news", sourceName: "The Verge", date: "2026-04-15", crossLinks: [] },
-  { id: "gnpc-s8", trendId: "gaming-npc-aesthetics", title: "Zara NPC lookbook outperforms its entire SS26 editorial campaign by 3x engagement", summary: "Fast fashion's rapid adoption of gaming aesthetics proves the trend's commercial mass, and the speed at which gaming-native aesthetics can travel to high street.", source: "news", sourceName: "WGSN", date: "2026-03-20", crossLinks: [] },
+  // gaming-npc-aesthetics,
 
   // gaming-drop-economy
   { id: "gdrop-s1", trendId: "gaming-drop-economy", title: "Nike SNKRS waitlist psychology crosses into luxury", summary: "Limited digital drops in gaming have trained a generation to expect scarcity theatre; fashion brands are copying the mechanics wholesale.", source: "news", sourceName: "Business of Fashion", date: "2026-07-16", crossLinks: [] },
-  { id: "gdrop-s2", trendId: "gaming-drop-economy", title: "Loot box litigation fuelling regulation that could touch blind box fashion drops", summary: "Legal challenges to randomised-reward mechanics in gaming are creating regulatory precedents that will eventually touch physical fashion's mystery drop formats.", source: "news", sourceName: "Wired", date: "2026-06-11", crossLinks: [] },
-  { id: "gdrop-s3", trendId: "gaming-drop-economy", title: "Fortnite x Balenciaga drives $40M in 72-hour digital-physical sales", summary: "Cross-platform drops combining in-game digital items with physical clothing are setting new records for fashion's gaming crossover moment.", source: "news", sourceName: "Hypebeast", date: "2026-05-25", crossLinks: [] },
-  { id: "gdrop-s4", trendId: "gaming-drop-economy", title: "Supreme tests 'battle pass' model with seasonal loyalty tiers, results beat standard drops", summary: "Subscription-based drop access is proving more financially stable than one-off hype events, with Supreme's test showing 40% higher average order value.", source: "news", sourceName: "Business of Fashion", date: "2026-05-02", crossLinks: [] },
-  { id: "gdrop-s5", trendId: "gaming-drop-economy", title: "r/Sneakers: waiting 6 hours in a queue for a drop still hits different than buying retail", summary: "Community testimony confirms that scarcity mechanics create emotional investment that transcends rational purchase behaviour, the experience is the product.", source: "reddit", sourceName: "r/Sneakers", date: "2026-04-10", crossLinks: [] },
   { id: "gdrop-s6", trendId: "gaming-drop-economy", title: "H&M gamifies its loyalty app with 'unlock' mechanics, engagement up 60%", summary: "Mass market retail adopting gaming unlock mechanics for loyalty programs signals that the drop economy has diffused into everyday retail infrastructure.", source: "news", sourceName: "Retail Week", date: "2026-03-15", crossLinks: [] },
-  { id: "gdrop-s7", trendId: "gaming-drop-economy", title: "Sephora's Beauty Insider drop event crashes app servers, demand outpaces infrastructure", summary: "Beauty's adoption of gaming-style drop events has proven consumer demand is real, the challenge is scaling the infrastructure for coordinated desire.", source: "news", sourceName: "WWD", date: "2026-02-20", crossLinks: [] },
 
-  // wellness-cold-ritual
-  { id: "wcold-s1", trendId: "wellness-cold-ritual", title: "Plunge pool installations in luxury hotel fitness suites double in 2025", summary: "Cold exposure has moved from athlete recovery niche to amenity expectation, signalling mainstream aspirational adoption.", source: "news", sourceName: "Financial Times", date: "2026-06-16", crossLinks: [] },
+  // wellness-cold-ritual,
   { id: "wcold-s2", trendId: "wellness-cold-ritual", title: "Cold plunge hardware enters premium home design, Plunge Pro sells out 3x", summary: "The cold plunge market is developing the same design-object logic as premium coffee equipment.", source: "news", sourceName: "TechCrunch", date: "2026-06-09", crossLinks: [] },
-  { id: "wcold-s3", trendId: "wellness-cold-ritual", title: "r/coldplunge hits 500k members as mainstream adoption accelerates", summary: "Community growth signals the cold exposure ritual has fully crossed from fringe biohacking into mainstream wellness identity.", source: "reddit", sourceName: "r/coldplunge", date: "2026-06-14", crossLinks: [] },
   { id: "wcold-s4", trendId: "wellness-cold-ritual", title: "Wim Hof protocol reaches mainstream fitness apps, Peloton adds cold exposure module", summary: "Platform distribution of cold exposure protocols to tens of millions of users normalises the practice far beyond the biohacker community that pioneered it.", source: "news", sourceName: "CNBC", date: "2026-05-28", crossLinks: [] },
   { id: "wcold-s5", trendId: "wellness-cold-ritual", title: "r/Biohackers: cold plunge + sauna stack is now my non-negotiable morning ritual", summary: "Hot-cold contrast therapy is being adopted as a structured daily system rather than occasional practice, creating recurring hardware and membership revenue opportunities.", source: "reddit", sourceName: "r/Biohackers", date: "2026-05-24", crossLinks: [] },
-  { id: "wcold-s6", trendId: "wellness-cold-ritual", title: "Airbnb listings featuring cold plunge command 35% premium, hosts installing fast", summary: "Consumer willingness to pay a premium for cold exposure access as part of travel signals full lifestyle category adoption.", source: "news", sourceName: "Bloomberg", date: "2026-05-05", crossLinks: [] },
-  { id: "wcold-s7", trendId: "wellness-cold-ritual", title: "Equinox partners with Plunge to install cold therapy stations in all 100 flagship locations", summary: "Premium gym chain investment in cold exposure infrastructure confirms the ritual has become a membership retention tool, not just a wellness fad.", source: "news", sourceName: "Business Insider", date: "2026-04-20", crossLinks: [] },
-  { id: "wcold-s8", trendId: "wellness-cold-ritual", title: "r/wellness: the discipline of cold exposure transfers, I'm more productive after 3 months", summary: "Community reports of second-order benefits (mental clarity, discipline, focus) from cold exposure are driving word-of-mouth beyond the fitness context into productivity culture.", source: "reddit", sourceName: "r/wellness", date: "2026-03-10", crossLinks: [] },
   { id: "wcold-s9", trendId: "wellness-cold-ritual", title: "Hyperice launches smart cold therapy device with biometric recovery tracking", summary: "Cold therapy hardware is adding data layers, biometric integration transforms cold exposure from ritual into measurable recovery protocol.", source: "news", sourceName: "TechCrunch", date: "2026-02-15", crossLinks: [] },
 
   // wellness-cortisol
   { id: "wcort-s1", trendId: "wellness-cortisol", title: "Glossier launches stress-aware skincare sub-line citing cortisol science", summary: "Major beauty brands are explicitly building cortisol management into product briefs, treating chronic stress as a skin-level phenomenon.", source: "news", sourceName: "WWD", date: "2026-07-11", crossLinks: [] },
-  { id: "wcort-s2", trendId: "wellness-cortisol", title: "Office design pivoting to low-arousal environments after burnout wave", summary: "Workplace design is borrowing therapeutic neuroscience, creating demand for materials and objects engineered to reduce physiological stress responses.", source: "news", sourceName: "Dezeen", date: "2026-06-12", crossLinks: [] },
-  { id: "wcort-s3", trendId: "wellness-cortisol", title: "Adaptogens cross $8B market as cortisol anxiety mainstreams", summary: "The adaptogen supplement category is growing 30% YoY as cortisol reduction becomes an explicit consumer purchase motivation.", source: "news", sourceName: "Mintel", date: "2026-05-30", crossLinks: [] },
   { id: "wcort-s4", trendId: "wellness-cortisol", title: "Oura Ring adds cortisol pattern tracking via heart rate variability inference", summary: "Wearable platforms are making stress biology legible in real time, enabling consumers to manage cortisol as a tracked biometric rather than a vague feeling.", source: "news", sourceName: "Wired", date: "2026-05-25", crossLinks: [] },
-  { id: "wcort-s5", trendId: "wellness-cortisol", title: "r/Supplements: everyone at my gym is stacking ashwagandha and l-theanine now", summary: "Adaptogen stacking for cortisol management has moved from biohacker protocol to gym mainstream, the knowledge has diffused into general fitness culture.", source: "reddit", sourceName: "r/Supplements", date: "2026-05-10", crossLinks: [] },
   { id: "wcort-s6", trendId: "wellness-cortisol", title: "Cortisol Cocktail trend drives 90M TikTok views, supplement category explodes", summary: "Viral social content around cortisol management is compressing the adoption cycle for a category that would previously have required years of clinical normalisation.", source: "news", sourceName: "Forbes", date: "2026-04-22", crossLinks: [] },
-  { id: "wcort-s7", trendId: "wellness-cortisol", title: "Lululemon 'Align' workwear campaign centres cortisol reduction as core message", summary: "Activewear brands are building cortisol management directly into their brand narrative, stress biology as a product benefit, not just a health claim.", source: "news", sourceName: "Campaign", date: "2026-03-28", crossLinks: [] },
-  { id: "wcort-s8", trendId: "wellness-cortisol", title: "r/productivity: I started treating cortisol management like a business KPI, it changed everything", summary: "Productivity community adoption of cortisol management frameworks signals the concept has crossed from health into performance optimisation culture.", source: "reddit", sourceName: "r/productivity", date: "2026-03-05", crossLinks: [] },
   { id: "wcort-s9", trendId: "wellness-cortisol", title: "Saatva launches 'cortisol-reducing' mattress line backed by sleep neuroscience study", summary: "Sleep category brands are borrowing cortisol science as purchase justification, the biological language is diffusing into every wellness-adjacent category.", source: "news", sourceName: "Sleepopolis", date: "2026-05-08", crossLinks: [] },
 
   // foodtech-functional
@@ -2066,16 +1897,9 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "mdopa-s8", trendId: "mentalhealth-dopamine", title: "Nike Training Club's 'achievement unlock' feature reduces app churn by 33%", summary: "Dopamine mechanics in fitness apps are proving that reward design is a primary retention driver, as important as content quality.", source: "news", sourceName: "Sports Business Journal", date: "2026-02-28", crossLinks: [] },
   { id: "mdopa-s9", trendId: "mentalhealth-dopamine", title: "r/BehavioralEconomics: brands that design for dopamine peaks will own the next decade of consumer loyalty", summary: "Academic and practitioner communities converging on dopamine design as the central mechanism of brand loyalty represents a paradigm shift in how attachment is engineered.", source: "reddit", sourceName: "r/BehavioralEconomics", date: "2026-01-30", crossLinks: [] },
 
-  // mentalhealth-therapeutic
-  { id: "mther-s1", trendId: "mentalhealth-therapeutic", title: "Aesop interiors programme prioritises 'nervous system safety'", summary: "Luxury retail is adopting trauma-informed design language to differentiate flagship environments from mass-market stimulation overload.", source: "news", sourceName: "Wallpaper*", date: "2026-07-15", crossLinks: [] },
-  { id: "mther-s2", trendId: "mentalhealth-therapeutic", title: "Earth tones dominate SS25 across 7 major houses, a trend or a signal?", summary: "The aesthetic convergence around muted, grounding colour palettes across fashion is read as a collective nervous system response to digital overstimulation.", source: "news", sourceName: "Business of Fashion", date: "2026-06-13", crossLinks: [] },
-  { id: "mther-s3", trendId: "mentalhealth-therapeutic", title: "Loewe wins Wallpaper award for 'most calming retail environment'", summary: "Luxury brands are competing on therapeutic environment design as a differentiator, creating new design brief categories for interior designers.", source: "news", sourceName: "Wallpaper*", date: "2026-05-30", crossLinks: [] },
+  // mentalhealth-therapeutic,
   { id: "mther-s4", trendId: "mentalhealth-therapeutic", title: "Headspace and Calm generate $1.5B combined, mental wellness app market proves consumer willingness to pay", summary: "Subscription mental wellness at this scale confirms that consumers are ready to pay for therapeutic-adjacent digital products, the category has gone mainstream.", source: "news", sourceName: "The Information", date: "2026-05-24", crossLinks: [] },
-  { id: "mther-s5", trendId: "mentalhealth-therapeutic", title: "r/mallgore: the era of overstimulating retail is ending, even Zara is getting quiet", summary: "Community observation of aesthetic shifts toward calmer retail environments signals a structural change in consumer preference, not just a luxury brand trend.", source: "reddit", sourceName: "r/mallgore", date: "2026-05-06", crossLinks: [] },
   { id: "mther-s6", trendId: "mentalhealth-therapeutic", title: "Apple Store redesign 2026 centres 'restorative space' concept, biophilic design replaces minimal white", summary: "When Apple redesigns its retail environments around therapeutic principles, the concept has reached mass-market infrastructure investment.", source: "news", sourceName: "Dezeen", date: "2026-04-12", crossLinks: [] },
-  { id: "mther-s7", trendId: "mentalhealth-therapeutic", title: "Cottagecore and quiet luxury search volumes hit all-time highs, a single aesthetic signal", summary: "Search behaviour confirms that consumer desire for visual calm and therapeutic aesthetics is actively driving purchase intent across fashion and interiors categories.", source: "news", sourceName: "Vogue", date: "2026-03-18", crossLinks: [] },
-  { id: "mther-s8", trendId: "mentalhealth-therapeutic", title: "r/minimalism: I replaced everything stimulating in my apartment and my anxiety is genuinely lower", summary: "Personal testimony linking therapeutic aesthetics to measurable wellbeing outcomes is the most powerful conversion tool in the category, and it's generating itself organically.", source: "reddit", sourceName: "r/minimalism", date: "2026-02-22", crossLinks: [] },
-  { id: "mther-s9", trendId: "mentalhealth-therapeutic", title: "Bottega Veneta 'silence' campaign generates 200M impressions without showing a product", summary: "Brands communicating through therapeutic aesthetic signals rather than product demonstration are finding that the emotional resonance converts, particularly with overstimulated consumers.", source: "news", sourceName: "Campaign", date: "2026-01-28", crossLinks: [] },
 
   // interiordesign-ai-spatial
   { id: "intai-s1", trendId: "interiordesign-ai-spatial", title: "Midjourney becomes standard interior design brief tool in major studios", summary: "Leading architecture and interior design firms report using AI image generation as a standard phase of the brief and pitch process, cutting visualisation costs by 60-80%.", source: "news", sourceName: "Dezeen", date: "2026-06-15", crossLinks: [] },
@@ -2326,9 +2150,7 @@ export const EXTENDED_SIGNALS: Signal[] = [
   // fragrance-emotional-tech
   { id: "frgemot-s1", trendId: "fragrance-emotional-tech", title: "Aesop commissions olfactory design study for all new flagship retail environments", summary: "Luxury retail's investment in evidence-based scent design signals that olfactory experience has moved from nice-to-have to standard store design element.", source: "news", sourceName: "Dezeen", date: "2026-01-22", crossLinks: [] },
   { id: "frgemot-s2", trendId: "fragrance-emotional-tech", title: "Moodo smart diffuser syncs scent to biometric stress data via Whoop integration", summary: "Biometric-triggered scent delivery represents the first genuinely personalised ambient wellbeing system, scent as responsive intervention rather than ambient background.", source: "news", sourceName: "TechCrunch", date: "2026-03-10", crossLinks: [] },
-  { id: "frgemot-s3", trendId: "fragrance-emotional-tech", title: "r/fragrance: using different scents for different emotional states changed how I think about perfume", summary: "Consumer adoption of intentional olfactory design in personal routines signals that the category is moving from identity expression to emotional toolkit.", source: "reddit", sourceName: "r/fragrance", date: "2026-02-28", crossLinks: [] },
   { id: "frgemot-s4", trendId: "fragrance-emotional-tech", title: "ScentAir signs contract to deploy evidence-based olfactory design in 200 luxury hotels by end-2026", summary: "Commercial-scale olfactory environment design contracts signal that scent-as-service has crossed into standard hospitality infrastructure investment.", source: "news", sourceName: "Dezeen", date: "2026-04-12", crossLinks: [] },
-  { id: "frgemot-s5", trendId: "fragrance-emotional-tech", title: "r/sleep: I use a specific scent to trigger sleep, my sleep score improved 22% in 6 weeks", summary: "Consumer experimentation with olfactory sleep triggers shows behavioural conditioning through scent is real and measurable, a clinical insight in consumer practice.", source: "reddit", sourceName: "r/sleep", date: "2026-03-08", crossLinks: [] },
   { id: "frgemot-s6", trendId: "fragrance-emotional-tech", title: "Headspace launches 'Scentscape' ambient scent diffuser to complement meditation app, sensory wellness integrates", summary: "Digital wellness app extending into physical scent products represents the multi-sensory wellness stack becoming a category, and a product line.", source: "news", sourceName: "TechCrunch", date: "2026-02-05", crossLinks: [] },
   { id: "frgemot-s7", trendId: "fragrance-emotional-tech", title: "Clinical trials confirm lavender scent reduces surgical anxiety 31%, olfactory therapy enters hospital protocol", summary: "Clinical evidence for olfactory therapeutic application at hospital scale legitimises scent-as-medicine claims for the consumer wellness category.", source: "news", sourceName: "JAMA Network Open", date: "2026-04-28", crossLinks: [] },
 
@@ -2383,14 +2205,7 @@ export const EXTENDED_SIGNALS: Signal[] = [
 
   // social-creator-economy
   { id: "soccr-s1", trendId: "social-creator-economy", title: "YouTube Shorts creator fund reaches $5B, platform competition for creators intensifies", summary: "Platform investment in creator funds signals that creator loyalty is the key distribution lever, the infrastructure of the creator economy is being built by platforms.", source: "news", sourceName: "The Verge", date: "2026-01-28", crossLinks: [] },
-  { id: "soccr-s2", trendId: "social-creator-economy", title: "1 in 4 Gen Z identifies as a content creator, the profession has mainstreamed", summary: "Creator identity adoption at this scale signals a permanent shift in career aspiration and media production, content creation is now a conventional professional path.", source: "news", sourceName: "Morning Consult", date: "2026-03-14", crossLinks: [] },
-  { id: "soccr-s3", trendId: "social-creator-economy", title: "r/Entrepreneur: my creator brand makes more than my corporate salary, and I have 80k followers", summary: "Creator economy income democratisation stories are fuelling career shifts at scale, the talent pool for traditional marketing roles is shrinking because the alternatives are better.", source: "reddit", sourceName: "r/Entrepreneur", date: "2026-02-25", crossLinks: [] },
   { id: "soccr-s4", trendId: "social-creator-economy", title: "Shopify creator commerce integrations drive $12B in direct creator-to-consumer sales in 2026", summary: "Creator direct commerce infrastructure at this scale signals that creators are becoming retail channels in their own right, brand partnership models are being supplanted by creator brand ownership.", source: "news", sourceName: "Bloomberg", date: "2026-04-18", crossLinks: [] },
-  { id: "soccr-s5", trendId: "social-creator-economy", title: "Patreon reports 50M paying subscribers, subscription creator economy reaches mass market", summary: "Paid creator subscription at 50M subscribers confirms that direct creator monetisation has crossed into mass market territory, normalising the idea of paying creators directly.", source: "news", sourceName: "The Verge", date: "2026-03-05", crossLinks: [] },
-  { id: "soccr-s6", trendId: "social-creator-economy", title: "TikTok Shop creator affiliate programme pays out $2B to creators, social commerce becomes creator income layer", summary: "TikTok's creator affiliate commerce programme is creating a new income tier for mid-level creators and accelerating the merger of social content and retail conversion.", source: "news", sourceName: "Retail Gazette", date: "2026-05-20", crossLinks: [] },
-  { id: "soccr-s7", trendId: "social-creator-economy", title: "r/Twitch: streaming income has become my primary income, brands approach me not the other way around", summary: "Creator-brand power dynamic reversal is documented across community testimonials, creators with loyal audiences are now setting terms, not accepting them.", source: "reddit", sourceName: "r/Twitch", date: "2026-04-02", crossLinks: [] },
-  { id: "soccr-s8", trendId: "social-creator-economy", title: "Creator-founded brands outperform heritage CPG brands 3:1 on Gen Z purchase intent", summary: "Creator brand equity is consistently outperforming traditional brand equity with younger consumers, the trust mechanism of creator relationships is more powerful than decades of heritage brand building.", source: "news", sourceName: "Kantar", date: "2026-02-14", crossLinks: [] },
-  { id: "soccr-s9", trendId: "social-creator-economy", title: "Live shopping creator events drive higher conversion than Super Bowl ads at 1% of the cost", summary: "Creator live commerce ROI benchmarks against traditional advertising formats are establishing the format as a media channel, not just a social feature.", source: "news", sourceName: "Marketing Week", date: "2026-05-30", crossLinks: [] },
 
   // education-ai-tutoring
   { id: "edai-s1", trendId: "education-ai-tutoring", title: "Khan Academy's Khanmigo closes learning gaps 40% faster than classroom instruction in pilot", summary: "Outcome data from AI tutoring at scale is creating the evidence base that will drive institutional adoption, the performance advantage is too large to ignore.", source: "news", sourceName: "The Atlantic", date: "2026-02-10", crossLinks: [] },
@@ -2425,21 +2240,9 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "foodfl-s8", trendId: "food-ai-flavour", title: "Nestlé AI flavour platform analyses 2M social media mentions daily to track emerging taste trends in real time", summary: "Real-time social trend-to-flavour pipeline is collapsing the lag between emerging taste culture and product development response to near-zero.", source: "news", sourceName: "Food Navigator", date: "2026-02-28", crossLinks: [] },
   { id: "foodfl-s9", trendId: "food-ai-flavour", title: "AI-designed regional flavour adaptations increase category sales 35% in new markets without human formulation work", summary: "AI-driven localisation of flavour profiles at zero marginal formulation cost is making global flavour personalisation economically viable for the first time.", source: "news", sourceName: "Mintel", date: "2026-04-30", crossLinks: [] },
 
-  // fashion-resale-first
-  { id: "fres-s1", trendId: "fashion-resale-first", title: "Vinted hits 75M users, overtakes Zalando in monthly active users across Europe", summary: "Resale has crossed into primary market territory: Vinted is now a larger shopping destination than the continent's leading new-retail fashion platform by active user count.", source: "news", sourceName: "Financial Times", date: "2026-02-14", crossLinks: [] },
-  { id: "fres-s2", trendId: "fashion-resale-first", title: "r/frugalfemalefashion: I haven't bought anything new in 14 months and my wardrobe is better than ever", summary: "Community threads where secondhand-only consumers report superior wardrobes are normalising resale as a quality-first choice rather than a budget compromise.", source: "reddit", sourceName: "r/frugalfemalefashion", date: "2026-03-05", crossLinks: [] },
-  { id: "fres-s3", trendId: "fashion-resale-first", title: "Levi's SecondHand platform crosses $10M in sales in year one", summary: "Brand-owned resale is proving financially material, not just reputationally useful: Levi's direct resale revenue is growing faster than any new product category they launched in the same period.", source: "news", sourceName: "Business of Fashion", date: "2026-01-28", crossLinks: [] },
-  { id: "fres-s4", trendId: "fashion-resale-first", title: "ThredUp 2025 Resale Report: secondhand to reach $350B globally by 2027", summary: "The trajectory of secondhand market growth is now large enough that traditional retail investors are repricing new-goods-only brands as structurally exposed.", source: "news", sourceName: "ThredUp", date: "2026-04-10", crossLinks: [] },
-  { id: "fres-s5", trendId: "fashion-resale-first", title: "r/malefashionadvice: Depop is the only place I find actually interesting pieces now", summary: "Resale platforms are winning on curation and discovery, not just price: the secondhand market is becoming the primary place younger consumers find pieces with cultural distinctiveness.", source: "reddit", sourceName: "r/malefashionadvice", date: "2026-02-20", crossLinks: [] },
-  { id: "fres-s6", trendId: "fashion-resale-first", title: "LVMH launches Nona Source internal deadstock marketplace, opens to public", summary: "Luxury's move into deadstock and resale signals that the stigma of secondhand has fully dissolved even at the top of the market.", source: "news", sourceName: "WWD", date: "2026-03-18", crossLinks: [] },
+  // fashion-resale-first,
 
-  // fashion-micro-trend-fatigue
-  { id: "fmicro-s1", trendId: "fashion-micro-trend-fatigue", title: "TikTok fashion micro-trends peaking and dying in under 2 weeks, analysis shows", summary: "Data tracking the lifecycle of TikTok-driven aesthetics shows the saturation point has dropped from months to weeks, making trend-reactive supply chains structurally unviable.", source: "news", sourceName: "Vogue Business", date: "2026-02-08", crossLinks: [] },
-  { id: "fmicro-s2", trendId: "fashion-micro-trend-fatigue", title: "r/femalefashionadvice: I'm so tired of every look being a named aesthetic, I just want to dress for myself", summary: "Community pushback against aesthetic categorisation is growing: the consumer who found TikTok fashion liberating is now finding it prescriptive.", source: "reddit", sourceName: "r/femalefashionadvice", date: "2026-03-22", crossLinks: [] },
-  { id: "fmicro-s3", trendId: "fashion-micro-trend-fatigue", title: "Bottega Veneta's no-social-media strategy proving commercially durable 5 years in", summary: "The brand that opted out of trend participation years ago is outperforming trend-chasing luxury peers on both revenue growth and brand equity metrics.", source: "news", sourceName: "Business of Fashion", date: "2026-01-15", crossLinks: [] },
-  { id: "fmicro-s4", trendId: "fashion-micro-trend-fatigue", title: "Fast fashion overproduction losses hit $20B as micro-trend chasing misfires", summary: "Trend-reactive overproduction is generating massive inventory write-offs as the lifecycle of micro-trends collapses faster than supply chains can respond.", source: "news", sourceName: "Reuters", date: "2026-04-02", crossLinks: [] },
-  { id: "fmicro-s5", trendId: "fashion-micro-trend-fatigue", title: "r/minimalism: buying one piece instead of five trend items. my wardrobe finally makes sense", summary: "Anti-trend minimalism is growing as a direct response to micro-trend exhaustion, with consumers actively choosing coherence over trend participation.", source: "reddit", sourceName: "r/minimalism", date: "2026-05-10", crossLinks: [] },
-  { id: "fmicro-s6", trendId: "fashion-micro-trend-fatigue", title: "Uniqlo revenue grows 18% as it positions against trend culture with LifeWear campaign", summary: "The brand most explicitly anti-trend is outperforming fashion-cycle brands during a period of micro-trend fatigue, confirming the commercial case for timelessness.", source: "news", sourceName: "Nikkei Asia", date: "2026-03-30", crossLinks: [] },
+  // fashion-micro-trend-fatigue,
 
   // beauty-skin-diagnostics
   { id: "bskin-s1", trendId: "beauty-skin-diagnostics", title: "Neutrogena Skin360 AI scanner reaches 10M users, drives 40% uplift in recommendation conversion", summary: "At-home skin diagnostics are proving their commercial case: the uplift in recommendation conversion proves the diagnostic step materially improves purchase intent and precision.", source: "news", sourceName: "WWD", date: "2026-02-20", crossLinks: [] },
@@ -2465,11 +2268,7 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "dai-s5", trendId: "dating-ai-assisted", title: "r/Tinder: is anyone else using ChatGPT for their opening lines? feels weird but it works", summary: "Community ambivalence about AI-assisted dating reveals the authenticity tension at the heart of the trend: it works, but people aren't sure how they feel about that.", source: "reddit", sourceName: "r/Tinder", date: "2026-05-01", crossLinks: [] },
   { id: "dai-s6", trendId: "dating-ai-assisted", title: "Match Group acquires AI conversation coaching startup for $200M", summary: "Platform-level acquisition of AI coaching capability signals that the major dating apps are treating AI assistance as core infrastructure, not a differentiating feature.", source: "news", sourceName: "Reuters", date: "2026-03-20", crossLinks: [] },
 
-  // dating-slow
-  { id: "dslow-s1", trendId: "dating-slow", title: "Thursday app reaches 1M users in London, New York, and Paris with one-day matching model", summary: "Artificial scarcity in dating app availability is proving to be a feature, not a bug: constrained matching windows are increasing intentionality and in-person meeting rates.", source: "news", sourceName: "The Guardian", date: "2026-02-14", crossLinks: [] },
-  { id: "dslow-s2", trendId: "dating-slow", title: "r/dating: I deleted all my apps and started going to real events. I've had more genuine connections in 3 months than in 3 years of swiping", summary: "Consumer exodus from swipe-based dating toward IRL-first approaches is gathering pace as the experiential gap between app dating and in-person meeting becomes a recognized problem.", source: "reddit", sourceName: "r/dating", date: "2026-03-08", crossLinks: [] },
-  { id: "dslow-s3", trendId: "dating-slow", title: "IRL dating events operator Time Out Experiences reports 300% growth in singles events bookings", summary: "Institutional growth in the IRL dating event market confirms the slow dating movement has commercial scale beyond niche apps.", source: "news", sourceName: "Time Out", date: "2026-04-20", crossLinks: [] },
-  { id: "dslow-s4", trendId: "dating-slow", title: "Bumble study: 78% of users say they want fewer, higher-quality matches over more matches", summary: "Platform-level research confirming that the stated preference of the majority of dating app users is for less volume and more quality represents a strategic challenge to the existing engagement model.", source: "news", sourceName: "Bumble", date: "2026-01-18", crossLinks: [] },
+  // dating-slow,
 
   // nightlife-ai-discovery
   { id: "naid-s1", trendId: "nightlife-ai-discovery", title: "Dice FM reaches 10M monthly active users, algorithmic event discovery mainstream for Gen Z", summary: "An event discovery platform at 10M MAU has the scale to meaningfully redirect nightlife attention — the algorithm is now more influential than word of mouth for a significant cohort.", source: "news", sourceName: "TechCrunch", date: "2026-06-14", crossLinks: [] },
@@ -2479,11 +2278,8 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "naid-s5", trendId: "nightlife-ai-discovery", title: "r/festivals: the NFC wristband at this festival knew my drink order. going out is becoming personalised", summary: "Consumer awareness of personalisation infrastructure at live events signals that the quantified night out is already being experienced by early adopters.", source: "reddit", sourceName: "r/festivals", date: "2026-03-20", crossLinks: [] },
   { id: "naid-s6", trendId: "nightlife-ai-discovery", title: "Intellitix processes 50M NFC event check-ins globally, cashless biometric nightlife infrastructure normalised", summary: "50M NFC check-ins confirms that the physical infrastructure of quantified nightlife has already been built and normalised — data collection at events is now default.", source: "news", sourceName: "Forbes", date: "2026-02-15", crossLinks: [] },
 
-  // nightlife-immersive
-  { id: "nimm-s1", trendId: "nightlife-immersive", title: "Meow Wolf reports $200M revenue in 2025, announces 4 new permanent venues", summary: "Meow Wolf's revenue scale proves immersive entertainment is a financially serious category, not just a cultural moment: permanent venue economics are working.", source: "news", sourceName: "Bloomberg", date: "2026-02-10", crossLinks: [] },
+  // nightlife-immersive,
   { id: "nimm-s2", trendId: "nightlife-immersive", title: "r/london: Frameless is the best night out I've had in years and I didn't have a single drink", summary: "Consumer preference for immersive experiences over traditional nightlife is demonstrated most powerfully when the comparison is made explicit by the consumer themselves.", source: "reddit", sourceName: "r/london", date: "2026-03-28", crossLinks: [] },
-  { id: "nimm-s3", trendId: "nightlife-immersive", title: "Punchdrunk's Sleep No More New York extension runs into 15th consecutive year, premium tickets at $250+", summary: "A 15-year run at full occupancy and premium pricing proves the immersive experience model has retention and word-of-mouth economics that traditional entertainment cannot match.", source: "news", sourceName: "The New York Times", date: "2026-04-18", crossLinks: [] },
-  { id: "nimm-s4", trendId: "nightlife-immersive", title: "Club Shelter and fabric report 40% revenue from events, not door tickets", summary: "Traditional nightlife venues are diversifying into experience and event formats because the economics of experience programming outperform pure door-ticket models.", source: "news", sourceName: "DJ Mag", date: "2026-01-15", crossLinks: [] },
   { id: "nimm-s5", trendId: "nightlife-immersive", title: "r/ifyoulikeblank: went to teamLab last week and it destroyed every other night out I've had this year in terms of actual feeling", summary: "Experiential venues are winning on the metric that matters most: the emotional intensity of the memory. Consumer language around immersive experiences ('feeling', 'destroyed') reveals the depth of impact.", source: "reddit", sourceName: "r/ifyoulikeblank", date: "2026-05-12", crossLinks: [] },
   { id: "nimm-s6", trendId: "nightlife-immersive", title: "Amazon invests $300M in immersive entertainment company, signals category mainstream moment", summary: "Platform-scale investment in immersive entertainment from a company with full-stack distribution capability signals the category is entering its mainstream infrastructure phase.", source: "news", sourceName: "Variety", date: "2026-03-08", crossLinks: [] },
 
@@ -2511,12 +2307,7 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "srec-s5", trendId: "sport-recovery-culture", title: "Cold plunge hardware market grows 180% in 2025, home recovery infrastructure goes premium", summary: "Consumer investment in home recovery equipment at this growth rate signals the category has moved beyond early adopters into mainstream premium fitness consumers.", source: "news", sourceName: "Bloomberg", date: "2026-04-08", crossLinks: [] },
   { id: "srec-s6", trendId: "sport-recovery-culture", title: "r/running: I stopped training harder and started recovering better. First marathon PB in 3 years", summary: "Recovery-first performance testimonials from mainstream athletes confirm the category message is converting beyond biohackers into general fitness population.", source: "reddit", sourceName: "r/running", date: "2026-03-20", crossLinks: [] },
 
-  // sport-fan-economy
-  { id: "sfan-s1", trendId: "sport-fan-economy", title: "LeBron James' SpringHill Company reaches $750M valuation, athlete-to-brand model scales", summary: "A basketball player building a media and consumer brand company worth nearly a billion dollars confirms that athlete-as-business-platform is a repeatable model, not a one-off.", source: "news", sourceName: "Variety", date: "2026-06-16", crossLinks: [] },
-  { id: "sfan-s2", trendId: "sport-fan-economy", title: "F1 Drive to Survive Season 6 brings 40M new fans to the sport, content-led audience expansion proven", summary: "A documentary series creating 40M new sport followers represents the definitive case study for content-led fan development — the product is the content, the sport is the subscription.", source: "news", sourceName: "The Guardian", date: "2026-06-08", crossLinks: [] },
-  { id: "sfan-s3", trendId: "sport-fan-economy", title: "r/soccer: I follow the player not the club now. Club loyalty is dead for my generation", summary: "Fan loyalty migrating from institutions to individuals signals that athlete-direct relationships are restructuring the sports media economy from the bottom up.", source: "reddit", sourceName: "r/soccer", date: "2026-05-22", crossLinks: [] },
-  { id: "sfan-s4", trendId: "sport-fan-economy", title: "Fanatics grows to $31B valuation by owning licensed merchandise, trading cards, and sports gambling simultaneously", summary: "Vertical integration across the fan economy — collecting, wearing, and betting on sport — produces a valuation that proves the thesis: own the fan relationship across all formats.", source: "news", sourceName: "Bloomberg", date: "2026-05-05", crossLinks: [] },
-  { id: "sfan-s5", trendId: "sport-fan-economy", title: "NIL deals for college athletes reach $1.7B in 2025, every college player is a micro-brand", summary: "Name, image, and likeness commercialisation at every level of sport confirms that athlete-as-brand is structural infrastructure, not just an elite privilege.", source: "news", sourceName: "ESPN", date: "2026-03-18", crossLinks: [] },
+  // sport-fan-economy,
   { id: "sfan-s6", trendId: "sport-fan-economy", title: "Socios fan token holders get voting rights on club decisions, financial fandom becomes governance", summary: "When fan token holders participate in club decisions, fandom transitions from passive identity to active stakeholding — a categorically different relationship.", source: "news", sourceName: "CoinDesk", date: "2026-02-14", crossLinks: [] },
 
   // pets-genomics
@@ -2534,20 +2325,11 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "ptech-s4", trendId: "pets-tech", title: "Fi dog collar raises $30M Series C, subscription pet wearable achieves retention rates rivalling human health apps", summary: "Subscription retention rates for pet wearables approaching those of human health wearables confirms that the emotional driver (knowing your pet's health) is as strong as the personal health driver.", source: "news", sourceName: "Business Insider", date: "2026-04-22", crossLinks: [] },
   { id: "ptech-s5", trendId: "pets-tech", title: "PetPace heart rate collar sends 50,000 vet alerts in its first year, clinical-grade monitoring scales", summary: "A pet monitoring device generating 50K medically actionable alerts in year one proves the clinical utility case that justifies premium hardware pricing.", source: "news", sourceName: "VentureBeat", date: "2026-03-08", crossLinks: [] },
 
-  // parenting-screentime
-  { id: "pscr-s1", trendId: "parenting-screentime", title: "Jonathan Haidt's 'The Anxious Generation' becomes #1 bestseller, parental screen panic reaches mainstream", summary: "A social psychology book about smartphone harm to children reaching #1 confirms that screen anxiety has moved from parenting forums to the cultural mainstream.", source: "news", sourceName: "New York Times", date: "2026-06-16", crossLinks: [] },
-  { id: "pscr-s2", trendId: "parenting-screentime", title: "France bans smartphones in all primary and middle schools, Europe's screen policy hardens", summary: "National legislation restricting smartphone access to minors signals that the regulatory environment is moving decisively in the direction parental anxiety has been pointing.", source: "news", sourceName: "Le Monde", date: "2026-06-08", crossLinks: [] },
-  { id: "pscr-s3", trendId: "parenting-screentime", title: "r/Parenting: we did a screen-free month and our family is unrecognisable. Not going back to the old way", summary: "Parental testimony about behavioural transformation from screen reduction is the most effective marketing for screen-free products — and it's generating itself in the millions.", source: "reddit", sourceName: "r/Parenting", date: "2026-05-25", crossLinks: [] },
+  // parenting-screentime,
   { id: "pscr-s4", trendId: "parenting-screentime", title: "Yoto audio player for kids reaches 1M units, screen-free entertainment achieves mainstream scale", summary: "Screen-free children's entertainment at 1M units confirms that parent demand for high-quality offline alternatives is translating to purchase at meaningful volume.", source: "news", sourceName: "TechCrunch", date: "2026-05-10", crossLinks: [] },
-  { id: "pscr-s5", trendId: "parenting-screentime", title: "US Surgeon General calls for warning labels on social media, government intervention accelerates", summary: "Surgeon General action on social media harm creates legislative momentum that will structurally reshape both the tech and parenting product markets.", source: "news", sourceName: "Washington Post", date: "2026-04-18", crossLinks: [] },
   { id: "pscr-s6", trendId: "parenting-screentime", title: "Bark app monitors 5M children's social media for safety signals, parental surveillance market scales", summary: "5M families paying for AI monitoring of their children's digital behaviour confirms that parental screen anxiety is translating to sustained commercial spend, not just cultural conversation.", source: "news", sourceName: "Forbes", date: "2026-03-12", crossLinks: [] },
 
-  // parenting-village-model
-  { id: "pvil-s1", trendId: "parenting-village-model", title: "Peanut app reaches 2M users, parent social network proves loneliness is a solvable market", summary: "A social network specifically for mothers reaching 2M users confirms that parental isolation is not just cultural noise — it's a commercial opportunity that connection infrastructure can address.", source: "news", sourceName: "TechCrunch", date: "2026-06-12", crossLinks: [] },
-  { id: "pvil-s2", trendId: "parenting-village-model", title: "r/Parenting: I found my mum tribe through a Facebook group and we now share childcare 3 days a week", summary: "Informal co-parenting networks forming through social media and evolving into genuine care-sharing arrangements signal demand for formal coordination infrastructure.", source: "reddit", sourceName: "r/Parenting", date: "2026-06-03", crossLinks: [] },
-  { id: "pvil-s3", trendId: "parenting-village-model", title: "Childcare costs in US cities hit $3,500/month on average, forcing creative cooperative models", summary: "When childcare exceeds many households' rent, parents are economically compelled to find cooperative alternatives — the market need is not aspirational, it's structural.", source: "news", sourceName: "New York Times", date: "2026-05-20", crossLinks: [] },
-  { id: "pvil-s4", trendId: "parenting-village-model", title: "Winnie childcare platform maps 500K providers and parent reviews, childcare discovery scales", summary: "A childcare marketplace reaching half a million listings with parent reviews confirms the digital infrastructure layer is being built for what was previously an analogue market.", source: "news", sourceName: "VentureBeat", date: "2026-04-15", crossLinks: [] },
-  { id: "pvil-s5", trendId: "parenting-village-model", title: "Cohousing communities with shared childcare amenities sell out in 6 minutes across 12 US cities", summary: "Demand outstripping supply for cohousing with built-in childcare infrastructure confirms that parents are willing to restructure where they live around care community.", source: "news", sourceName: "Curbed", date: "2026-02-28", crossLinks: [] },
+  // parenting-village-model,
 
   // kids-creative-tech
   { id: "kcre-s1", trendId: "kids-creative-tech", title: "Roblox crosses 80M daily active users, majority now create content rather than just play", summary: "The world's largest kids' platform crossing from consumption to creation majority confirms that the creative economy for children has genuine scale.", source: "news", sourceName: "TechCrunch", date: "2026-06-18", crossLinks: [] },
@@ -2580,11 +2362,8 @@ export const EXTENDED_SIGNALS: Signal[] = [
 
   // spirituality-longevity-ritual
   { id: "slonge-s1", trendId: "spirituality-longevity-ritual", title: "Bryan Johnson's Blueprint protocol followed by 100K people, biological optimisation as open-source movement", summary: "A public longevity protocol with 100K adherents is not just a health behaviour — it's a community with shared practices, identity, and meaning-making that functions like a religion.", source: "news", sourceName: "Wired", date: "2026-06-14", crossLinks: [] },
-  { id: "slonge-s2", trendId: "spirituality-longevity-ritual", title: "r/longevity: I've restructured my entire life around my biological age. my chronological age feels irrelevant now", summary: "Consumer self-description of biological age as the primary identity metric confirms the longevity movement has created a new frame for self-understanding that displaces traditional ageing narratives.", source: "reddit", sourceName: "r/longevity", date: "2026-06-06", crossLinks: [] },
   { id: "slonge-s3", trendId: "spirituality-longevity-ritual", title: "Prenuvo full-body MRI screening waitlist hits 18 months in major US cities, preventive longevity medicine at premium scale", summary: "18-month waitlists at $2,500+ per scan confirms that the preventive longevity consumer has both the financial means and the motivation to make significant health investments based on data, not symptoms.", source: "news", sourceName: "Bloomberg", date: "2026-05-20", crossLinks: [] },
   { id: "slonge-s4", trendId: "spirituality-longevity-ritual", title: "TruDiagnostic biological age test reaches 500K users, measuring epigenetic age becomes consumer wellness behaviour", summary: "Half a million people measuring their biological age rather than just tracking fitness metrics signals that the longevity consumer has a fundamentally different relationship with health data.", source: "news", sourceName: "Forbes", date: "2026-04-15", crossLinks: [] },
-  { id: "slonge-s5", trendId: "spirituality-longevity-ritual", title: "r/Biohacking: my morning protocol is more sacred to me than anything religious I was raised with", summary: "Consumer comparison of longevity protocols to religious practice confirms that the movement has achieved the meaning-function that distinguishes lifestyle from religion.", source: "reddit", sourceName: "r/Biohacking", date: "2026-03-22", crossLinks: [] },
-  { id: "slonge-s6", trendId: "spirituality-longevity-ritual", title: "Longevity retreat market grows 400% year-on-year, biological optimisation experiences reach $10,000 price points", summary: "Premium retreat pricing at this scale for longevity optimisation confirms that the movement has produced a willing-to-pay premium consumer who treats biological optimisation as a high-value investment.", source: "news", sourceName: "Financial Times", date: "2026-02-18", crossLinks: [] },
 
   // spirituality-neurotech
   { id: "spirneuro-s1", trendId: "spirituality-neurotech", title: "Muse headband reaches 1M users, consumer neurofeedback goes mainstream", summary: "Real-time brainwave feedback during meditation is proving the premise: measurable neuroscience and ancient practice aren't in conflict — they reinforce each other.", source: "news", sourceName: "TechCrunch", date: "2026-06-15", crossLinks: [] },
@@ -2601,31 +2380,17 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "fdefi-s5", trendId: "finance-defi-everyday", title: "EU MiCA regulation live: licensed DeFi products can now be offered by banks across 27 markets", summary: "Regulatory clarity is the final unlock for mainstream bank adoption of DeFi products — European banks can now legally embed on-chain yield and lending at scale.", source: "news", sourceName: "Bloomberg", date: "2026-04-08", crossLinks: [] },
   { id: "fdefi-s6", trendId: "finance-defi-everyday", title: "Nubank integrates DeFi yield for 80M Brazilian users, largest EM fintech goes on-chain", summary: "Emerging market fintech adoption of DeFi at 80M user scale proves the technology works for mass-market financial inclusion, not just Western early adopters.", source: "news", sourceName: "TechCrunch", date: "2026-03-12", crossLinks: [] },
 
-  // finance-financial-identity
-  { id: "fident-s1", trendId: "finance-financial-identity", title: "TikTok #loudbudgeting reaches 500M views, spending transparency becomes a cultural norm", summary: "Half a billion views on financial transparency content confirms that talking openly about money has crossed from taboo to identity statement for the under-35 demographic.", source: "news", sourceName: "The Guardian", date: "2026-06-15", crossLinks: [] },
-  { id: "fident-s2", trendId: "finance-financial-identity", title: "YNAB grows to 1M paid subscribers, budgeting app becomes a community identity", summary: "A paid budgeting app reaching 1M subscribers confirms that financial discipline has become a social identity people pay to be part of, not just a private behaviour.", source: "news", sourceName: "Forbes", date: "2026-06-08", crossLinks: [] },
-  { id: "fident-s3", trendId: "finance-financial-identity", title: "r/Frugal hits 3M members, anti-consumption community goes mainstream", summary: "One of Reddit's fastest-growing communities is built around spending less — the scale confirms that frugality has shed its shame and become aspirational for a significant consumer segment.", source: "reddit", sourceName: "r/Frugal", date: "2026-05-25", crossLinks: [] },
-  { id: "fident-s4", trendId: "finance-financial-identity", title: "Monzo's annual spending review goes viral: users share breakdowns publicly", summary: "Personal finance data visualised as shareable content proves that financial behaviour has become social currency — the tool that makes your money life postable wins the generation.", source: "news", sourceName: "Wired", date: "2026-05-14", crossLinks: [] },
-  { id: "fident-s5", trendId: "finance-financial-identity", title: "r/FIRE: reached $500k invested at 31, sharing my exact portfolio breakdown", summary: "Financial independence communities sharing detailed portfolio data publicly signal that wealth-building has become a spectator sport — the journey is the content, not just the destination.", source: "reddit", sourceName: "r/financialindependence", date: "2026-04-20", crossLinks: [] },
-  { id: "fident-s6", trendId: "finance-financial-identity", title: "Ethical investing funds see 40% inflows from under-35s, values-aligned finance hits scale", summary: "When values-aligned investing accounts for the majority of new retail inflows in an age group, financial products become identity products — the what you invest in is the who you are.", source: "news", sourceName: "Financial Times", date: "2026-03-05", crossLinks: [] },
+  // finance-financial-identity,
 
   // ── 2025 HISTORICAL SIGNALS ──────────────────────────────────────────────────
 
-  // gaming-npc-aesthetics
-  { id: "gnpc-old1", trendId: "gaming-npc-aesthetics", title: "TikTok NPC roleplay videos cross 5 billion views, blank-affect aesthetic spreads beyond gaming", summary: "Early NPC roleplay trend on TikTok blurring gaming culture into fashion and self-presentation, with creators adopting stilted movements and flat expression as comedic and aesthetic devices.", source: "news", sourceName: "Kotaku", date: "2025-09-14", crossLinks: [] },
-  { id: "gnpc-old2", trendId: "gaming-npc-aesthetics", title: "r/gamedev modding communities document the visual grammar of NPC character design as an emerging aesthetic", summary: "Game modding forums cataloguing the distinctive visual language of NPC design — uniform colour palettes, generic silhouettes, blank expression — as the first signs it was crossing into fashion reference.", source: "reddit", sourceName: "r/gamedev", date: "2025-10-22", crossLinks: [] },
+  // gaming-npc-aesthetics,
 
-  // gaming-drop-economy
-  { id: "gdrop-old1", trendId: "gaming-drop-economy", title: "Fortnite Chapter 5 Season 1 collab with Jordan Brand drops, fashion-gaming crossover reaches new high", summary: "Early 2025 Jordan x Fortnite collab demonstrating the mechanics of gaming drops — timed exclusivity, digital-physical pairing — as a template fashion brands were beginning to study closely.", source: "news", sourceName: "Hypebeast", date: "2025-09-30", crossLinks: [] },
-  { id: "gdrop-old2", trendId: "gaming-drop-economy", title: "r/FashionReps: the drop model from Supreme and Palace feels identical to waiting for a Fortnite skin now", summary: "Community crossover between gaming and streetwear drop culture, with members explicitly connecting the dopamine mechanics of limited skin releases to physical fashion queue culture.", source: "reddit", sourceName: "r/FashionReps", date: "2025-11-08", crossLinks: [] },
+  // gaming-drop-economy,
 
-  // wellness-cold-ritual
-  { id: "wcold-old1", trendId: "wellness-cold-ritual", title: "r/biohacking: cold plunge is the one intervention that actually changed my baseline anxiety, not just morning energy", summary: "Early biohacking community testimony distinguishing cold exposure from fad wellness, with members reporting durable mood and anxiety benefits that went beyond performance metrics.", source: "reddit", sourceName: "r/biohacking", date: "2025-10-05", crossLinks: [] },
-  { id: "wcold-old2", trendId: "wellness-cold-ritual", title: "Wim Hof appears on three major mainstream podcasts in one month, cold exposure reaches general audience", summary: "First wave of mainstream podcast coverage for Wim Hof and cold exposure methodology, marking the moment the practice began migrating from biohacker niche to general wellness culture.", source: "news", sourceName: "Men's Health", date: "2025-11-17", crossLinks: [] },
+  // wellness-cold-ritual,
 
-  // wellness-cortisol
-  { id: "wcort-old1", trendId: "wellness-cortisol", title: "r/TwoXChromosomes: my cortisol is through the roof and I didn't even know it was measurable — starting to track it", summary: "Early mainstream discussion of cortisol dysregulation in women's communities, with members discovering cortisol tracking tools and connecting chronic stress to measurable biological markers for the first time.", source: "reddit", sourceName: "r/TwoXChromosomes", date: "2025-09-20", crossLinks: [] },
-  { id: "wcort-old2", trendId: "wellness-cortisol", title: "Three cortisol tracking apps launch within the same month, consumer market forms around stress biology", summary: "First cluster of consumer cortisol-tracking product launches, signalling that the biomarker had crossed from clinical measurement to consumer wellness application.", source: "news", sourceName: "Healthline", date: "2025-11-03", crossLinks: [] },
+  // wellness-cortisol,
 
   // foodtech-functional
   { id: "ffunc-old1", trendId: "foodtech-functional", title: "Seed, Olipop, and Poppi raise combined $120M in Q3 2025, functional food startups enter growth stage", summary: "First major funding wave for functional food and beverage startups, with investors backing brands built around gut health, adaptogens, and cognitive performance rather than conventional nutrition.", source: "news", sourceName: "TechCrunch", date: "2025-10-12", crossLinks: [] },
@@ -2641,7 +2406,6 @@ export const EXTENDED_SIGNALS: Signal[] = [
 
   // mentalhealth-therapeutic
   { id: "mther-old1", trendId: "mentalhealth-therapeutic", title: "FDA clears Pear Therapeutics reSET for digital CBT delivery, digital therapeutics get first major regulatory green light", summary: "Early FDA clearance for app-delivered cognitive behavioural therapy establishing the regulatory framework for digital mental health tools, signalling credibility beyond wellness into medical application.", source: "news", sourceName: "STAT News", date: "2025-09-25", crossLinks: [] },
-  { id: "mther-old2", trendId: "mentalhealth-therapeutic", title: "r/therapy: I started using a CBT app between sessions and it's the first time I've actually practiced the skills", summary: "Early community discussion of app-based CBT as a between-sessions practice tool, with therapists and clients discovering that digital delivery improved adherence to therapeutic exercises.", source: "reddit", sourceName: "r/therapy", date: "2025-12-08", crossLinks: [] },
 
   // interiordesign-ai-spatial
   { id: "intai-old1", trendId: "interiordesign-ai-spatial", title: "Archistar and Planner 5D AI room planning tools enter open beta, first AI interior design apps at consumer scale", summary: "Early AI-powered interior design apps launching public betas, attracting tens of thousands of signups from both professionals and homeowners experimenting with the new generation of spatial planning tools.", source: "news", sourceName: "Dezeen", date: "2025-09-18", crossLinks: [] },
@@ -2749,7 +2513,6 @@ export const EXTENDED_SIGNALS: Signal[] = [
 
   // fragrance-emotional-tech
   { id: "fragemot-old1", trendId: "fragrance-emotional-tech", title: "Neuroscience study links specific fragrance profiles to cortisol reduction — emotional scent therapy enters peer review", summary: "First peer-reviewed study providing clinical evidence for therapeutic fragrance effects, giving the nascent emotional scent therapy category its first scientific foundation for claims beyond anecdotal wellness positioning.", source: "news", sourceName: "Journal of Affective Disorders", date: "2025-10-09", crossLinks: [] },
-  { id: "fragemot-old2", trendId: "fragrance-emotional-tech", title: "r/fragrance: I started treating my perfume choices as mood management tools, not just aesthetics — anyone else?", summary: "Community thread exploring the shift from fragrance as aesthetic choice to fragrance as emotional regulation tool, an early signal of the therapeutic and functional positioning that would reshape the category.", source: "reddit", sourceName: "r/fragrance", date: "2025-12-20", crossLinks: [] },
 
   // jewellery-lab-grown
   { id: "jewlg-old1", trendId: "jewellery-lab-grown", title: "Lab-grown diamond prices fall 40% in 2025, price parity with mined diamonds achievable within 2 years", summary: "Dramatic lab-grown diamond price drops in 2025 establishing cost trajectory that would bring lab and mined into parity, triggering repositioning strategies across the fine jewellery industry.", source: "news", sourceName: "Rapaport", date: "2025-10-27", crossLinks: [] },
@@ -2771,9 +2534,7 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "socai-old1", trendId: "social-ai-content", title: "BuzzFeed publishes first AI-generated viral article, media industry reacts", summary: "First major media publication deploying AI for content production at scale, triggering industry-wide debate about AI content authenticity and the future of digital media production economics.", source: "news", sourceName: "Columbia Journalism Review", date: "2025-09-04", crossLinks: [] },
   { id: "socai-old2", trendId: "social-ai-content", title: "r/socialmedia: how to tell if an Instagram account is AI-generated — a community guide to spotting synthetic content", summary: "Community-generated guide to identifying AI-generated social media content, emerging spontaneously as platform authenticity concerns reached critical mass among media-literate users.", source: "reddit", sourceName: "r/socialmedia", date: "2025-10-31", crossLinks: [] },
 
-  // social-creator-economy
-  { id: "soccr-old1", trendId: "social-creator-economy", title: "Creator economy reaches $250B total value in 2025 — Goldman Sachs report marks the milestone", summary: "Goldman Sachs report establishing the creator economy as a quarter-trillion dollar industry, providing the institutional credibility that would attract the next wave of infrastructure investment.", source: "news", sourceName: "Goldman Sachs Research", date: "2025-10-17", crossLinks: [] },
-  { id: "soccr-old2", trendId: "social-creator-economy", title: "r/youtube: YouTube's new monetisation tiers changed everything — I make more from 50K subscribers than I did from 500K under the old rules", summary: "Creator community reaction to platform monetisation changes that improved economics for mid-tier creators, a signal that the platform was investing in the sustainability of its creator ecosystem.", source: "reddit", sourceName: "r/youtube", date: "2025-12-05", crossLinks: [] },
+  // social-creator-economy,
 
   // education-ai-tutoring
   { id: "edai-old1", trendId: "education-ai-tutoring", title: "Khan Academy Khanmigo beta launches to 200 schools, AI Socratic tutoring validated at classroom scale", summary: "First school-scale deployment of AI personalised tutoring demonstrating that the technology could function in real educational environments, not just controlled experiments.", source: "news", sourceName: "EdSurge", date: "2025-09-10", crossLinks: [] },
@@ -2783,13 +2544,9 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "edcred-old1", trendId: "education-skills-credentials", title: "IBM, Google, and Apple all announce degree-optional hiring for technical roles — skills credentials go mainstream", summary: "Coordinated announcement from major tech employers dropping degree requirements for significant job categories, generating widespread coverage and accelerating employer and educator interest in alternative credentialing.", source: "news", sourceName: "The Wall Street Journal", date: "2025-10-22", crossLinks: [] },
   { id: "edcred-old2", trendId: "education-skills-credentials", title: "Coursera and LinkedIn Learning report 3x growth in employer-recognised micro-credential completions in 2025", summary: "Alternative credentials platform growth report establishing that employer-validated micro-credentials had reached meaningful adoption scale, with completion rates tied to verified hiring outcomes.", source: "news", sourceName: "Forbes Education", date: "2025-12-19", crossLinks: [] },
 
-  // fashion-resale-first
-  { id: "fashres-old1", trendId: "fashion-resale-first", title: "Vinted crosses 100M users milestone, secondhand platform overtakes new fashion retail in several European markets", summary: "Vinted's 100 million user milestone establishing peer-to-peer fashion resale as a mainstream retail channel rather than a niche behaviour, with several markets showing resale volume overtaking fast fashion.", source: "news", sourceName: "Business of Fashion", date: "2025-10-13", crossLinks: [] },
-  { id: "fashres-old2", trendId: "fashion-resale-first", title: "r/ThriftStoreHauls hits 4M members, thrift community becomes one of Reddit's fastest-growing fashion spaces", summary: "Thrift community on Reddit reaching scale that confirmed secondhand fashion had transcended niche interest to become a primary fashion identity for a substantial consumer segment.", source: "reddit", sourceName: "r/ThriftStoreHauls", date: "2025-11-29", crossLinks: [] },
+  // fashion-resale-first,
 
-  // fashion-micro-trend-fatigue
-  { id: "fashfat-old1", trendId: "fashion-micro-trend-fatigue", title: "The Guardian runs first major 'micro-trend fatigue' analysis piece — exhaustion from TikTok trend cycles reaches mainstream press", summary: "First mainstream media treatment of TikTok-driven micro-trend fatigue as a significant cultural phenomenon, marking the shift from niche community frustration to widely-acknowledged cultural condition.", source: "news", sourceName: "The Guardian", date: "2025-09-07", crossLinks: [] },
-  { id: "fashfat-old2", trendId: "fashion-micro-trend-fatigue", title: "r/femalefashionadvice: I quit following TikTok trends and my wardrobe actually makes sense now — anyone else over it?", summary: "Community thread of users documenting their exit from micro-trend culture and return to personal style development, attracting significant engagement and spawning a trend-fatigue support community.", source: "reddit", sourceName: "r/femalefashionadvice", date: "2025-11-18", crossLinks: [] },
+  // fashion-micro-trend-fatigue,
 
   // beauty-skin-diagnostics
   { id: "beaudiag-old1", trendId: "beauty-skin-diagnostics", title: "Neutrogena Skin360 AI scanner mainstream launch — L'Oréal group's first mass-market AI diagnostic tool", summary: "First mass-market beauty brand launching an AI skin diagnostic tool at scale, bringing camera-based skin analysis out of premium brand pilot territory into drugstore and mass channel availability.", source: "news", sourceName: "Beauty Independent", date: "2025-10-24", crossLinks: [] },
@@ -2803,17 +2560,13 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "datai-old1", trendId: "dating-ai-assisted", title: "Rizz AI dating coach app hits 500K downloads in first month, AI profile writing enters mainstream dating", summary: "First AI dating coach app reaching significant scale, validating consumer demand for AI assistance in the dating app experience and triggering response features from major platforms.", source: "news", sourceName: "TechCrunch", date: "2025-10-18", crossLinks: [] },
   { id: "datai-old2", trendId: "dating-ai-assisted", title: "r/dating_advice: I used AI to rewrite my Hinge profile and my match rate tripled — is this cheating?", summary: "Community debate about AI-assisted dating profiles attracting significant engagement, with members weighing authenticity concerns against practical efficacy and raising questions about what 'authentic' means in a curated dating environment.", source: "reddit", sourceName: "r/dating_advice", date: "2025-11-23", crossLinks: [] },
 
-  // dating-slow
-  { id: "datslo-old1", trendId: "dating-slow", title: "'Slow dating' appears in six major publications in one month — a new term for an old frustration reaches critical mass", summary: "First cluster of mainstream press pieces coining and defining 'slow dating' as a cultural countermovement to swipe-culture, marking the term's emergence as a shared framework for dating app fatigue.", source: "news", sourceName: "The Times", date: "2025-09-13", crossLinks: [] },
-  { id: "datslo-old2", trendId: "dating-slow", title: "r/dating: I deleted all my dating apps and started going to events instead — six months update", summary: "Community thread documenting a return to in-person dating events as a deliberate rejection of app-based matching, attracting significant engagement from users experiencing similar app fatigue.", source: "reddit", sourceName: "r/dating", date: "2025-12-13", crossLinks: [] },
+  // dating-slow,
 
   // nightlife-ai-discovery
   { id: "nightai-old1", trendId: "nightlife-ai-discovery", title: "Dice FM launches AI recommendation engine, event discovery becomes personalised for 5M users", summary: "Dice FM's first major AI feature moving the platform from manual event browsing to personalised discovery, marking the beginning of algorithmic curation in a category previously dominated by word-of-mouth.", source: "news", sourceName: "Music Week", date: "2025-10-09", crossLinks: [] },
   { id: "nightai-old2", trendId: "nightlife-ai-discovery", title: "r/london: best apps for finding events you didn't know you'd love — Dice vs RA vs the algorithmic newcomers", summary: "London community thread comparing event discovery app algorithms, an early signal that personalised event recommendation was becoming a meaningful consumer differentiator in urban nightlife culture.", source: "reddit", sourceName: "r/london", date: "2025-11-16", crossLinks: [] },
 
-  // nightlife-immersive
-  { id: "nightimm-old1", trendId: "nightlife-immersive", title: "Meow Wolf announces Denver expansion, immersive entertainment company secures $150M for national rollout", summary: "Meow Wolf's major expansion announcement establishing immersive entertainment as a scalable commercial category rather than a single-venue phenomenon, attracting significant media coverage.", source: "news", sourceName: "Rolling Stone", date: "2025-09-03", crossLinks: [] },
-  { id: "nightimm-old2", trendId: "nightlife-immersive", title: "r/london: Punchdrunk's new show is the best thing I've done in five years — here's why immersive theatre has no competition", summary: "Early reviews of Punchdrunk's new immersive production generating exceptional audience responses, with community members articulating why the format offered experiences unavailable in any other entertainment medium.", source: "reddit", sourceName: "r/london", date: "2025-10-26", crossLinks: [] },
+  // nightlife-immersive,
 
   // coffee-precision-tech
   { id: "coffpre-old1", trendId: "coffee-precision-tech", title: "Decent Espresso DE1 joins 18-month waitlist — specialty coffee community's most-discussed machine signals connected brewing demand", summary: "Decent Espresso's extended waitlist for its data-logging connected espresso machine demonstrating demand for precision brewing technology that significantly outpaced supply capabilities.", source: "news", sourceName: "Sprudge", date: "2025-09-26", crossLinks: [] },
@@ -2827,9 +2580,7 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "srec-old1", trendId: "sport-recovery-culture", title: "Whoop announces partnership with NFL, NBA, and Premier League simultaneously — elite sport recovery data goes institutional", summary: "Major sports league partnerships for Whoop legitimising recovery wearables at the highest level of professional sport, creating the credibility signal that would accelerate mainstream consumer adoption.", source: "news", sourceName: "Sports Business Journal", date: "2025-10-02", crossLinks: [] },
   { id: "srec-old2", trendId: "sport-recovery-culture", title: "r/fitness: recovery protocol deep dive — I tested cold, sauna, compression, and sleep optimisation for 90 days", summary: "Community-generated recovery protocol experiment generating extensive documentation and discussion, establishing evidence-based recovery practice benchmarks in mainstream fitness communities.", source: "reddit", sourceName: "r/fitness", date: "2025-11-19", crossLinks: [] },
 
-  // sport-fan-economy
-  { id: "sfan-old1", trendId: "sport-fan-economy", title: "NCAA NIL deals reach $500M in first full year, college athletes become micro-brands overnight", summary: "First-year totals for NCAA name, image, and likeness deals establishing the scale of the athlete-brand economy and validating the commercial model that professional leagues would accelerate.", source: "news", sourceName: "ESPN", date: "2025-10-29", crossLinks: [] },
-  { id: "sfan-old2", trendId: "sport-fan-economy", title: "r/soccer: I follow the player not the club — how athlete parasocial relationships have replaced team loyalty for Gen Z fans", summary: "Community discussion of generational shift in sports fandom from institutional to individual loyalty, with members articulating how athlete-creator relationships had fundamentally changed their sports consumption behaviour.", source: "reddit", sourceName: "r/soccer", date: "2025-12-21", crossLinks: [] },
+  // sport-fan-economy,
 
   // pets-genomics
   { id: "pgen-old1", trendId: "pets-genomics", title: "Embark dog DNA test featured in mainstream pet health coverage — first mainstream press breakthrough for pet genomics", summary: "Embark's dog DNA testing reaching mainstream consumer health and pet press for the first time, bringing genetic screening into awareness for pet owners who had not previously engaged with genomic health products.", source: "news", sourceName: "Consumer Reports", date: "2025-09-16", crossLinks: [] },
@@ -2839,13 +2590,9 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "ptech-old1", trendId: "pets-tech", title: "Whistle GPS collar receives first major mainstream review — 'the Fitbit for dogs has arrived'", summary: "First major mainstream consumer tech review of GPS pet health collar establishing the product category's legitimacy and connecting it to the quantified self language that would drive consumer adoption.", source: "news", sourceName: "Wired", date: "2025-10-04", crossLinks: [] },
   { id: "ptech-old2", trendId: "pets-tech", title: "r/dogs: pet wearable megathread — which trackers are actually worth the subscription fee?", summary: "Community comparative review of pet wearable devices addressing the subscription model value question, establishing which products were generating sufficient behavioural insight to justify ongoing cost.", source: "reddit", sourceName: "r/dogs", date: "2025-11-28", crossLinks: [] },
 
-  // parenting-screentime
-  { id: "pscr-old1", trendId: "parenting-screentime", title: "US Surgeon General issues first warning on social media harm for teenagers — screen time debate reaches government level", summary: "First US Surgeon General formal advisory specifically addressing teenage social media use, elevating the screen time conversation from parenting discourse to public health policy and accelerating regulatory momentum.", source: "news", sourceName: "Washington Post", date: "2025-09-21", crossLinks: [] },
-  { id: "pscr-old2", trendId: "parenting-screentime", title: "r/Parenting: we set hard screen time limits for a year — what actually changed (honest assessment)", summary: "Long-form community report on the real effects of imposing screen time limits, attracting significant engagement from parents searching for honest assessments beyond ideological positions on either side.", source: "reddit", sourceName: "r/Parenting", date: "2025-11-11", crossLinks: [] },
+  // parenting-screentime,
 
-  // parenting-village-model
-  { id: "pvil-old1", trendId: "parenting-village-model", title: "Harvard study on parenting loneliness goes viral — 61% of US parents report social isolation as primary stress source", summary: "Academic research establishing parenting isolation as a public health-scale issue, receiving widespread media coverage that validated the lived experience of millions of parents and created market permission for community solutions.", source: "news", sourceName: "Harvard Public Health", date: "2025-10-08", crossLinks: [] },
-  { id: "pvil-old2", trendId: "parenting-village-model", title: "r/Parenting: childcare is unaffordable so we started a co-op with three other families — here's how", summary: "Community thread on informal cooperative childcare arrangements that generated significant engagement and spawned multiple similar threads, signalling that families were independently discovering community care solutions.", source: "reddit", sourceName: "r/Parenting", date: "2025-12-02", crossLinks: [] },
+  // parenting-village-model,
 
   // kids-creative-tech
   { id: "kcre-old1", trendId: "kids-creative-tech", title: "Roblox creator economy report: 2.5M young creators earning from games they built on the platform", summary: "First Roblox creator economy report establishing the scale of the youth creator market, with millions of young people earning real income from content they created on a platform they also consumed.", source: "news", sourceName: "TechCrunch", date: "2025-10-20", crossLinks: [] },
@@ -2865,7 +2612,6 @@ export const EXTENDED_SIGNALS: Signal[] = [
 
   // spirituality-longevity-ritual
   { id: "slonge-old1", trendId: "spirituality-longevity-ritual", title: "Bryan Johnson Blueprint protocol receives first major magazine profile — biohacking enters mainstream press", summary: "First in-depth mainstream magazine profile of Bryan Johnson's Blueprint protocol, introducing the concept of data-driven biological age reversal to a general readership and triggering widespread conversation.", source: "news", sourceName: "Bloomberg Businessweek", date: "2025-09-27", crossLinks: [] },
-  { id: "slonge-old2", trendId: "spirituality-longevity-ritual", title: "r/longevity reaches 500K members as biological optimisation community achieves critical scale", summary: "Longevity community on Reddit reaching significant membership scale, establishing a mainstream audience for daily discussion of protocols, supplements, and interventions aimed at extending healthspan.", source: "reddit", sourceName: "r/longevity", date: "2025-12-03", crossLinks: [] },
 
   // spirituality-neurotech
   { id: "spirneuro-old1", trendId: "spirituality-neurotech", title: "Muse headband passes 500K sales milestone, consumer EEG meditation device achieves mainstream scale", summary: "Muse meditation headband reaching half a million units establishing consumer neurofeedback as a viable market category, with sufficient user base to generate community knowledge and peer recommendation.", source: "news", sourceName: "TechCrunch", date: "2025-10-19", crossLinks: [] },
@@ -2876,6 +2622,4 @@ export const EXTENDED_SIGNALS: Signal[] = [
   { id: "fdefi-old2", trendId: "finance-defi-everyday", title: "r/CryptoCurrency: DeFi is finally going mainstream and most people won't even know they're using it", summary: "Community discussion of DeFi protocols becoming embedded in mainstream financial apps without consumer awareness, marking the transition from niche crypto product to invisible financial infrastructure.", source: "reddit", sourceName: "r/CryptoCurrency", date: "2025-11-14", crossLinks: [] },
 
   // finance-financial-identity
-  { id: "fident-old1", trendId: "finance-financial-identity", title: "'Loud budgeting' goes viral on TikTok with first wave of creators publicly declining expensive plans — the term is coined", summary: "First viral wave of loud budgeting content on TikTok establishing the term and the behaviour, with creators openly discussing financial limits and receiving positive community response that validated the transparency.", source: "news", sourceName: "Forbes", date: "2025-10-31", crossLinks: [] },
-  { id: "fident-old2", trendId: "finance-financial-identity", title: "r/personalfinance: sharing my complete 2025 budget breakdown — why I decided to stop being secretive about money", summary: "Community thread of detailed personal budget disclosure attracting significant engagement and spawning multiple similar posts, establishing financial transparency as a valued community behaviour rather than taboo.", source: "reddit", sourceName: "r/personalfinance", date: "2025-12-17", crossLinks: [] },
 ];
