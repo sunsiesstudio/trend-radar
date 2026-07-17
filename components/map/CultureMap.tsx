@@ -592,6 +592,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       topicAddedAt={topicAddedAt}
       activeTopics={activeTopics}
       generatingTopic={generatingTopic}
+      panelOpen={!isMobile && (selection !== null || activeSignal !== null)}
       onAddTopic={onAddTopic}
       onRemoveTopic={onRemoveTopic}
       onSetView={onSetView}

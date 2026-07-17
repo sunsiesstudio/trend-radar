@@ -10,7 +10,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { Trend, Signal } from "@/types";
 import { SIGNALS } from "@/lib/trends";
-import { EXTENDED_SIGNALS, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_COLORS } from "@/lib/extended-trends";
+import { EXTENDED_SIGNALS, EXTENDED_TRENDS, LIBRARY_TOPICS, FEATURED_TOPICS, TOPIC_COLORS } from "@/lib/extended-trends";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -253,25 +253,38 @@ function BoardController({ fitViewRef }: {
 
 // idx === -1 → overview (fitView all); idx >= 0 → zoom to trend cluster
 // trendsKey changes whenever the trend set changes, forcing a re-fit on new topic loads
-function FocusController({ trendId, signalIds, idx, trendsKey }: {
+// panelOpen: when the side panel opens/closes, re-center the cluster in the now-narrower canvas
+function FocusController({ trendId, signalIds, idx, trendsKey, panelOpen }: {
   trendId: string | undefined;
   signalIds: string[];
   idx: number;
   trendsKey: string;
+  panelOpen: boolean;
 }) {
   const { fitView } = useReactFlow();
   const prevKey       = useRef("");
   const prevTrendsKey = useRef("");
+  const prevPanelOpen = useRef(panelOpen);
   const timerRef      = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
+    const panelChanged = panelOpen !== prevPanelOpen.current;
+    prevPanelOpen.current = panelOpen;
+
     const key = idx < 0 ? `__overview__:${trendsKey}` : `${trendId ?? "?"}:${idx}`;
-    if (key === prevKey.current) return;
-    const isFirst      = prevKey.current === "";
+    const keyChanged = key !== prevKey.current;
+    if (!keyChanged && !panelChanged) return;
+
+    const isFirst       = prevKey.current === "";
     const trendsChanged = trendsKey !== prevTrendsKey.current;
-    prevKey.current       = key;
-    prevTrendsKey.current = trendsKey;
-    // Instant when topic loads (isFirst or trendsChanged); animated only for arrow navigation
-    const instant = isFirst || trendsChanged;
+    if (keyChanged) {
+      prevKey.current       = key;
+      prevTrendsKey.current = trendsKey;
+    }
+
+    const instant = !panelChanged && (isFirst || trendsChanged);
+    // Panel open/close waits 350 ms for the flex layout to reflow before fitting
+    const delay = panelChanged ? 350 : instant ? 180 : 400;
+
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       if (idx < 0) {
@@ -280,8 +293,8 @@ function FocusController({ trendId, signalIds, idx, trendsKey }: {
         const fitNodes = [{ id: trendId }, ...signalIds.map(id => ({ id }))];
         fitView({ nodes: fitNodes, duration: instant ? 0 : 420, padding: 0.22 });
       }
-    }, instant ? 180 : 400);
-  }, [trendId, signalIds, idx, trendsKey, fitView]);
+    }, delay);
+  }, [trendId, signalIds, idx, trendsKey, panelOpen, fitView]);
   return null;
 }
 
@@ -293,6 +306,7 @@ interface Props {
   topicAddedAt?: Record<string, string>;
   activeTopics: string[];
   generatingTopic?: string | null;
+  panelOpen?: boolean;
   onAddTopic: (topic: string) => void;
   onRemoveTopic: (topic: string) => void;
   onSelectTrend?: (trend: Trend) => void;
@@ -302,7 +316,7 @@ interface Props {
 
 export function BlobRadarView({
   trends, signals, topicAddedAt = {},
-  activeTopics, generatingTopic, onAddTopic, onRemoveTopic,
+  activeTopics, generatingTopic, panelOpen = false, onAddTopic, onRemoveTopic,
   onSelectTrend, onSelectSignal, onSetView,
 }: Props) {
   const fitViewRef = useRef<(() => void) | null>(null);
@@ -372,6 +386,27 @@ export function BlobRadarView({
     return allSignals.filter(s => s.trendId === focusTrend.id).map(s => s.id);
   }, [focusTrend, allSignals]);
 
+  // Latest signals for "Last arrivals" section on the home (empty) state
+  // One representative signal per trend, deduped, sorted by most recent date
+  const latestSignals = useMemo(() => {
+    const trendMap = new Map(EXTENDED_TRENDS.map(t => [t.id, t]));
+    const seenTrends = new Set<string>();
+    return [...EXTENDED_SIGNALS]
+      .filter(s => s.date && s.trendId)
+      .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""))
+      .filter(s => {
+        if (seenTrends.has(s.trendId!)) return false;
+        seenTrends.add(s.trendId!);
+        return true;
+      })
+      .slice(0, 10)
+      .map(s => {
+        const trend = trendMap.get(s.trendId!);
+        const color = TOPIC_COLORS[trend?.topics?.[0] ?? ""] ?? "#aaa";
+        return { signal: s, color, trend };
+      });
+  }, []);
+
   // Arrows navigate radar focus only — tap a blob to open detail
   const prev = () => {
     setFocusIdx(i => i < 0 ? 0 : Math.max(0, i - 1));
@@ -428,6 +463,28 @@ export function BlobRadarView({
               opacity: 0.35,
               filter: "none",
               animation: `homeBlobDrift${i} ${b.dur}s ease-in-out infinite alternate`,
+              borderRadius: blobFromId(b.seed),
+            }} />
+          ))}
+          {/* Desktop-only extra blobs — fill the inner space on larger screens */}
+          {([
+            { color: "#78C9A8", size: 210, x: 22, y: 50, dur: 28, seed: "bg-d-teal" },
+            { color: "#E8B87A", size: 210, x: 78, y: 50, dur: 34, seed: "bg-d-amber" },
+            { color: "#FD8326", size: 185, x: 22, y: 28, dur: 25, seed: "bg-d-orange" },
+            { color: "#9DC47C", size: 185, x: 78, y: 28, dur: 31, seed: "bg-d-sage" },
+            { color: "#FF8BB4", size: 185, x: 28, y: 73, dur: 36, seed: "bg-d-rose" },
+            { color: "#C4A0CE", size: 185, x: 72, y: 73, dur: 27, seed: "bg-d-mauve" },
+          ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
+            <div key={`d${i}`} className="home-desktop-blob" style={{
+              position: "absolute",
+              width: b.size, height: b.size,
+              left: `${b.x}%`, top: `${b.y}%`,
+              transform: "translate(-50%, -50%)",
+              background: "transparent",
+              border: `1.5px solid ${b.color}`,
+              opacity: 0.22,
+              filter: "none",
+              animation: `homeBlobDrift${6 + i} ${b.dur}s ease-in-out infinite alternate`,
               borderRadius: blobFromId(b.seed),
             }} />
           ))}
@@ -551,6 +608,47 @@ export function BlobRadarView({
         </div>
         </div>
 
+        {/* Last arrivals — latest signal per trend, most recent first */}
+        {latestSignals.length > 0 && (
+          <div style={{ flexShrink: 0, paddingBottom: 8, position: "relative", zIndex: 1 }}>
+            <div style={{ padding: "0 24px 10px" }}>
+              <span style={{ fontSize: 9, color: "#c0bbb4", letterSpacing: "0.13em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                Last arrivals
+              </span>
+            </div>
+            <div className="last-arrivals-scroll" style={{ display: "flex", gap: 10, overflowX: "auto", padding: "2px 24px 4px" }}>
+              {latestSignals.map(item => (
+                item.trend && (
+                  <div
+                    key={item.signal.id}
+                    onClick={() => onAddTopic(item.trend!.topics?.[0] ?? "")}
+                    style={{
+                      flexShrink: 0, width: 172, cursor: "pointer",
+                      background: `${item.color}12`,
+                      border: `1px solid ${item.color}38`,
+                      borderRadius: 12, padding: "10px 13px",
+                      display: "flex", flexDirection: "column", gap: 5,
+                      transition: "border-color 0.15s",
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}70`)}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}38`)}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.color, flexShrink: 0, display: "inline-block" }} />
+                      <span style={{ fontSize: 8.5, fontWeight: 700, color: darkenColor(item.color, 0.7), letterSpacing: "0.08em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                        {item.trend.topics?.[0]?.replace(/-/g, " ") ?? ""}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: "#333", lineHeight: 1.35, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
+                      {item.signal.title}
+                    </div>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+
         <div style={{ flexShrink: 0, padding: "16px 24px", textAlign: "center", fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", lineHeight: 1.6, position: "relative", zIndex: 1 }}>
           By Martina from{" "}
           <a href="https://augmentedrarity.substack.com" target="_blank" rel="noopener noreferrer"
@@ -566,6 +664,17 @@ export function BlobRadarView({
           @keyframes homeBlobDrift2 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:70% 30% 50% 50%/40% 60% 50% 60% } 100% { transform:translate(calc(-50% + 40px),calc(-50% - 30px)) scale(1.05); border-radius:30% 70% 60% 40%/60% 40% 50% 50% } }
           @keyframes homeBlobDrift3 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:40% 60% 60% 40%/70% 40% 60% 30% } 100% { transform:translate(calc(-50% - 60px),calc(-50% + 40px)) scale(1.1);  border-radius:60% 40% 40% 60%/30% 60% 40% 70% } }
           @keyframes homeBlobDrift4 { 0% { transform:translate(-50%,-50%) scale(1);   border-radius:55% 45% 65% 35%/45% 55% 45% 55% } 100% { transform:translate(calc(-50% + 30px),calc(-50% - 45px)) scale(0.96); border-radius:45% 55% 35% 65%/55% 45% 55% 45% } }
+          @keyframes homeBlobDrift5 { 0% { transform:translate(-50%,-50%) scale(1); border-radius:58% 42% 52% 48%/42% 58% 48% 52% } 100% { transform:translate(calc(-50% + 35px),calc(-50% - 30px)) scale(1.06); border-radius:42% 58% 38% 62%/58% 42% 62% 38% } }
+          @keyframes homeBlobDrift6  { 0% { transform:translate(-50%,-50%) scale(1); border-radius:45% 55% 60% 40%/55% 45% 55% 45% } 100% { transform:translate(calc(-50% + 28px),calc(-50% + 22px)) scale(0.96); border-radius:55% 45% 40% 60%/45% 55% 45% 55% } }
+          @keyframes homeBlobDrift7  { 0% { transform:translate(-50%,-50%) scale(1); border-radius:62% 38% 48% 52%/38% 62% 52% 48% } 100% { transform:translate(calc(-50% - 32px),calc(-50% - 18px)) scale(1.07); border-radius:38% 62% 52% 48%/62% 38% 48% 52% } }
+          @keyframes homeBlobDrift8  { 0% { transform:translate(-50%,-50%) scale(1); border-radius:50% 50% 65% 35%/60% 40% 55% 45% } 100% { transform:translate(calc(-50% + 22px),calc(-50% + 34px)) scale(0.94); border-radius:40% 60% 35% 65%/40% 60% 45% 55% } }
+          @keyframes homeBlobDrift9  { 0% { transform:translate(-50%,-50%) scale(1); border-radius:40% 60% 55% 45%/65% 35% 48% 52% } 100% { transform:translate(calc(-50% - 25px),calc(-50% + 28px)) scale(1.05); border-radius:60% 40% 45% 55%/35% 65% 52% 48% } }
+          @keyframes homeBlobDrift10 { 0% { transform:translate(-50%,-50%) scale(1); border-radius:55% 45% 40% 60%/48% 52% 62% 38% } 100% { transform:translate(calc(-50% + 30px),calc(-50% - 24px)) scale(0.97); border-radius:45% 55% 60% 40%/52% 48% 38% 62% } }
+          @keyframes homeBlobDrift11 { 0% { transform:translate(-50%,-50%) scale(1); border-radius:38% 62% 58% 42%/52% 48% 40% 60% } 100% { transform:translate(calc(-50% - 28px),calc(-50% - 20px)) scale(1.08); border-radius:62% 38% 42% 58%/48% 52% 60% 40% } }
+          .home-desktop-blob { display: none; }
+          @media (min-width: 768px) { .home-desktop-blob { display: block; } }
+          .last-arrivals-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+          .last-arrivals-scroll::-webkit-scrollbar { display: none; }
         `}</style>
       </div>
     );
@@ -594,7 +703,7 @@ export function BlobRadarView({
           style={{ background: "#f8f7f3" }}
         >
           <BoardController fitViewRef={fitViewRef} />
-          <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} trendsKey={trendsKey} />
+          <FocusController trendId={focusTrend?.id} signalIds={focusSignalIds} idx={safeIdx} trendsKey={trendsKey} panelOpen={panelOpen} />
         </ReactFlow>
       </div>
 
