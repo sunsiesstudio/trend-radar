@@ -49,7 +49,7 @@ export default function HomePage() {
   const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
-  const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
+  const [lastUpdated,   setLastUpdated]   = useState<Date>(() => new Date());
   const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
     if (typeof window === "undefined") return {};
     try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
