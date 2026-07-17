@@ -633,8 +633,7 @@ export function BlobRadarView({
                     onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}70`)}
                     onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}38`)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.color, flexShrink: 0, display: "inline-block" }} />
+                    <div>
                       <span style={{ fontSize: 8.5, fontWeight: 700, color: darkenColor(item.color, 0.7), letterSpacing: "0.08em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                         {item.trend.topics?.[0]?.replace(/-/g, " ") ?? ""}
                       </span>
