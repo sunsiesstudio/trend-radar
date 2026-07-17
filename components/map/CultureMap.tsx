@@ -688,7 +688,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       )}
 
       {/* Mobile bottom sheet */}
-      {isMobile && selection && (
+      {isMobile && (selection || activeSignal) && (
         <>
           <div onClick={clearSelection}
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 200 }} />
