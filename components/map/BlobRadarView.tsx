@@ -498,7 +498,7 @@ export function BlobRadarView({
             }} />
           ))}
         </div>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1, background: "#f8f7f3" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", padding: "0 32px", width: "100%", maxWidth: 460 }}>
 
               {generatingTopic ? (
