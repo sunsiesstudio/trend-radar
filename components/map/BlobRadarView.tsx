@@ -477,12 +477,12 @@ export function BlobRadarView({
           ))}
           {/* Desktop-only extra blobs — fill the inner space on larger screens */}
           {([
-            { color: "#78C9A8", size: 320, x: 22, y: 50, dur: 28, seed: "bg-d-teal" },
-            { color: "#E8B87A", size: 320, x: 78, y: 50, dur: 34, seed: "bg-d-amber" },
-            { color: "#FD8326", size: 280, x: 22, y: 28, dur: 25, seed: "bg-d-orange" },
-            { color: "#9DC47C", size: 280, x: 78, y: 28, dur: 31, seed: "bg-d-sage" },
-            { color: "#FF8BB4", size: 280, x: 28, y: 73, dur: 36, seed: "bg-d-rose" },
-            { color: "#C4A0CE", size: 280, x: 72, y: 73, dur: 27, seed: "bg-d-mauve" },
+            { color: "#78C9A8", size: 320, x: -4,  y: 50,  dur: 28, seed: "bg-d-teal" },
+            { color: "#E8B87A", size: 320, x: 104, y: 50,  dur: 34, seed: "bg-d-amber" },
+            { color: "#FD8326", size: 280, x: 25,  y: -4,  dur: 25, seed: "bg-d-orange" },
+            { color: "#9DC47C", size: 280, x: 75,  y: -4,  dur: 31, seed: "bg-d-sage" },
+            { color: "#FF8BB4", size: 280, x: 25,  y: 104, dur: 36, seed: "bg-d-rose" },
+            { color: "#C4A0CE", size: 280, x: 75,  y: 104, dur: 27, seed: "bg-d-mauve" },
           ] as { color: string; size: number; x: number; y: number; dur: number; seed: string }[]).map((b, i) => (
             <div key={`d${i}`} className="home-desktop-blob" style={{
               position: "absolute",
