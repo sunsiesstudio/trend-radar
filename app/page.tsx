@@ -275,7 +275,7 @@ export default function HomePage() {
 
         {/* Right side */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
-          {lastUpdated && isDesktop && (
+          {lastUpdated && (
             <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
               {(() => {
                 const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
