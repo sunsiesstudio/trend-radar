@@ -49,7 +49,7 @@ export default function HomePage() {
   const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
-  const [lastUpdated,   setLastUpdated]   = useState<Date>(() => new Date());
+  const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
     if (typeof window === "undefined") return {};
     try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
@@ -85,7 +85,7 @@ export default function HomePage() {
       })
         .then((r) => r.json())
         .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
-        .catch(() => { if (!cancelled) { setLiveLoading(false); setLastUpdated(new Date()); } });
+        .catch(() => { if (!cancelled) { setLiveLoading(false); } });
     };
     setLiveLoading(true);
     fetchLive();
@@ -279,9 +279,9 @@ export default function HomePage() {
             <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
               {(() => {
                 const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
-                if (mins < 1) return "just now";
-                if (mins === 1) return "1 min ago";
-                return `${mins} min ago`;
+                if (mins < 1) return "updated just now";
+                if (mins === 1) return "updated 1 min ago";
+                return `updated ${mins} min ago`;
               })()}
             </span>
           )}
