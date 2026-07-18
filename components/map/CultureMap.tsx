@@ -195,6 +195,9 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   // Clear panel state and reset zoom/pan when switching views
   useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); setMapOffset({ x: 0, y: 0 }); }, [view]);
+  // Close signal/selection panel when topics change or home screen is shown
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setActiveSignal(null); setSelection(null); }, [activeTopics.join(",")]);
 
   // Once pending focus trend is visible in the loaded trends, clear the request
   useEffect(() => {

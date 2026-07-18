@@ -281,7 +281,7 @@ export default function HomePage() {
 
         {/* Right side */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
-          {lastUpdated && activeTopics.length > 0 && (
+          {lastUpdated && (
             <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
               {(() => {
                 const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60_000);
