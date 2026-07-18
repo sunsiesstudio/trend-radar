@@ -2,14 +2,7 @@
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
-import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey, EXTENDED_SIGNALS } from "@/lib/extended-trends";
-
-const LAST_UPDATED = (() => {
-  const latest = EXTENDED_SIGNALS.map(s => s.date ?? "").filter(Boolean).sort().at(-1) ?? "";
-  if (!latest) return "";
-  const d = new Date(latest + "T00:00:00");
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-})();
+import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey } from "@/lib/extended-trends";
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
@@ -56,6 +49,8 @@ export default function HomePage() {
   const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
+  const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
+  const [, setTick]                       = useState(0);
   const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
     if (typeof window === "undefined") return {};
     try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
@@ -90,7 +85,7 @@ export default function HomePage() {
         body: JSON.stringify({ topics, trends }),
       })
         .then((r) => r.json())
-        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
+        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
         .catch(() => { if (!cancelled) { setLiveLoading(false); } });
     };
     setLiveLoading(true);
@@ -106,6 +101,11 @@ export default function HomePage() {
     const h = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
     mq.addEventListener("change", h);
     return () => mq.removeEventListener("change", h);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick(n => n + 1), 60_000);
+    return () => clearInterval(id);
   }, []);
 
   const runGeneration = useCallback(async (key: string, newTopics: string[], baseTrends: Trend[] = [], intersectionTopics?: string[]) => {
@@ -281,9 +281,14 @@ export default function HomePage() {
 
         {/* Right side */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
-          {LAST_UPDATED && (
+          {lastUpdated && activeTopics.length > 0 && (
             <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
-              Updated {LAST_UPDATED}
+              {(() => {
+                const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60_000);
+                if (mins < 1) return "updated just now";
+                if (mins === 1) return "updated 1 min ago";
+                return `updated ${mins} min ago`;
+              })()}
             </span>
           )}
           {/* + button */}
