@@ -679,7 +679,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         )}
       </div>
 
-      {!isMobile && (
+      {!isMobile && activeTopics.length > 0 && (
         <div style={{
           flexShrink: 0, padding: "7px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
