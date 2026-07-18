@@ -2,7 +2,14 @@
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
-import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey } from "@/lib/extended-trends";
+import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey, EXTENDED_SIGNALS } from "@/lib/extended-trends";
+
+const LAST_UPDATED = (() => {
+  const latest = EXTENDED_SIGNALS.map(s => s.date ?? "").filter(Boolean).sort().at(-1) ?? "";
+  if (!latest) return "";
+  const d = new Date(latest + "T00:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+})();
 import { Trend, Signal } from "@/types";
 
 import { AddSignalModal } from "@/components/map/AddSignalModal";
@@ -49,7 +56,6 @@ export default function HomePage() {
   const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
   const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
   const [liveLoading,   setLiveLoading]   = useState(true);
-  const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
     if (typeof window === "undefined") return {};
     try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
@@ -84,7 +90,7 @@ export default function HomePage() {
         body: JSON.stringify({ topics, trends }),
       })
         .then((r) => r.json())
-        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
+        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); } })
         .catch(() => { if (!cancelled) { setLiveLoading(false); } });
     };
     setLiveLoading(true);
@@ -275,14 +281,9 @@ export default function HomePage() {
 
         {/* Right side */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
-          {lastUpdated && (
+          {LAST_UPDATED && (
             <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
-              {(() => {
-                const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60000);
-                if (mins < 1) return "updated just now";
-                if (mins === 1) return "updated 1 min ago";
-                return `updated ${mins} min ago`;
-              })()}
+              Updated {LAST_UPDATED}
             </span>
           )}
           {/* + button */}
