@@ -244,6 +244,14 @@ export default function HomePage() {
     setShowAdd(false);
   }, []);
 
+  const handleDeleteSignal = useCallback((id: string) => {
+    setExtraSignals((prev) => prev.filter(s => s.id !== id));
+  }, []);
+
+  const handleUpdateSignal = useCallback((sig: Signal) => {
+    setExtraSignals((prev) => prev.map(s => s.id === sig.id ? sig : s));
+  }, []);
+
   const handleAddTrend = useCallback((t: Trend) => {
     const positioned = { ...t, position: computeTrendPosition(appliedDynamicTrends.length) };
     const newTrends = assignUniqueColors([...appliedDynamicTrends, positioned]);
@@ -251,6 +259,16 @@ export default function HomePage() {
     setAppliedDynamicTrends(newTrends);
     setShowAddTrend(false);
   }, [appliedDynamicTrends]);
+
+  const handleDeleteTrend = useCallback((id: string) => {
+    setDynamicTrends(prev => prev.filter(t => t.id !== id));
+    setAppliedDynamicTrends(prev => prev.filter(t => t.id !== id));
+  }, []);
+
+  const handleUpdateTrend = useCallback((trend: Trend) => {
+    setDynamicTrends(prev => prev.map(t => t.id === trend.id ? trend : t));
+    setAppliedDynamicTrends(prev => prev.map(t => t.id === trend.id ? trend : t));
+  }, []);
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "#f8f7f3", display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -394,6 +412,10 @@ export default function HomePage() {
           onRemoveTopic={removeTopic}
           view={view}
           onSetView={setView}
+          onDeleteSignal={handleDeleteSignal}
+          onUpdateSignal={handleUpdateSignal}
+          onDeleteTrend={handleDeleteTrend}
+          onUpdateTrend={handleUpdateTrend}
         />
       </div>
 

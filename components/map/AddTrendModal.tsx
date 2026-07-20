@@ -13,31 +13,38 @@ const TOPIC_OPTIONS = [
 interface Props {
   onAdd: (trend: Trend) => void;
   onClose: () => void;
+  editTrend?: Trend;
+  onSave?: (trend: Trend) => void;
 }
 
-export function AddTrendModal({ onAdd, onClose }: Props) {
-  const [name,        setName]        = useState("");
-  const [description, setDescription] = useState("");
-  const [topic,       setTopic]       = useState(TOPIC_OPTIONS[0]);
+export function AddTrendModal({ onAdd, onClose, editTrend, onSave }: Props) {
+  const [name,        setName]        = useState(editTrend?.name ?? "");
+  const [description, setDescription] = useState(editTrend?.description ?? "");
+  const [topic,       setTopic]       = useState(editTrend?.topics?.[0] ?? TOPIC_OPTIONS[0]);
+  const isEditMode = !!editTrend;
 
   const canSubmit = name.trim().length > 0 && description.trim().length > 0;
 
   const submit = () => {
     if (!canSubmit) return;
-    onAdd({
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      description: description.trim(),
-      color: "#888",
-      relevanceScore: 50,
-      redditQuery: name.trim(),
-      newsQuery: name.trim(),
-      position: { x: 0, y: 0 },
-      whyRelevant: description.trim(),
-      trajectory: "Emerging",
-      nextSteps: [],
-      topics: [topic],
-    });
+    if (isEditMode && onSave && editTrend) {
+      onSave({ ...editTrend, name: name.trim(), description: description.trim(), topics: [topic] });
+    } else {
+      onAdd({
+        id: crypto.randomUUID(),
+        name: name.trim(),
+        description: description.trim(),
+        color: "#888",
+        relevanceScore: 50,
+        redditQuery: name.trim(),
+        newsQuery: name.trim(),
+        position: { x: 0, y: 0 },
+        whyRelevant: description.trim(),
+        trajectory: "Emerging",
+        nextSteps: [],
+        topics: [topic],
+      });
+    }
     onClose();
   };
 
@@ -87,7 +94,7 @@ export function AddTrendModal({ onAdd, onClose }: Props) {
         {/* Header */}
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f0f0", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif", margin: 0 }}>
-            Add trend
+            {isEditMode ? "Edit trend" : "Add trend"}
           </h2>
           <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 18, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>×</button>
         </div>
@@ -160,7 +167,7 @@ export function AddTrendModal({ onAdd, onClose }: Props) {
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             }}
           >
-            Add trend
+            {isEditMode ? "Save changes" : "Add trend"}
           </button>
         </div>
       </div>

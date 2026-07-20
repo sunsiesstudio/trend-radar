@@ -19,6 +19,8 @@ interface Props {
   extraSignals?: Signal[];
   onClose: () => void;
   onSelectSignal: (s: Signal) => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
   mode?: "modal" | "sidebar";
 }
 
@@ -345,7 +347,7 @@ ${signals.length > 0 ? `
   if (win) { win.document.write(html); win.document.close(); }
 }
 
-export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal, mode = "modal" }: Props) {
+export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal, onDelete, onEdit, mode = "modal" }: Props) {
   const [showRelevanceInfo, setShowRelevanceInfo] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
@@ -394,9 +396,13 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
         {mode === "sidebar" ? (
           /* Sidebar header — white background */
           <div style={{ padding: "12px 20px 10px", borderBottom: "1px solid #f0ede8", flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
               <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trend.color}18`, padding: "3px 10px", borderRadius: 20 }}>Trend</span>
-              <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto", flexShrink: 0 }}>
+                {onEdit && <button onClick={onEdit} style={{ fontSize: 11, fontWeight: 600, color: "#888", background: "#f0f0f0", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Edit</button>}
+                {onDelete && <button onClick={onDelete} style={{ fontSize: 11, fontWeight: 600, color: "#e04444", background: "#fee", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Delete</button>}
+                <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+              </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: trend.color, flexShrink: 0 }} />

@@ -7,6 +7,8 @@ import { SIGNALS } from "@/lib/trends";
 import { TrendDetailModal } from "@/components/map/TrendDetailModal";
 import { SignalPopup } from "@/components/map/SignalPopup";
 import { BlobRadarView } from "@/components/map/BlobRadarView";
+import { AddSignalModal } from "@/components/map/AddSignalModal";
+import { AddTrendModal } from "@/components/map/AddTrendModal";
 
 // ── Life arenas ───────────────────────────────────────────────────────────────
 
@@ -142,6 +144,10 @@ interface Props {
   onRemoveTopic:   (topic: string) => void;
   view:            "map" | "radar";
   onSetView:       (v: "map" | "radar") => void;
+  onDeleteSignal?: (id: string) => void;
+  onUpdateSignal?: (s: Signal) => void;
+  onDeleteTrend?:  (id: string) => void;
+  onUpdateTrend?:  (t: Trend) => void;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -173,12 +179,14 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, view, onSetView }: Props) {
+export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, view, onSetView, onDeleteSignal, onUpdateSignal, onDeleteTrend, onUpdateTrend }: Props) {
   const containerRef      = useRef<HTMLDivElement>(null);
   const sheetRef          = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
   const [selection,    setSelection]    = useState<Selection>(null);
   const [activeSignal, setActiveSignal] = useState<Signal | null>(null);
+  const [editingSignal, setEditingSignal] = useState<Signal | null>(null);
+  const [editingTrend,  setEditingTrend]  = useState<Trend | null>(null);
   const [focusTrendId, setFocusTrendId] = useState<string | undefined>(undefined);
   const [isMobile,     setIsMobile]     = useState(() => typeof window !== "undefined" ? window.innerWidth < 768 : true);
   const [sheetOffset,  setSheetOffset]  = useState(0);
@@ -645,6 +653,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   function renderSidebarBody() {
     if (activeSignal) {
       const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
+      const isUserSignal = (extraSignals ?? []).some(s => s.id === activeSignal.id);
       return (
         <SignalPopup signal={activeSignal} mode="sidebar"
           trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
@@ -658,11 +667,17 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           }}
           onSelectSignal={s => setActiveSignal(s)}
           onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+          onEdit={isUserSignal ? () => setEditingSignal(activeSignal) : undefined}
+          onDelete={isUserSignal && onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
         />
       );
     }
     if (selection?.type === "trend") {
-      return <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar" />;
+      const isUserTrend = dynamicTrends.some(t => t.id === selection.trend.id);
+      return <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar"
+        onEdit={isUserTrend ? () => setEditingTrend(selection.trend) : undefined}
+        onDelete={isUserTrend && onDeleteTrend ? () => { onDeleteTrend(selection.trend.id); clearSelection(); } : undefined}
+      />;
     }
     return listContent;
   }
@@ -675,6 +690,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   };
 
   return (
+    <>
     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#f8f7f3" }}>
 
       <div style={{ flex: 1, display: "flex", flexDirection: "row", overflow: "hidden" }}>
@@ -731,6 +747,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             </div>
             {activeSignal ? (() => {
               const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
+              const isUserSignal = (extraSignals ?? []).some(s => s.id === activeSignal.id);
               return (
                 <SignalPopup signal={activeSignal} mode="sidebar"
                   trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
@@ -744,14 +761,38 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
                   }}
                   onSelectSignal={s => setActiveSignal(s)}
                   onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
+                  onEdit={isUserSignal ? () => setEditingSignal(activeSignal) : undefined}
+                  onDelete={isUserSignal && onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
                 />
               );
-            })() : selection?.type === "trend" ? (
-              <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar" />
-            ) : listContent}
+            })() : selection?.type === "trend" ? (() => {
+              const isUserTrend = dynamicTrends.some(t => t.id === selection.trend.id);
+              return <TrendDetailModal trend={selection.trend} onClose={clearSelection} onSelectSignal={s => setActiveSignal(s)} mode="sidebar"
+                onEdit={isUserTrend ? () => setEditingTrend(selection.trend) : undefined}
+                onDelete={isUserTrend && onDeleteTrend ? () => { onDeleteTrend(selection.trend.id); clearSelection(); } : undefined}
+              />;
+            })() : listContent}
           </div>
         </>
       )}
     </div>
+    {editingSignal && (
+      <AddSignalModal
+        editSignal={editingSignal}
+        onAdd={() => {}}
+        onSave={(s) => { onUpdateSignal?.(s); setEditingSignal(null); setActiveSignal(s); }}
+        onClose={() => setEditingSignal(null)}
+        trends={[...dynamicTrends]}
+      />
+    )}
+    {editingTrend && (
+      <AddTrendModal
+        editTrend={editingTrend}
+        onAdd={() => {}}
+        onSave={(t) => { onUpdateTrend?.(t); setEditingTrend(null); }}
+        onClose={() => setEditingTrend(null)}
+      />
+    )}
+    </>
   );
 }

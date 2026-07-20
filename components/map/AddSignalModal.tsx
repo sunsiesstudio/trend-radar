@@ -10,35 +10,33 @@ interface Props {
   onClose: () => void;
   defaultTrendId?: string;
   trends?: Trend[];
+  editSignal?: Signal;
+  onSave?: (signal: Signal) => void;
 }
 
-export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedTrends }: Props) {
+export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedTrends, editSignal, onSave }: Props) {
   const base = passedTrends ?? [];
   const extra = EXTENDED_TRENDS.filter(t => !base.some(b => b.id === t.id));
   const trendList = [...base, ...extra].length > 0 ? [...base, ...extra] : TRENDS;
-  const [trendId, setTrendId]       = useState(defaultTrendId ?? trendList[0].id);
-  const [title, setTitle]           = useState("");
-  const [summary, setSummary]       = useState("");
-  const [sourceName, setSourceName] = useState("");
-  const [sourceUrl, setSourceUrl]   = useState("");
-  const [source, setSource]         = useState<Signal["source"]>("manual");
+  const sortedTrendList = [...trendList].sort((a, b) => a.name.localeCompare(b.name));
+  const [trendId, setTrendId]       = useState(editSignal?.trendId ?? defaultTrendId ?? sortedTrendList[0]?.id ?? trendList[0].id);
+  const [title, setTitle]           = useState(editSignal?.title ?? "");
+  const [summary, setSummary]       = useState(editSignal?.summary ?? "");
+  const [sourceName, setSourceName] = useState(editSignal?.sourceName ?? "");
+  const [sourceUrl, setSourceUrl]   = useState(editSignal?.sourceUrl ?? "");
+  const [source, setSource]         = useState<Signal["source"]>(editSignal?.source ?? "manual");
+  const isEditMode = !!editSignal;
 
   const trend = trendList.find((t) => t.id === trendId) ?? trendList[0];
   const canSubmit = title.trim().length > 0 && summary.trim().length > 0;
 
   const submit = () => {
     if (!canSubmit) return;
-    onAdd({
-      id: crypto.randomUUID(),
-      trendId,
-      title: title.trim(),
-      summary: summary.trim(),
-      source,
-      sourceName: sourceName.trim() || "Manual",
-      sourceUrl: sourceUrl.trim() || undefined,
-      date: new Date().toISOString().slice(0, 10),
-      crossLinks: [],
-    });
+    if (isEditMode && onSave && editSignal) {
+      onSave({ ...editSignal, trendId, title: title.trim(), summary: summary.trim(), source, sourceName: sourceName.trim() || "Manual", sourceUrl: sourceUrl.trim() || undefined });
+    } else {
+      onAdd({ id: crypto.randomUUID(), trendId, title: title.trim(), summary: summary.trim(), source, sourceName: sourceName.trim() || "Manual", sourceUrl: sourceUrl.trim() || undefined, date: new Date().toISOString().slice(0, 10), crossLinks: [] });
+    }
     onClose();
   };
 
@@ -90,7 +88,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
         {/* Header — fixed, never scrolls away */}
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f0f0", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif", margin: 0 }}>
-            Add signal
+            {isEditMode ? "Edit signal" : "Add signal"}
           </h2>
           <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 18, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>×</button>
         </div>
@@ -105,7 +103,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
                 onChange={(e) => setTrendId(e.target.value)}
                 style={{ ...inputBase, cursor: "pointer", paddingRight: 40 }}
               >
-                {[...trendList].sort((a, b) => a.name.localeCompare(b.name)).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                {sortedTrendList.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
               <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#aaa", pointerEvents: "none", lineHeight: 1 }}>⌄</span>
             </div>
@@ -200,7 +198,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             }}
           >
-            Add signal
+            {isEditMode ? "Save changes" : "Add signal"}
           </button>
         </div>
       </div>
