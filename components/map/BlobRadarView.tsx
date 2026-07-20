@@ -671,7 +671,7 @@ export function BlobRadarView({
                       <span style={{
                         display: "inline-block",
                         fontSize: 7.5, fontWeight: 700, letterSpacing: "0.09em",
-                        textTransform: "uppercase" as const,
+                        textTransform: "none" as const,
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                         background: `${item.color}18`,
                         color: darkenColor(item.color, 0.6),
