@@ -804,7 +804,7 @@ export function BlobRadarView({
               <>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                   {focusTrend?.color && (
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: focusTrend.color, flexShrink: 0, display: "inline-block" }} />
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: topicColorOverride ?? focusTrend.color, flexShrink: 0, display: "inline-block" }} />
                   )}
                   <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", lineHeight: 1.2 }}>
                     {focusTrend?.name}
