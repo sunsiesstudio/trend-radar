@@ -99,7 +99,7 @@ type TrendNodeData = { id: string; name: string; color: string; score: number; d
 type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const blobColor = data.overrideColor ?? darkenColor(data.color, blobAgeFactor(data.latestDate));
+  const blobColor = data.overrideColor ? darkenColor(data.overrideColor, 0.72) : darkenColor(data.color, blobAgeFactor(data.latestDate));
   const tap = useTapHandlers(data.onTap);
   return (
     <div
@@ -114,7 +114,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
         boxShadow: `0 6px 32px ${data.overrideColor ?? data.color}66`,
       }}>
-      <div style={{ fontSize: Math.round(13 + data.d / 30), fontWeight: 700, color: "#111", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif" }}>
+      <div style={{ fontSize: Math.round(13 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif" }}>
         {data.name}
       </div>
       <div style={{ marginTop: 5, fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.65)", letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
