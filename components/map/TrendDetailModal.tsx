@@ -581,7 +581,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
                                 {s.isLive && <span style={{ fontSize: 9, fontWeight: 800, color: "#00c47a", background: "#00c47a15", borderRadius: 4, padding: "1px 5px", letterSpacing: "0.06em" }}>LIVE</span>}
                                 <span style={{ marginLeft: "auto", fontSize: 10, color: "#bbb" }}>{dateFmt}</span>
                               </div>
-                              <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.35, marginBottom: 4 }}>{s.title}</div>
+                              <div style={{ fontSize: 15, fontWeight: 400, color: "#1a1a1a", lineHeight: 1.3, marginBottom: 4, fontFamily: "var(--font-logo), serif" }}>{s.title}</div>
                               <div style={{ fontSize: 12, color: "#999", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{s.summary}</div>
                               {(s.crossLinks ?? []).length > 0 && <div style={{ marginTop: 6, fontSize: 10, color: "#ccc", fontWeight: 600 }}>↔ {(s.crossLinks ?? []).length} cross-trend connections</div>}
                             </button>
