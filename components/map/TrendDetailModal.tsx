@@ -349,6 +349,7 @@ ${signals.length > 0 ? `
 
 export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSignal, onDelete, onEdit, mode = "modal" }: Props) {
   const [showRelevanceInfo, setShowRelevanceInfo] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -399,9 +400,19 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
               <span style={{ fontSize: 10, fontWeight: 700, color: textCol, textTransform: "uppercase", letterSpacing: "0.1em", background: `${trend.color}18`, padding: "3px 10px", borderRadius: 20 }}>Trend</span>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto", flexShrink: 0 }}>
-                {onEdit && <button onClick={onEdit} style={{ fontSize: 11, fontWeight: 600, color: "#888", background: "#f0f0f0", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Edit</button>}
-                {onDelete && <button onClick={onDelete} style={{ fontSize: 11, fontWeight: 600, color: "#e04444", background: "#fee", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Delete</button>}
-                <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+                {confirmDelete ? (
+                  <>
+                    <span style={{ fontSize: 11, color: "#888", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Sure?</span>
+                    <button onClick={() => { onDelete?.(); }} style={{ fontSize: 11, fontWeight: 700, color: "#fff", background: "#e04444", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Yes, delete</button>
+                    <button onClick={() => setConfirmDelete(false)} style={{ fontSize: 11, fontWeight: 600, color: "#888", background: "#f0f0f0", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    {onEdit && <button onClick={onEdit} style={{ fontSize: 11, fontWeight: 600, color: "#888", background: "#f0f0f0", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Edit</button>}
+                    {onDelete && <button onClick={() => setConfirmDelete(true)} style={{ fontSize: 11, fontWeight: 600, color: "#e04444", background: "#fee", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Delete</button>}
+                    <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 17, color: "#aaa", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>×</button>
+                  </>
+                )}
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
