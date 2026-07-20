@@ -658,21 +658,29 @@ export function BlobRadarView({
                     onClick={() => onSelectSignal?.(item.signal)}
                     style={{
                       flexShrink: 0, width: 172, cursor: "pointer",
-                      background: mixWithBase(item.color, 0.22),
-                      border: `1px solid ${item.color}66`,
+                      background: "#faf9f7",
+                      border: "1px solid #e8e4de",
                       borderRadius: 12, padding: "10px 13px",
-                      display: "flex", flexDirection: "column", gap: 5,
+                      display: "flex", flexDirection: "column", gap: 6,
                       transition: "border-color 0.15s",
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}99`)}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}66`)}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#ccc8c0")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#e8e4de")}
                   >
                     <div>
-                      <span style={{ fontSize: 8.5, fontWeight: 700, color: darkenColor(item.color, 0.7), letterSpacing: "0.08em", textTransform: "uppercase" as const, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                      <span style={{
+                        display: "inline-block",
+                        fontSize: 7.5, fontWeight: 700, letterSpacing: "0.09em",
+                        textTransform: "uppercase" as const,
+                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        background: item.color,
+                        color: "#fff",
+                        borderRadius: 4, padding: "2px 6px",
+                      }}>
                         {item.trend.topics?.[0]?.replace(/-/g, " ") ?? ""}
                       </span>
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 500, color: "#333", lineHeight: 1.35, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: "#2e2b27", lineHeight: 1.35, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
                       {item.signal.title}
                     </div>
                     {item.signal.date && (
