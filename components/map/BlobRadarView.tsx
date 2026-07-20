@@ -95,11 +95,11 @@ function useTapHandlers(onTap: (() => void) | undefined) {
 
 // ── Node components ───────────────────────────────────────────────────────────
 
-type TrendNodeData = { id: string; name: string; color: string; score: number; d: number; latestDate?: string; onTap?: () => void };
+type TrendNodeData = { id: string; name: string; color: string; score: number; d: number; latestDate?: string; overrideColor?: string; onTap?: () => void };
 type SignalNodeData = { id: string; title: string; color: string; isNew: boolean; w: number; h: number; fillAlpha: string; borderAlpha: string; onTap?: () => void };
 
 function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
-  const blobColor = darkenColor(data.color, blobAgeFactor(data.latestDate));
+  const blobColor = data.overrideColor ?? darkenColor(data.color, blobAgeFactor(data.latestDate));
   const tap = useTapHandlers(data.onTap);
   return (
     <div
@@ -112,7 +112,7 @@ function TrendCircleNode({ data }: NodeProps<TrendNodeData>) {
         alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: 22,
         boxSizing: "border-box", cursor: "pointer", userSelect: "none",
-        boxShadow: `0 6px 32px ${data.color}66`,
+        boxShadow: `0 6px 32px ${data.overrideColor ?? data.color}66`,
       }}>
       <div style={{ fontSize: Math.round(9 + data.d / 30), fontWeight: 700, color: "#fff", lineHeight: 1.18, letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif" }}>
         {data.name}
@@ -407,7 +407,7 @@ export function BlobRadarView({
         const entry = trendMap.get(node.id);
         const isFirst = node.id === firstTrendId;
         return { ...node, data: { ...node.data,
-          ...(isFirst && topicColorOverride ? { color: topicColorOverride } : {}),
+          ...(isFirst && topicColorOverride ? { overrideColor: topicColorOverride } : {}),
           onTap: () => {
             if (entry) { setFocusIdx(entry.idx); onSelectTrendRef.current?.(entry.trend); }
           },
