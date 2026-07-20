@@ -461,7 +461,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
           <div style={{ paddingTop: mode === "sidebar" ? 14 : 4, paddingBottom: 16, display: "flex", flexDirection: "column", gap: 0 }}>
 
             {/* What's happening */}
-            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#555", lineHeight: 1.7, margin: "0 0 16px", fontFamily: "var(--font-serif), serif" }}>
+            <p style={{ fontSize: mode === "sidebar" ? 14 : 15, color: "#555", lineHeight: 1.7, margin: "0 0 16px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
               {trend.description}
             </p>
 
