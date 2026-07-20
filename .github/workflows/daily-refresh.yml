@@ -1,10 +1,9 @@
 name: Daily trend & signal refresh
 
-# Runs every morning at 07:00 UTC to warm the signal cache and keep
-# Reddit/RSS data fresh before users open the app.
+# Runs every morning at 07:00 Spain time (05:00 UTC in summer CEST, 06:00 UTC in winter CET).
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 5 * * *'
   workflow_dispatch: # allow manual trigger from GitHub Actions tab
 
 jobs:
