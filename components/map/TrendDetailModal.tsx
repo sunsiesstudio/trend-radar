@@ -400,7 +400,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: trend.color, flexShrink: 0 }} />
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", lineHeight: 1.2, margin: 0, fontFamily: "var(--font-serif), serif" }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", lineHeight: 1.2, margin: 0, fontFamily: "var(--font-logo), serif" }}>
                 {trend.name}
               </h3>
             </div>
@@ -432,7 +432,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
               </span>
               <button onClick={onClose} style={{ marginLeft: "auto", width: 36, height: 36, borderRadius: "50%", background: "#f0f0f0", border: "none", fontSize: 20, color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1, WebkitTapHighlightColor: "transparent" } as React.CSSProperties}>×</button>
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em", fontFamily: "var(--font-logo), serif" }}>
               {trend.name}
             </h3>
             <div style={{ position: "relative", marginBottom: 16 }}>
@@ -495,7 +495,7 @@ export function TrendDetailModal({ trend, extraSignals = [], onClose, onSelectSi
             <div style={{ borderTop: "1px solid #f0ede8", paddingTop: 14, marginBottom: 16 }}>
               <div style={{ fontSize: 9, fontWeight: 800, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8 }}>why now</div>
               {trend.culturalContext ? (
-                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "var(--font-serif), serif" }}>{trend.culturalContext}</p>
+                <p style={{ fontSize: 13, color: "#555", lineHeight: 1.75, margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{trend.culturalContext}</p>
               ) : (
                 <p style={{ fontSize: 12, color: "#ccc", margin: 0, fontStyle: "italic" }}>Cultural context not yet tracked.</p>
               )}
