@@ -670,12 +670,12 @@ export function BlobRadarView({
                     <div>
                       <span style={{
                         display: "inline-block",
-                        fontSize: 11, fontWeight: 700, letterSpacing: "0.02em",
+                        fontSize: 9, fontWeight: 700, letterSpacing: "0.02em",
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                         background: mixWithBase(item.color, 0.18),
                         color: darkenColor(item.color),
                         border: `1px solid ${item.color}66`,
-                        borderRadius: 20, padding: "5px 12px",
+                        borderRadius: 20, padding: "3px 8px",
                       }}>
                         {item.trend.topics?.[0]?.replace(/-/g, " ") ?? ""}
                       </span>
