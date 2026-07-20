@@ -192,12 +192,24 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   const singleTouchRef    = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   const mouseStartRef     = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   const didDragMap        = useRef(false);
+  const pendingSignalRef  = useRef<Signal | null>(null);
 
   // Clear panel state and reset zoom/pan when switching views
   useEffect(() => { setSelection(null); setActiveSignal(null); setSheetOffset(0); setMapScale(1); setMapOffset({ x: 0, y: 0 }); }, [view]);
-  // Close signal/selection panel when topics change or home screen is shown
+  // When topics change: apply any pending signal (from Last Arrivals home-screen tap), otherwise clear panels
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { setActiveSignal(null); setSelection(null); }, [activeTopics.join(",")]);
+  useEffect(() => {
+    const pending = pendingSignalRef.current;
+    pendingSignalRef.current = null;
+    if (pending) {
+      setActiveSignal(pending);
+      const sigTrend = allTrends.find(t => t.id === pending.trendId);
+      if (sigTrend) setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) });
+    } else {
+      setActiveSignal(null);
+      setSelection(null);
+    }
+  }, [activeTopics.join(",")]);
 
   // Once pending focus trend is visible in the loaded trends, clear the request
   useEffect(() => {
@@ -610,9 +622,16 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
       onSetView={onSetView}
       onSelectTrend={(trend) => setSelection({ type: "trend", trend, domain: getDomain(trend.topics?.[0] ?? ""), need: getTrendNeed(trend) })}
       onSelectSignal={(sig) => {
-        setActiveSignal(sig);
-        // Only open trend panel when already in the radar (has topics); from home screen just show signal popup
-        if (activeTopics.length > 0) {
+        if (activeTopics.length === 0) {
+          // From home screen: navigate to radar then show signal
+          const sigTrend = allTrends.find(t => t.id === sig.trendId);
+          if (sigTrend?.topics?.[0]) {
+            pendingSignalRef.current = sig;
+            setFocusTrendId(sigTrend.id);
+            onAddTopic(sigTrend.topics[0]);
+          }
+        } else {
+          setActiveSignal(sig);
           const sigTrend = allTrends.find(t => t.id === sig.trendId);
           if (sigTrend) setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) });
         }
