@@ -409,11 +409,11 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
         </div>
         {selection.type === "domain" && (() => {
           const v = DOMAIN_VIBES[selection.domain];
-          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "var(--font-serif), serif", fontStyle: "italic" }}>{v}</p> : null;
+          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{v}</p> : null;
         })()}
         {selection.type === "need" && (() => {
           const v = TENSION_VIBES[selection.need];
-          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "var(--font-serif), serif", fontStyle: "italic" }}>{v}</p> : null;
+          return v ? <p style={{ fontSize: 13, color: "#888", lineHeight: 1.55, margin: 0, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>{v}</p> : null;
         })()}
       </div>
       <div style={{
