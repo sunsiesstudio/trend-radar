@@ -439,7 +439,7 @@ export function BlobRadarView({
       .slice(0, 10)
       .map(s => {
         const trend = trendMap.get(s.trendId!);
-        const color = TOPIC_COLORS[trend?.topics?.[0] ?? ""] ?? "#aaa";
+        const color = trend?.color ?? TOPIC_COLORS[trend?.topics?.[0] ?? ""] ?? "#aaa";
         return { signal: s, color, trend };
       });
   }, []);
