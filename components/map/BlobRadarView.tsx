@@ -394,6 +394,9 @@ export function BlobRadarView({
     [sorted, allSignals, topicAddedAt],
   );
 
+  // When a single topic is active, unify all blob colors to that topic's color
+  const topicColorOverride = activeTopics.length === 1 ? (TOPIC_COLORS[activeTopics[0]] ?? null) : null;
+
   // Inject tap handlers into node data (refs keep this stable)
   const nodes = useMemo(() => {
     const trendMap = new Map(sorted.map((t, i) => [t.id, { trend: t, idx: i }]));
@@ -401,19 +404,25 @@ export function BlobRadarView({
     return baseNodes.map(node => {
       if (node.type === "trendCircle") {
         const entry = trendMap.get(node.id);
-        return { ...node, data: { ...node.data, onTap: () => {
-          if (entry) { setFocusIdx(entry.idx); onSelectTrendRef.current?.(entry.trend); }
-        }}};
+        return { ...node, data: { ...node.data,
+          ...(topicColorOverride ? { color: topicColorOverride } : {}),
+          onTap: () => {
+            if (entry) { setFocusIdx(entry.idx); onSelectTrendRef.current?.(entry.trend); }
+          },
+        }};
       }
       if (node.type === "signalOrbit") {
         const sig = sigMap.get(node.id);
-        return { ...node, data: { ...node.data, onTap: () => {
-          if (sig) onSelectSignalRef.current?.(sig);
-        }}};
+        return { ...node, data: { ...node.data,
+          ...(topicColorOverride ? { color: topicColorOverride } : {}),
+          onTap: () => {
+            if (sig) onSelectSignalRef.current?.(sig);
+          },
+        }};
       }
       return node;
     });
-  }, [baseNodes, sorted, allSignals]);
+  }, [baseNodes, sorted, allSignals, topicColorOverride]);
 
   const safeIdx    = focusIdx >= 0 ? Math.min(focusIdx, sorted.length - 1) : -1;
   const focusTrend = safeIdx >= 0 ? sorted[safeIdx] : undefined;
@@ -439,7 +448,7 @@ export function BlobRadarView({
       .slice(0, 10)
       .map(s => {
         const trend = trendMap.get(s.trendId!);
-        const color = trend?.color ?? TOPIC_COLORS[trend?.topics?.[0] ?? ""] ?? "#aaa";
+        const color = TOPIC_COLORS[trend?.topics?.[0] ?? ""] ?? trend?.color ?? "#aaa";
         return { signal: s, color, trend };
       });
   }, []);
