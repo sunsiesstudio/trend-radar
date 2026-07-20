@@ -394,8 +394,9 @@ export function BlobRadarView({
     [sorted, allSignals, topicAddedAt],
   );
 
-  // When a single topic is active, unify all blob colors to that topic's color
+  // In single-topic view, only the first trend gets the topic color (matches the Last Arrivals pill)
   const topicColorOverride = activeTopics.length === 1 ? (TOPIC_COLORS[activeTopics[0]] ?? null) : null;
+  const firstTrendId = activeTopics.length === 1 && sorted.length > 0 ? sorted[0].id : null;
 
   // Inject tap handlers into node data (refs keep this stable)
   const nodes = useMemo(() => {
@@ -404,8 +405,9 @@ export function BlobRadarView({
     return baseNodes.map(node => {
       if (node.type === "trendCircle") {
         const entry = trendMap.get(node.id);
+        const isFirst = node.id === firstTrendId;
         return { ...node, data: { ...node.data,
-          ...(topicColorOverride ? { color: topicColorOverride } : {}),
+          ...(isFirst && topicColorOverride ? { color: topicColorOverride } : {}),
           onTap: () => {
             if (entry) { setFocusIdx(entry.idx); onSelectTrendRef.current?.(entry.trend); }
           },
@@ -413,8 +415,9 @@ export function BlobRadarView({
       }
       if (node.type === "signalOrbit") {
         const sig = sigMap.get(node.id);
+        const isFirst = sig?.trendId === firstTrendId;
         return { ...node, data: { ...node.data,
-          ...(topicColorOverride ? { color: topicColorOverride } : {}),
+          ...(isFirst && topicColorOverride ? { color: topicColorOverride } : {}),
           onTap: () => {
             if (sig) onSelectSignalRef.current?.(sig);
           },
@@ -422,7 +425,7 @@ export function BlobRadarView({
       }
       return node;
     });
-  }, [baseNodes, sorted, allSignals, topicColorOverride]);
+  }, [baseNodes, sorted, allSignals, topicColorOverride, firstTrendId]);
 
   const safeIdx    = focusIdx >= 0 ? Math.min(focusIdx, sorted.length - 1) : -1;
   const focusTrend = safeIdx >= 0 ? sorted[safeIdx] : undefined;
@@ -804,7 +807,7 @@ export function BlobRadarView({
               <>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                   {focusTrend?.color && (
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: topicColorOverride ?? focusTrend.color, flexShrink: 0, display: "inline-block" }} />
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: (focusTrend.id === firstTrendId && topicColorOverride) ? topicColorOverride : focusTrend.color, flexShrink: 0, display: "inline-block" }} />
                   )}
                   <div style={{ fontSize: 13, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", lineHeight: 1.2 }}>
                     {focusTrend?.name}
