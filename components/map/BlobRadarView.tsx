@@ -661,7 +661,7 @@ export function BlobRadarView({
                       background: "#faf9f7",
                       border: "1px solid #e8e4de",
                       borderRadius: 12, padding: "10px 13px",
-                      display: "flex", flexDirection: "column", gap: 6,
+                      display: "flex", flexDirection: "column", gap: 10,
                       transition: "border-color 0.15s",
                     }}
                     onMouseEnter={e => (e.currentTarget.style.borderColor = "#ccc8c0")}
