@@ -87,9 +87,6 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
           boxShadow: "0 -8px 60px rgba(0,0,0,0.14)",
         }}
       >
-        {/* Color stripe */}
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${trend.color}, ${trend.color}44)`, flexShrink: 0, borderRadius: "20px 20px 0 0" }} />
-
         {/* Header — fixed, never scrolls away */}
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f0f0", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000", letterSpacing: "-0.02em", fontFamily: "var(--font-serif), serif", margin: 0 }}>
