@@ -552,7 +552,7 @@ export function BlobRadarView({
               padding: "0 32px", boxSizing: "border-box",
             }}>
               {/* Title */}
-              <div style={{ fontSize: isDesktop ? 42 : 26, fontWeight: 700, color: "#111", fontFamily: "var(--font-serif), serif", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+              <div style={{ fontSize: isDesktop ? 42 : 26, fontWeight: 400, color: "#111", fontFamily: "var(--font-logo), serif", fontStyle: "italic", letterSpacing: "-0.01em", lineHeight: 1.15 }}>
                 A research tool to identify<br />emerging tech trends in culture
               </div>
 
