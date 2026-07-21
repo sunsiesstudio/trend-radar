@@ -246,6 +246,8 @@ export default function HomePage() {
 
   const handleDeleteSignal = useCallback((id: string) => {
     setExtraSignals((prev) => prev.filter(s => s.id !== id));
+    setGeneratedSignals((prev) => prev.filter(s => s.id !== id));
+    setLiveSignals((prev) => prev.filter(s => s.id !== id));
   }, []);
 
   const handleUpdateSignal = useCallback((sig: Signal) => {
