@@ -655,7 +655,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
   function renderSidebarBody() {
     if (activeSignal) {
       const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
-      const isUserSignal = (extraSignals ?? []).some(s => s.id === activeSignal.id);
       return (
         <SignalPopup signal={activeSignal} mode="sidebar"
           trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
@@ -669,7 +668,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           }}
           onSelectSignal={s => setActiveSignal(s)}
           onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
-          onEdit={isUserSignal ? () => setEditingSignal(activeSignal) : undefined}
+          onEdit={onUpdateSignal ? () => setEditingSignal(activeSignal) : undefined}
           onDelete={onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
         />
       );
@@ -749,7 +748,6 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
             </div>
             {activeSignal ? (() => {
               const sigTrend = allTrends.find(t => t.id === activeSignal.trendId);
-              const isUserSignal = (extraSignals ?? []).some(s => s.id === activeSignal.id);
               return (
                 <SignalPopup signal={activeSignal} mode="sidebar"
                   trendColor={sigTrend?.color ?? "#888"} trendName={sigTrend?.name ?? ""}
@@ -763,7 +761,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
                   }}
                   onSelectSignal={s => setActiveSignal(s)}
                   onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
-                  onEdit={isUserSignal ? () => setEditingSignal(activeSignal) : undefined}
+                  onEdit={onUpdateSignal ? () => setEditingSignal(activeSignal) : undefined}
                   onDelete={onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
                 />
               );

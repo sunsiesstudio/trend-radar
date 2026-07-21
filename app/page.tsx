@@ -66,11 +66,17 @@ export default function HomePage() {
   const [isDesktop, setIsDesktop] = useState(() => typeof window !== "undefined" ? window.innerWidth >= 768 : false);
   const [view, setView] = useState<"map" | "radar">("radar");
 
-  const liveTopicsRef = useRef<string[]>([]);
-  const liveTrendsRef = useRef<Array<{ id: string; name: string; description: string }>>([]);
+  const liveTopicsRef  = useRef<string[]>([]);
+  const liveTrendsRef  = useRef<Array<{ id: string; name: string; description: string }>>([]);
+  const extraSignalsRef     = useRef<Signal[]>([]);
+  const generatedSignalsRef = useRef<Signal[]>([]);
+  const liveSignalsRef      = useRef<Signal[]>([]);
 
   useEffect(() => { liveTopicsRef.current = appliedTopics; }, [appliedTopics]);
   useEffect(() => { liveTrendsRef.current = appliedDynamicTrends.map(t => ({ id: t.id, name: t.name, description: t.description })); }, [appliedDynamicTrends]);
+  useEffect(() => { extraSignalsRef.current = extraSignals; }, [extraSignals]);
+  useEffect(() => { generatedSignalsRef.current = generatedSignals; }, [generatedSignals]);
+  useEffect(() => { liveSignalsRef.current = liveSignals; }, [liveSignals]);
 
   const topicsKey = appliedTopics.join(",");
   useEffect(() => {
@@ -253,7 +259,16 @@ export default function HomePage() {
   }, []);
 
   const handleUpdateSignal = useCallback((sig: Signal) => {
-    setExtraSignals((prev) => prev.map(s => s.id === sig.id ? sig : s));
+    if (extraSignalsRef.current.some(s => s.id === sig.id)) {
+      setExtraSignals(prev => prev.map(s => s.id === sig.id ? sig : s));
+    } else if (generatedSignalsRef.current.some(s => s.id === sig.id)) {
+      setGeneratedSignals(prev => prev.map(s => s.id === sig.id ? sig : s));
+    } else if (liveSignalsRef.current.some(s => s.id === sig.id)) {
+      setLiveSignals(prev => prev.map(s => s.id === sig.id ? sig : s));
+    } else {
+      // Library signal — fork into extraSignals so the edit is mutable going forward
+      setExtraSignals(prev => [...prev, sig]);
+    }
   }, []);
 
   const handleAddTrend = useCallback((t: Trend) => {
