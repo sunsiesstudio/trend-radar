@@ -148,6 +148,7 @@ interface Props {
   onUpdateSignal?: (s: Signal) => void;
   onDeleteTrend?:  (id: string) => void;
   onUpdateTrend?:  (t: Trend) => void;
+  hiddenSignalIds?: Set<string>;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -179,7 +180,7 @@ function edgePts(x1: number, y1: number, x2: number, y2: number, r1: number, r2:
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, view, onSetView, onDeleteSignal, onUpdateSignal, onDeleteTrend, onUpdateTrend }: Props) {
+export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAddedAt, generatingTopic, onAddTopic, onRemoveTopic, view, onSetView, onDeleteSignal, onUpdateSignal, onDeleteTrend, onUpdateTrend, hiddenSignalIds }: Props) {
   const containerRef      = useRef<HTMLDivElement>(null);
   const sheetRef          = useRef<HTMLDivElement>(null);
   const [dims,         setDims]         = useState({ w: 900, h: 600 });
@@ -241,10 +242,11 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
 
   const allSignals = useMemo(() => {
     const base = [...SIGNALS, ...EXTENDED_SIGNALS];
-    if (!extraSignals?.length) return base;
+    const hidden = hiddenSignalIds ?? new Set<string>();
+    if (!extraSignals?.length) return base.filter(s => !hidden.has(s.id));
     const extraIds = new Set(extraSignals.map(s => s.id));
-    return [...extraSignals, ...base.filter(s => !extraIds.has(s.id))];
-  }, [extraSignals]);
+    return [...extraSignals, ...base.filter(s => !extraIds.has(s.id))].filter(s => !hidden.has(s.id));
+  }, [extraSignals, hiddenSignalIds]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -668,7 +670,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
           onSelectSignal={s => setActiveSignal(s)}
           onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
           onEdit={isUserSignal ? () => setEditingSignal(activeSignal) : undefined}
-          onDelete={isUserSignal && onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
+          onDelete={onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
         />
       );
     }
@@ -762,7 +764,7 @@ export function CultureMap({ dynamicTrends, activeTopics, extraSignals, topicAdd
                   onSelectSignal={s => setActiveSignal(s)}
                   onOpenTrend={sigTrend ? () => { setActiveSignal(null); setSelection({ type: "trend", trend: sigTrend, domain: getDomain(sigTrend.topics?.[0] ?? ""), need: getTrendNeed(sigTrend) }); } : undefined}
                   onEdit={isUserSignal ? () => setEditingSignal(activeSignal) : undefined}
-                  onDelete={isUserSignal && onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
+                  onDelete={onDeleteSignal ? () => { onDeleteSignal(activeSignal.id); setActiveSignal(null); setSelection(null); } : undefined}
                 />
               );
             })() : selection?.type === "trend" ? (() => {

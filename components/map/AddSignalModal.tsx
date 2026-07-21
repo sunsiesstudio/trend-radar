@@ -68,7 +68,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
 
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)", padding: "0 16px" }}
+      style={{ position: "fixed", inset: 0, zIndex: 250, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)", padding: "0 16px" }}
       onClick={onClose}
     >
       <div

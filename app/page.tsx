@@ -43,11 +43,12 @@ function assignUniqueColors(trends: Trend[]): Trend[] {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const [showAdd,       setShowAdd]       = useState(false);
-  const [showAddTrend,  setShowAddTrend]  = useState(false);
-  const [showAddMenu,   setShowAddMenu]   = useState(false);
-  const [extraSignals,  setExtraSignals]  = useState<Signal[]>([]);
-  const [liveSignals,   setLiveSignals]   = useState<Signal[]>([]);
+  const [showAdd,        setShowAdd]        = useState(false);
+  const [showAddTrend,   setShowAddTrend]   = useState(false);
+  const [showAddMenu,    setShowAddMenu]    = useState(false);
+  const [extraSignals,   setExtraSignals]   = useState<Signal[]>([]);
+  const [liveSignals,    setLiveSignals]    = useState<Signal[]>([]);
+  const [hiddenSignalIds, setHiddenSignalIds] = useState<Set<string>>(new Set());
   const [liveLoading,   setLiveLoading]   = useState(true);
   const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
   const [, setTick]                       = useState(0);
@@ -248,6 +249,7 @@ export default function HomePage() {
     setExtraSignals((prev) => prev.filter(s => s.id !== id));
     setGeneratedSignals((prev) => prev.filter(s => s.id !== id));
     setLiveSignals((prev) => prev.filter(s => s.id !== id));
+    setHiddenSignalIds((prev) => { const next = new Set(prev); next.add(id); return next; });
   }, []);
 
   const handleUpdateSignal = useCallback((sig: Signal) => {
@@ -418,6 +420,7 @@ export default function HomePage() {
           onUpdateSignal={handleUpdateSignal}
           onDeleteTrend={handleDeleteTrend}
           onUpdateTrend={handleUpdateTrend}
+          hiddenSignalIds={hiddenSignalIds}
         />
       </div>
 
