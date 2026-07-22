@@ -140,7 +140,7 @@ function SignalOrbitNode({ data }: NodeProps<SignalNodeData>) {
         boxSizing: "border-box",
         boxShadow: data.isNew ? `0 3px 18px ${data.color}55` : `0 1px 10px ${data.color}22`,
       }}>
-      <div style={{ fontSize: 11, fontWeight: 400, color: "#111", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      <div style={{ fontSize: 9, fontWeight: 400, color: "#111", lineHeight: 1.35, letterSpacing: "-0.01em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {data.title}
       </div>
     </div>

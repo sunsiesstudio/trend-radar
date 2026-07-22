@@ -309,7 +309,7 @@ export default function HomePage() {
           setGeneratedSignals([]);
           setView("radar");
         }} style={{ cursor: "pointer", display: "flex", alignItems: "center", flexShrink: 0 }}>
-          <span style={{ fontSize: isDesktop ? 24 : 20, fontWeight: 700, letterSpacing: "-0.01em", color: "#111", fontFamily: "var(--font-logo), serif", fontStyle: "italic", lineHeight: 1 }}>
+          <span style={{ fontSize: isDesktop ? 24 : 20, fontWeight: 700, letterSpacing: "-0.01em", color: "#111", fontFamily: "var(--font-logo), serif", lineHeight: 1 }}>
             Augmented Culture
           </span>
         </div>

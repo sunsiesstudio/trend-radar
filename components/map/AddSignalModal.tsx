@@ -180,6 +180,7 @@ export function AddSignalModal({ onAdd, onClose, defaultTrendId, trends: passedT
           display: "flex",
           gap: 10,
           background: "#fff",
+          borderRadius: "0 0 20px 20px",
         }}>
           <button
             onClick={onClose}
