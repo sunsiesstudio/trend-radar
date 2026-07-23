@@ -62,6 +62,9 @@ export const TOPIC_COLORS: Record<string, string> = {
   ritual:            "#C4A0CE",
   community:         "#53A373",
   privacy:           "#8C93C7",
+  friendship:        "#FFB4A0",
+  loneliness:        "#9AAFC0",
+  companion:         "#C4B8A0",
 };
 
 export const TOPIC_DESCRIPTIONS: Record<string, string> = {
@@ -1841,6 +1844,9 @@ export const TOPIC_LIBRARY: Record<string, Trend[]> = {
   cybersecurity:    [],
   "synthetic-biology": [],
   "future-of-work": [],
+  friendship:        [],
+  loneliness:        [],
+  companion:         [],
 };
 
 // Culture domains available in autocomplete — these are the topics you search.
@@ -1854,7 +1860,8 @@ export const LIBRARY_TOPICS = [
   "sport", "mobility", "dating", "nightlife", "coffee", "finance",
   "pets", "parenting", "kids", "spirituality", "fragrance", "jewellery",
   "longevity", "sleep", "sound", "attention", "identity", "architecture",
-  "craft", "ritual", "community", "privacy"
+  "craft", "ritual", "community", "privacy",
+  "friendship", "loneliness", "companion"
 ];
 
 // Curated topics shown on the initial empty state screen

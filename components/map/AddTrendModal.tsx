@@ -8,6 +8,7 @@ const TOPIC_OPTIONS = [
   "technology", "ai", "sustainability", "food", "music", "art",
   "social", "luxury", "travel", "finance", "education", "biotech",
   "mental-health", "sport", "smart-home", "web3", "ar-vr",
+  "friendship", "loneliness", "companion",
 ];
 
 interface Props {
