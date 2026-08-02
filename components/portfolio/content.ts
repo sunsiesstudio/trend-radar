@@ -47,6 +47,13 @@ export const CASE_STUDIES: CaseStudy[] = [
     tags: ["Crypto", "Brand Design", "Rebrand"],
   },
   {
+    id: "ar-filters",
+    category: "Emerging Tech",
+    title: "Instagram AR filters for brands",
+    description: "Designed and built branded AR filters back when Instagram effects were still an emerging format — early interaction design work in a channel most brands hadn't touched yet.",
+    tags: ["AR", "Interaction Design", "Social"],
+  },
+  {
     id: "ai-native",
     category: "Emerging Tech",
     title: "UX research for AI-native products",
