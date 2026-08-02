@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 
 /* ── Geometry ──────────────────────────────────────────────────────────────── */
 const W = 1400;
@@ -17,7 +16,7 @@ function toRad(deg: number) {
 /* ── Disciplines ───────────────────────────────────────────────────────────── */
 const DISCIPLINES = [
   { id: "interaction", label: "Interaction Design",  sub: "AR/VR · Filters\nMasters Projects",       angleDeg: 270 },
-  { id: "brand",       label: "Brand Design",         sub: "Be in Crypto · Rebrandings\nBrandings",    angleDeg: 330 },
+  { id: "brand",       label: "Brand Design",         sub: "Be In Crypto · Rebrandings\nBrandings",    angleDeg: 330 },
   { id: "speculative", label: "Speculative Design",   sub: "End of Emotional Privacy\nPhobos",         angleDeg: 30  },
   { id: "3d",          label: "3D Printing",           sub: "Sunsies",                                 angleDeg: 90  },
   { id: "strategy",    label: "Strategy & Research",  sub: "Augmented Rarity\nTools Building",         angleDeg: 150 },
@@ -108,62 +107,10 @@ const TONES = [
   "#f0ece5", "#e0dcd4", "#ccc8c0", "#eae5de",
 ];
 
-/* ── Page ──────────────────────────────────────────────────────────────────── */
-export default function PortfolioPage() {
+/* ── Component ─────────────────────────────────────────────────────────────── */
+export function SkillMap() {
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        overflow: "auto",
-        WebkitOverflowScrolling: "touch",
-        backgroundColor: "#f6f4f0",
-        backgroundImage: `
-          linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)
-        `,
-        backgroundSize: "26px 26px",
-      } as React.CSSProperties}
-    >
-      {/* ── Nav ── */}
-      <div
-        style={{
-          position: "sticky", top: 0, zIndex: 20,
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "14px 28px",
-          background: "rgba(246,244,240,0.94)", backdropFilter: "blur(10px)",
-          borderBottom: "1px solid rgba(0,0,0,0.07)",
-        }}
-      >
-        <Link
-          href="/"
-          style={{
-            fontSize: 11, fontWeight: 700, color: "#aaa", textDecoration: "none",
-            letterSpacing: "0.08em", fontFamily: "'DM Sans',system-ui,sans-serif",
-            textTransform: "uppercase",
-          }}
-        >
-          ← Augmented Radar
-        </Link>
-        <span style={{ fontSize: 11, color: "#bbb", fontFamily: "'DM Sans',system-ui,sans-serif", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          Portfolio
-        </span>
-      </div>
-
-      {/* ── Title ── */}
-      <div style={{ textAlign: "center", padding: "46px 24px 0" }}>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#bbb", fontFamily: "'DM Sans',system-ui,sans-serif", marginBottom: 10 }}>
-          Martina Soles
-        </p>
-        <h1 style={{ fontSize: 30, fontWeight: 800, lineHeight: 1.22, color: "#111", letterSpacing: "-0.025em", fontFamily: "var(--font-serif),serif", maxWidth: 560, margin: "0 auto" }}>
-          Creative Concept Strategist &amp;<br />Cultural Intelligence Researcher
-        </h1>
-        <p style={{ fontSize: 13, color: "#999", marginTop: 12, fontFamily: "'DM Sans',system-ui,sans-serif", fontStyle: "italic" }}>
-          a map of skills, disciplines &amp; practice
-        </p>
-      </div>
-
-      {/* ── Diagram ── */}
+    <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ width: W, height: H, position: "relative", margin: "0 auto" }}>
 
         {/* Soft glow anchoring each discipline cluster */}
@@ -245,8 +192,6 @@ export default function PortfolioPage() {
           </div>
         </div>
       </div>
-
-      <div style={{ height: 64 }} />
     </div>
   );
 }

@@ -1,451 +1,268 @@
-"use client";
+import type { Metadata } from "next";
+import Link from "next/link";
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { SkillMap } from "@/components/portfolio/SkillMap";
+import {
+  PROFILE,
+  ABOUT_PARAGRAPHS,
+  ASIDE,
+  SERVICES,
+  CASE_STUDIES,
+  SPEAKING,
+  SUBSTACK_URL,
+  LINKEDIN_URL,
+} from "@/components/portfolio/content";
 
-import { TOPIC_LIBRARY, TOPIC_COLORS, normaliseTopicKey } from "@/lib/extended-trends";
-import { Trend, Signal } from "@/types";
+export const metadata: Metadata = {
+  title: `${PROFILE.name} — ${PROFILE.role}`,
+  description: PROFILE.tagline,
+};
 
-import { AddSignalModal } from "@/components/map/AddSignalModal";
-import { AddTrendModal } from "@/components/map/AddTrendModal";
-import { CultureMap } from "@/components/map/CultureMap";
+const serif = { fontFamily: "var(--font-serif), serif" } as const;
+const sans = { fontFamily: "'DM Sans', system-ui, sans-serif" } as const;
 
-function darkenColor(hex: string, factor = 0.62): string {
-  const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
-  const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
-  const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
-  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
-}
-
-// Grid for dynamically added trends — 3 columns, 760 px apart.
-function computeTrendPosition(idx: number): { x: number; y: number } {
-  return { x: 100 + (idx % 3) * 760, y: 100 + Math.floor(idx / 3) * 760 };
-}
-
-const BOARD_PALETTE = [
-  "#FF8BB4", "#FD8326", "#80B0E8", "#B6D693", "#FFD65C",
-  "#008471", "#78C9A8", "#D1CAEA", "#FFB04A", "#A7D47C",
-  "#C45F3F", "#FFC0C0", "#8C93C7", "#F4D242", "#D6D35F", "#898E46",
+const NAV_LINKS = [
+  { href: "#about", label: "About" },
+  { href: "#work", label: "Work" },
+  { href: "#writing", label: "Writing" },
+  { href: "#contact", label: "Contact" },
 ];
 
-function assignUniqueColors(trends: Trend[]): Trend[] {
-  const used = new Set<string>();
-  return trends.map((t, i) => {
-    let color = BOARD_PALETTE[i % BOARD_PALETTE.length];
-    if (used.has(color)) {
-      const fresh = BOARD_PALETTE.find(c => !used.has(c));
-      if (fresh) color = fresh;
-    }
-    used.add(color);
-    return { ...t, color };
-  });
-}
+const CATEGORIES = [
+  "Emerging Tech",
+  "Industry Innovation",
+  "Speculative & R&D",
+  "Products & Ventures",
+];
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+const TILE_TONES = ["#ebe7e0", "#dedad2", "#e6e2db", "#d6d2ca", "#f0ece5", "#e0dcd4", "#ccc8c0", "#eae5de"];
 
-export default function HomePage() {
-  const [showAdd,        setShowAdd]        = useState(false);
-  const [showAddTrend,   setShowAddTrend]   = useState(false);
-  const [showAddMenu,    setShowAddMenu]    = useState(false);
-  const [extraSignals,   setExtraSignals]   = useState<Signal[]>([]);
-  const [liveSignals,    setLiveSignals]    = useState<Signal[]>([]);
-  const [hiddenSignalIds, setHiddenSignalIds] = useState<Set<string>>(new Set());
-  const [liveLoading,   setLiveLoading]   = useState(true);
-  const [lastUpdated,   setLastUpdated]   = useState<Date | null>(null);
-  const [, setTick]                       = useState(0);
-  const [topicAddedAt, setTopicAddedAt] = useState<Record<string, string>>(() => {
-    if (typeof window === "undefined") return {};
-    try { return JSON.parse(localStorage.getItem("ar_topicAddedAt") ?? "{}"); } catch { return {}; }
-  });
-  const [activeTopics,     setActiveTopics]     = useState<string[]>([]);
-  const [dynamicTrends,    setDynamicTrends]    = useState<Trend[]>([]);
-  const [generatedSignals, setGeneratedSignals] = useState<Signal[]>([]);
-  const [generatingTopic,  setGeneratingTopic]  = useState<string | null>(null);
-  const [generationError,  setGenerationError]  = useState<string | null>(null);
-  const [appliedTopics,        setAppliedTopics]        = useState<string[]>([]);
-  const [appliedDynamicTrends, setAppliedDynamicTrends] = useState<Trend[]>([]);
-  const [isDesktop, setIsDesktop] = useState(() => typeof window !== "undefined" ? window.innerWidth >= 768 : false);
-  const [view, setView] = useState<"map" | "radar">("radar");
-
-  const liveTopicsRef  = useRef<string[]>([]);
-  const liveTrendsRef  = useRef<Array<{ id: string; name: string; description: string }>>([]);
-  const extraSignalsRef     = useRef<Signal[]>([]);
-  const generatedSignalsRef = useRef<Signal[]>([]);
-  const liveSignalsRef      = useRef<Signal[]>([]);
-
-  useEffect(() => { liveTopicsRef.current = appliedTopics; }, [appliedTopics]);
-  useEffect(() => { liveTrendsRef.current = appliedDynamicTrends.map(t => ({ id: t.id, name: t.name, description: t.description })); }, [appliedDynamicTrends]);
-  useEffect(() => { extraSignalsRef.current = extraSignals; }, [extraSignals]);
-  useEffect(() => { generatedSignalsRef.current = generatedSignals; }, [generatedSignals]);
-  useEffect(() => { liveSignalsRef.current = liveSignals; }, [liveSignals]);
-
-  const topicsKey = appliedTopics.join(",");
-  useEffect(() => {
-    if (!topicsKey) return;
-    let cancelled = false;
-    const fetchLive = () => {
-      const topics = liveTopicsRef.current;
-      const trends = liveTrendsRef.current;
-      if (topics.length === 0) return;
-      fetch("/api/live-signals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topics, trends }),
-      })
-        .then((r) => r.json())
-        .then(({ signals }) => { if (!cancelled) { setLiveSignals(signals ?? []); setLiveLoading(false); setLastUpdated(new Date()); } })
-        .catch(() => { if (!cancelled) { setLiveLoading(false); } });
-    };
-    setLiveLoading(true);
-    fetchLive();
-    const interval = setInterval(fetchLive, 10 * 60 * 1000);
-    return () => { cancelled = true; clearInterval(interval); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topicsKey]);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    setIsDesktop(mq.matches);
-    const h = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mq.addEventListener("change", h);
-    return () => mq.removeEventListener("change", h);
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => setTick(n => n + 1), 60_000);
-    return () => clearInterval(id);
-  }, []);
-
-  const runGeneration = useCallback(async (key: string, newTopics: string[], baseTrends: Trend[] = [], intersectionTopics?: string[]) => {
-    const displayKey = intersectionTopics && intersectionTopics.length > 1 ? intersectionTopics.join(" × ") : key;
-    setGeneratingTopic(displayKey);
-    setGenerationError(null);
-    try {
-      const res = await fetch("/api/generate-trends", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: key, topics: intersectionTopics ?? [key], existingTrendIds: baseTrends.map(t => t.id), positionOffset: baseTrends.length }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const items = data.trends as Array<{ trend: Trend; signals: Signal[] }>;
-        const sorted = [...items].sort((a, b) => (b.trend.relevanceScore ?? 0) - (a.trend.relevanceScore ?? 0));
-        const newDynamic = baseTrends.length > 0
-          ? assignUniqueColors([
-              ...baseTrends,
-              ...sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(baseTrends.length + i) })),
-            ])
-          : assignUniqueColors(sorted.map((item, i) => ({ ...item.trend, position: computeTrendPosition(i) })));
-        setDynamicTrends(newDynamic);
-        setAppliedDynamicTrends(newDynamic);
-        setGeneratedSignals(sorted.flatMap(i => i.signals));
-        setGenerationError(null);
-        try {
-          const stored = localStorage.getItem("ar_trendGeneratedAt");
-          const ts: Record<string, number> = stored ? JSON.parse(stored) : {};
-          ts[key] = Date.now();
-          localStorage.setItem("ar_trendGeneratedAt", JSON.stringify(ts));
-        } catch { /* ignore */ }
-      } else {
-        const errData = await res.json().catch(() => ({})) as { error?: string };
-        setGenerationError(errData.error ?? "Generation failed. Please try again.");
-      }
-    } catch {
-      setGenerationError("Network error. Check connection and try again.");
-    } finally {
-      setAppliedTopics(newTopics);
-      setGeneratingTopic(null);
-    }
-  }, []);
-
-  const loadTopic = useCallback(async (key: string) => {
-    setAppliedTopics([key]);
-    setDynamicTrends([]);
-    setAppliedDynamicTrends([]);
-    setGeneratedSignals([]);
-    const libraryTrends = [...(TOPIC_LIBRARY[key] ?? [])]
-      .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
-      .map((t, i) => ({ ...t, position: computeTrendPosition(i) }));
-    if (libraryTrends.length) {
-      const colored = assignUniqueColors(libraryTrends);
-      setDynamicTrends(colored);
-      setAppliedDynamicTrends(colored);
-      return;
-    }
-    await runGeneration(key, [key], []);
-  }, [runGeneration]);
-
-  const retryGeneration = useCallback(() => {
-    const failedTopic = activeTopics.find(topic =>
-      !dynamicTrends.some(t => t.topics?.includes(topic))
-    );
-    if (failedTopic) runGeneration(failedTopic, [failedTopic]);
-  }, [activeTopics, dynamicTrends, runGeneration]);
-
-  const TREND_TTL_MS = 48 * 60 * 60 * 1000;
-  useEffect(() => {
-    const stored = localStorage.getItem("ar_trendGeneratedAt");
-    const timestamps: Record<string, number> = stored ? JSON.parse(stored) : {};
-    const now = Date.now();
-    activeTopics.forEach(topic => {
-      const hasLibrary = (TOPIC_LIBRARY[topic] ?? []).length > 0;
-      if (hasLibrary) return;
-      const last = timestamps[topic] ?? 0;
-      if (now - last > TREND_TTL_MS) runGeneration(topic, [topic], []);
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const addTopic = useCallback(async (raw: string) => {
-    const key = normaliseTopicKey(raw);
-    if (!key || activeTopics.includes(key)) return;
-    const newTopics = [...activeTopics, key];
-    setActiveTopics(newTopics);
-    setAppliedTopics(newTopics);
-    setGenerationError(null);
-
-    if (!topicAddedAt[key]) {
-      const today = new Date().toISOString().split("T")[0];
-      const next = { ...topicAddedAt, [key]: today };
-      setTopicAddedAt(next);
-      try { localStorage.setItem("ar_topicAddedAt", JSON.stringify(next)); } catch { /* ignore */ }
-    }
-
-    if (activeTopics.length === 0) {
-      await loadTopic(key);
-      return;
-    }
-
-    setDynamicTrends([]);
-    setAppliedDynamicTrends([]);
-    setGeneratedSignals([]);
-    await runGeneration(key, newTopics, [], newTopics);
-  }, [activeTopics, dynamicTrends, loadTopic, runGeneration, topicAddedAt]);
-
-  const removeTopic = useCallback((topic: string) => {
-    const remaining = activeTopics.filter(t => t !== topic);
-    setActiveTopics(remaining);
-    setAppliedTopics(remaining);
-    if (remaining.length === 0) {
-      setDynamicTrends([]);
-      setAppliedDynamicTrends([]);
-      setGeneratedSignals([]);
-      return;
-    }
-    if (remaining.length === 1) {
-      loadTopic(remaining[0]);
-      return;
-    }
-    setDynamicTrends([]);
-    setAppliedDynamicTrends([]);
-    setGeneratedSignals([]);
-    runGeneration(remaining[0], remaining, [], remaining);
-  }, [activeTopics, loadTopic, runGeneration]);
-
-  const allExtraSignals = useMemo(
-    () => [...generatedSignals, ...extraSignals, ...liveSignals],
-    [generatedSignals, extraSignals, liveSignals],
-  );
-
-  const handleAddSignal = useCallback((s: Signal) => {
-    setExtraSignals((prev) => [...prev, s]);
-    setShowAdd(false);
-  }, []);
-
-  const handleDeleteSignal = useCallback((id: string) => {
-    setExtraSignals((prev) => prev.filter(s => s.id !== id));
-    setGeneratedSignals((prev) => prev.filter(s => s.id !== id));
-    setLiveSignals((prev) => prev.filter(s => s.id !== id));
-    setHiddenSignalIds((prev) => { const next = new Set(prev); next.add(id); return next; });
-  }, []);
-
-  const handleUpdateSignal = useCallback((sig: Signal) => {
-    if (extraSignalsRef.current.some(s => s.id === sig.id)) {
-      setExtraSignals(prev => prev.map(s => s.id === sig.id ? sig : s));
-    } else if (generatedSignalsRef.current.some(s => s.id === sig.id)) {
-      setGeneratedSignals(prev => prev.map(s => s.id === sig.id ? sig : s));
-    } else if (liveSignalsRef.current.some(s => s.id === sig.id)) {
-      setLiveSignals(prev => prev.map(s => s.id === sig.id ? sig : s));
-    } else {
-      // Library signal — fork into extraSignals so the edit is mutable going forward
-      setExtraSignals(prev => [...prev, sig]);
-    }
-  }, []);
-
-  const handleAddTrend = useCallback((t: Trend) => {
-    const positioned = { ...t, position: computeTrendPosition(appliedDynamicTrends.length) };
-    const newTrends = assignUniqueColors([...appliedDynamicTrends, positioned]);
-    setDynamicTrends(newTrends);
-    setAppliedDynamicTrends(newTrends);
-    setShowAddTrend(false);
-  }, [appliedDynamicTrends]);
-
-  const handleDeleteTrend = useCallback((id: string) => {
-    setDynamicTrends(prev => prev.filter(t => t.id !== id));
-    setAppliedDynamicTrends(prev => prev.filter(t => t.id !== id));
-  }, []);
-
-  const handleUpdateTrend = useCallback((trend: Trend) => {
-    setDynamicTrends(prev => prev.map(t => t.id === trend.id ? trend : t));
-    setAppliedDynamicTrends(prev => prev.map(t => t.id === trend.id ? trend : t));
-  }, []);
-
+export default function PortfolioHome() {
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#f8f7f3", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        overflow: "auto",
+        WebkitOverflowScrolling: "touch",
+        backgroundColor: "#f6f4f0",
+        backgroundImage: `
+          linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)
+        `,
+        backgroundSize: "26px 26px",
+      }}
+    >
+      {/* ── Nav ── */}
+      <div
+        style={{
+          position: "sticky", top: 0, zIndex: 20,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "14px 24px",
+          background: "rgba(246,244,240,0.94)", backdropFilter: "blur(10px)",
+          borderBottom: "1px solid rgba(0,0,0,0.07)",
+          overflowX: "auto", whiteSpace: "nowrap",
+        }}
+      >
+        <span style={{ ...serif, fontSize: 16, fontWeight: 800, color: "#111", letterSpacing: "-0.01em" }}>
+          {PROFILE.name}
+        </span>
 
-      {/* ── Header ────────────────────────────────────────────────────────────── */}
-      <div style={{
-        flexShrink: 0, height: isDesktop ? 60 : 52, padding: "0 20px",
-        display: "flex", alignItems: "center", gap: 14,
-        background: "rgba(248,247,243,0.96)", backdropFilter: "blur(18px)",
-        borderBottom: "1px solid rgba(0,0,0,0.06)", zIndex: 10,
-      }}>
-
-        {/* Logo */}
-        <div onClick={() => {
-          setActiveTopics([]);
-          setAppliedTopics([]);
-          setDynamicTrends([]);
-          setAppliedDynamicTrends([]);
-          setGeneratedSignals([]);
-          setView("radar");
-        }} style={{ cursor: "pointer", display: "flex", alignItems: "center", flexShrink: 0 }}>
-          <span style={{ fontSize: isDesktop ? 24 : 20, fontWeight: 700, letterSpacing: "-0.01em", color: "#111", fontFamily: "var(--font-logo), serif", lineHeight: 1 }}>
-            Augmented Culture
-          </span>
-        </div>
-
-        <div style={{ flex: 1 }} />
-
-        {/* Right side */}
-        <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
-          {lastUpdated && (
-            <span style={{ fontSize: 10, color: "#bbb", fontWeight: 500, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
-              {(() => {
-                const mins = Math.floor((Date.now() - lastUpdated.getTime()) / 60_000);
-                if (mins < 1) return "updated just now";
-                if (mins === 1) return "updated 1 min ago";
-                return `updated ${mins} min ago`;
-              })()}
-            </span>
-          )}
-          {/* + button */}
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowAddMenu(m => !m)}
-              style={{ width: 34, height: 34, borderRadius: "50%", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+        <div style={{ display: "flex", alignItems: "center", gap: 22, marginLeft: 16 }}>
+          {NAV_LINKS.map((n) => (
+            <a
+              key={n.href}
+              href={n.href}
+              style={{ ...sans, fontSize: 12, fontWeight: 600, color: "#666", textDecoration: "none", letterSpacing: "0.02em" }}
             >
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path d="M6.5 1v11M1 6.5h11" stroke="#333" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </button>
-            {showAddMenu && (
-              <>
-                <div onClick={() => setShowAddMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 40 }} />
-                <div style={{
-                  position: "absolute", top: "calc(100% + 8px)", right: 0,
-                  background: "#fff", border: "1px solid #e8e4de", borderRadius: 14,
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)", overflow: "hidden", zIndex: 50,
-                  minWidth: 140,
-                }}>
-                  <button
-                    onClick={() => { setShowAdd(true); setShowAddMenu(false); }}
-                    style={{ display: "block", width: "100%", padding: "12px 18px", background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#111", textAlign: "left", whiteSpace: "nowrap", fontFamily: "inherit" }}
-                  >Add signal</button>
-                  <div style={{ height: 1, background: "#f0f0f0", margin: "0 10px" }} />
-                  <button
-                    onClick={() => { setShowAddTrend(true); setShowAddMenu(false); }}
-                    style={{ display: "block", width: "100%", padding: "12px 18px", background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#111", textAlign: "left", whiteSpace: "nowrap", fontFamily: "inherit" }}
-                  >Add trend</button>
-                </div>
-              </>
-            )}
-          </div>
+              {n.label}
+            </a>
+          ))}
+          <Link
+            href="/radar"
+            style={{
+              ...sans, fontSize: 11, fontWeight: 700, color: "#aaa", textDecoration: "none",
+              letterSpacing: "0.06em", textTransform: "uppercase",
+            }}
+          >
+            Trend Radar →
+          </Link>
         </div>
       </div>
 
-      {/* ── Filter chip sub-bar (when a topic is active) ─────────────────────── */}
-      {appliedTopics.length > 0 && (
-        <div style={{
-          flexShrink: 0, padding: "6px 16px",
-          background: "#f8f7f3", borderBottom: "1px solid rgba(0,0,0,0.05)",
-          display: "flex", alignItems: "center", gap: 8, zIndex: 9,
-        }}>
-          <span style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.10em", textTransform: "uppercase", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", flexShrink: 0 }}>
-            Emerging tech &amp;
-          </span>
-          {appliedTopics.map(topic => {
-            const color = TOPIC_COLORS[topic] ?? "#aaa";
-            const dark = darkenColor(color);
+      {/* ── Hero ── */}
+      <div style={{ textAlign: "center", padding: "72px 24px 40px" }}>
+        <p style={{ ...sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#aaa", marginBottom: 16 }}>
+          {PROFILE.role} · {PROFILE.subrole}
+        </p>
+        <h1 style={{ ...serif, fontSize: "clamp(30px, 5vw, 52px)", fontWeight: 800, lineHeight: 1.15, color: "#111", letterSpacing: "-0.025em", maxWidth: 760, margin: "0 auto" }}>
+          {PROFILE.tagline}
+        </h1>
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 32, flexWrap: "wrap" }}>
+          <a href="#work" style={{ ...sans, fontSize: 13, fontWeight: 700, color: "#f6f4f0", background: "#111", padding: "12px 24px", borderRadius: 999, textDecoration: "none" }}>
+            View my work
+          </a>
+          <a href="#contact" style={{ ...sans, fontSize: 13, fontWeight: 700, color: "#111", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", padding: "12px 24px", borderRadius: 999, textDecoration: "none" }}>
+            Get in touch
+          </a>
+        </div>
+      </div>
+
+      {/* ── About ── */}
+      <section id="about" style={{ maxWidth: 780, margin: "0 auto", padding: "48px 24px" }}>
+        <SectionLabel>About</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 18 }}>
+          {ABOUT_PARAGRAPHS.map((p, i) => (
+            <p key={i} style={{ ...sans, fontSize: 16, lineHeight: 1.7, color: "#333" }}>{p}</p>
+          ))}
+        </div>
+        <p style={{ ...sans, fontSize: 13, fontStyle: "italic", color: "#999", marginTop: 20 }}>{ASIDE}</p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 44 }}>
+          {SERVICES.map((s) => (
+            <div key={s.title} style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 14, padding: "18px 20px" }}>
+              <div style={{ ...serif, fontSize: 15, fontWeight: 800, color: "#111", marginBottom: 6 }}>{s.title}</div>
+              <div style={{ ...sans, fontSize: 12.5, color: "#777", lineHeight: 1.55 }}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Skill map ── */}
+      <section style={{ padding: "40px 0 0" }}>
+        <div style={{ textAlign: "center", padding: "0 24px" }}>
+          <SectionLabel center>Practice</SectionLabel>
+          <h2 style={{ ...serif, fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 800, color: "#111", marginTop: 10, letterSpacing: "-0.02em" }}>
+            A map of skills, disciplines &amp; practice
+          </h2>
+        </div>
+        <SkillMap />
+      </section>
+
+      {/* ── Work ── */}
+      <section id="work" style={{ maxWidth: 1080, margin: "0 auto", padding: "40px 24px 60px" }}>
+        <SectionLabel>Selected Work</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: 44, marginTop: 24 }}>
+          {CATEGORIES.map((cat) => {
+            const items = CASE_STUDIES.filter((c) => c.category === cat);
+            if (items.length === 0) return null;
             return (
-              <div key={topic} style={{
-                display: "flex", alignItems: "center", gap: 3,
-                background: `${color}18`, border: `1px solid ${color}44`,
-                borderRadius: 20, padding: "3px 8px 3px 10px",
-              }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: dark, letterSpacing: "0.02em", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  {topic.replace(/-/g, " ")}
-                </span>
-                <button
-                  onClick={() => removeTopic(topic)}
-                  style={{ background: "none", border: "none", padding: "0 2px", cursor: "pointer", fontSize: 14, color: dark, lineHeight: 1, display: "flex", alignItems: "center" }}
-                >×</button>
+              <div key={cat}>
+                <h3 style={{ ...sans, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 16 }}>
+                  {cat}
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
+                  {items.map((c, i) => {
+                    const Card = (
+                      <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, overflow: "hidden", height: "100%", display: "flex", flexDirection: "column" }}>
+                        <div style={{ height: 120, background: TILE_TONES[i % TILE_TONES.length], position: "relative" }}>
+                          <div style={{ position: "absolute", inset: 10, border: "1px solid rgba(0,0,0,0.06)", borderRadius: 4 }} />
+                        </div>
+                        <div style={{ padding: "18px 20px", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+                          {c.client && (
+                            <span style={{ ...sans, fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                              {c.client}
+                            </span>
+                          )}
+                          <span style={{ ...serif, fontSize: 17, fontWeight: 800, color: "#111", lineHeight: 1.25 }}>
+                            {c.title}
+                          </span>
+                          <p style={{ ...sans, fontSize: 13, color: "#777", lineHeight: 1.55, flex: 1 }}>{c.description}</p>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                            {c.tags.map((t) => (
+                              <span key={t} style={{ ...sans, fontSize: 10.5, fontWeight: 600, color: "#888", background: "#f4f2ee", borderRadius: 999, padding: "3px 9px" }}>
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                    return c.href ? (
+                      <Link key={c.id} href={c.href} style={{ textDecoration: "none" }}>
+                        {Card}
+                      </Link>
+                    ) : (
+                      <div key={c.id}>{Card}</div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}
-          {generatingTopic && (
-            <span style={{ fontSize: 11, color: "#bbb", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-              generating…
-            </span>
-          )}
-
-          {/* View toggle — right side of filter bar */}
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 1, background: "rgba(0,0,0,0.06)", borderRadius: 20, padding: 2 }}>
-            {(["Radar", "Map"] as const).map(v => {
-              const active = view === v.toLowerCase();
-              return (
-                <button key={v} onClick={() => setView(v.toLowerCase() as "radar" | "map")} style={{
-                  padding: "4px 13px", borderRadius: 16, border: "none", cursor: "pointer",
-                  fontSize: 10, fontWeight: active ? 700 : 500,
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  letterSpacing: "0.04em",
-                  background: active ? "#fff" : "transparent",
-                  color: active ? "#111" : "#999",
-                  boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                  transition: "all 0.18s",
-                }}>{v}</button>
-              );
-            })}
-          </div>
         </div>
-      )}
+      </section>
 
-      {/* ── Main canvas ───────────────────────────────────────────────────────── */}
-      <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-        <CultureMap
-          dynamicTrends={appliedDynamicTrends}
-          activeTopics={appliedTopics}
-          extraSignals={allExtraSignals}
-          topicAddedAt={topicAddedAt}
-          generatingTopic={generatingTopic}
-          onAddTopic={addTopic}
-          onRemoveTopic={removeTopic}
-          view={view}
-          onSetView={setView}
-          onDeleteSignal={handleDeleteSignal}
-          onUpdateSignal={handleUpdateSignal}
-          onDeleteTrend={handleDeleteTrend}
-          onUpdateTrend={handleUpdateTrend}
-          hiddenSignalIds={hiddenSignalIds}
-        />
+      {/* ── Writing & Speaking ── */}
+      <section id="writing" style={{ maxWidth: 780, margin: "0 auto", padding: "20px 24px 60px" }}>
+        <SectionLabel>Writing</SectionLabel>
+        <p style={{ ...sans, fontSize: 16, lineHeight: 1.7, color: "#333", marginTop: 18 }}>
+          I write a Substack about emerging tech — it started as a weekly news summary and has since turned into
+          longer essays (and the occasional rant) about where technology is actually taking us.
+        </p>
+        <a
+          href={SUBSTACK_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ ...sans, display: "inline-block", marginTop: 16, fontSize: 13, fontWeight: 700, color: "#111", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}
+        >
+          Read the Substack →
+        </a>
+
+        <div style={{ marginTop: 44 }}>
+          <h3 style={{ ...sans, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 14 }}>
+            Talks &amp; Podcasts
+          </h3>
+          <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none" }}>
+            {SPEAKING.map((s, i) => (
+              <li key={i} style={{ ...sans, fontSize: 14, color: "#555", display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#c8c2b8", flexShrink: 0 }} />
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Contact ── */}
+      <section id="contact" style={{ textAlign: "center", padding: "40px 24px 90px" }}>
+        <SectionLabel center>Contact</SectionLabel>
+        <h2 style={{ ...serif, fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "#111", marginTop: 12, letterSpacing: "-0.02em" }}>
+          Let&rsquo;s work together
+        </h2>
+        <p style={{ ...sans, fontSize: 14, color: "#777", marginTop: 10, maxWidth: 460, margin: "10px auto 0" }}>
+          Research call, workshop, trend report, or a project that doesn&rsquo;t have a name yet — reach out.
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 26, flexWrap: "wrap" }}>
+          <a href={`mailto:${PROFILE.email}`} style={{ ...sans, fontSize: 13, fontWeight: 700, color: "#f6f4f0", background: "#111", padding: "12px 24px", borderRadius: 999, textDecoration: "none" }}>
+            {PROFILE.email}
+          </a>
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ ...sans, fontSize: 13, fontWeight: 700, color: "#111", background: "transparent", border: "1.5px solid rgba(0,0,0,0.18)", padding: "12px 24px", borderRadius: 999, textDecoration: "none" }}>
+            LinkedIn
+          </a>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <div style={{ textAlign: "center", padding: "0 24px 40px" }}>
+        <span style={{ ...sans, fontSize: 11, color: "#bbb", letterSpacing: "0.04em" }}>
+          © {new Date().getFullYear()} {PROFILE.name}
+        </span>
       </div>
-
-      {showAdd && <AddSignalModal onAdd={handleAddSignal} onClose={() => setShowAdd(false)} trends={appliedDynamicTrends} />}
-      {showAddTrend && <AddTrendModal onAdd={handleAddTrend} onClose={() => setShowAddTrend(false)} />}
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
-      `}</style>
     </div>
+  );
+}
+
+function SectionLabel({ children, center }: { children: React.ReactNode; center?: boolean }) {
+  return (
+    <p
+      style={{
+        ...sans,
+        fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase",
+        color: "#bbb", textAlign: center ? "center" : "left",
+      }}
+    >
+      {children}
+    </p>
   );
 }

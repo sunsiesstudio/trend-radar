@@ -7,8 +7,8 @@ const ebGaramond = EB_Garamond({ subsets: ["latin"], weight: ["400", "500", "600
 const instrumentSerif = Instrument_Serif({ subsets: ["latin"], weight: "400", variable: "--font-logo" });
 
 export const metadata: Metadata = {
-  title: "Augmented Culture",
-  description: "Where emerging tech meets fashion, beauty, and lifestyle — by Augmented Rarity",
+  title: "Martina Soles — UX Researcher & Interaction Designer",
+  description: "Cultural intelligence and creative strategy for emerging tech, brands, and speculative projects.",
 };
 
 export const viewport: Viewport = {
